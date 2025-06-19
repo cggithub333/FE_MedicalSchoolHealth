@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { AppProvider } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
-import { DemoProvider, useDemoRouter } from "@toolpad/core/internal";
+import { useDemoRouter } from "@toolpad/core/internal";
 
 import LogoBranchImg from '../../assets/images/health_education_img2.png';
 
@@ -32,7 +32,7 @@ DemoPageContent.propTypes = {
   pathname: PropTypes.string.isRequired,
 };
 
-function DashboardLayoutBasic(props) {
+function DashboardLayoutAccount(props) {
   const { window } = props;
 
   const [session, setSession] = React.useState({
@@ -62,12 +62,8 @@ function DashboardLayoutBasic(props) {
 
   const router = useDemoRouter("/dashboard");
 
-  // Remove this const when copying and pasting into your project.
-  const demoWindow = window !== undefined ? window() : undefined;
-
   return (
-    // Remove this provider when copying and pasting into your project.
-    <DemoProvider window={demoWindow}>
+    <>
       {/* preview-start */}
       <AppProvider
         session={session}
@@ -75,7 +71,6 @@ function DashboardLayoutBasic(props) {
         navigation={NavbarData}
         router={router}
         theme={NavbarTheme}
-        window={demoWindow}
         branding={{
           logo: <img src={LogoBranchImg}
             alt="School Medical logo"
@@ -95,8 +90,8 @@ function DashboardLayoutBasic(props) {
         </DashboardLayout>
       </AppProvider>
       {/* preview-end */}
-    </DemoProvider>
+    </>
   );
 }
 
-export default DashboardLayoutBasic;
+export default DashboardLayoutAccount;
