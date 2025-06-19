@@ -1,9 +1,12 @@
 
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import DescriptionIcon from '@mui/icons-material/Description';
 import LayersIcon from '@mui/icons-material/Layers';
+
+import ProfileIcon from '@mui/icons-material/AssignmentInd';
+import NotificationIcon from '@mui/icons-material/SwitchAccount';
+import AccountManagementIcon from '@mui/icons-material/NotificationsActive';
 
 
 const NavbarData = [
@@ -18,9 +21,19 @@ const NavbarData = [
     icon: <DashboardIcon />,
   },
   {
-    segment: 'orders',
-    title: 'Orders',
-    icon: <ShoppingCartIcon />,
+    segment: 'profile',
+    title: 'Profile',
+    icon: <ProfileIcon />,
+  },
+  {
+    segment: 'notification',
+    title: 'Notification',
+    icon: <NotificationIcon />,
+  },
+  {
+    segment: 'accounts',
+    title: 'Accounts',
+    icon: <AccountManagementIcon />,
   },
   {
     kind: 'divider',

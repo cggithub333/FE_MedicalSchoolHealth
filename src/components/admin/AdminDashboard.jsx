@@ -8,7 +8,7 @@ import { DemoProvider, useDemoRouter } from '@toolpad/core/internal';
 
 
 import NavbarData from './NavbarData';
-import NavbarTheme from './NavbarTheme';
+import NavbarTheme from './navbar-theme';
 
 function DemoPageContent({ pathname }) {
   return (

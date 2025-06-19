@@ -29,10 +29,7 @@ const USER_ENDPOINTS = {
         NOTIFICATION: "/schoolNurse/notification",
     },
     PARENT: {
-        DASHBOARD: "/parent/dashboard",
-        PROFILE: "/parent/profile",
         HEALTH_DECLARATION: "/parent/health-declaration",
-        MEDICAL_EVENT: "/parent/medical-event",
         PRESCRIPTION: "/parent/prescription",
         NOTIFICATION: "/parent/notification",
         HEALTH_CHECK_CAMPAIGN: "/parent/vaccination-campaign",

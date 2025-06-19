@@ -1,10 +1,22 @@
 
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import BarChartIcon from '@mui/icons-material/BarChart';
-import DescriptionIcon from '@mui/icons-material/Description';
-import LayersIcon from '@mui/icons-material/Layers';
 
+import ProfileIcon from '@mui/icons-material/AssignmentInd';
+import NotificationIcon from '@mui/icons-material/SwitchAccount';
+import MedicalEventIcon from '@mui/icons-material/MedicalInformation';
+import HealthDeclarationIcon from '@mui/icons-material/Description';
+
+import VaccinationCampaignIcon from '@mui/icons-material/Vaccines';
+import HealthCheckCampaignIcon from '@mui/icons-material/HealthAndSafety';
+
+import CampaignsIcon from '@mui/icons-material/ReceiptLong';
+import VaccinationHistoryInforIcon from '@mui/icons-material/YoutubeSearchedFor';
+import HealthCheckHistoryInforIcon from '@mui/icons-material/YoutubeSearchedFor';
+import ScheduleIcon from '@mui/icons-material/CalendarMonth';
+
+import { GiMedicines as PrescriptionIcon } from "react-icons/gi";
+
+import { RiSurveyFill as SurveyIcon } from "react-icons/ri";
 
 const NavbarData = [
   {
@@ -17,38 +29,97 @@ const NavbarData = [
     icon: <DashboardIcon />,
   },
   {
-    segment: 'orders',
-    title: 'Orders',
-    icon: <ShoppingCartIcon />,
+    segment: 'profile',
+    title: 'Profile',
+    icon: <ProfileIcon />,
+  },
+  {
+    segment: 'notification',
+    title: 'Notification',
+    icon: <NotificationIcon />,
   },
   {
     kind: 'divider',
   },
   {
     kind: 'header',
-    title: 'Analytics',
+    title: 'Health management',
   },
   {
-    segment: 'reports',
-    title: 'Reports',
-    icon: <BarChartIcon />,
+    segment: 'medical-events',
+    title: 'Medical Events',
+    icon: <MedicalEventIcon />,
+  },
+  {
+    segment: 'prescription',
+    title: 'Prescription',
+    icon: <PrescriptionIcon />,
+  },
+  {
+    segment: 'health-declaration',
+    title: 'Health Declaration',
+    icon: <HealthDeclarationIcon />,
+  },
+  {
+    kind: 'divider',
+  },
+  {
+    kind: 'header',
+    title: 'Campaigns Management',
+  },
+  {
+    segment: 'vaccination-campaign',
+    title: 'Vaccination Campaign',
+    icon: <VaccinationCampaignIcon />,
     children: [
       {
-        segment: 'sales',
-        title: 'Sales',
-        icon: <DescriptionIcon />,
+        segment: 'campaigns',
+        title: 'Campaigns',
+        icon: <CampaignsIcon />,
       },
       {
-        segment: 'traffic',
-        title: 'Traffic',
-        icon: <DescriptionIcon />,
+        segment: 'schedule',
+        title: 'Schedule',
+        icon: <ScheduleIcon />,
+      },
+      {
+        segment: 'surveys',
+        title: 'Surveys',
+        icon: <SurveyIcon />,
+      },
+      {
+        segment: 'vaccination-history',
+        title: 'Vaccination History',
+        icon: <VaccinationHistoryInforIcon />,
       },
     ],
   },
   {
-    segment: 'integrations',
-    title: 'Integrations',
-    icon: <LayersIcon />,
+    segment: 'health-check-campaign',
+    title: 'Health Check Campaign',
+    icon: <HealthCheckCampaignIcon />,
+    children: [
+      {
+        segment: 'campaigns',
+        title: 'Campaigns',
+        icon: <CampaignsIcon />,
+      },
+      {
+        segment: 'schedule',
+        title: 'Schedule',
+        icon: <ScheduleIcon />,
+      },
+      {
+        segment: 'surveys',
+        title: 'Surveys',
+        icon: <SurveyIcon />,
+      },
+      {
+        segment: 'health-check-history',
+        title: 'Health Check History',
+        icon: <HealthCheckHistoryInforIcon />,
+      },
+    ],
   },
 ];
 
