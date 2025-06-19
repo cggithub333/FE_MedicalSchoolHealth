@@ -5,12 +5,12 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import LayersIcon from '@mui/icons-material/Layers';
 
 import ProfileIcon from '@mui/icons-material/AssignmentInd';
-import NotificationIcon from '@mui/icons-material/SwitchAccount';
-import AccountManagementIcon from '@mui/icons-material/NotificationsActive';
+import AccountManagementIcon from '@mui/icons-material/SwitchAccount';
+import NotificationIcon from '@mui/icons-material/NotificationsActive';
 
 
 const NavbarData = [
-  // Title: "Main Items"
+  //----------------part 1--------------------//
   {
     kind: 'header',
     title: 'Main items',
@@ -31,6 +31,14 @@ const NavbarData = [
     icon: <NotificationIcon />,
   },
   {
+    kind: 'divider',
+  },
+  // -----------------Part 2------------------------//
+  {
+    kind: 'header',
+    title: 'Account Management',
+  },
+  {
     segment: 'accounts',
     title: 'Accounts',
     icon: <AccountManagementIcon />,
@@ -38,7 +46,8 @@ const NavbarData = [
   {
     kind: 'divider',
   },
-  // Title: "Main Items"
+
+  // -----------------Part 3------------------------//
   {
     kind: 'header',
     title: 'Analytics',
