@@ -28,8 +28,8 @@ const NavbarData = [
         icon: <ProfileIcon />,
     },
     {
-        segment: "Notifications",
-        title: "Notifications",
+        segment: "notification",
+        title: "Notification",
         icon: <NotificationsActiveIcon />,
     },
     {
@@ -40,7 +40,7 @@ const NavbarData = [
         title: "Health Management",
     },
     {
-        segment: "patients",
+        segment: "medical-events",
         title: "Medical Events",
         icon: <MedicalEventIcon />,
     },
@@ -58,7 +58,7 @@ const NavbarData = [
         title: "Campaigns Management",
     },
     {
-        segment: "vaccinationscampaign",
+        segment: "vaccination-campaign",
         title: "Vaccinations Campaign",
         icon: <VaccinesIcon />,
         children: [
@@ -71,11 +71,6 @@ const NavbarData = [
                 segment: "schedule  ",
                 title: "Schedule",
                 icon: <ScheduleIcon />,
-            },
-            {
-                segment: "newvaccination",
-                title: "New Vaccination",
-                icon: <NewCampaignIcon />,
             },
         ],
     },
@@ -94,42 +89,7 @@ const NavbarData = [
                 title: "Schedule",
                 icon: <ScheduleIcon />,
             },
-            {
-                segment: "newvaccination",
-                title: "New Vaccination",
-                icon: <NewCampaignIcon />,
-            },
         ],
-    },
-    {
-        kind: "divider",
-    },
-    {
-        kind: "header",
-        title: "Reports",
-    },
-    {
-        segment: "reports",
-        title: "Reports",
-        icon: <BarChartIcon />,
-        children: [
-            {
-                segment: "sales",
-                title: "Sales",
-                icon: <DescriptionIcon />,
-            },
-            {
-                segment: "traffic",
-                title: "Traffic",
-                icon: <DescriptionIcon />,
-            },
-        ],
-    },
-
-    {
-        segment: "integrations",
-        title: "Integrations",
-        icon: <LayersIcon />,
     },
 ];
 

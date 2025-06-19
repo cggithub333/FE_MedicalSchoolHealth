@@ -27,21 +27,9 @@ const NavbarData = [
         icon: <ProfileIcon />,
     },
     {
-        segment: "Notifications",
-        title: "Notifications",
+        segment: "notification",
+        title: "Notification",
         icon: <NotificationsActiveIcon />,
-    },
-    {
-        kind: "divider",
-    },
-    {
-        kind: "header",
-        title: "Health Management",
-    },
-    {
-        segment: "patients",
-        title: "Medical Events",
-        icon: <MedicalEventIcon />,
     },
 
     {
@@ -52,7 +40,7 @@ const NavbarData = [
         title: "Campaigns Management",
     },
     {
-        segment: "vaccinationscampaign",
+        segment: "vaccination-campaign",
         title: "Vaccinations Campaign",
         icon: <VaccinesIcon />,
         children: [
@@ -62,19 +50,19 @@ const NavbarData = [
                 icon: <Campaign />,
             },
             {
-                segment: "schedule  ",
+                segment: "schedule",
                 title: "Schedule",
                 icon: <ScheduleIcon />,
             },
             {
-                segment: "newvaccination",
+                segment: "new",
                 title: "New Vaccination",
                 icon: <NewCampaignIcon />,
             },
         ],
     },
     {
-        segment: "Health Check Campaign",
+        segment: "health-check-campaign",
         title: "Health Check Campaign",
         icon: <HealthCheckIcon />,
         children: [
@@ -84,13 +72,13 @@ const NavbarData = [
                 icon: <Campaign />,
             },
             {
-                segment: "schedule  ",
+                segment: "schedule",
                 title: "Schedule",
                 icon: <ScheduleIcon />,
             },
             {
-                segment: "newvaccination",
-                title: "New Vaccination",
+                segment: "new",
+                title: "New Health Check",
                 icon: <NewCampaignIcon />,
             },
         ],
