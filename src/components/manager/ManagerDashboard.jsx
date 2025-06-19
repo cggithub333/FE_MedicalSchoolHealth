@@ -5,7 +5,6 @@ import Typography from "@mui/material/Typography";
 import { AppProvider } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { useDemoRouter } from "@toolpad/core/internal";
-
 import LogoBranchImg from '../../assets/images/health_education_img2.png';
 
 import NavbarData from "./NavbarData";
@@ -31,17 +30,46 @@ DemoPageContent.propTypes = {
     pathname: PropTypes.string.isRequired,
 };
 
-function DashboardLayoutBasic(props) {
+function DashboardLayoutAccount(props) {
     const { window } = props;
 
-    const router = useDemoRouter("/dashboard");
+    const [session, setSession] = React.useState({
+        user: {
+            name: 'Bharat Kashyap',
+            email: 'bharatkashyap@outlook.com',
+            image: 'https://avatars.githubusercontent.com/u/19550456',
+        },
+    });
+
+    const authentication = React.useMemo(() => {
+        return {
+            signIn: () => {
+                setSession({
+                    user: {
+                        name: 'Bharat Kashyap',
+                        email: 'bharatkashyap@outlook.com',
+                        image: 'https://avatars.githubusercontent.com/u/19550456',
+                    },
+                });
+            },
+            signOut: () => {
+                setSession(null);
+            },
+        };
+    }, []);
+
+    const router = useDemoRouter('/dashboard');
+
 
     return (
         <>
             {/* preview-start */}
             <AppProvider
+                session={session}
+                authentication={authentication}
                 navigation={NavbarData}
                 router={router}
+
                 theme={NavbarTheme}
                 branding={{
                     logo: <img src={LogoBranchImg}
@@ -65,4 +93,4 @@ function DashboardLayoutBasic(props) {
     );
 }
 
-export default DashboardLayoutBasic;
+export default DashboardLayoutAccount;
