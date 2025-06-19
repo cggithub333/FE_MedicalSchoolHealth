@@ -7,7 +7,7 @@ import ManagerDashboard from "./components/manager/ManagerDashboard";
 import SchoolNurseDashboard from "./components/schoolnurse/SchoolNurseDashboard";
 import ParentDashboard from "./components/parent/ParentDashboard";
 
-function App() {
+function App() { 
     return (
         <>
             <AdminDashboard />

@@ -6,11 +6,8 @@ import { AppProvider } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { useDemoRouter } from "@toolpad/core/internal";
 
-import LogoBranchImg from '../../assets/images/health_education_img2.png';
-
-
-import NavbarData from './NavbarData';
-import NavbarTheme from './navbar-theme';
+import NavbarData from "./NavbarData";
+import NavbarTheme from "./navbar-theme";
 
 function DemoPageContent({ pathname }) {
   return (
