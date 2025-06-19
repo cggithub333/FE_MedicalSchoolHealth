@@ -6,12 +6,6 @@ import { AppProvider } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { DemoProvider, useDemoRouter } from "@toolpad/core/internal";
 
-<<<<<<< HEAD
-import LogoBranchImg from "../../assets/images/health_education_img.png";
-=======
-import LogoBranchImg from '../../assets/images/health_education_img2.png';
->>>>>>> 6c4e98e79d0c37f15096c1ea69a7d7f1d71b047c
-
 import NavbarData from "./NavbarData";
 import NavbarTheme from "./navbar-theme";
 
@@ -65,12 +59,8 @@ function DashboardLayoutBasic(props) {
 
     const router = useDemoRouter("/dashboard");
 
-    // Remove this const when copying and pasting into your project.
-    const demoWindow = window !== undefined ? window() : undefined;
-
     return (
-        // Remove this provider when copying and pasting into your project.
-        <DemoProvider window={demoWindow}>
+        <>
             {/* preview-start */}
             <AppProvider
                 session={session}
@@ -78,29 +68,13 @@ function DashboardLayoutBasic(props) {
                 navigation={NavbarData}
                 router={router}
                 theme={NavbarTheme}
-                branding={{
-                    logo: (
-                        <img
-                            src={LogoBranchImg}
-                            alt="School Medical logo"
-                            style={{
-                                // the width and height are fixed in their parent div, can over the parent's size
-                                height: "40px",
-                                width: "auto",
-                            }}
-                        />
-                    ),
-                    title: "",
-                    homeUrl: "/homepage",
-                }}
-                window={demoWindow}
             >
                 <DashboardLayout>
                     <DemoPageContent pathname={router.pathname} />
                 </DashboardLayout>
             </AppProvider>
             {/* preview-end */}
-        </DemoProvider>
+        </>
     );
 }
 
