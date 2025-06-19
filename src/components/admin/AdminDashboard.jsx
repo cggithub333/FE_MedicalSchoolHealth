@@ -6,6 +6,8 @@ import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { DemoProvider, useDemoRouter } from '@toolpad/core/internal';
 
+import LogoBranchImg from '../../assets/images/health_education_img.png';
+
 
 import NavbarData from './NavbarData';
 import NavbarTheme from './navbar-theme';
@@ -47,9 +49,22 @@ function DashboardLayoutBasic(props) {
         router={router}
         theme={NavbarTheme}
         window={demoWindow}
+        branding={{
+          logo: <img  src={LogoBranchImg} 
+                      alt="School Medical logo" 
+                      style={{ 
+                        // the width and height are fixed in their parent div, can over the parent's size
+                        height: '40px', 
+                        width: 'auto', 
+                      }}
+          />,
+          title: '',
+          homeUrl: '/homepage',
+        }}
       >
         <DashboardLayout>
           <DemoPageContent pathname={router.pathname} />
+          {/* My content here */}
         </DashboardLayout>
       </AppProvider>
       {/* preview-end */}
