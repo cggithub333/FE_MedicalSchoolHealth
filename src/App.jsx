@@ -10,7 +10,7 @@ import ParentDashboard from "./components/parent/ParentDashboard";
 function App() {
     return (
         <>
-            <AdminDashboard />
+        <SchoolNurseDashboard />
         </>
     );
 }
