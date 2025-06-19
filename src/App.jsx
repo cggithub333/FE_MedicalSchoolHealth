@@ -8,11 +8,11 @@ import SchoolNurseDashboard from "./components/schoolnurse/SchoolNurseDashboard"
 import ParentDashboard from "./components/parent/ParentDashboard";
 
 function App() {
-  return (
-    <>
-      <ParentDashboard />
-    </>
-  )
+    return (
+        <>
+            <AdminDashboard />
+        </>
+    );
 }
 
 export default App;
