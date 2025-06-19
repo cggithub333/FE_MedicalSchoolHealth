@@ -6,7 +6,11 @@ import { AppProvider } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { DemoProvider, useDemoRouter } from "@toolpad/core/internal";
 
+<<<<<<< HEAD
 import LogoBranchImg from "../../assets/images/health_education_img.png";
+=======
+import LogoBranchImg from '../../assets/images/health_education_img2.png';
+>>>>>>> 6c4e98e79d0c37f15096c1ea69a7d7f1d71b047c
 
 import NavbarData from "./NavbarData";
 import NavbarTheme from "./navbar-theme";
