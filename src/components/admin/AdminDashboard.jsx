@@ -60,7 +60,8 @@ function DashboardLayoutAccount(props) {
     };
   }, []);
 
-  const router = useDemoRouter("/dashboard");
+  const router = useDemoRouter('/dashboard');
+
 
   return (
     <>
@@ -71,22 +72,9 @@ function DashboardLayoutAccount(props) {
         navigation={NavbarData}
         router={router}
         theme={NavbarTheme}
-        branding={{
-          logo: <img src={LogoBranchImg}
-            alt="School Medical logo"
-            style={{
-              // the width and height are fixed in their parent div, can over the parent's size
-              height: '40px',
-              width: 'auto',
-            }}
-          />,
-          title: '',
-          homeUrl: '/homepage',
-        }}
       >
         <DashboardLayout>
           <DemoPageContent pathname={router.pathname} />
-          {/* My content here */}
         </DashboardLayout>
       </AppProvider>
       {/* preview-end */}
