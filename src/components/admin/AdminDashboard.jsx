@@ -17,8 +17,8 @@ import { useDemoRouter } from '@toolpad/core/internal';
 import LogoBranchImg from '../../assets/images/health_education_img2.png';
 
 
-import NavbarData from '../manager/NavbarData';
-import NavbarTheme from '../manager/navbar-theme';
+import NavbarData from './NavbarData';
+import NavbarTheme from './navbar-theme';
 
 
 
@@ -161,13 +161,5 @@ function DashboardLayoutSlots(props) {
         </>
     );
 }
-
-DashboardLayoutSlots.propTypes = {
-    /**
-     * Injected by the documentation to work in an iframe.
-     * Remove this when copying and pasting into your project.
-     */
-    window: PropTypes.func,
-};
 
 export default DashboardLayoutSlots;
