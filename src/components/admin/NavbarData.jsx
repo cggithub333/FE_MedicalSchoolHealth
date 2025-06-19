@@ -7,6 +7,7 @@ import LayersIcon from '@mui/icons-material/Layers';
 
 
 const NavbarData = [
+  // Title: "Main Items"
   {
     kind: 'header',
     title: 'Main items',
@@ -24,6 +25,7 @@ const NavbarData = [
   {
     kind: 'divider',
   },
+  // Title: "Main Items"
   {
     kind: 'header',
     title: 'Analytics',
