@@ -1,10 +1,16 @@
 import './App.css'
-import DashboardLayoutBasic from './components/DashboardDemo/DemoDashboard.jsx';
+
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+import AdminDashboard from './components/admin/AdminDashboard';
+import ManagerDashboard from './components/manager/ManagerDashboard';
+import SchoolNurseDashboard from './components/schoolnurse/SchoolNurseDashboard';
+import ParentDashboard from './components/parent/ParentDashboard';
 
 function App() {
   return (
     <>
-      <DashboardLayoutBasic />
+      
     </>
   )
 }
