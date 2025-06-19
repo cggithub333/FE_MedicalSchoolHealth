@@ -13,6 +13,7 @@ import { AiOutlineSchedule as ScheduleIcon } from "react-icons/ai";
 import { IoAddCircleSharp as NewCampaignIcon } from "react-icons/io5";
 
 const NavbarData = [
+    //----------------part 1--------------------//
     {
         kind: "header",
         title: "Main",
@@ -35,6 +36,7 @@ const NavbarData = [
     {
         kind: "divider",
     },
+    //----------------part 2--------------------//
     {
         kind: "header",
         title: "Health Management",
@@ -53,6 +55,7 @@ const NavbarData = [
     {
         kind: "divider",
     },
+    //----------------part 3--------------------//
     {
         kind: "header",
         title: "Campaigns Management",

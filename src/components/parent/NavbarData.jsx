@@ -19,6 +19,7 @@ import { GiMedicines as PrescriptionIcon } from "react-icons/gi";
 import { RiSurveyFill as SurveyIcon } from "react-icons/ri";
 
 const NavbarData = [
+  //----------------part 1--------------------//
   {
     kind: 'header',
     title: 'Main items',
@@ -41,6 +42,7 @@ const NavbarData = [
   {
     kind: 'divider',
   },
+  //----------------part 2--------------------//
   {
     kind: 'header',
     title: 'Health management',
@@ -63,6 +65,7 @@ const NavbarData = [
   {
     kind: 'divider',
   },
+  //----------------part 3--------------------//
   {
     kind: 'header',
     title: 'Campaigns Management',
