@@ -4,7 +4,7 @@ import "./App.css";
 
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
-import AdminDashboardRoutes from "./components/admin/AdminDashboardLayout";
+import AdminDashboardRoutes from "./components/admin/AdminDashboardRoutes";
 import ManagerDashboardRoutes from "./components/manager/ManagerDashboardRoutes";
 import SchoolNurseDashboardRoutes from "./components/schoolnurse/SchoolNurseDashboardRoutes";
 import ParentDashboardRoutes from "./components/parent/ParentDashboardRoutes";

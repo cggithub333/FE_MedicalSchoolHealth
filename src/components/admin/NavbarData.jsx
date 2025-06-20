@@ -58,20 +58,20 @@ const NavbarData = [
     icon: <BarChartIcon />,
     children: [
       {
-        segment: 'sales',
-        title: 'Sales',
+        segment: 'report-a',
+        title: 'Report A',
         icon: <DescriptionIcon />,
       },
       {
-        segment: 'traffic',
-        title: 'Traffic',
+        segment: 'report-b',
+        title: 'Report B',
         icon: <DescriptionIcon />,
       },
     ],
   },
   {
-    segment: 'admin/integrations',
-    title: 'Integrations',
+    segment: 'admin/integration',
+    title: 'Integration',
     icon: <LayersIcon />,
   },
 ];

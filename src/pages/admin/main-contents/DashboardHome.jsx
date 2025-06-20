@@ -2,7 +2,7 @@ const DashboardHome = () => {
 
   return (
     <>
-      Admin - Dashboard Home
+      Admin - DashboardHome
     </>
   );
 }
