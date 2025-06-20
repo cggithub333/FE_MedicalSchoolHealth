@@ -3,7 +3,6 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import DescriptionIcon from "@mui/icons-material/Description";
 import LayersIcon from "@mui/icons-material/Layers";
 import ProfileIcon from "@mui/icons-material/AssignmentInd";
-import MedicalEventIcon from "@mui/icons-material/Accessible";
 import VaccinesIcon from "@mui/icons-material/Vaccines";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import HealthCheckIcon from "@mui/icons-material/MedicationLiquid";
@@ -12,7 +11,7 @@ import { AiOutlineSchedule as ScheduleIcon } from "react-icons/ai";
 import { IoAddCircleSharp as NewCampaignIcon } from "react-icons/io5";
 
 const NavbarData = [
-  //----------------part 1--------------------//
+    //----------------part 1--------------------//
     {
         kind: "header",
         title: "Main",
@@ -36,7 +35,7 @@ const NavbarData = [
     {
         kind: "divider",
     },
-  //----------------part 2--------------------//
+    //----------------part 2--------------------//
     {
         kind: "header",
         title: "Campaigns Management",
@@ -88,7 +87,7 @@ const NavbarData = [
     {
         kind: "divider",
     },
-  //----------------part 3--------------------//
+    //----------------part 3--------------------//
     {
         kind: "header",
         title: "Reports",

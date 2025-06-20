@@ -13,9 +13,8 @@ import { Account } from '@toolpad/core/Account';
 import { useDemoRouter } from '@toolpad/core/internal';
 import LogoBranchImg from '../../assets/images/health_education_img2.png';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import Badge from '@mui/material/Badge';
-import { FaChildReaching as ChildIcon } from "react-icons/fa6";
+
 
 import NavbarData from './NavbarData';
 import NavbarTheme from './navbar-theme';
@@ -101,6 +100,38 @@ function ToolbarActionsUtility() {
     );
 }
 
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import { useTheme } from "@mui/material/styles";
+
+function CustomNavItem({ icon, title, active, ...props }) {
+    const theme = useTheme();
+
+    return (
+        <ListItemButton
+            selected={active}
+            sx={{
+                color: theme.palette.text.primary,
+                "&:hover": {
+                    backgroundColor: theme.palette.action.hover,
+                },
+            }}
+            {...props}
+        >
+            {icon && (
+                <ListItemIcon sx={{ color: "inherit" }}>
+                    {icon}
+                </ListItemIcon>
+            )}
+            <ListItemText
+                primary={title}
+                primaryTypographyProps={{ color: "inherit" }}
+            />
+        </ListItemButton>
+    );
+}
+
 
 function SidebarFooter({ mini }) {
     return (
@@ -121,7 +152,6 @@ function CustomAppTitle() {
     return (
         <Stack direction="row" alignItems="center" spacing={2} >
             <a href='/homepage'><img src={LogoBranchImg} alt="Logo" style={{ width: "auto", height: "40px" }} /></a>
-
         </Stack>
     );
 }
@@ -174,6 +204,7 @@ function DashboardLayoutSlots(props) {
                         appTitle: CustomAppTitle,
                         toolbarActions: ToolbarActionsUtility,
                         sidebarFooter: SidebarFooter,
+                        navItem: CustomNavItem,
                     }}
                 >
                     <DemoPageContent pathname={router.pathname} />

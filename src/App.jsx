@@ -1,3 +1,5 @@
+import './index.css';
+
 import "./App.css";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -10,7 +12,7 @@ import ParentDashboard from "./components/parent/ParentDashboard";
 function App() {
     return (
         <>
-            <AdminDashboard />
+            <ManagerDashboard />
         </>
     );
 }
