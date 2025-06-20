@@ -11,7 +11,11 @@ import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout, ThemeSwitcher } from '@toolpad/core/DashboardLayout';
 import { Account } from '@toolpad/core/Account';
 import { useDemoRouter } from '@toolpad/core/internal';
+
+
 import LogoBranchImg from '../../assets/images/health_education_img2.png';
+import AvatarImg from '../../assets/images/avatar.png';
+
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import Badge from '@mui/material/Badge';
@@ -121,7 +125,6 @@ function CustomAppTitle() {
     return (
         <Stack direction="row" alignItems="center" spacing={2} >
             <a href='/homepage'><img src={LogoBranchImg} alt="Logo" style={{ width: "auto", height: "40px" }} /></a>
-
         </Stack>
     );
 }
@@ -131,9 +134,9 @@ function DashboardLayoutSlots(props) {
 
     const [session, setSession] = React.useState({
         user: {
-            name: 'Bharat Kashyap',
-            email: 'bharatkashyap@outlook.com',
-            image: 'https://avatars.githubusercontent.com/u/19550456',
+            name: 'Ha Hai Cuong',
+            email: 'hhc9104@gmail.com',
+            image: AvatarImg,
         },
     });
 
@@ -144,7 +147,7 @@ function DashboardLayoutSlots(props) {
                     user: {
                         name: 'Bharat Kashyap',
                         email: 'bharatkashyap@outlook.com',
-                        image: 'https://avatars.githubusercontent.com/u/19550456',
+                        image: AvatarImg,
                     },
                 });
             },
