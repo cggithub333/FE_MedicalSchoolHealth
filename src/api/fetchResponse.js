@@ -1,6 +1,6 @@
 // fetch API through an api url:
 
-import request from "./Request.js";
+import request from "./request.js";
 
 /* Traditional way of fetch API:
 const fetchAPI = async (apiUrl) => {

@@ -1,0 +1,34 @@
+{
+  "pupils": [
+    {
+      "pupilId": "P001",
+      "classId": 101,
+      "dateOfBirth": "2012-05-14",
+      "gender": "M",
+      "lastName": "Nguyen",
+      "firstName": "An",
+      "avatar": "avatar1.png",
+      "isActive": true
+    },
+    {
+      "pupilId": "P002",
+      "classId": 102,
+      "dateOfBirth": "2013-08-22",
+      "gender": "F",
+      "lastName": "Tran",
+      "firstName": "Binh",
+      "avatar": "avatar2.png",
+      "isActive": true
+    },
+    {
+      "pupilId": "P003",
+      "classId": 101,
+      "dateOfBirth": "2012-11-30",
+      "gender": "F",
+      "lastName": "Le",
+      "firstName": "Chi",
+      "avatar": "avatar3.png",
+      "isActive": false
+    }
+  ]
+}

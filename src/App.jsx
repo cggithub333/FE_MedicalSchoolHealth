@@ -11,7 +11,16 @@ import ParentDashboardRoutes from "./components/parent/ParentDashboardRoutes";
 
 import BuildingImage from './assets/images/building_worker.jpg';
 
+// test:
+import usePupils from './hooks/parent/usePupils';
+
 function App() {
+
+    // test fetch pupils:
+    const { pupils, isLoading } = usePupils();
+
+    console.log(pupils);
+
     return (
         <>
             <Router>
