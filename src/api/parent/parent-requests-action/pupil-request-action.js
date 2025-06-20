@@ -1,6 +1,6 @@
 
-import { fetchResponse } from '../../fetchResponse';
-import { getAllPupils } from '../parent-requests-callback/pupilRequestCallback'; 
+import { fetchResponse } from '../../fetch-response';
+import { getAllPupils } from '../parent-requests-callback/pupil-request-callback'; 
 
 export const fetchAllPupils = async () => {
 

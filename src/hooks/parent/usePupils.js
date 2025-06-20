@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useState } from "react";
 
-import { fetchAllPupils } from '../../api/parent/parent-requests-action/pupilRequestAction';
+import { fetchAllPupils } from '../../api/parent/parent-requests-action/pupil-request-action';
 
 const usePupils = () => {
 

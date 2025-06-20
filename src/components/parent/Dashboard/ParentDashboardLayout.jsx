@@ -16,12 +16,41 @@ import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import Badge from '@mui/material/Badge';
 import { FaChildReaching as ChildIcon } from "react-icons/fa6";
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import { Link } from 'react-router-dom';
+
 
 import NavbarData from './NavbarData';
 import NavbarTheme from './navbar-theme';
-import { Link } from 'react-router-dom';
+
+import MaleFaceIcon from '@mui/icons-material/Face';
+import FemaleFaceIcon from '@mui/icons-material/Face3';
+import StarIcon from '@mui/icons-material/Star';
+
+// import custom hooks here..
+import usePupils from '../../../hooks/parent/usePupils';
 
 function ToolbarActionsUtility() {
+
+  const { pupils, isLoading } = usePupils();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+  const handleChildSelect = (child) => {
+    // save information of the child to localStorage:
+    window.localStorage.setItem("pupilId", child.pupilId);
+    window.localStorage.setItem("pupilName", `${child.lastName} ${child.firstName}`);
+    window.localStorage.setItem("pupilInfor", JSON.stringify(child));
+    handleMenuClose();
+  };
+
   return (
     <Stack direction="row" alignItems="center" spacing={3} sx={{ flexGrow: 1 }}>
       {/* search bar */}
@@ -56,21 +85,58 @@ function ToolbarActionsUtility() {
           sx={{ display: { xs: 'none', md: 'inline-block' }, mr: 1 }}
         />
       </>
-      {/* child icon */}
-      <IconButton color="inherit" sx={{ mr: 1 }}>
+      {/* child icon as dropdown */}
+      <IconButton
+        color="inherit"
+        sx={{ mr: 1, position: 'relative' }}
+        onClick={handleMenuOpen}
+      >
         <ChildIcon fontSize={"20px"} />
       </IconButton>
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleMenuClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        PaperProps={{ style: { minWidth: 200 } }}
+      >
+        {isLoading ? (
+          <MenuItem disabled>... loading ...</MenuItem>
+        ) : (
+          (pupils || []).map((child) => {
 
+            const storedPupilId = window.localStorage.getItem("pupilId");
+            const isInStorage = (child && child.pupilId && storedPupilId && (child.pupilId === storedPupilId));
+
+            return (
+              <MenuItem sx = {{
+                          background: (isInStorage) ? "#1565c0" : "#fff",
+                          color: (isInStorage) ? "#f7c27d" : "#000",
+                          display: "flex",
+                          gap: "10px",
+                          alignItems: "center"
+                        }}
+                        key={child.pupilId} 
+                        onClick={() => handleChildSelect(child)}>
+                <span style={{ marginRight: 8 }}>
+                  {child.gender === "M" ? <MaleFaceIcon fontSize="small" /> : <FemaleFaceIcon fontSize="small" />}
+                </span>
+                <span>{`${child.lastName} ${child.firstName}`}</span>
+                {isInStorage && <span><StarIcon/></span>}
+              </MenuItem>
+            );
+          })
+        )}
+      </Menu>
       {/* Notification icon to the right of the search bar */}
       <IconButton color="inherit" sx={{ mr: 1 }}>
         <Badge color="secondary" badgeContent={100}>
           <NotificationsActiveIcon />
         </Badge>
       </IconButton>
-
       {/* Switch mode */}
       <ThemeSwitcher />
-
       {/* Account */}
       <Account />
     </Stack>
