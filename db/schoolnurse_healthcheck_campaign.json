@@ -1,0 +1,15 @@
+{
+    "campaign": [
+        {
+            "id": 1,
+            "address": "123 Main St, Cityville",
+            "startExaminationDate": "2025-07-01T08:00:00Z",
+            "endExaminationDate": "2025-07-05T17:00:00Z",
+            "deadlineDate": "2025-06-28T23:59:59Z",
+            "description": "Annual health check campaign for all students in Cityville district.",
+            "created_at": "2025-06-21T10:00:00Z",
+            "status": "Pending",
+            "isActive": true
+        }
+    ]
+}

@@ -1,8 +1,10 @@
+import Campaign from '../../../components/schoolnurse/health-check-campaign/campaign/Campaign.jsx'
+
 const HealthCheckCampaign = () => {
 
   return (
     <>
-      Schoolnurse - Health Check -  Health Check Campaign
+      <Campaign />
     </>
   );
 }
