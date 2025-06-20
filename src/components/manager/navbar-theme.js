@@ -1,3 +1,77 @@
+// import { createTheme } from "@mui/material/styles";
+
+// const lightPalette = {
+//     mode: "light",
+//     background: {
+//         default: "#f5f5f5",
+//         paper: "#ffffff",
+//     },
+//     text: {
+//         primary: "#000000",
+//         secondary: "#555555",
+//     },
+//     primary: {
+//         main: "#1976d2",
+//     },
+// };
+
+// const darkPalette = {
+//     mode: "dark",
+//     background: {
+//         default: "#121212",
+//         paper: "#1e1e1e",
+//     },
+//     text: {
+//         primary: "#ffffff",
+//         secondary: "#aaaaaa",
+//     },
+//     primary: {
+//         main: "#90caf9",
+//     },
+// };
+
+// const NavbarTheme = (mode) => createTheme({
+//     cssVariables: {
+//         colorSchemeSelector: "data-toolpad-color-scheme",
+//     },
+//     palette: mode === "light" ? lightPalette : darkPalette,
+//     components: {
+//         MuiDrawer: {
+//             styleOverrides: {
+//                 paper: ({ theme }) => ({
+//                     background: theme.palette.mode === "light" ? "#e3f2fd" : theme.palette.background.paper,
+//                     color: theme.palette.text.primary,
+//                 }),
+//             },
+//         },
+//         MuiDivider: {
+//             styleOverrides: {
+//                 root: ({ theme }) => ({
+//                     backgroundColor: theme.palette.mode === "light" ? "#e3f2fd" : theme.palette.background.paper,
+//                 }),
+//             },
+//         },
+//         MuiListSubheader: {
+//             styleOverrides: {
+//                 root: ({ theme }) => ({
+//                     backgroundColor: theme.palette.mode === "light" ? "#e3f2fd" : theme.palette.background.paper,
+//                 }),
+//             },
+//         },
+//     },
+//     typography: {
+//         fontFamily: "Poppins, Roboto, Arial, sans-serif",
+//         fontWeightBold: 700,
+//         h6: {
+//             fontWeight: 700,
+//             fontSize: "1.2rem",
+//         },
+//     },
+// });
+
+// export default NavbarTheme;
+
+
 import { createTheme } from "@mui/material/styles";
 
 const NavbarTheme = createTheme({
@@ -19,6 +93,30 @@ const NavbarTheme = createTheme({
                     primary: "#000",
                 },
             },
+            components: {
+                MuiDrawer: {
+                    styleOverrides: {
+                        paper: {
+                            background: '#e3f2fd', // Uniform sidebar color
+                            color: '#222',
+                        },
+                    },
+                },
+                MuiDivider: {
+                    styleOverrides: {
+                        root: {
+                            backgroundColor: '#e3f2fd', // Match sidebar color for dividers
+                        },
+                    },
+                },
+                MuiListSubheader: {
+                    styleOverrides: {
+                        root: {
+                            backgroundColor: '#e3f2fd', // Match sidebar color for subheaders
+                        },
+                    },
+                },
+            },
         },
         dark: {
             palette: {
@@ -36,56 +134,7 @@ const NavbarTheme = createTheme({
             },
         },
     },
-    components: {
-        // ✅ This ensures sidebar items & icons follow the theme
-        MuiListItemButton: {
-            styleOverrides: {
-                root: ({ theme }) => ({
-                    color: theme.palette.text.primary,
-                }),
-            },
-        },
-        MuiListItemIcon: {
-            styleOverrides: {
-                root: {
-                    color: "inherit",
-                },
-            },
-        },
-        MuiListItemText: {
-            styleOverrides: {
-                primary: {
-                    color: "inherit",
-                },
-            },
-        },
-        // ✅ Sidebar background (Drawer)
-        MuiDrawer: {
-            styleOverrides: {
-                paper: ({ theme }) => ({
-                    background: theme.palette.mode === "dark" ? "#263238" : "#e3f2fd",
-                    color: theme.palette.text.primary,
-                }),
-            },
-        },
-        // ✅ Divider + Subheader if you use them
-        MuiDivider: {
-            styleOverrides: {
-                root: ({ theme }) => ({
-                    backgroundColor:
-                        theme.palette.mode === "dark" ? "#263238" : "#e3f2fd",
-                }),
-            },
-        },
-        MuiListSubheader: {
-            styleOverrides: {
-                root: ({ theme }) => ({
-                    backgroundColor:
-                        theme.palette.mode === "dark" ? "#263238" : "#e3f2fd",
-                }),
-            },
-        },
-    },
+
     typography: {
         fontFamily: "Poppins, Roboto, Arial, sans-serif",
         fontWeightBold: 700,
