@@ -12,6 +12,10 @@ import NewCampaignHealthCheck from './health-check-campaign/NewCampaign.jsx';
 import ScheduleHealthCheck from './health-check-campaign/Schedule.jsx';
 import HealthCheckCampaign from './health-check-campaign/HealthCheckCampaign.jsx';
 
+import ReportsA from './reports/ReportsA.jsx';
+import ReportsB from './reports/ReportsB.jsx';
+import Integration from './reports/Integration.jsx';
+
 const ManagerComponentPagePackages = {
   DashboardHome,
   Notification,
@@ -24,6 +28,9 @@ const ManagerComponentPagePackages = {
   NewCampaignHealthCheck,
   ScheduleHealthCheck,
   HealthCheckCampaign,
+  ReportsA,
+  Integration,
+  ReportsB
 };
 
 export default ManagerComponentPagePackages;

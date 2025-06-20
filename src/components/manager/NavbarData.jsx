@@ -17,17 +17,17 @@ const NavbarData = [
         title: "Main",
     },
     {
-        segment: "dashboard",
+        segment: "manager/dashboard",
         title: "Dashboard",
         icon: <DashboardIcon />,
     },
     {
-        segment: "profile",
+        segment: "manager/profile",
         title: "Profile",
         icon: <ProfileIcon />,
     },
     {
-        segment: "notification",
+        segment: "manager/notification",
         title: "Notification",
         icon: <NotificationsActiveIcon />,
     },
@@ -41,7 +41,7 @@ const NavbarData = [
         title: "Campaigns Management",
     },
     {
-        segment: "vaccination-campaign",
+        segment: "manager/vaccination-campaign",
         title: "Vaccinations Campaign",
         icon: <VaccinesIcon />,
         children: [
@@ -63,7 +63,7 @@ const NavbarData = [
         ],
     },
     {
-        segment: "health-check-campaign",
+        segment: "manager/health-check-campaign",
         title: "Health Check Campaign",
         icon: <HealthCheckIcon />,
         children: [
@@ -93,7 +93,7 @@ const NavbarData = [
         title: "Reports",
     },
     {
-        segment: "reports",
+        segment: "manager/reports",
         title: "Reports",
         icon: <BarChartIcon />,
         children: [
@@ -111,7 +111,7 @@ const NavbarData = [
     },
 
     {
-        segment: "integrations",
+        segment: "manager/integration",
         title: "Integrations",
         icon: <LayersIcon />,
     },

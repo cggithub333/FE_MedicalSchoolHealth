@@ -16,17 +16,17 @@ const NavbarData = [
     title: 'Main items',
   },
   {
-    segment: 'dashboard',
+    segment: 'admin/dashboard',
     title: 'Dashboard',
     icon: <DashboardIcon />,
   },
   {
-    segment: 'profile',
+    segment: 'admin/profile',
     title: 'Profile',
     icon: <ProfileIcon />,
   },
   {
-    segment: 'notification',
+    segment: 'admin/notification',
     title: 'Notification',
     icon: <NotificationIcon />,
   },
@@ -39,7 +39,7 @@ const NavbarData = [
     title: 'Account Management',
   },
   {
-    segment: 'accounts',
+    segment: 'admin/accounts',
     title: 'Accounts',
     icon: <AccountManagementIcon />,
   },
@@ -53,7 +53,7 @@ const NavbarData = [
     title: 'Analytics',
   },
   {
-    segment: 'reports',
+    segment: 'admin/reports',
     title: 'Reports',
     icon: <BarChartIcon />,
     children: [
@@ -70,7 +70,7 @@ const NavbarData = [
     ],
   },
   {
-    segment: 'integrations',
+    segment: 'admin/integrations',
     title: 'Integrations',
     icon: <LayersIcon />,
   },

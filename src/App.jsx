@@ -4,9 +4,9 @@ import "./App.css";
 
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
-import AdminDashboard from "./components/admin/AdminDashboard";
+import AdminDashboardRoutes from "./components/admin/AdminDashboardLayout";
 import ManagerDashboardRoutes from "./components/manager/ManagerDashboardRoutes";
-import SchoolNurseDashboard from "./components/schoolnurse/SchoolNurseDashboard";
+import SchoolNurseDashboardRoutes from "./components/schoolnurse/SchoolNurseDashboardRoutes";
 import ParentDashboard from "./components/parent/ParentDashboard";
 
 import BuildingImage from './assets/images/building_worker.jpg';
@@ -16,12 +16,12 @@ function App() {
         <>
             <Router>
                 <Routes>
-                    <Route path="/homepage" element={<Homepage/>} />
-                    <Route path="/admin/*" element={<AdminDashboard />} />
+                    <Route path="/homepage" element={<Homepage />} />
+                    <Route path="/admin/*" element={<AdminDashboardRoutes />} />
                     <Route path="/manager/*" element={<ManagerDashboardRoutes />} />
-                    <Route path="/schoolnurse/*" element={<SchoolNurseDashboard />} />
+                    <Route path="/schoolnurse/*" element={<SchoolNurseDashboardRoutes />} />
                     <Route path="/parent/*" element={<ParentDashboard />} />
-                    <Route path="/*" element={<BuildingPage/>}/>
+                    <Route path="/*" element={<BuildingPage />} />
                 </Routes>
             </Router>
         </>
@@ -29,12 +29,12 @@ function App() {
 }
 
 const BuildingPage = () => {
-    return <> 
+    return <>
         <h1 style={{ fontSize: "20px", fontWeight: "700", margin: "30px" }}>Oops! This page's is in building. Comming soon</h1>
 
-        <div style={{ marginLeft: "30px" }} >Back to admin page: <Link to={"/admin/"}>Click!</Link></div> 
+        <div style={{ marginLeft: "30px" }} >Back to admin page: <Link to={"/admin/"}>Click!</Link></div>
         <div style={{ marginLeft: "30px" }} >Back to manager page:<Link to={"/manager/"}>Click!</Link></div>
-        <div style={{ marginLeft: "30px" }} >Back to school nurse page:<Link to={"/schoolnurse/"}>Click!</Link></div> 
+        <div style={{ marginLeft: "30px" }} >Back to school nurse page:<Link to={"/schoolnurse/"}>Click!</Link></div>
         <div style={{ marginLeft: "30px" }} >Back to parent page:<Link to={"/parent/"}>Click!</Link></div>
 
         <div>
@@ -51,9 +51,9 @@ const Homepage = () => {
         <div style={{ marginLeft: "30px" }} >Back to manager page:<Link to={"/manager/"}>Click!</Link></div>
         <div style={{ marginLeft: "30px" }} >Back to school nurse page:<Link to={"/schoolnurse/"}>Click!</Link></div>
         <div style={{ marginLeft: "30px" }} >Back to parent page:<Link to={"/parent/"}>Click!</Link></div>
-    
+
         <div>
-            <img style={{ width: "50vw", height: "auto", margin: "15px 30px"}} src={BuildingImage} alt={"building image"} />
+            <img style={{ width: "50vw", height: "auto", margin: "15px 30px" }} src={BuildingImage} alt={"building image"} />
         </div>
     </>
 }

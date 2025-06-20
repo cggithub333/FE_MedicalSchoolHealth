@@ -19,17 +19,17 @@ const NavbarData = [
         title: "Main",
     },
     {
-        segment: "dashboard",
+        segment: "schoolnurse/dashboard",
         title: "Dashboard",
         icon: <DashboardIcon />,
     },
     {
-        segment: "profile",
+        segment: "schoolnurse/profile",
         title: "Profile",
         icon: <ProfileIcon />,
     },
     {
-        segment: "notification",
+        segment: "schoolnurse/notification",
         title: "Notification",
         icon: <NotificationsActiveIcon />,
     },
@@ -42,12 +42,12 @@ const NavbarData = [
         title: "Health Management",
     },
     {
-        segment: "medical-events",
+        segment: "schoolnurse/medical-events",
         title: "Medical Events",
         icon: <MedicalEventIcon />,
     },
     {
-        segment: "prescription",
+        segment: "schoolnurse/prescription",
         title: "Prescription",
         icon: <Prescriptionicon />,
     },
@@ -61,7 +61,7 @@ const NavbarData = [
         title: "Campaigns Management",
     },
     {
-        segment: "vaccination-campaign",
+        segment: "schoolnurse/vaccination-campaign",
         title: "Vaccinations Campaign",
         icon: <VaccinesIcon />,
         children: [
@@ -71,14 +71,14 @@ const NavbarData = [
                 icon: <Campaign />,
             },
             {
-                segment: "schedule  ",
+                segment: "schedule",
                 title: "Schedule",
                 icon: <ScheduleIcon />,
             },
         ],
     },
     {
-        segment: "Health Check Campaign",
+        segment: "schoolnurse/health-check-campaign",
         title: "Health Check Campaign",
         icon: <HealthCheckIcon />,
         children: [
@@ -88,7 +88,7 @@ const NavbarData = [
                 icon: <Campaign />,
             },
             {
-                segment: "schedule  ",
+                segment: "schedule",
                 title: "Schedule",
                 icon: <ScheduleIcon />,
             },

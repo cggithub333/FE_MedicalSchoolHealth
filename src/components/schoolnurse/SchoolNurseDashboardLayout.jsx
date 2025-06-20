@@ -8,9 +8,9 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import SearchIcon from '@mui/icons-material/Search';
 import { AppProvider } from '@toolpad/core/AppProvider';
+import { ReactRouterAppProvider } from '@toolpad/core/react-router';
 import { DashboardLayout, ThemeSwitcher } from '@toolpad/core/DashboardLayout';
 import { Account } from '@toolpad/core/Account';
-import { useDemoRouter } from '@toolpad/core/internal';
 import LogoBranchImg from '../../assets/images/health_education_img2.png';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
@@ -19,29 +19,10 @@ import { FaChildReaching as ChildIcon } from "react-icons/fa6";
 
 import NavbarData from './NavbarData';
 import NavbarTheme from './navbar-theme';
-import { Link } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 
 
 
-function DemoPageContent({ pathname }) {
-    return (
-        <Box
-            sx={{
-                py: 4,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                textAlign: 'center',
-            }}
-        >
-            <Typography>Dashboard content for {pathname}</Typography>
-        </Box>
-    );
-}
-
-DemoPageContent.propTypes = {
-    pathname: PropTypes.string.isRequired,
-};
 
 function ToolbarActionsUtility() {
     return (
@@ -120,7 +101,7 @@ SidebarFooter.propTypes = {
 function CustomAppTitle() {
     return (
         <Stack direction="row" alignItems="center" spacing={2} >
-            <a href='/homepage'><img src={LogoBranchImg} alt="Logo" style={{ width: "auto", height: "40px" }} /></a>
+            <Link to={'/homepage'}><img src={LogoBranchImg} alt="Logo" style={{ width: "auto", height: "40px" }} /></Link>
 
         </Stack>
     );
@@ -154,17 +135,15 @@ function DashboardLayoutSlots(props) {
         };
     }, []);
 
-    const router = useDemoRouter('/dashboard');
 
 
     return (
         // Remove this provider when copying and pasting into your project.
         <>
-            <AppProvider
+            <ReactRouterAppProvider
                 session={session}
                 authentication={authentication}
                 navigation={NavbarData}
-                router={router}
                 theme={NavbarTheme}
 
             >
@@ -176,10 +155,10 @@ function DashboardLayoutSlots(props) {
                         sidebarFooter: SidebarFooter,
                     }}
                 >
-                    <DemoPageContent pathname={router.pathname} />
+                    <Outlet />
                 </DashboardLayout>
                 {/* preview-end */}
-            </AppProvider>
+            </ReactRouterAppProvider>
         </>
     );
 }
