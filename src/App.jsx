@@ -12,7 +12,7 @@ import ParentDashboard from "./components/parent/ParentDashboard";
 function App() {
     return (
         <>
-            <ManagerDashboard />
+            <ParentDashboard />
         </>
     );
 }
