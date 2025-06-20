@@ -5,9 +5,9 @@ import "./App.css";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 import AdminDashboard from "./components/admin/AdminDashboard";
-import ManagerDashboardRoutes from "./components/manager/ManagerDashboardRoutes";
-import SchoolNurseDashboard from "./components/schoolnurse/SchoolNurseDashboard";
-import ParentDashboard from "./components/parent/ParentDashboard";
+import ManagerDashboard from "./components/manager/ManagerDashboard";
+import SchoolNurseDashboard from "./components/schoolnurse/SchoolNurseDashboardLayout";
+import ParentDashboardRoutes from "./components/parent/ParentDashboardRoutes";
 
 import BuildingImage from './assets/images/building_worker.jpg';
 
@@ -18,9 +18,9 @@ function App() {
                 <Routes>
                     <Route path="/homepage" element={<Homepage/>} />
                     <Route path="/admin/*" element={<AdminDashboard />} />
-                    <Route path="/manager/*" element={<ManagerDashboardRoutes />} />
+                    <Route path="/manager/*" element={<ManagerDashboard />} />
                     <Route path="/schoolnurse/*" element={<SchoolNurseDashboard />} />
-                    <Route path="/parent/*" element={<ParentDashboard />} />
+                    <Route path="/parent/*" element={<ParentDashboardRoutes />} />
                     <Route path="/*" element={<BuildingPage/>}/>
                 </Routes>
             </Router>
