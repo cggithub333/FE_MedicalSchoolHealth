@@ -11,10 +11,7 @@ import { AppProvider } from '@toolpad/core/AppProvider';
 import { ReactRouterAppProvider } from '@toolpad/core/react-router';
 import { DashboardLayout, ThemeSwitcher } from '@toolpad/core/DashboardLayout';
 import { Account } from '@toolpad/core/Account';
-
-import LogoBranchImg from '../../assets/images/health_education_img2.png';
-import AvatarImg from '../../assets/images/avatar.png';
-
+import LogoBranchImg from '../../../assets/images/health_education_img2.png';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import Badge from '@mui/material/Badge';
@@ -23,6 +20,8 @@ import { FaChildReaching as ChildIcon } from "react-icons/fa6";
 import NavbarData from './NavbarData';
 import NavbarTheme from './navbar-theme';
 import { Link, Outlet } from 'react-router-dom';
+
+
 
 
 function ToolbarActionsUtility() {
@@ -83,7 +82,6 @@ function ToolbarActionsUtility() {
     );
 }
 
-
 function SidebarFooter({ mini }) {
     return (
         <Typography
@@ -112,9 +110,9 @@ function DashboardLayoutSlots(props) {
 
     const [session, setSession] = React.useState({
         user: {
-            name: 'Ha Hai Cuong',
-            email: 'hhc9104@gmail.com',
-            image: AvatarImg,
+            name: 'Bharat Kashyap',
+            email: 'bharatkashyap@outlook.com',
+            image: 'https://avatars.githubusercontent.com/u/19550456',
         },
     });
 
@@ -125,7 +123,7 @@ function DashboardLayoutSlots(props) {
                     user: {
                         name: 'Bharat Kashyap',
                         email: 'bharatkashyap@outlook.com',
-                        image: AvatarImg,
+                        image: 'https://avatars.githubusercontent.com/u/19550456',
                     },
                 });
             },
@@ -145,7 +143,6 @@ function DashboardLayoutSlots(props) {
                 authentication={authentication}
                 navigation={NavbarData}
                 theme={NavbarTheme}
-
             >
                 {/* preview-start */}
                 <DashboardLayout

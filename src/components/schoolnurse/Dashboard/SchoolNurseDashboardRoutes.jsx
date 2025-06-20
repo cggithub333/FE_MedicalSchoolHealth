@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import SchoolNurseComponentPagePackages from '../../pages/schoolnurse/SchoolNurseComponentPagePackages';
+import SchoolNurseComponentPagePackages from '../../../pages/schoolnurse/SchoolNurseComponentPagePackages';
 import SchoolNurseDashboard from './SchoolNurseDashboardLayout';
 
 const SchoolNurseDashboardRoutes = () => {

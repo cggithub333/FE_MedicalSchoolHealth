@@ -11,7 +11,7 @@ import { AppProvider } from '@toolpad/core/AppProvider';
 import { ReactRouterAppProvider } from '@toolpad/core/react-router';
 import { DashboardLayout, ThemeSwitcher } from '@toolpad/core/DashboardLayout';
 import { Account } from '@toolpad/core/Account';
-import LogoBranchImg from '../../assets/images/health_education_img2.png';
+import LogoBranchImg from '../../../assets/images/health_education_img2.png';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import Badge from '@mui/material/Badge';
 

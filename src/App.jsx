@@ -4,10 +4,10 @@ import "./App.css";
 
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
-import AdminDashboardRoutes from "./components/admin/AdminDashboardRoutes";
-import ManagerDashboardRoutes from "./components/manager/ManagerDashboardRoutes";
-import SchoolNurseDashboardRoutes from "./components/schoolnurse/SchoolNurseDashboardRoutes";
-import ParentDashboardRoutes from "./components/parent/ParentDashboardRoutes";
+import AdminDashboardRoutes from "./components/admin/Dashboard/AdminDashboardRoutes";
+import ManagerDashboardRoutes from "./components/manager/Dashboard/ManagerDashboardRoutes";
+import SchoolNurseDashboardRoutes from "./components/schoolnurse/Dashboard/SchoolNurseDashboardRoutes";
+import ParentDashboardRoutes from "./components/parent/Dashboard/ParentDashboardRoutes";
 
 import BuildingImage from './assets/images/building_worker.jpg';
 

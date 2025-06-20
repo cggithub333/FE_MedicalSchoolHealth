@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import ParentComponentPagePackages from '../../pages/parent/ParentComponentPagePackages';
+import ParentComponentPagePackages from '../../../pages/parent/ParentComponentPagePackages';
 import ParentDashboardLayout from './ParentDashboardLayout';
 
 const ParentDashboardRoutes = () => {
