@@ -7,6 +7,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import SearchIcon from '@mui/icons-material/Search';
 import { AppProvider } from '@toolpad/core/AppProvider';
+import { ReactRouterAppProvider } from '@toolpad/core/react-router';
 import { DashboardLayout, ThemeSwitcher } from '@toolpad/core/DashboardLayout';
 import { Account } from '@toolpad/core/Account';
 import { Outlet } from 'react-router-dom';
@@ -57,8 +58,8 @@ function ToolbarActionsUtility() {
       </>
       {/* child icon */}
       <IconButton color="inherit" sx={{ mr: 1 }}>
-                <ChildIcon fontSize={"20px"} />
-            </IconButton>
+        <ChildIcon fontSize={"20px"} />
+      </IconButton>
 
       {/* Notification icon to the right of the search bar */}
       <IconButton color="inherit" sx={{ mr: 1 }}>
@@ -130,7 +131,7 @@ function DashboardLayoutSlots(props) {
   return (
     // Remove this provider when copying and pasting into your project.
     <>
-      <AppProvider
+      <ReactRouterAppProvider
         session={session}
         authentication={authentication}
         navigation={NavbarData}
@@ -147,7 +148,7 @@ function DashboardLayoutSlots(props) {
           <Outlet />
         </DashboardLayout>
         {/* preview-end */}
-      </AppProvider>
+      </ReactRouterAppProvider>
     </>
   );
 }
