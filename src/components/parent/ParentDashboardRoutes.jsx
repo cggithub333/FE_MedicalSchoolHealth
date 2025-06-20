@@ -17,16 +17,20 @@ const ParentDashboardRoutes = () => {
         <Route path={"medical-events"} element={<ParentComponentPagePackages.MedicalEvents />} />
 
         {/* vaccination-campaign */}
-        <Route path={"vaccination-campaign/campaigns"} element={<ParentComponentPagePackages.CampaignsVaccination />} />
-        <Route path={"vaccination-campaign/vaccination-history"} element={<ParentComponentPagePackages.VaccinationHistory />} />
-        <Route path={"vaccination-campaign/surveys"} element={<ParentComponentPagePackages.SurveysVaccination />} />
-        <Route path={"vaccination-campaign/schedule"} element={<ParentComponentPagePackages.ScheduleVaccination />} />
+        <Route path={"vaccination-campaign"}>
+          <Route path={"campaigns"} element={<ParentComponentPagePackages.CampaignsVaccination />} />
+          <Route path={"vaccination-history"} element={<ParentComponentPagePackages.VaccinationHistory />} />
+          <Route path={"surveys"} element={<ParentComponentPagePackages.SurveysVaccination />} />
+          <Route path={"schedule"} element={<ParentComponentPagePackages.ScheduleVaccination />} />
+        </Route>
 
         {/* health-check-campaign */}
-        <Route path={"health-check-campaign/campaigns"} element={<ParentComponentPagePackages.CampaignsHealthCheck />} />
-        <Route path={"health-check-campaign/health-check-history"} element={<ParentComponentPagePackages.HealthCheckHistory />} />
-        <Route path={"health-check-campaign/surveys"} element={<ParentComponentPagePackages.SurveysHealthCheck />} />
-        <Route path={"health-check-campaign/schedule"} element={<ParentComponentPagePackages.ScheduleHealthCheck />} />
+        <Route path={"health-check-campaign"}>
+          <Route path={"campaigns"} element={<ParentComponentPagePackages.CampaignsHealthCheck />} />
+          <Route path={"health-check-history"} element={<ParentComponentPagePackages.HealthCheckHistory />} />
+          <Route path={"surveys"} element={<ParentComponentPagePackages.SurveysHealthCheck />} />
+          <Route path={"schedule"} element={<ParentComponentPagePackages.ScheduleHealthCheck />} />
+        </Route>
       </Route>
     </Routes>
   );
