@@ -66,12 +66,12 @@ const NavbarData = [
         icon: <VaccinesIcon />,
         children: [
             {
-                segment: "campaigns",
+                segment: "schoolnurse/campaigns",
                 title: "Campaigns",
                 icon: <Campaign />,
             },
             {
-                segment: "schedule",
+                segment: "schoolnurse/schedule  ",
                 title: "Schedule",
                 icon: <ScheduleIcon />,
             },
@@ -83,12 +83,12 @@ const NavbarData = [
         icon: <HealthCheckIcon />,
         children: [
             {
-                segment: "campaigns",
+                segment: "schoolnurse/campaigns",
                 title: "Campaigns",
                 icon: <Campaign />,
             },
             {
-                segment: "schedule",
+                segment: "schoolnurse/schedule  ",
                 title: "Schedule",
                 icon: <ScheduleIcon />,
             },

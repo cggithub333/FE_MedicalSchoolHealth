@@ -1,4 +1,3 @@
-
 import DashboardIcon from '@mui/icons-material/Dashboard';
 
 import ProfileIcon from '@mui/icons-material/AssignmentInd';
@@ -25,17 +24,17 @@ const NavbarData = [
     title: 'Main items',
   },
   {
-    segment: 'dashboard',
+    segment: 'parent/dashboard',
     title: 'Dashboard',
     icon: <DashboardIcon />,
   },
   {
-    segment: 'profile',
+    segment: 'parent/profile',
     title: 'Profile',
     icon: <ProfileIcon />,
   },
   {
-    segment: 'notification',
+    segment: 'parent/notification',
     title: 'Notification',
     icon: <NotificationIcon />,
   },
@@ -48,17 +47,17 @@ const NavbarData = [
     title: 'Health management',
   },
   {
-    segment: 'medical-events',
+    segment: 'parent/medical-events',
     title: 'Medical Events',
     icon: <MedicalEventIcon />,
   },
   {
-    segment: 'prescription',
+    segment: 'parent/prescription',
     title: 'Prescription',
     icon: <PrescriptionIcon />,
   },
   {
-    segment: 'health-declaration',
+    segment: 'parent/health-declaration',
     title: 'Health Declaration',
     icon: <HealthDeclarationIcon />,
   },
@@ -71,7 +70,7 @@ const NavbarData = [
     title: 'Campaigns Management',
   },
   {
-    segment: 'vaccination-campaign',
+    segment: 'parent/vaccination-campaign',
     title: 'Vaccination Campaign',
     icon: <VaccinationCampaignIcon />,
     children: [
@@ -98,7 +97,7 @@ const NavbarData = [
     ],
   },
   {
-    segment: 'health-check-campaign',
+    segment: 'parent/health-check-campaign',
     title: 'Health Check Campaign',
     icon: <HealthCheckCampaignIcon />,
     children: [

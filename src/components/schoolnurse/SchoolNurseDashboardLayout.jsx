@@ -82,7 +82,6 @@ function ToolbarActionsUtility() {
     );
 }
 
-
 function SidebarFooter({ mini }) {
     return (
         <Typography
@@ -102,7 +101,6 @@ function CustomAppTitle() {
     return (
         <Stack direction="row" alignItems="center" spacing={2} >
             <Link to={'/homepage'}><img src={LogoBranchImg} alt="Logo" style={{ width: "auto", height: "40px" }} /></Link>
-
         </Stack>
     );
 }
@@ -145,7 +143,6 @@ function DashboardLayoutSlots(props) {
                 authentication={authentication}
                 navigation={NavbarData}
                 theme={NavbarTheme}
-
             >
                 {/* preview-start */}
                 <DashboardLayout
