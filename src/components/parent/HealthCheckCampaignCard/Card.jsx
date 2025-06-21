@@ -26,6 +26,8 @@ import { styleActionBtn, styleTitleDetail } from './style-card';
 import ManagerAvatarImg from '../../../assets/images/manager_avatar.jpg';
 import { Grid, TableBody, TableContainer, TableHead, TableRow, Table, TableCell } from '@mui/material';
 
+import { convertSQLDateToUserDate } from '../../../utils/DateUtils/DateFormatter';
+
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
   return <IconButton {...other} />;
@@ -135,11 +137,11 @@ export default function HealthCheckCampaignCard({ latestHealthCheckCampaign, isL
                 </TableRow>
                 <TableRow>
                   <TableCell sx={{ fontSize: "17px" }}>Start Date</TableCell>
-                  <TableCell sx={{ fontSize: "17px" }}>{latestHealthCheckCampaign.startExaminationDate}</TableCell>
+                  <TableCell sx={{ fontSize: "17px" }}>{convertSQLDateToUserDate(latestHealthCheckCampaign.startExaminationDate)}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell sx={{ fontSize: "17px" }}>End Date</TableCell>
-                  <TableCell sx={{ fontSize: "17px" }}>{latestHealthCheckCampaign.endExaminationDate}</TableCell>
+                  <TableCell sx={{ fontSize: "17px" }}>{convertSQLDateToUserDate(latestHealthCheckCampaign.endExaminationDate)}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell sx={{ fontSize: "17px" }}>Description</TableCell>
