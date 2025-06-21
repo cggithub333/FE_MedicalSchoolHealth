@@ -15,23 +15,89 @@
                 {
                     "disease_id": 3,
                     "name": "Dị tật bẩm sinh cơ quan sinh dục"
-                }
-            ]
-        },
-        {
-            "pupil_id": "PP0002",
-            "campaign_id": 1,
-            "sensitive_disease": [
+                },
                 {
-                    "disease_id": 1,
+                    "disease_id": 4,
+                    "name": "Chiều cao"
+                },
+                {
+                    "disease_id": 5,
+                    "name": "Cân nặng"
+                },
+                {
+                    "disease_id": 6,
+                    "name": "BMI"
+                },
+                {
+                    "disease_id": 7,
+                    "name": "Thị lực mắt phải"
+                },
+                {
+                    "disease_id": 8,
+                    "name": "Thị lực mắt trái"
+                },
+                {
+                    "disease_id": 9,
+                    "name": "Nghe"
+                },
+                {
+                    "disease_id": 10,
+                    "name": "Tai mũi họng"
+                },
+                {
+                    "disease_id": 11,
+                    "name": "Răng sâu"
+                },
+                {
+                    "disease_id": 12,
+                    "name": "Viêm lợi"
+                },
+                {
+                    "disease_id": 13,
+                    "name": "Vệ sinh răng miệng"
+                },
+                {
+                    "disease_id": 14,
+                    "name": "Bệnh ngoài da"
+                },
+                {
+                    "disease_id": 15,
+                    "name": "Nhiễm trùng"
+                },
+                {
+                    "disease_id": 16,
+                    "name": "Ghẻ chàm"
+                },
+                {
+                    "disease_id": 17,
+                    "name": "Nhịp tim"
+                },
+                {
+                    "disease_id": 18,
+                    "name": "Nhịp thở"
+                },
+                {
+                    "disease_id": 19,
+                    "name": "Âm phổi"
+                },
+                {
+                    "disease_id": 20,
+                    "name": "Bệnh tim bẩm sinh"
+                },
+                {
+                    "disease_id": 21,
+                    "name": "Tiền sử bệnh lý"
+                },
+                {
+                    "disease_id": 22,
                     "name": "Quan sát cơ quan sinh dục ngoài"
                 },
                 {
-                    "disease_id": 2,
-                    "name": "Vệ sinh cơ quan sinh dục:"
+                    "disease_id": 23,
+                    "name": "Vệ sinh cơ quan sinh dục"
                 },
                 {
-                    "disease_id": 3,
+                    "disease_id": 24,
                     "name": "Dị tật bẩm sinh cơ quan sinh dục"
                 }
             ]

@@ -1,111 +1,4 @@
 {
-    "healthcheck_disease": [
-        {
-            "disease_id": 1,
-            "name": "Chiều cao",
-            "campaign_id": 1
-        },
-        {
-            "disease_id": 2,
-            "name": "Cân nặng",
-            "campaign_id": 1
-        },
-        {
-            "disease_id": 3,
-            "name": "BMI",
-            "campaign_id": 1
-        },
-        {
-            "disease_id": 4,
-            "name": "Thị lực mắt phải",
-            "campaign_id": 1
-        },
-        {
-            "disease_id": 5,
-            "name": "Thị lực mắt trái",
-            "campaign_id": 1
-        },
-        {
-            "disease_id": 6,
-            "name": "Nghe",
-            "campaign_id": 1
-        },
-        {
-            "disease_id": 7,
-            "name": "Tai mũi họng",
-            "campaign_id": 1
-        },
-        {
-            "disease_id": 8,
-            "name": "Răng sâu",
-            "campaign_id": 1
-        },
-        {
-            "disease_id": 9,
-            "name": "Viêm lợi",
-            "campaign_id": 1
-        },
-        {
-            "disease_id": 10,
-            "name": "Vệ sinh răng miệng",
-            "campaign_id": 1
-        },
-        {
-            "disease_id": 11,
-            "name": "Bệnh ngoài da",
-            "campaign_id": 1
-        },
-        {
-            "disease_id": 12,
-            "name": "Nhiễm trùng",
-            "campaign_id": 1
-        },
-        {
-            "disease_id": 13,
-            "name": "Ghẻ chàm",
-            "campaign_id": 1
-        },
-        {
-            "disease_id": 14,
-            "name": "Nhịp tim",
-            "campaign_id": 1
-        },
-        {
-            "disease_id": 15,
-            "name": "Nhịp thở",
-            "campaign_id": 1
-        },
-        {
-            "disease_id": 16,
-            "name": "Âm phổi",
-            "campaign_id": 1
-        },
-        {
-            "disease_id": 17,
-            "name": "Bệnh tim bẩm sinh",
-            "campaign_id": 1
-        },
-        {
-            "disease_id": 18,
-            "name": "Tiền sử bệnh lý",
-            "campaign_id": 1
-        },
-        {
-            "disease_id": 19,
-            "name": "Quan sát cơ quan sinh dục ngoài",
-            "campaign_id": 1
-        },
-        {
-            "disease_id": 20,
-            "name": "Vệ sinh cơ quan sinh dục",
-            "campaign_id": 1
-        },
-        {
-            "disease_id": 21,
-            "name": "Dị tật bẩm sinh cơ quan sinh dục",
-            "campaign_id": 1
-        }
-    ],
     "sensitive_disease": [
         {
             "pupil_id": "PP0001",
@@ -122,23 +15,89 @@
                 {
                     "disease_id": 3,
                     "name": "Dị tật bẩm sinh cơ quan sinh dục"
-                }
-            ]
-        },
-        {
-            "pupil_id": "PP0002",
-            "campaign_id": 1,
-            "sensitive_disease": [
+                },
                 {
-                    "disease_id": 1,
+                    "disease_id": 4,
+                    "name": "Chiều cao"
+                },
+                {
+                    "disease_id": 5,
+                    "name": "Cân nặng"
+                },
+                {
+                    "disease_id": 6,
+                    "name": "BMI"
+                },
+                {
+                    "disease_id": 7,
+                    "name": "Thị lực mắt phải"
+                },
+                {
+                    "disease_id": 8,
+                    "name": "Thị lực mắt trái"
+                },
+                {
+                    "disease_id": 9,
+                    "name": "Nghe"
+                },
+                {
+                    "disease_id": 10,
+                    "name": "Tai mũi họng"
+                },
+                {
+                    "disease_id": 11,
+                    "name": "Răng sâu"
+                },
+                {
+                    "disease_id": 12,
+                    "name": "Viêm lợi"
+                },
+                {
+                    "disease_id": 13,
+                    "name": "Vệ sinh răng miệng"
+                },
+                {
+                    "disease_id": 14,
+                    "name": "Bệnh ngoài da"
+                },
+                {
+                    "disease_id": 15,
+                    "name": "Nhiễm trùng"
+                },
+                {
+                    "disease_id": 16,
+                    "name": "Ghẻ chàm"
+                },
+                {
+                    "disease_id": 17,
+                    "name": "Nhịp tim"
+                },
+                {
+                    "disease_id": 18,
+                    "name": "Nhịp thở"
+                },
+                {
+                    "disease_id": 19,
+                    "name": "Âm phổi"
+                },
+                {
+                    "disease_id": 20,
+                    "name": "Bệnh tim bẩm sinh"
+                },
+                {
+                    "disease_id": 21,
+                    "name": "Tiền sử bệnh lý"
+                },
+                {
+                    "disease_id": 22,
                     "name": "Quan sát cơ quan sinh dục ngoài"
                 },
                 {
-                    "disease_id": 2,
-                    "name": "Vệ sinh cơ quan sinh dục:"
+                    "disease_id": 23,
+                    "name": "Vệ sinh cơ quan sinh dục"
                 },
                 {
-                    "disease_id": 3,
+                    "disease_id": 24,
                     "name": "Dị tật bẩm sinh cơ quan sinh dục"
                 }
             ]

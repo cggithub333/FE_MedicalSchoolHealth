@@ -12,7 +12,7 @@ export const fetchPupilsByGrade = async (grade) => {
         return PupilsByGrade;
 
     } catch (error) {
-        console.error("Error at parentHelpers.js: " + error);
+        console.error("Error : " + error);
         throw error; // Re-throw the error to handle it in the component
     }
 };
