@@ -16,7 +16,15 @@ import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
+import { Link } from 'react-router-dom';
+
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import HealthCheckImage from '../../../assets/images/health_check.jpg';
+
+import { styleActionBtn, styleTitleDetail } from './style-card';
+
+import ManagerAvatarImg from '../../../assets/images/manager_avatar.jpg';
+import { Grid, TableBody, TableContainer, TableHead, TableRow, Table, TableCell } from '@mui/material';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -42,19 +50,22 @@ const ExpandMore = styled((props) => {
   ],
 }));
 
-export default function HealthCheckCampaignCard() {
+export default function HealthCheckCampaignCard({ latestHealthCheckCampaign, isLoading }) {
+
   const [expanded, setExpanded] = React.useState(false);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
+  if (isLoading) {
+    return <>Loading health check campaign ...</>
+  }
   return (
     <Card sx={{ maxWidth: 800, boxShadow: "0px 2px 3px 3px rgba(0, 0, 0, 0.2)"}}>
       {/* <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            R
           </Avatar>
         }
         action={
@@ -62,7 +73,7 @@ export default function HealthCheckCampaignCard() {
             <MoreVertIcon />
           </IconButton>
         }
-        title="Shrimp and Chorizo Paella"
+        title="Manager"
         subheader="September 14, 2016"
       /> */}
       <CardMedia
@@ -72,55 +83,71 @@ export default function HealthCheckCampaignCard() {
         alt="Paella dish"
       />
       <CardContent>
-        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          This impressive paella is a perfect party dish and a fun meal to cook
-          together with your guests. Add 1 cup of frozen peas along with the mussels,
-          if you like.
+        <Typography variant="body2" sx={{ color: 'text.secondary', fontFamily: "Open Sans", fontSize: "17px" }}>
+          <span style={{ marginRight: "15px"}}></span>This campaign is designed to promote early detection and prevention by offering free health screenings and consultations to the community. 
+          By participating, you'll gain valuable insights into your well-being and receive personalized advice from healthcare professionals. 
+          Take this opportunity to prioritize your health and build a stronger, healthier future."
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label="share">
+        <Link to={`../schedule`}>
+          <IconButton aria-label="add to favorites"
+            sx={styleActionBtn}>
+            <CalendarMonthIcon />
+            <span style={{ fontSize: "18px", marginLeft: "10px" }}>Schedule</span>
+          </IconButton>
+        </Link>
+        {/* <IconButton aria-label="share">
           <ShareIcon />
-        </IconButton>
+        </IconButton> */}
         <ExpandMore
           expand={expanded}
           onClick={handleExpandClick}
           aria-expanded={expanded}
           aria-label="show more"
+          sx={styleActionBtn}
         >
+          {
+            !expanded ? 
+              <span style={{ fontSize: "16px"}}>Show details</span> : 
+              <span style={{ transform: "rotate(180deg)", fontSize: "16px" }}>Hide details</span> 
+          }
           <ExpandMoreIcon />
+
         </ExpandMore>
       </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
+      <Collapse in={expanded} timeout="auto" unmountOnExit sx={{ fontFamily: "Open Sans" }}>
         <CardContent>
-          <Typography sx={{ marginBottom: 2 }}>Method:</Typography>
-          <Typography sx={{ marginBottom: 2 }}>
-            Heat 1/2 cup of the broth in a pot until simmering, add saffron and set
-            aside for 10 minutes.
+          <Typography sx={styleTitleDetail}
+          >
+            Health check campaign detail
           </Typography>
-          <Typography sx={{ marginBottom: 2 }}>
-            Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet over
-            medium-high heat. Add chicken, shrimp and chorizo, and cook, stirring
-            occasionally until lightly browned, 6 to 8 minutes. Transfer shrimp to a
-            large plate and set aside, leaving chicken and chorizo in the pan. Add
-            pimentón, bay leaves, garlic, tomatoes, onion, salt and pepper, and cook,
-            stirring often until thickened and fragrant, about 10 minutes. Add
-            saffron broth and remaining 4 1/2 cups chicken broth; bring to a boil.
-          </Typography>
-          <Typography sx={{ marginBottom: 2 }}>
-            Add rice and stir very gently to distribute. Top with artichokes and
-            peppers, and cook without stirring, until most of the liquid is absorbed,
-            15 to 18 minutes. Reduce heat to medium-low, add reserved shrimp and
-            mussels, tucking them down into the rice, and cook again without
-            stirring, until mussels have opened and rice is just tender, 5 to 7
-            minutes more. (Discard any mussels that don&apos;t open.)
-          </Typography>
-          <Typography>
-            Set aside off of the heat to let rest for 10 minutes, and then serve.
-          </Typography>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableCell sx={{ fontSize: "19px" }}>Title</TableCell>
+                <TableCell sx={{ fontSize: "19px" }}>Description</TableCell>
+              </TableHead>
+              <TableBody>
+                <TableRow>
+                  <TableCell sx={{ fontSize: "17px" }}>Address</TableCell>
+                  <TableCell sx={{ fontSize: "17px" }}>{latestHealthCheckCampaign.address}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell sx={{ fontSize: "17px" }}>Start Date</TableCell>
+                  <TableCell sx={{ fontSize: "17px" }}>{latestHealthCheckCampaign.startExaminationDate}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell sx={{ fontSize: "17px" }}>End Date</TableCell>
+                  <TableCell sx={{ fontSize: "17px" }}>{latestHealthCheckCampaign.endExaminationDate}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell sx={{ fontSize: "17px" }}>Description</TableCell>
+                  <TableCell sx={{ fontSize: "17px" }}>{latestHealthCheckCampaign.description}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
         </CardContent>
       </Collapse>
     </Card>

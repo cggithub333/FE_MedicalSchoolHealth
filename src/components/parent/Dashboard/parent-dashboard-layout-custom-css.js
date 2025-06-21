@@ -6,6 +6,7 @@ export const stylePupilBtn = (pupilGender) => {
     borderRadius: "5px",
     padding: "2px",
     boxShadow: "0px 2px 2px 2px rgba(0, 0, 0, 0.1)",
+    transition: "all 0.5s ease",
     "&:hover": {
       background: "#e7ef88"
     }

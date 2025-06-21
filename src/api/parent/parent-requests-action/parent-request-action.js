@@ -11,9 +11,9 @@ export const fetchLatestHealthCheckCampaign = async () => {
     if (response.status === false)
       throw new Error("parent-request-actions.js: Can't fetch health check campaign!");
 
-    const lastestHealthCheckCampaign = response.data[0];
+    const latestHealthCheckCampaign = response.data[0];
 
-    return lastestHealthCheckCampaign;
+    return latestHealthCheckCampaign;
   
   } catch(error) {
     console.error("parent-request-actions.js: Can't fetch health check campaign!");

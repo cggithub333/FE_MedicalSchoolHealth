@@ -1,11 +1,16 @@
+import { Grid } from '@mui/material';
+
 import HealthCheckCampaignCard from '../../../components/parent/HealthCheckCampaignCard/Card';
 
 import Breadcrumb from '../../../components/magic/Breadcrumb/CustomBreadcrumb';
 import CustomTittle from '../../../components/magic/CustomTittle/CustomTitle';
 
-import { Grid } from '@mui/material';
+
+import useLatestHealthCheckCampaign from '../../../hooks/parent/useLatestHealthCheckCampaign';
 
 const Campaigns = () => {
+
+  const { latestHealthCheckCampaign, isLoading } = useLatestHealthCheckCampaign();
 
   return (
     <div>
@@ -19,11 +24,28 @@ const Campaigns = () => {
           <CustomTittle title={"Health Check Campaign"}/>
         </Grid>
       </Grid>
-      <Grid container justifyContent={'center'} sx={styleCardWrapper}>
-        <Grid item sx={{ xs: 12 }}>
-          <HealthCheckCampaignCard />
-        </Grid>
-      </Grid>
+      {
+        latestHealthCheckCampaign ? 
+          (
+            <Grid container justifyContent={'center'} sx={styleCardWrapper}>
+              <Grid item sx={{ xs: 12 }}>
+                <HealthCheckCampaignCard  latestHealthCheckCampaign={latestHealthCheckCampaign}
+                                          isLoading={isLoading}
+                />
+              </Grid>
+            </Grid>
+          )
+          :
+          (
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginTop: "30px",
+              fontSize: "20px",
+              fontStyle: "italic"
+            }}>There is no ongoing health check campaign!</div>
+          )
+      }
     </div>
   )
 }

@@ -4,7 +4,7 @@ import { fetchLatestHealthCheckCampaign } from '../../api/parent/parent-requests
 
 const useLatestHealthCheckCampaign = () => {
 
-  const [ latestHealthCheckCampaign, setLastestHealthCheckCampaign ] = useState([]);
+  const [ latestHealthCheckCampaign, setLatestHealthCheckCampaign ] = useState([]);
   const [ isLoading, setIsLoading ] = useState(false);
 
   useEffect(() => {
@@ -14,8 +14,10 @@ const useLatestHealthCheckCampaign = () => {
       setIsLoading(true);
       try {
         const latestCampaign = await fetchLatestHealthCheckCampaign();
+
+        // console.log("hihi - " + latestCampaign.address);
         
-        setLastestHealthCheckCampaign(latestCampaign);
+        setLatestHealthCheckCampaign(latestCampaign);
       
       } catch(error) {
         console.error("useLatestHealthCheckCampaign.js: " + error);
