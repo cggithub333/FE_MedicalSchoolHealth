@@ -1,5 +1,6 @@
 import Request from "../../request";
 
-export const getAllPupils = async () => Request.get('pupils');
+
+export const getPupilsByGrade = async (grade) => Request.get(`pupils/?Grade=${grade}`);
 
 
