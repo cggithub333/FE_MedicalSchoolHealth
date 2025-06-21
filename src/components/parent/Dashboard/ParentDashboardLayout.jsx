@@ -34,8 +34,11 @@ import usePupils from '../../../hooks/parent/usePupils';
 // encode/decode service:
 import { Base64 } from 'js-base64';
 
+import { stylePupilBtn, styleChildItem } from './parent-dashboard-layout-custom-css.js';
+
 function ToolbarActionsUtility() {
 
+  // load pupil information from localStorage:
   const { pupils, isLoading } = usePupils();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -50,6 +53,7 @@ function ToolbarActionsUtility() {
     // save information of the child to localStorage:
     window.localStorage.setItem("pupilId", child.pupilId);
     window.localStorage.setItem("pupilName", `${child.lastName} ${child.firstName}`);
+    window.localStorage.setItem("pupilGender", `${child.gender}`);
     const encodedStudentInfor = Base64.encode(JSON.stringify(child));
     window.localStorage.setItem("pupilInfor", encodedStudentInfor);
     handleMenuClose();
@@ -57,6 +61,23 @@ function ToolbarActionsUtility() {
 
   return (
     <Stack direction="row" alignItems="center" spacing={3} sx={{ flexGrow: 1 }}>
+
+      {/* show current pupil */}
+      <IconButton
+        sx={stylePupilBtn(window.localStorage.getItem("pupilGender"))}
+      >
+        {window.localStorage.getItem("pupilGender") && 
+          <span style={{ paddingLeft: "10px" }}>
+            {window.localStorage.getItem("pupilGender") === "M" ? <MaleFaceIcon/> : <FemaleFaceIcon/>}
+          </span>
+        }
+        {window.localStorage.getItem("pupilName") && window.localStorage.getItem("pupilGender") &&
+          <span style={{ fontSize: "20px", marginLeft: "10px", padding: "2px", paddingRight: "10px" }}>
+            {window.localStorage.getItem("pupilName")}
+          </span>
+        }
+      </IconButton>
+
       {/* search bar */}
       <>
         <Tooltip title="Search" enterDelay={1000}>
@@ -95,8 +116,9 @@ function ToolbarActionsUtility() {
         sx={{ mr: 1, position: 'relative' }}
         onClick={handleMenuOpen}
       >
-        <ChildIcon fontSize={"20px"} />
+        <ChildIcon fontSize={"23px"} />
       </IconButton>
+
       <Menu
         anchorEl={anchorEl}
         open={open}
@@ -114,13 +136,7 @@ function ToolbarActionsUtility() {
             const isInStorage = (child && child.pupilId && storedPupilId && (child.pupilId === storedPupilId));
 
             return (
-              <MenuItem sx = {{
-                          background: (isInStorage) ? "#1565c0" : "#fff",
-                          color: (isInStorage) ? "#f7c27d" : "#000",
-                          display: "flex",
-                          gap: "10px",
-                          alignItems: "center"
-                        }}
+              <MenuItem sx={styleChildItem(isInStorage)}
                         key={child.pupilId} 
                         onClick={() => handleChildSelect(child)}>
                 <span style={{ marginRight: 8 }}>
@@ -151,9 +167,9 @@ function SidebarFooter({ mini }) {
   return (
     <Typography
       variant="caption"
-      sx={{ m: 1, whiteSpace: 'nowrap', overflow: 'hidden' }}
+      sx={{ m: 1, whiteSpace: 'nowrap', overflow: 'hidden', marginLeft: "20px" }}
     >
-      {mini ? '© MUI' : `© ${new Date().getFullYear()} Made with love by MUI`}
+      {mini ? '© MUI' : `© ${new Date().getFullYear()} Healthcare System`}
     </Typography>
   );
 }

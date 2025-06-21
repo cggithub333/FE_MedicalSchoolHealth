@@ -11,7 +11,7 @@ export const fetchAllPupils = async () => {
       throw new Error("pupilRequestAction.js: Can't fetch pupils!");
 
     // no errors:
-    return resp.data;
+    return await resp.data;
 
   } catch(error) {
     console.error("pupilRequestAction.js: Can't fetch pupils!");

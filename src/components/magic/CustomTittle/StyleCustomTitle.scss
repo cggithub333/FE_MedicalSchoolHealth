@@ -1,0 +1,58 @@
+
+// link to resource: https://codepen.io/vedadesigns/pen/GPxYZg;
+
+/* === BASE HEADING === */ 
+
+.main-title {
+  position: relative;
+  padding: 0;
+  margin: 0;
+  font-family: "Raleway", sans-serif;
+  font-weight: 300;
+  font-size: 20px;
+  color: #080808;
+  -webkit-transition: all 0.4s ease 0s;
+  -o-transition: all 0.4s ease 0s;
+  transition: all 0.4s ease 0s;
+}
+
+.main-title span {
+  display: block;
+  font-size: 0.5em;
+  line-height: 1.3;
+}
+.main-title em {
+  font-style: normal;
+  font-weight: 600;
+}
+
+//* === * //
+
+/* === HEADING STYLE #3 === */
+.custom-title h1 {
+  font-size: 25px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.5em;
+  padding-bottom: 15px;
+  position: relative;
+}
+.custom-title h1:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 100px;
+  background-color: #111;
+}
+.custom-title h1:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 2px;
+  height: 1px;
+  width: 95%;
+  max-width: 255px;
+  background-color: #333;
+}
