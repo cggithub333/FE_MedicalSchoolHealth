@@ -15,12 +15,12 @@ const Campaigns = () => {
   return (
     <div>
       <Grid container>
-        <Grid item sx={{ xs: 6 }}>
+        <Grid item size={{ xs: 6 }}>
           <Breadcrumb breadcrumbPairs={breadcrumbPairs}/>
         </Grid>
       </Grid>
       <Grid container>
-        <Grid item sx={{ xs: 6, marginLeft: "20px", marginTop: "25px" }}>
+        <Grid item sx={{ marginLeft: "20px", marginTop: "25px" }} size={{ xs: 6}}>
           <CustomTittle title={"Health Check Campaign"}/>
         </Grid>
       </Grid>
