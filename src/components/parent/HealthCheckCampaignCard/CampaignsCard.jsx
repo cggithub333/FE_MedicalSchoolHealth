@@ -17,16 +17,11 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 import { Link } from 'react-router-dom';
-
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import HealthCheckImage from '../../../assets/images/health_check.jpg';
-
-import { styleActionBtn, styleTitleDetail } from './style-card';
-
+import { styleActionBtn, styleTitleDetail } from './style-campaigns-card';
 import ManagerAvatarImg from '../../../assets/images/manager_avatar.jpg';
 import { Grid, TableBody, TableContainer, TableHead, TableRow, Table, TableCell } from '@mui/material';
-
-import { convertSQLDateToUserDate } from '../../../utils/DateUtils/DateFormatter';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -137,11 +132,11 @@ export default function HealthCheckCampaignCard({ latestHealthCheckCampaign, isL
                 </TableRow>
                 <TableRow>
                   <TableCell sx={{ fontSize: "17px" }}>Start Date</TableCell>
-                  <TableCell sx={{ fontSize: "17px" }}>{convertSQLDateToUserDate(latestHealthCheckCampaign.startExaminationDate)}</TableCell>
+                  <TableCell sx={{ fontSize: "17px" }}>{(latestHealthCheckCampaign.startExaminationDate)}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell sx={{ fontSize: "17px" }}>End Date</TableCell>
-                  <TableCell sx={{ fontSize: "17px" }}>{convertSQLDateToUserDate(latestHealthCheckCampaign.endExaminationDate)}</TableCell>
+                  <TableCell sx={{ fontSize: "17px" }}>{(latestHealthCheckCampaign.endExaminationDate)}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell sx={{ fontSize: "17px" }}>Description</TableCell>

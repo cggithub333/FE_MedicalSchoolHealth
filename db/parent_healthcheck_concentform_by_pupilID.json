@@ -1,6 +1,8 @@
 {
-  "healthCheckConsentForm": [
+  "surveys": [
     {
+      "pupilId": "PP0001",
+
       "healthCheckCampaignId": 301,
       "healthCheckCampaignAddress": "ABC School",
       "startExaminationDate": "2025-07-28",

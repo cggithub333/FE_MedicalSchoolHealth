@@ -1,6 +1,6 @@
 import { Grid } from '@mui/material';
 
-import HealthCheckCampaignCard from '../../../components/parent/HealthCheckCampaignCard/Card';
+import HealthCheckCampaignCard from '../../../components/parent/HealthCheckCampaignCard/CampaignsCard';
 
 import Breadcrumb from '../../../components/magic/Breadcrumb/CustomBreadcrumb';
 import CustomTittle from '../../../components/magic/CustomTittle/CustomTitle';
