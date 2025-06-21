@@ -30,13 +30,9 @@ const Campaign = () => {
         return () => cancelAnimationFrame(animationRef.current);
     }, []);
 
-    const handleBoxClick = () => {
-        navigate('campaigns');
-    };
 
     return (
         <Box
-            onClick={handleBoxClick}
             sx={{
                 backgroundColor: '#f5f5f5',
                 borderRadius: 1,
