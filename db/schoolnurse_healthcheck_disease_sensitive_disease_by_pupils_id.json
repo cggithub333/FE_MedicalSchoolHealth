@@ -6,18 +6,15 @@
             "sensitive_disease": [
                 {
                     "disease_id": 1,
-                    "name": "Quan sát cơ quan sinh dục ngoài",
-                    "status": "Approved"
+                    "name": "Quan sát cơ quan sinh dục ngoài"
                 },
                 {
                     "disease_id": 2,
-                    "name": "Vệ sinh cơ quan sinh dục:",
-                    "status": "Approved"
+                    "name": "Vệ sinh cơ quan sinh dục:"
                 },
                 {
                     "disease_id": 3,
-                    "name": "Dị tật bẩm sinh cơ quan sinh dục",
-                    "status": "Rejected"
+                    "name": "Dị tật bẩm sinh cơ quan sinh dục"
                 }
             ]
         },
@@ -27,18 +24,15 @@
             "sensitive_disease": [
                 {
                     "disease_id": 1,
-                    "name": "Quan sát cơ quan sinh dục ngoài",
-                    "status": "Rejected"
+                    "name": "Quan sát cơ quan sinh dục ngoài"
                 },
                 {
                     "disease_id": 2,
-                    "name": "Vệ sinh cơ quan sinh dục:",
-                    "status": "Approved"
+                    "name": "Vệ sinh cơ quan sinh dục:"
                 },
                 {
                     "disease_id": 3,
-                    "name": "Dị tật bẩm sinh cơ quan sinh dục",
-                    "status": "Rejected"
+                    "name": "Dị tật bẩm sinh cơ quan sinh dục"
                 }
             ]
         }
