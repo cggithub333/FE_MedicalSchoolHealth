@@ -1,3 +1,3 @@
 import request from "../../request";
 
-export const getNewestCampaignRequest = async () => request.get('newestcampaign');
+export const getNewestCampaign = async () => request.get('newestcampaign');

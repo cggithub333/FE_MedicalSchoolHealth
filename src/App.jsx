@@ -8,13 +8,22 @@ import AdminDashboardRoutes from "./components/admin/AdminDashboardRoutes";
 import ManagerDashboardRoutes from "./components/manager/ManagerDashboardRoutes";
 import SchoolNurseDashboardRoutes from "./components/schoolnurse/SchoolNurseDashboardRoutes";
 import ParentDashboardRoutes from "./components/parent/ParentDashboardRoutes";
-import PupilsByGradeList from "./hooks/schoolnurse/TestHook"
+
 import BuildingImage from './assets/images/building_worker.jpg';
 
 function App() {
     return (
         <>
-            <PupilsByGradeList />
+            <Router>
+                <Routes>
+                    <Route path="/homepage" element={<Homepage />} />
+                    <Route path="/admin/*" element={<AdminDashboardRoutes />} />
+                    <Route path="/manager/*" element={<ManagerDashboardRoutes />} />
+                    <Route path="/schoolnurse/*" element={<SchoolNurseDashboardRoutes />} />
+                    <Route path="/parent/*" element={<ParentDashboardRoutes />} />
+                    <Route path="/*" element={<BuildingPage />} />
+                </Routes>
+            </Router>
         </>
     );
 }
