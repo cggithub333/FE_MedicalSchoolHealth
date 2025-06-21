@@ -1,22 +1,24 @@
-[
-    {
-        "pupilId": "PP0001",
-        "dateOfBirth": "2017-09-01",
-        "gender": "Male",
-        "lastName": "Nguyen",
-        "firstName": "An",
-        "avatar": "avatar.png",
-        "isActive": true,
-        "Grade": 1
-    },
-    {
-        "pupilId": "PP0002",
-        "dateOfBirth": "2017-10-10",
-        "gender": "Female",
-        "lastName": "Tran",
-        "firstName": "Hong",
-        "avatar": "girl.svg",
-        "isActive": true,
-        "Grade": 1
-    }
-]
+{
+    "pupils": [
+        {
+            "pupilId": "PP0001",
+            "dateOfBirth": "2017-09-01",
+            "gender": "Male",
+            "lastName": "Nguyen",
+            "firstName": "An",
+            "avatar": "avatar.png",
+            "isActive": true,
+            "Grade": 1
+        },
+        {
+            "pupilId": "PP0002",
+            "dateOfBirth": "2017-10-10",
+            "gender": "Female",
+            "lastName": "Tran",
+            "firstName": "Hong",
+            "avatar": "girl.svg",
+            "isActive": true,
+            "Grade": 1
+        }
+    ]
+}
