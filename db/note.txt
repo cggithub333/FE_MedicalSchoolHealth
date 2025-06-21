@@ -1,0 +1,10 @@
++ parent_healthcheck_concentform_by_pupilID.json: 
+(healthCheckConsentForm + healthCheckCampaign + healthCheckDisease + disease)
+
++ parent_common_pupils.json
+(pupils + pupil_parent + user)
+
++ parent_healthcheck_current_campaign_by_pupilID.json: từ pupil, lấy thông tin của healthcheck gần nhất;
+(pupils + pupil_concent_form + healthCheckCampaign);
+
++ parent_healthcheck_schedule_by_pupilID.json: 

@@ -30,5 +30,16 @@
       "avatar": "avatar3.png",
       "isActive": false
     }
+  ],
+  "healthCheckConsentForm": [
+    {
+      "id": 1,
+      "pupilId": 101,
+      "healthCheckHistoryId": 201,
+      "healthCheckCampaignId": 301,
+      "schoolYear": 2024,
+      "isActive": true,
+      "status": "Checked"
+    }
   ]
 }

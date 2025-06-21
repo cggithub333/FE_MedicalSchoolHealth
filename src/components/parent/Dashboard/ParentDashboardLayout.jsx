@@ -31,6 +31,9 @@ import StarIcon from '@mui/icons-material/Star';
 // import custom hooks here..
 import usePupils from '../../../hooks/parent/usePupils';
 
+// encode/decode service:
+import { Base64 } from 'js-base64';
+
 function ToolbarActionsUtility() {
 
   const { pupils, isLoading } = usePupils();
@@ -47,7 +50,8 @@ function ToolbarActionsUtility() {
     // save information of the child to localStorage:
     window.localStorage.setItem("pupilId", child.pupilId);
     window.localStorage.setItem("pupilName", `${child.lastName} ${child.firstName}`);
-    window.localStorage.setItem("pupilInfor", JSON.stringify(child));
+    const encodedStudentInfor = Base64.encode(JSON.stringify(child));
+    window.localStorage.setItem("pupilInfor", encodedStudentInfor);
     handleMenuClose();
   };
 
