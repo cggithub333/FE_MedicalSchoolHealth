@@ -1,0 +1,46 @@
+{
+    "sensitive_disease": [
+        {
+            "pupil_id": "PP0001",
+            "campaign_id": 1,
+            "sensitive_disease": [
+                {
+                    "disease_id": 1,
+                    "name": "Quan sát cơ quan sinh dục ngoài",
+                    "status": "Approved"
+                },
+                {
+                    "disease_id": 2,
+                    "name": "Vệ sinh cơ quan sinh dục:",
+                    "status": "Approved"
+                },
+                {
+                    "disease_id": 3,
+                    "name": "Dị tật bẩm sinh cơ quan sinh dục",
+                    "status": "Rejected"
+                }
+            ]
+        },
+        {
+            "pupil_id": "PP0002",
+            "campaign_id": 1,
+            "sensitive_disease": [
+                {
+                    "disease_id": 1,
+                    "name": "Quan sát cơ quan sinh dục ngoài",
+                    "status": "Rejected"
+                },
+                {
+                    "disease_id": 2,
+                    "name": "Vệ sinh cơ quan sinh dục:",
+                    "status": "Approved"
+                },
+                {
+                    "disease_id": 3,
+                    "name": "Dị tật bẩm sinh cơ quan sinh dục",
+                    "status": "Rejected"
+                }
+            ]
+        }
+    ]
+}

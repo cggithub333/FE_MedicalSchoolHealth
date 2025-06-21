@@ -1,6 +1,6 @@
 // fetch API through an api url:
 
-import request from "./Request.js";
+import request from "./request.js";
 
 /* Traditional way of fetch API:
 const fetchAPI = async (apiUrl) => {
@@ -55,12 +55,12 @@ const fetchAPI = async (endpoints) => {
       data: response.data,
       status: response.status,
     }
-  
-  } catch(error) {
+
+  } catch (error) {
     if (error.code === "ECONNABORTED") {
-        console.error("Request timed out");
+      console.error("Request timed out");
     } else {
-        console.error("API error:", error.message);
+      console.error("API error:", error.message);
     }
     return {
       error: error.message,
@@ -78,12 +78,12 @@ const fetchResponse = async (syncCallbackRequest) => {
       data: response.data,
       status: response.status,
     }
-  
-  } catch(error) {
+
+  } catch (error) {
     if (error.code === "ECONNABORTED") {
-        console.error("Request timed out");
+      console.error("Request timed out");
     } else {
-        console.error("API error:", error.message);
+      console.error("API error:", error.message);
     }
     return {
       error: error.message,
