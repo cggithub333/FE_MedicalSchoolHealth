@@ -1,4 +1,39 @@
 {
+    "getallcampaign": [
+        {
+            "id": 1,
+            "address": "123 Main St, Cityville",
+            "startExaminationDate": "2023-07-01T08:00:00Z",
+            "endExaminationDate": "2023-07-03T17:00:00Z",
+            "deadlineDate": "2023-06-28T23:59:59Z",
+            "description": "Annual health check campaign for all students in Cityville district.",
+            "created_at": "2023-06-21T10:00:00Z",
+            "status": "Pending",
+            "isActive": true
+        },
+        {
+            "id": 2,
+            "address": "456 Elm St, Townsburg",
+            "startExaminationDate": "2024-08-10T08:00:00Z",
+            "endExaminationDate": "2024-08-12T17:00:00Z",
+            "deadlineDate": "2024-08-05T23:59:59Z",
+            "description": "Mid-year health check for Townsburg elementary schools.",
+            "created_at": "2024-07-15T09:30:00Z",
+            "status": "Scheduled",
+            "isActive": true
+        },
+        {
+            "id": 3,
+            "address": "789 Oak Ave, Villageton",
+            "startExaminationDate": "2025-09-15T08:00:00Z",
+            "endExaminationDate": "2025-09-17T17:00:00Z",
+            "deadlineDate": "2025-09-10T23:59:59Z",
+            "description": "Back-to-school health check for Villageton students.",
+            "created_at": "2025-08-20T11:00:00Z",
+            "status": "Upcoming",
+            "isActive": true
+        }
+    ],
     "sensitive_disease": [
         {
             "pupil_id": "PP0001",
@@ -105,7 +140,7 @@
     ],
     "newestcampaign": [
         {
-            "id": 1,
+            "id": 4,
             "address": "123 Main St, Cityville",
             "startExaminationDate": "2025-07-01T08:00:00Z",
             "endExaminationDate": "2025-07-03T17:00:00Z",

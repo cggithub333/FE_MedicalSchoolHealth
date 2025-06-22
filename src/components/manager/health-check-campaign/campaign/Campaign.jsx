@@ -1,119 +1,133 @@
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
-import CampaignIcon from '@mui/icons-material/Campaign';
-import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import img1 from '../../../../assets/images/1.jpg';
-import img2 from '../../../../assets/images/2.jpg';
-import img3 from '../../../../assets/images/3.jpg';
-import img4 from '../../../../assets/images/4.jpg';
-import img5 from '../../../../assets/images/5.jpg';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import CircularProgress from '@mui/material/CircularProgress';
+import { useAllCampaign } from '../../../../hooks/manager/useAllCampaign'
 import './Campaign.scss';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
 
-const Campaign = () => {
-    const textRef = useRef();    // Create a ref for the animated text element
-    const animationRef = useRef();    // Create a ref to store the animation frame id for cleanup
-    const navigate = useNavigate();    // React Router hook for navigation
-    const [currentIndex, setCurrentIndex] = useState(0);    // State for the current image index in the carousel
-    const cardRef = useRef();    // Ref for the campaign card (used for scroll reveal)
-    const [isVisible, setIsVisible] = useState(false);    // State to track if the card is visible in the viewport
-    const [fade, setFade] = useState(true);    // State to control the fade animation for image transitions
-    const images = [img1, img2, img3, img4, img5];
 
-    // Button labels for each image
-    const buttonLabelsNext = [
-        'Detail', // 1st image
-        'Goals',  // 2nd image
-        'TimeLine', // 3rd image
-        'Cooperation', // 4th image
-        'Cooperation' // 5th image (last)
-    ];
-    const buttonLabelsPrev = [
-        'Previous',
-        'Detail', // 1st image
-        'Goals',  // 2nd image
-        'TimeLine', // 3rd image
-        'Cooperation' // 5th image (last)
-    ];
+const AllCampaign = () => {
+    const { allCampaigns, isLoading, error } = useAllCampaign();
+    const [open, setOpen] = useState(false);
+    const [selectedCampaign, setSelectedCampaign] = useState(null);
 
-    // Handle click on the card to navigate to the campaign details page
-    useEffect(() => {
-        const text = textRef.current;
-        let pos = -100; // Start off-screen left
-        const end = 100; // End off-screen right
-        const speed = 0.15; // Lower is slower, smoother
+    const handleCardClick = (campaign) => {
+        setSelectedCampaign(campaign);
+        setOpen(true);
+    };
+    const handleClose = () => {
+        setOpen(false);
+        setSelectedCampaign(null);
+    };
 
-        const animate = () => {
-            pos += speed;
-            text.style.transform = `translateX(${pos}vw)`;
-            text.style.transition = 'transform 0.08s cubic-bezier(.4,0,.2,1)'; // Add smooth transition
-            if (pos < end) {
-                animationRef.current = requestAnimationFrame(animate);
-            } else {
-                // Reset and repeat
-                pos = -100;
-                animationRef.current = requestAnimationFrame(animate);
-            }
-        };
-        animationRef.current = requestAnimationFrame(animate);
-        return () => cancelAnimationFrame(animationRef.current);
-    }, []);
-
-    // Scroll reveal effect
-    useEffect(() => {
-        const observer = new window.IntersectionObserver(
-            ([entry]) => setIsVisible(entry.isIntersecting),
-            { threshold: 0.1 }
+    if (isLoading) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="300px">
+                <CircularProgress />
+            </Box>
         );
-        if (cardRef.current) observer.observe(cardRef.current);
-        return () => observer.disconnect();
-    }, []);
+    }
 
-    // Fade effect on image change
-    useEffect(() => {
-        setFade(false);
-        const timeout = setTimeout(() => setFade(true), 500);
-        return () => clearTimeout(timeout);
-    }, [currentIndex]);
+    if (error) {
+        return (
+            <Box color="error.main" textAlign="center" mt={4}>
+                Error: {error}
+            </Box>
+        );
+    }
 
-    const handleNext = () => {
-        setCurrentIndex((prev) => (prev + 1) % images.length);
-    };
-    const handlePrev = () => {
-        setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
-    };
+    if (!allCampaigns || allCampaigns.length === 0) {
+        return (
+            <Box textAlign="center" mt={4}>
+                No campaigns found.
+            </Box>
+        );
+    }
+
+    // If the data is wrapped in { getallcampaign: [...] }
+    const campaigns = allCampaigns.getallcampaign || allCampaigns;
 
     return (
-        <Box
-            ref={cardRef}
-            className={`campaign-card${!isVisible ? ' hidden' : ''}`}
-        >
-            <img
-                src={images[currentIndex]}
-                alt={`Health Check ${currentIndex + 1}`}
-                className={`campaign-image${fade ? ' fade' : ' not-fade'}`}
-            />
-            <div
-                ref={textRef}
-                className="campaign-title"
+        <Box p={3}>
+            <Typography variant="h4" mb={3} color="primary.main" fontWeight={700}>
+                Health Check Campaigns
+            </Typography>
+            <Box
+                display="flex"
+                flexWrap="wrap"
+                gap={3}
+                justifyContent="center"
+                className={open ? 'blurred-cards' : ''}
+                style={open ? { filter: 'blur(4px)', pointerEvents: 'none', userSelect: 'none' } : {}}
             >
-                Health Check Campaign - Welcome!
-            </div>
-            <Box className="campaign-controls" >
-                {/* Prev button on the left */}
-                <div>
-                    {currentIndex > 0 && (
-                        <button onClick={handlePrev} className="campaign-btn">{buttonLabelsPrev[currentIndex - 1]}</button>
-                    )}
-                </div>
-                {/* Next/Detail/Goals/Timeline/Cooperation button on the right */}
-                <div>
-                    {currentIndex < images.length - 1 && (
-                        <button onClick={handleNext} className="campaign-btn">{buttonLabelsNext[currentIndex]}</button>
-                    )}
-                </div>
+                {campaigns.map((campaign) => (
+                    <Card
+                        key={campaign.id}
+                        className="campaign-card"
+                        onClick={() => handleCardClick(campaign)}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        <CardContent>
+                            <Typography variant="h6" color="primary" gutterBottom>
+                                {campaign.description}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                <strong>Address:</strong> {campaign.address}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                <strong>Start:</strong> {new Date(campaign.startExaminationDate).toLocaleString()}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                <strong>End:</strong> {new Date(campaign.endExaminationDate).toLocaleString()}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                <strong>Deadline:</strong> {new Date(campaign.deadlineDate).toLocaleString()}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                <strong>Status:</strong> {campaign.status}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                <strong>Active:</strong> {campaign.isActive ? 'Yes' : 'No'}
+                            </Typography>
+                            <Typography variant="caption" color="text.disabled" display="block" mt={1}>
+                                Created at: {new Date(campaign.created_at).toLocaleString()}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                ))}
             </Box>
+            {/* Dialog for campaign details form */}
+            <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+                <DialogTitle>Campaign Details</DialogTitle>
+                <DialogContent>
+                    {selectedCampaign && (
+                        <Box component="form" sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+                            <Typography variant="body1"><strong>Description:</strong> {selectedCampaign.description}</Typography>
+                            <Typography variant="body2"><strong>Address:</strong> {selectedCampaign.address}</Typography>
+                            <Typography variant="body2"><strong>Start:</strong> {new Date(selectedCampaign.startExaminationDate).toLocaleString()}</Typography>
+                            <Typography variant="body2"><strong>End:</strong> {new Date(selectedCampaign.endExaminationDate).toLocaleString()}</Typography>
+                            <Typography variant="body2"><strong>Deadline:</strong> {new Date(selectedCampaign.deadlineDate).toLocaleString()}</Typography>
+                            <Typography variant="body2"><strong>Status:</strong> {selectedCampaign.status}</Typography>
+                            <Typography variant="body2"><strong>Active:</strong> {selectedCampaign.isActive ? 'Yes' : 'No'}</Typography>
+                            <Typography variant="caption" color="text.disabled" display="block" mt={1}>
+                                Created at: {new Date(selectedCampaign.created_at).toLocaleString()}
+                            </Typography>
+                        </Box>
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} variant="contained" color="primary">Close</Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
-}
+};
 
-export default Campaign;
+export default AllCampaign;

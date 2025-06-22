@@ -5,7 +5,7 @@
             "address": "123 Main St, Cityville",
             "startExaminationDate": "2025-07-01T08:00:00Z",
             "endExaminationDate": "2025-07-03T17:00:00Z",
-            "deadlineDate": "2025-06-28T23:59:59Z",
+            "deadlineDate": "2023-06-28T23:59:59Z",
             "description": "Annual health check campaign for all students in Cityville district.",
             "created_at": "2025-06-21T10:00:00Z",
             "status": "Pending",
@@ -18,7 +18,7 @@
             "endExaminationDate": "2025-08-12T17:00:00Z",
             "deadlineDate": "2025-08-05T23:59:59Z",
             "description": "Mid-year health check for Townsburg elementary schools.",
-            "created_at": "2025-07-15T09:30:00Z",
+            "created_at": "2024-07-15T09:30:00Z",
             "status": "Scheduled",
             "isActive": true
         },
