@@ -2,13 +2,12 @@
   "surveys": [
     {
       "pupilId": "PP0001",
-
+      "healthCheckConsentFormId": 28,
       "healthCheckCampaignId": 301,
       "healthCheckCampaignAddress": "ABC School",
       "startExaminationDate": "2025-07-28",
       "endExaminationDate": "2025-07-30",
       "deadlineDate": "2025-07-27",
-
       "schoolYear": 2024,
       "isActive": true,
       "healthCheckDisease": [
@@ -19,7 +18,7 @@
           "diseaseDescription": "Viral infection caused by human papillomavirus (HPV) affecting genital areas",
           "healthCheckConsentForm": 1,
           "note": "Genital warts - requires parental consent for examination",
-          "status": "Rejected",
+          "status": "Approved",
           "isSensitive": true,
           "isInjectedVaccin": false,
           "isActive": true

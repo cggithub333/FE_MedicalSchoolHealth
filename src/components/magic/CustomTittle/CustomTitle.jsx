@@ -4,8 +4,8 @@ import './StyleCustomTitle.scss';
 const CustomTittle = ({ title }) => {
   
   return (
-    <div class="custom-title">
-      <h1 class="main-title">{ title }</h1>
+    <div className="custom-title">
+      <h1 className="main-title">{ title }</h1>
     </div>
   );
 }

@@ -57,6 +57,7 @@ function ToolbarActionsUtility() {
     const encodedStudentInfor = Base64.encode(JSON.stringify(child));
     window.localStorage.setItem("pupilInfor", encodedStudentInfor);
     handleMenuClose();
+    location.reload();
   };
 
   return (

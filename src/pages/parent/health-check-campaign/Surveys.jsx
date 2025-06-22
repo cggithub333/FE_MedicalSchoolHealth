@@ -5,13 +5,12 @@ import Breadcrumbs from '../../../components/magic/Breadcrumb/CustomBreadcrumb';
 
 import useSurveyByPupilId from '../../../hooks/parent/useSurveyByPupilId';
 import chooseChildImg from '../../../assets/images/instruct_choose_child.png';
-import ReloadPageBtn from '../../../components/magic/ReloadPageBtn/ReloadPageBtn';
 
+import SurveysCard from '../../../components/parent/HealthCheckCampaignCard/SurveysCard';
 
 const Surveys = () => {
 
-  const { surveys, isLoading, chooseChild } = useSurveyByPupilId();
-  console.log(surveys);
+  const { survey, isLoading, chooseChild } = useSurveyByPupilId();
 
   return (
     <>
@@ -21,9 +20,8 @@ const Surveys = () => {
         </Grid>
       </Grid>
       <Grid container>
-        <Grid item sx={{ marginLeft: "20px", marginTop: "25px", display: "flex", justifyContent: "space-between" }} size={{ xs: 12 }}>
+        <Grid item sx={{ marginLeft: "20px", marginTop: "25px"}} size={{ xs: 12 }}>
           <CustomTittle title={"Health Check Surveys"} />
-          <span style={{ marginRight: "20px" }}><ReloadPageBtn /></span>
         </Grid>
       </Grid>
       {
@@ -43,6 +41,25 @@ const Surveys = () => {
           </div>
         )
       }
+      { 
+        // has survey or not;
+        !survey ? 
+          ( 
+            <div style={styleNotificationMssg}  >
+              There is no ongoing Survey for health check campaign
+              { (localStorage.getItem('pupilName')) && (
+                <span>(Pupil: `{localStorage.getItem('pupilName')}`)</span>
+              )}
+            </div>
+          ) 
+          : 
+          (
+            <div style={styleNotificationMssg}>
+              <SurveysCard survey={survey}/>
+            </div>
+          )
+      }
+
       <Grid container>
         
       </Grid>
