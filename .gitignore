@@ -23,3 +23,13 @@ dist-ssr
 *.sln
 *.sw?
 node_modules
+
+
+db/util_gather_jsons.sh
+db/util_merge_jsons.sh
+db/db.sh
+db/db.json
+db/db.sh
+db/note.txt
+
+db/target
