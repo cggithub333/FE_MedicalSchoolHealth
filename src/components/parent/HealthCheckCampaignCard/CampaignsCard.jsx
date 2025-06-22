@@ -121,10 +121,8 @@ export default function HealthCheckCampaignCard({ latestHealthCheckCampaign, isL
           </Typography>
           <TableContainer>
             <Table>
-              <TableHead>
                 <TableCell sx={{ fontSize: "19px" }}>Title</TableCell>
                 <TableCell sx={{ fontSize: "19px" }}>Description</TableCell>
-              </TableHead>
               <TableBody>
                 <TableRow>
                   <TableCell sx={{ fontSize: "17px" }}>Address</TableCell>

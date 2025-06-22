@@ -25,6 +25,7 @@ dist-ssr
 node_modules
 
 
+db/
 db/util_gather_jsons.sh
 db/util_merge_jsons.sh
 db/db.sh

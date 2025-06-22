@@ -13,6 +13,8 @@ export const fetchLatestHealthCheckCampaign = async () => {
 
     const latestHealthCheckCampaign = response.data[0];
 
+    console.log("(1) >>" + latestHealthCheckCampaign);
+
     return latestHealthCheckCampaign;
   
   } catch(error) {
