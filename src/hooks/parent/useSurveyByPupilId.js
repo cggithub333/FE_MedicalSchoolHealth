@@ -17,16 +17,11 @@ const savePupilInforToLocalStorage = (pupil) => {
 const useSurveyByPupilId = () => {
 
   // get pupilId from localStorage:
-  let pupilId = window.localStorage.getItem('pupilId');
+  let pupilId = window.localStorage.getItem('pupilId'); 
 
   if (!pupilId) {
-    // not existed, fetch first pupil in pupils list out;
-    const { pupils } = usePupils();
-    
-    if (!isLoading && pupils) {
-      const firstPupil = pupils[0];
-      pupilId = firstPupil.pupilId;
-      savePupilInforToLocalStorage(firstPupil);
+    return {
+      chooseChild: false // force to choose his/her child
     }
   }
 
@@ -57,6 +52,7 @@ const useSurveyByPupilId = () => {
   }, []);
 
   return {
+    chooseChild: true,
     survey: survey,
     isLoading: isLoading
   }
