@@ -41,19 +41,194 @@
             "deadlineDate": "2025-06-28T23:59:59Z",
             "description": "Annual health check campaign for all students in Cityville district.",
             "created_at": "2025-06-21T10:00:00Z",
-            "status": "Published",
+            "status": "Completed",
+            "isActive": true
+        }
+    ],
+    "getAllVaccinationCampaigns": [
+        {
+            "vaccinationCampaign": 1,
+            "campaignId": 101,
+            "vaccineId": 101,
+            "disease_id": 1,
+            "stopDate": "2025-07-01",
+            "startDate": "2025-06-20",
+            "endDate": "2025-06-30",
+            "notes": "Annual measles vaccination campaign for all grades.",
+            "status": "Completed",
             "isActive": true
         },
         {
-            "id": 5,
-            "address": "123 Main St, Chu City",
-            "startExaminationDate": "2026-07-01T08:00:00Z",
-            "endExaminationDate": "2026-07-03T17:00:00Z",
-            "deadlineDate": "2026-06-28T23:59:59Z",
-            "description": "Annual health check campaign for all students in Chu City.",
-            "created_at": "2026-06-21T10:00:00Z",
-            "status": "Pending",
+            "vaccinationCampaign": 2,
+            "campaignId": 102,
+            "vaccineId": 102,
+            "disease_id": 2,
+            "stopDate": "2025-08-01",
+            "startDate": "2025-07-15",
+            "endDate": "2025-07-25",
+            "notes": "Mumps vaccination campaign for grade 2.",
+            "status": "Completed",
             "isActive": true
+        },
+        {
+            "vaccinationCampaign": 3,
+            "campaignId": 103,
+            "vaccineId": 103,
+            "disease_id": 3,
+            "stopDate": "2025-09-01",
+            "startDate": "2025-08-10",
+            "endDate": "2025-08-20",
+            "notes": "Rubella vaccination campaign for grade 3.",
+            "status": "Completed",
+            "isActive": true
+        },
+        {
+            "vaccinationCampaign": 4,
+            "campaignId": 104,
+            "vaccineId": 104,
+            "disease_id": 4,
+            "stopDate": "2025-10-01",
+            "startDate": "2025-09-15",
+            "endDate": "2025-09-25",
+            "notes": "Hepatitis B vaccination campaign for grade 4.",
+            "status": "Completed",
+            "isActive": true
+        }
+    ],
+    "getPupilsApprovedByGrade": [
+        {
+            "pupilId": "PP00001",
+            "classId": 101,
+            "dateOfBirth": "2015-03-12",
+            "gender": "M",
+            "lastName": "Nguyen",
+            "firstName": "An",
+            "avatar": "1.jpg",
+            "isActive": true,
+            "consentFormId": 1001,
+            "campaignId": 101,
+            "vaccineId": 101,
+            "respondedAt": "2025-06-10T09:00:00",
+            "status": "Approved",
+            "Grade": 1
+        },
+        {
+            "pupilId": "PP00002",
+            "classId": 102,
+            "dateOfBirth": "2014-11-25",
+            "gender": "F",
+            "lastName": "Tran",
+            "firstName": "Binh",
+            "avatar": "2.jpg",
+            "isActive": true,
+            "consentFormId": 1002,
+            "campaignId": 101,
+            "vaccineId": 101,
+            "respondedAt": "2025-06-11T10:30:00",
+            "status": "Approved",
+            "Grade": 2
+        },
+        {
+            "pupilId": "PP00003",
+            "classId": 103,
+            "dateOfBirth": "2015-07-19",
+            "gender": "M",
+            "lastName": "Le",
+            "firstName": "Cuong",
+            "avatar": "3.jpg",
+            "isActive": true,
+            "consentFormId": 1003,
+            "campaignId": 101,
+            "vaccineId": 101,
+            "respondedAt": "2025-06-12T08:45:00",
+            "status": "Approved",
+            "Grade": 3
+        },
+        {
+            "pupilId": "PP00004",
+            "classId": 104,
+            "dateOfBirth": "2015-09-10",
+            "gender": "F",
+            "lastName": "Pham",
+            "firstName": "Dao",
+            "avatar": "4.jpg",
+            "isActive": true,
+            "consentFormId": 1004,
+            "campaignId": 101,
+            "vaccineId": 101,
+            "respondedAt": "2025-06-13T09:15:00",
+            "status": "Approved",
+            "Grade": 4
+        },
+        {
+            "pupilId": "PP00005",
+            "classId": 105,
+            "dateOfBirth": "2015-12-22",
+            "gender": "M",
+            "lastName": "Hoang",
+            "firstName": "Minh",
+            "avatar": "5.jpg",
+            "isActive": true,
+            "consentFormId": 1005,
+            "campaignId": 101,
+            "vaccineId": 101,
+            "respondedAt": "2025-06-14T10:00:00",
+            "status": "Approved",
+            "Grade": 5
+        }
+    ],
+    "VaccinationGetDisease": [
+        {
+            "disease_id": 1,
+            "name": "Measles",
+            "description": "A highly contagious viral disease causing fever and rash.",
+            "isInjectedVaccine": true,
+            "doseQuantity": 2
+        },
+        {
+            "disease_id": 2,
+            "name": "Mumps",
+            "description": "A viral infection that affects the salivary glands.",
+            "isInjectedVaccine": true,
+            "doseQuantity": 2
+        },
+        {
+            "disease_id": 3,
+            "name": "Rubella",
+            "description": "A contagious viral infection best known by its distinctive red rash.",
+            "isInjectedVaccine": true,
+            "doseQuantity": 1
+        },
+        {
+            "disease_id": 4,
+            "name": "Hepatitis B",
+            "description": "A serious liver infection caused by the hepatitis B virus.",
+            "isInjectedVaccine": true,
+            "doseQuantity": 3
+        },
+        {
+            "disease_id": 5,
+            "name": "Diphtheria",
+            "description": "A serious bacterial infection affecting the mucous membranes of the throat and nose.",
+            "isInjectedVaccine": true,
+            "doseQuantity": 3
+        }
+    ],
+    "VaccinationGetVaccineByDisease": [
+        {
+            "diseaseId": 1,
+            "diseaseName": "Measles",
+            "vaccines": [
+                {
+                    "vaccineId": 101,
+                    "name": "Measles Vaccine",
+                    "manufacturer": "BioPharm",
+                    "recommendedAge": "12 months",
+                    "description": "Live attenuated measles vaccine.",
+                    "doseNumber": 2,
+                    "isActive": true
+                }
+            ]
         }
     ],
     "sensitive_disease": [
@@ -673,6 +848,19 @@
             "avatar": "girl.svg",
             "isActive": true,
             "Grade": 5
+        }
+    ],
+    "newest_campaign": [
+        {
+            "campaignId": 101,
+            "vaccineId": 101,
+            "disease_id": 1,
+            "stopDate": "2025-07-01",
+            "startDate": "2025-06-20",
+            "endDate": "2025-06-30",
+            "notes": "Annual school vaccination campaign for grade 1-5.",
+            "status": "Pending",
+            "isActive": true
         }
     ]
 }
