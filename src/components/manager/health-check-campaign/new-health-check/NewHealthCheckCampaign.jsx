@@ -4,7 +4,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
-import usePendingCampaign from '../../../../hooks/manager/usePendingCampaignByStatus';
+import useNewestCampaign from '../../../../hooks/manager/useNewestCampaignByStatus';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -13,13 +13,13 @@ import Button from '@mui/material/Button';
 import HealthCheckCampaignForm from '../new-health-check/health-check-campaign-form/HealthCheckCampaignForm';
 
 const NewHealthCheckCampaign = () => {
-    const { pendingCampaign = [], isLoading } = usePendingCampaign();
+    const { newestCampaign = [], isLoading } = useNewestCampaign();
     const [open, setOpen] = useState(false);
     const [selectedCampaign, setSelectedCampaign] = useState(null);
     const [showAddForm, setShowAddForm] = useState(false);
 
-    const filteredPendingCampaigns = Array.isArray(pendingCampaign)
-        ? pendingCampaign.filter(c => c.status === 'Pending')
+    const filteredNewestCampaigns = Array.isArray(newestCampaign)
+        ? newestCampaign.filter(c => c.status === 'Pending')
         : [];
 
     const handleCardClick = (campaign) => {
@@ -40,7 +40,7 @@ const NewHealthCheckCampaign = () => {
         );
     }
 
-    if (!filteredPendingCampaigns.length) {
+    if (!filteredNewestCampaigns.length) {
         return (
             <Box textAlign="center" mt={4}>
                 No campaigns found.
@@ -75,7 +75,7 @@ const NewHealthCheckCampaign = () => {
                         : {}
                 }
             >
-                {filteredPendingCampaigns.map((campaign) => (
+                {filteredNewestCampaigns.map((campaign) => (
                     <Card
                         key={campaign.id}
                         className="campaign-card"

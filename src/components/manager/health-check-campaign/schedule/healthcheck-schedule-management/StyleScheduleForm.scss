@@ -13,7 +13,7 @@
 .vaccine-schedule-card {
   background: #fff;
   border-radius: 18px;
-  box-shadow: 0 8px 32px 0 rgba(30,136,229,0.10);
+  box-shadow: 0 8px 32px 0 rgba(30, 136, 229, 0.10);
   max-width: 1100px;
   width: 100%;
   padding: 32px 32px 24px 32px;
@@ -29,6 +29,7 @@
   gap: 18px;
   position: relative;
 }
+
 .vaccine-schedule-header-icon {
   width: 54px;
   height: 54px;
@@ -39,34 +40,41 @@
   justify-content: center;
   font-size: 2.2rem;
   color: #1976d2;
-  box-shadow: 0 2px 8px 0 rgba(30,136,229,0.08);
+  box-shadow: 0 2px 8px 0 rgba(30, 136, 229, 0.08);
 }
+
 .vaccine-icon {
   font-size: 2.2rem;
   font-weight: 700;
 }
+
 .vaccine-schedule-header-info {
   flex: 1;
 }
+
 .vaccine-schedule-header-info h2 {
   font-size: 1.45rem;
   font-weight: 800;
   margin-bottom: 2px;
   color: #222b45;
 }
+
 .vaccine-schedule-meta {
   color: #7b809a;
   font-size: 1rem;
   margin-bottom: 4px;
 }
+
 .vaccine-schedule-meta span:not(:last-child) {
   margin-right: 10px;
 }
+
 .vaccine-schedule-desc {
   color: #263238;
   font-size: 1rem;
   margin-bottom: 0;
 }
+
 .quick-schedule-btn {
   position: absolute;
   top: 0;
@@ -80,8 +88,9 @@
   font-size: 1.08rem;
   cursor: pointer;
   transition: background 0.2s;
-  box-shadow: 0 2px 8px 0 rgba(30,136,229,0.08);
+  box-shadow: 0 2px 8px 0 rgba(30, 136, 229, 0.08);
 }
+
 .quick-schedule-btn:hover {
   background: #00bfae;
 }
@@ -93,10 +102,11 @@
   justify-content: flex-start;
   width: 100%;
 }
+
 .shift-card {
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 2px 8px 0 rgba(30,136,229,0.06);
+  box-shadow: 0 2px 8px 0 rgba(30, 136, 229, 0.06);
   padding: 18px 18px 14px 18px;
   min-width: 210px;
   max-width: 220px;
@@ -109,23 +119,28 @@
   position: relative;
   transition: box-shadow 0.2s, border 0.2s;
 }
+
 .shift-card.full {
   border-color: #e53935;
-  box-shadow: 0 2px 12px 0 rgba(229,57,53,0.08);
+  box-shadow: 0 2px 12px 0 rgba(229, 57, 53, 0.08);
 }
+
 .shift-card.almostfull {
   border-color: #fbc02d;
-  box-shadow: 0 2px 12px 0 rgba(251,192,45,0.08);
+  box-shadow: 0 2px 12px 0 rgba(251, 192, 45, 0.08);
 }
+
 .shift-card.available {
   border-color: #43a047;
-  box-shadow: 0 2px 12px 0 rgba(67,160,71,0.08);
+  box-shadow: 0 2px 12px 0 rgba(67, 160, 71, 0.08);
 }
+
 .shift-title {
   font-weight: 700;
   color: #1976d2;
   font-size: 1.08rem;
 }
+
 .shift-time {
   color: #7b809a;
   font-size: 0.98rem;
@@ -133,15 +148,19 @@
   align-items: center;
   gap: 4px;
 }
+
 .shift-status {
   font-size: 0.95rem;
   font-weight: 600;
   color: #43a047;
 }
+
 .shift-card.full .shift-status {
   color: #e53935;
 }
-.shift-card.almostfull .shift-status, .almost-full {
+
+.shift-card.almostfull .shift-status,
+.almost-full {
   color: #fbc02d;
   background: #fffbe6;
   border-radius: 6px;
@@ -149,15 +168,18 @@
   font-weight: 700;
   font-size: 0.95rem;
 }
+
 .shift-card.available .shift-status {
   color: #43a047;
 }
+
 .shift-capacity {
   display: flex;
   align-items: center;
   gap: 7px;
   width: 100%;
 }
+
 .shift-capacity-bar {
   background: #e3e8fd;
   border-radius: 6px;
@@ -167,31 +189,39 @@
   margin: 0 4px;
   display: inline-block;
 }
+
 .shift-capacity-fill {
   display: block;
   height: 100%;
   background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
   border-radius: 6px;
 }
+
 .shift-card.full .shift-capacity-fill {
   background: #e53935;
 }
+
 .shift-card.almostfull .shift-capacity-fill {
   background: #fbc02d;
 }
+
 .shift-card.available .shift-capacity-fill {
   background: #43a047;
 }
+
 .shift-capacity-count {
   font-size: 0.98rem;
   font-weight: 600;
 }
+
 .shift-actions {
   display: flex;
   gap: 8px;
   margin-top: 6px;
 }
-.view-btn, .add-btn {
+
+.view-btn,
+.add-btn {
   font-size: 0.95rem;
   font-weight: 700;
   border: none;
@@ -200,19 +230,23 @@
   cursor: pointer;
   transition: background 0.2s;
 }
+
 .view-btn {
   background: #f5f6fa;
   color: #1976d2;
 }
+
 .add-btn {
   background: #5c6bc0;
   color: #fff;
 }
+
 .add-btn:disabled {
   background: #cfd8dc;
   color: #888;
   cursor: not-allowed;
 }
+
 .add-btn:hover:not(:disabled) {
   background: #3949ab;
 }
@@ -222,11 +256,13 @@
   flex-direction: column;
   gap: 18px;
 }
+
 .shift-row {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
+
 .shift-row-date {
   font-weight: 700;
   color: #1976d2;
@@ -234,8 +270,79 @@
   margin-bottom: 6px;
   margin-left: 2px;
 }
+
 .shift-row-cards {
   display: flex;
   flex-wrap: wrap;
   gap: 18px;
+}
+
+.close-btn-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 18px 18px 0 18px;
+  position: relative;
+}
+
+.close-btn {
+  background: #fff;
+  color: #e53935;
+  border: 2px solid #e53935;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 22px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(229, 57, 53, 0.10);
+  transition: background 0.2s, color 0.2s, border 0.2s;
+  position: absolute;
+  right: -5px;
+  top: 5px;
+}
+
+.close-btn.hovered {
+  background: #e53935;
+  color: #fff;
+}
+
+.view-btn {
+  background: #388e3c;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 16px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  width: 100%;
+  box-shadow: 0 1px 4px rgba(56, 142, 60, 0.08);
+  transition: background 0.2s;
+}
+
+.view-btn.hovered {
+  background: #2e7031;
+}
+
+.confirm-campaign-btn {
+  padding: 10px 28px;
+  background: linear-gradient(90deg, #43a047 60%, #388e3c 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 17px;
+  box-shadow: 0 2px 8px rgba(67, 160, 71, 0.08);
+  transition: background 1s, box-shadow 0.4s;
+  width: fit-content;
+  margin-left: auto;
+}
+
+.confirm-campaign-btn.hovered {
+  background: #388e3c;
 }

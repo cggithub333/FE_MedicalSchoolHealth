@@ -5,14 +5,12 @@ import Checkbox from "@mui/material/Checkbox";
 import Alert from "@mui/material/Alert";
 import CheckIcon from "@mui/icons-material/Check";
 import usePupilsByGrade from "../../../../../hooks/schoolnurse/usePupilsByGrade";
-import { useNavigate } from "react-router-dom";
 
-const ScheduleInjectedList = ({ shift }) => {
+const ScheduleInjectedList = ({ shift, onBack }) => {
     // Fallback: if shift.grade is undefined, default to 1 for demo/testing
     const grade = Number(shift?.grade ?? shift?.Grade ?? 1);
     const { pupils = [], isLoading } = usePupilsByGrade(grade);
     const [students, setStudents] = useState([]);
-    const navigate = useNavigate();
 
     useEffect(() => {
         if (pupils && pupils.length > 0) {
@@ -157,7 +155,7 @@ const ScheduleInjectedList = ({ shift }) => {
                 </table>
             </div>
             <div className="vaccine-injection-footer">
-                <button className="save-btn" onClick={() => { console.log('Back button clicked'); navigate('/manager/health-check-campaign/schedule'); }}>Back</button>
+                <button className="save-btn" onClick={onBack}>Back</button>
             </div>
         </div>
     );

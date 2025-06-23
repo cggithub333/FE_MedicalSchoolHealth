@@ -8,7 +8,7 @@ import img3 from '../../../../assets/images/3.jpg';
 import img4 from '../../../../assets/images/4.jpg';
 import img5 from '../../../../assets/images/5.jpg';
 import './Campaign.scss';
-import usePendingCampaign from '../../../../hooks/manager/usePendingCampaignByStatus';
+import useNewestCampaignByStatus from '../../../../hooks/manager/useNewestCampaignByStatus';
 
 const Campaign = () => {
     const textRef = useRef();    // Create a ref for the animated text element
@@ -19,7 +19,7 @@ const Campaign = () => {
     const [isVisible, setIsVisible] = useState(false);    // State to track if the card is visible in the viewport
     const [fade, setFade] = useState(true);    // State to control the fade animation for image transitions
     const images = [img1, img2, img3, img4, img5];
-    const { pendingCampaign, isLoading } = usePendingCampaign();
+    const { newestCampaign, isLoading } = useNewestCampaignByStatus();
 
     // Button labels for each image
     const buttonLabelsNext = [
@@ -85,9 +85,9 @@ const Campaign = () => {
     };
 
     let campaignTitle = 'Health Check Campaign - Welcome!';
-    if (!isLoading && pendingCampaign && pendingCampaign.length > 0) {
-        if (pendingCampaign[0].description) {
-            campaignTitle = pendingCampaign[0].description;
+    if (!isLoading && newestCampaign && newestCampaign.length > 0) {
+        if (newestCampaign[0].description) {
+            campaignTitle = newestCampaign[0].description;
         }
     }
 

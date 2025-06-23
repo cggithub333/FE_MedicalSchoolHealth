@@ -1,11 +1,11 @@
 import { fetchResponse } from "../../fetch-response";
-import { getCampaignsByStatus } from "../../manager/manager-request-callback/pending-campaign-request-callback";
+import { getNewestCampaignsByStatus } from "../../manager/manager-request-callback/newest-campaign-request-callback";
 
-export const fetchPendingCampaign = async () => {
+export const fetchNewestCampaign = async () => {
     try {
         // Pass ['Pending'] as intended:
         const response = await fetchResponse(() =>
-            getCampaignsByStatus(['Pending'])
+            getNewestCampaignsByStatus()
         );
 
         if (response.status === false)

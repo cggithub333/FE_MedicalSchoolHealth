@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { fetchNewestCampaign } from '../../api/schoolnurse/schoolnurse-requests-action/newest-campaign-request-action';
+import { fetchNewestCampaign } from '../../api/manager/manager-requests-action/newest-campaign-request-action';
 
 const useNewestCampaign = () => {
     const [newestCampaign, setNewestCampaign] = useState([]);
@@ -16,7 +16,7 @@ const useNewestCampaign = () => {
                 setNewestCampaign([]);
             } finally {
                 setIsLoading(false);
-            } s
+            }
         };
         loadNewestCampaign();
     }, []);
