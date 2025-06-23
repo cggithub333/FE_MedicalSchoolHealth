@@ -1,0 +1,11 @@
+
+{
+  "schedule": [
+    {
+      "healthCheckCampaignId": 12,
+      "startExaminationDate": "2025-06-02",
+      "endExaminationDate": "2025-06-10",
+      "address": "123 Health St."
+    }
+  ]
+}

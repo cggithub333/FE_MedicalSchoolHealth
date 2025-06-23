@@ -1,0 +1,37 @@
+{
+  "pupils": [
+    {
+      "pupilId": "PP0001",
+      "classId": 101,
+      "dateOfBirth": "2012-05-14",
+      "gender": "M",
+      "lastName": "Nguyen Van",
+      "firstName": "An",
+      "avatar": "avatar1.png",
+      "grade": "1",
+      "isActive": true
+    },
+    {
+      "pupilId": "PP0002",
+      "classId": 102,
+      "dateOfBirth": "2013-08-22",
+      "gender": "F",
+      "lastName": "Nguyen Thi",
+      "firstName": "Binh",
+      "avatar": "avatar2.png",
+      "grade": "2",
+      "isActive": true
+    },
+    {
+      "pupilId": "PP0003",
+      "classId": 101,
+      "dateOfBirth": "2012-11-30",
+      "gender": "F",
+      "lastName": "Le Thi",
+      "firstName": "Chi",
+      "avatar": "avatar3.png",
+      "grade": "3",
+      "isActive": false
+    }
+  ]
+}

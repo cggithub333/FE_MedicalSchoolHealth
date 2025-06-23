@@ -1,8 +1,10 @@
+import AllCampaign from "../../../components/manager/health-check-campaign/campaign/Campaign.jsx";
+
 const HealthCheckCampaign = () => {
 
   return (
     <>
-      Manager - Health Check -  Health Check Campaign
+      <AllCampaign />
     </>
   );
 }

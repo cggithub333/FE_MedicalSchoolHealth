@@ -1,8 +1,9 @@
+import HealthCheckScheduleForm from '../../../components/schoolnurse/health-check-campaign/schedule/healthcheck-schedule-management/ScheduleForm'
 const Schedule = () => {
 
   return (
     <>
-      Schoolnurse - Health Check - Schedule
+      <HealthCheckScheduleForm />
     </>
   );
 }

@@ -1,0 +1,19 @@
+{
+    "VaccinationGetVaccineByDisease": [
+        {
+            "diseaseId": 1,
+            "diseaseName": "Measles",
+            "vaccines": [
+                {
+                    "vaccineId": 101,
+                    "name": "Measles Vaccine",
+                    "manufacturer": "BioPharm",
+                    "recommendedAge": "12 months",
+                    "description": "Live attenuated measles vaccine.",
+                    "doseNumber": 2,
+                    "isActive": true
+                }
+            ]
+        }
+    ]
+}

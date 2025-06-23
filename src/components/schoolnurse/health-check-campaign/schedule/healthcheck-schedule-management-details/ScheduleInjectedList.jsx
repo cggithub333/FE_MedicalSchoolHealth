@@ -1,0 +1,164 @@
+import React, { useEffect, useState } from "react";
+import "./StyleScheduleInjectedList.scss";
+import TextField from "@mui/material/TextField";
+import Checkbox from "@mui/material/Checkbox";
+import Alert from "@mui/material/Alert";
+import CheckIcon from "@mui/icons-material/Check";
+import usePupilsByGrade from "../../../../../hooks/schoolnurse/usePupilsByGrade";
+
+const ScheduleInjectedList = ({ shift, onBack }) => {
+    // Fallback: if shift.grade is undefined, default to 1 for demo/testing
+    const grade = Number(shift?.grade ?? shift?.Grade ?? 1);
+    const { pupils = [], isLoading } = usePupilsByGrade(grade);
+    const [students, setStudents] = useState([]);
+
+    useEffect(() => {
+        if (pupils && pupils.length > 0) {
+            // Normalize pupils data for table
+            setStudents(
+                pupils.map((pupil) => ({
+                    ...pupil,
+                    completed: false,
+                    time: "",
+                    notes: "",
+                }))
+            );
+        } else {
+            setStudents([]);
+        }
+    }, [pupils]);
+
+    const handleCheck = (index) => {
+        const updated = [...students];
+        updated[index].completed = !updated[index].completed;
+        if (updated[index].completed) {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, "0");
+            const minutes = String(now.getMinutes()).padStart(2, "0");
+            updated[index].time = `${hours}:${minutes}`;
+        } else {
+            updated[index].time = "";
+        }
+        setStudents(updated);
+    };
+
+    const handleNoteChange = (index, newValue) => {
+        const updated = [...students];
+        updated[index].notes = newValue;
+        setStudents(updated);
+    };
+
+    if (isLoading) return <div className="vaccine-injection-root">Loading...</div>;
+
+    const completedCount = students.filter((s) => s.completed).length;
+    const total = students.length;
+    const remaining = total - completedCount;
+    return (
+        <div className="vaccine-injection-root">
+            <div className="vaccine-injection-header-container">
+                <div className="vaccine-injection-header">
+                    <div>
+                        <h2>Health Check - Grade {grade}</h2>
+                        <div className="vaccine-injection-meta">
+                            <span>{shift?.time}</span>
+                            <span>• Grade {grade}</span>
+                            <span>• School Health Office</span>
+                        </div>
+                    </div>
+                    <div className="vaccine-injection-header-actions">
+                        <button className="export-btn">Export Report</button>
+                    </div>
+                </div>
+                <div className="vaccine-injection-progress">
+                    <div className="progress-bar">
+                        <div
+                            className="progress-bar-fill"
+                            style={{
+                                width: `${(completedCount / (total || 1)) * 100}%`,
+                            }}
+                        />
+                    </div>
+                    <div className="progress-stats">
+                        <span className="completed">
+                            {completedCount} Completed
+                        </span>
+                        <span className="remaining">{remaining} Remaining</span>
+                        <span className="total">{total} Total Students</span>
+                    </div>
+                </div>
+            </div>
+            <div className="vaccine-injection-alerts">
+                <table className="vaccine-injection-table">
+                    <thead>
+                        <tr>
+                            <th className="status-th">Status</th>
+                            <th className="info-th">Student Information</th>
+                            <th className="grade-th">Grade</th>
+                            <th className="time-th">Time Completed</th>
+                            <th className="notes-th">Notes</th>
+                            <th className="details-th">Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {students.map((student, idx) => (
+                            <tr
+                                key={student.pupilId}
+                                className={`data-row${student.completed ? " completed-row" : ""}`}
+                            >
+                                <td style={{ textAlign: 'center' }}>
+                                    <Checkbox
+                                        checked={student.completed}
+                                        onChange={() => handleCheck(idx)}
+                                        color="success"
+                                        sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
+                                    />
+                                </td>
+                                <td>
+                                    <div className="student-info">
+                                        <img src={student.avatar} alt="avatar" className="student-avatar" />
+                                        <div>
+                                            <div className="student-name">
+                                                {student.lastName} {student.firstName}
+                                            </div>
+                                            <div className="student-id">
+                                                ID: {student.pupilId}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td className="grade-td">{student.Grade}</td>
+                                <td className={`time-completed${student.completed ? " completed" : ""}`}>
+                                    {student.completed ? student.time : "—"}
+                                </td>
+                                <td className="notes-td">
+                                    <TextField
+                                        variant="outlined"
+                                        size="small"
+                                        value={student.notes}
+                                        onChange={e => handleNoteChange(idx, e.target.value)}
+                                        placeholder="Add notes..."
+                                        className="notes-textfield"
+                                    />
+                                </td>
+                                <td className="details-td">
+                                    <button
+                                        className="details-btn"
+                                        onClick={() => alert(`Show details for ${student.lastName} ${student.firstName}`)}
+                                    >
+                                        <CheckIcon className="details-icon" />
+                                        Details
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+            <div className="vaccine-injection-footer">
+                <button className="save-btn" onClick={onBack}>Back</button>
+            </div>
+        </div>
+    );
+};
+
+export default ScheduleInjectedList;

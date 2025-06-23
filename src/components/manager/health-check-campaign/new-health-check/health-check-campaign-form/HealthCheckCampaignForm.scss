@@ -1,0 +1,110 @@
+.health-check-campaign-form {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 36px 32px 28px 32px;
+  background: #f9fbfd;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px 0 rgba(25, 118, 210, 0.1);
+  font-family: "Roboto", "Segoe UI", Arial, sans-serif;
+  transition: box-shadow 0.2s;
+
+  &:hover {
+    box-shadow: 0 8px 32px 0 rgba(25, 118, 210, 0.16);
+  }
+
+  .form-header {
+    margin-bottom: 22px;
+    text-align: center;
+    .form-title {
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #1976d2;
+      margin-bottom: 4px;
+      font-size: 2rem;
+      text-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+    }
+    .form-desc {
+      color: #6b7a90;
+      font-size: 1.08rem;
+      margin-bottom: 10px;
+    }
+  }
+
+  .form-section {
+    margin-bottom: 22px;
+  }
+
+  .MuiTextField-root {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px 0 rgba(25, 118, 210, 0.04);
+    margin-bottom: 10px;
+    .MuiInputBase-root {
+      border-radius: 8px;
+    }
+    .MuiInputLabel-root {
+      font-weight: 500;
+      color: #1976d2;
+    }
+  }
+
+  .MuiDivider-root {
+    margin: 18px 0 18px 0;
+    background: #e3eaf2;
+  }
+
+  .consent-section {
+    background: #f1f6fa;
+    border-radius: 10px;
+    padding: 18px 16px 10px 16px;
+    box-shadow: 0 1px 6px 0 rgba(25, 118, 210, 0.04);
+    .consent-option-row {
+      margin-bottom: 6px;
+      .MuiFormControlLabel-root {
+        flex: 1;
+        font-size: 1.01rem;
+      }
+      .MuiIconButton-root {
+        margin-left: 6px;
+        color: #e57373;
+        transition: color 0.2s;
+        &:hover {
+          color: #b71c1c;
+        }
+      }
+    }
+    .MuiTypography-subtitle1 {
+      color: #1976d2;
+      font-weight: 700;
+      margin-bottom: 10px;
+      font-size: 1.13rem;
+    }
+    .MuiTextField-root {
+      background: #fff;
+      margin-bottom: 0;
+    }
+    .MuiIconButton-colorPrimary {
+      background: #e3f2fd;
+      border-radius: 50%;
+      margin-left: 4px;
+      &:hover {
+        background: #bbdefb;
+      }
+    }
+  }
+
+  .MuiButton-containedPrimary {
+    background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
+    font-weight: 700;
+    border-radius: 10px;
+    padding: 10px 38px;
+    font-size: 1.08rem;
+    box-shadow: 0 2px 12px 0 rgba(25, 118, 210, 0.1);
+    text-transform: none;
+    letter-spacing: 0.5px;
+    transition: background 0.2s;
+    &:hover {
+      background: linear-gradient(90deg, #125ea2 60%, #1976d2 100%);
+    }
+  }
+}

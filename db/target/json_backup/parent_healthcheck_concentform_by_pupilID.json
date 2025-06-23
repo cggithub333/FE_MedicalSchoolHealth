@@ -1,0 +1,151 @@
+{
+  "surveys": [
+    {
+      "pupilId": "PP0001",
+      "healthCheckConsentFormId": 28,
+      "healthCheckCampaignId": 301,
+      "healthCheckCampaignAddress": "ABC School",
+      "startExaminationDate": "2025-07-28",
+      "endExaminationDate": "2025-07-30",
+      "deadlineDate": "2025-07-27",
+      "schoolYear": 2024,
+      "isActive": true,
+      "healthCheckDisease": [
+        {
+          "id": 1,
+          "diseaseId": 101,
+          "diseaseName": "Genital Warts",
+          "diseaseDescription": "Viral infection caused by human papillomavirus (HPV) affecting genital areas",
+          "healthCheckConsentForm": 1,
+          "note": "Genital warts - requires parental consent for examination",
+          "status": "Approved",
+          "isSensitive": true,
+          "isInjectedVaccin": false,
+          "isActive": true
+        },
+        {
+          "id": 2,
+          "diseaseId": 102,
+          "diseaseName": "Depression and Anxiety",
+          "diseaseDescription": "Mental health disorders characterized by persistent sadness and excessive worry",
+          "healthCheckConsentForm": 1,
+          "note": "Depression and anxiety screening - confidential mental health assessment",
+          "status": "Rejected",
+          "isSensitive": true,
+          "isInjectedVaccin": false,
+          "isActive": true
+        },
+        {
+          "id": 3,
+          "diseaseId": 103,
+          "diseaseName": "Sexually Transmitted Infections",
+          "diseaseDescription": "Infections spread through sexual contact including chlamydia, gonorrhea, and syphilis",
+          "healthCheckConsentForm": 2,
+          "note": "Sexually transmitted infections screening - requires explicit consent",
+          "status": "Rejected",
+          "isSensitive": true,
+          "isInjectedVaccin": false,
+          "isActive": false
+        }
+      ]
+    },
+    {
+      "id": 45,
+      "pupilId": "PP0002",
+      "healthCheckCampaignId": 301,
+      "healthCheckCampaignAddress": "ABC School",
+      "startExaminationDate": "2025-07-28",
+      "endExaminationDate": "2025-07-30",
+      "deadlineDate": "2025-07-27",
+      "schoolYear": 2024,
+      "isActive": true,
+      "healthCheckDisease": [
+        {
+          "id": 1,
+          "diseaseId": 101,
+          "diseaseName": "Genital Warts",
+          "diseaseDescription": "Viral infection caused by human papillomavirus (HPV) affecting genital areas",
+          "healthCheckConsentForm": 1,
+          "note": "Genital warts - requires parental consent for examination",
+          "status": "Rejected",
+          "isSensitive": true,
+          "isInjectedVaccin": false,
+          "isActive": true
+        },
+        {
+          "id": 2,
+          "diseaseId": 102,
+          "diseaseName": "Depression and Anxiety",
+          "diseaseDescription": "Mental health disorders characterized by persistent sadness and excessive worry",
+          "healthCheckConsentForm": 1,
+          "note": "Depression and anxiety screening - confidential mental health assessment",
+          "status": "Rejected",
+          "isSensitive": true,
+          "isInjectedVaccin": false,
+          "isActive": true
+        },
+        {
+          "id": 3,
+          "diseaseId": 103,
+          "diseaseName": "Sexually Transmitted Infections",
+          "diseaseDescription": "Infections spread through sexual contact including chlamydia, gonorrhea, and syphilis",
+          "healthCheckConsentForm": 2,
+          "note": "Sexually transmitted infections screening - requires explicit consent",
+          "status": "Rejected",
+          "isSensitive": true,
+          "isInjectedVaccin": false,
+          "isActive": false
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "pupilId": "PP0003",
+      "healthCheckCampaignId": 301,
+      "healthCheckCampaignAddress": "ABC School",
+      "startExaminationDate": "2025-07-28",
+      "endExaminationDate": "2025-07-30",
+      "deadlineDate": "2025-07-27",
+      "schoolYear": 2024,
+      "isActive": true,
+      "healthCheckDisease": [
+        {
+          "id": 1,
+          "diseaseId": 101,
+          "diseaseName": "Genital Warts",
+          "diseaseDescription": "Viral infection caused by human papillomavirus (HPV) affecting genital areas",
+          "healthCheckConsentForm": 1,
+          "note": "Genital warts - requires parental consent for examination",
+          "status": "Rejected",
+          "isSensitive": true,
+          "isInjectedVaccin": false,
+          "isActive": true
+        },
+        {
+          "id": 2,
+          "diseaseId": 102,
+          "diseaseName": "Depression and Anxiety",
+          "diseaseDescription": "Mental health disorders characterized by persistent sadness and excessive worry",
+          "healthCheckConsentForm": 1,
+          "note": "Depression and anxiety screening - confidential mental health assessment",
+          "status": "Rejected",
+          "isSensitive": true,
+          "isInjectedVaccin": false,
+          "isActive": true
+        },
+        {
+          "id": 3,
+          "diseaseId": 103,
+          "diseaseName": "Sexually Transmitted Infections",
+          "diseaseDescription": "Infections spread through sexual contact including chlamydia, gonorrhea, and syphilis",
+          "healthCheckConsentForm": 2,
+          "note": "Sexually transmitted infections screening - requires explicit consent",
+          "status": "Rejected",
+          "isSensitive": true,
+          "isInjectedVaccin": false,
+          "isActive": false
+        }
+      ]
+    }
+  ]
+}
