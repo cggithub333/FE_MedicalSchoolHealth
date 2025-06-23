@@ -51,88 +51,21 @@ const ExpandMore = styled((props) => {
 
 export default function SurveysCard({ survey }) {
   const [expanded, setExpanded] = React.useState(false);
-  const diseaseList = survey.healthCheckDisease || [];
-  const [checkedStates, setCheckedStates] = React.useState(
-    diseaseList.map(disease => ({
-      diseaseId: disease.diseaseId,
-      status: disease.status // 'Rejected` or `Approved`
-    }))
-  );
-
-  React.useEffect(() => {
-    setCheckedStates(
-      diseaseList.map(disease => ({
-        diseaseId: disease.diseaseId,
-        status: disease.status // 'Rejected` or `Approved`
-      }))
-    );
-  }, [diseaseList.length]);
+  const [showWarning, setShowWarning] = React.useState(false);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
-  // Handler for clicking the parent Box (excluding clicks on the Checkbox itself)
-  const handleDiseaseCheckBoxClick = (e, idx) => {
-    // If the actual target of the click was a checkbox, do nothing to prevent double toggling
-    if (e.target.type === 'checkbox') return;
-
-    // Update the checkedStates array
-    setCheckedStates(prev => {
-      const updated = [...prev]; // Create a shallow copy of the previous state array
-
-      // Toggle the status at the specific index between 'Approved' and 'Rejected'
-      updated[idx] = {
-        ...updated[idx], // Copy the existing object at this index `idx`
-        status: updated[idx].status === 'Approved' ? 'Rejected' : 'Approved'
-      };
-
-      return updated; // Return the new array to update the state
-    });
-  };
-
-  // Handler for clicking directly on the Checkbox itself
-  const handleCheckBoxClick = (idx) => {
-    // Update the checkedStates array in the same way as above
-    setCheckedStates(prev => {
-      const updated = [...prev]; // Clone the previous array
-
-      // Toggle the status field for the item at index 'idx'
-      updated[idx] = {
-        ...updated[idx], // use spread operator -> Copy the existing object at this index `idx`
-        status: updated[idx].status === 'Approved' ? 'Rejected' : 'Approved' // override/edit/toggle the value of the property 'status';
-      };
-
-      return updated; // Return the modified array
-    });
-  };
-
-
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    // checkedStates now contains [{diseaseId, status}, ...] for DB update
-    console.log(checkedStates);
-    // submit checkedStates to API here
-
-    // Alert:
+    // submit logic removed
     alert('Form submitted successfully!');
-
-    // hide the form:
     setExpanded(false);
   };
 
   const handleClearClick = (e) => {
-    // clear all checked checkbox:
-    setCheckedStates(prev => {
-      const updated = [...prev]; // clone to updated array;
-      updated.forEach((_, idx, updated) => { // traverse the cloned array
-        updated[idx].status = 'Rejected';
-      })
-
-      return updated;
-    })
-
-    // hide the form:
+    // clear logic removed
     setExpanded(false);
   }
 
@@ -160,13 +93,13 @@ export default function SurveysCard({ survey }) {
       /> */}
       <CardContent>
         <Typography variant="h1" sx={styleHealthCheckSurveyTitle}>
-          <span>Health Check Survey Required</span>
+          <span>Vaccination Survey Required</span>
           <span><InformationIcon /></span>
         </Typography>
         <Typography variant="p" sx={{ color: 'text.secondary', display: "flex", gap: "10px", alignItems: "center" }}>
           <ListItemIcon />
           <span>
-            We need your confirmation for an upcomming health check campaign
+            We need your confirmation for an upcomming vaccination campaign {` `}
             {survey.healthCheckCampaignAddress && <span>at {survey.healthCheckCampaignAddress}</span>}.
           </span>
         </Typography>
@@ -210,7 +143,6 @@ export default function SurveysCard({ survey }) {
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent sx={{ background: "#a7c5d2", color: "#fff", margin: "10px", borderRadius: "10px" }}>
-
           {/* Campaign infromation */}
           <Typography sx={styleTitleDetail}>Campaign Information</Typography>
           <TableContainer sx={styleTableCampaignInfor}>
@@ -242,77 +174,32 @@ export default function SurveysCard({ survey }) {
             </Table>
           </TableContainer>
 
-          {/* Confirmation infromation */}
-          {
-            survey.healthCheckDisease && (
-              <>
-                <Typography sx={styleTitleDetail}>Disease Confirmation</Typography>
-                <Typography sx={{ display: "flex", gap: "6px", alignItems: "center", marginLeft: "10px", color: "yellow", marginBottom: "15px" }}>
-                  <ListItemIcon />
-                  <span>We need your confirmation for sensitive disease!</span>
-                </Typography>
+          {/* Checkbox and warning alert */}
+          <Box sx={{ display: 'flex', alignItems: 'center', mt: 3 }}>
+            <Checkbox
+              checked={!!showWarning}
+              onChange={e => setShowWarning(e.target.checked)}
+              color="primary"
+              id="consent-checkbox"
+            />
+            <label htmlFor="consent-checkbox" style={{ color: '#fff', fontSize: '16px', cursor: 'pointer' }}>
+              I confirm I have read and understood the vaccination information
+            </label>
+          </Box>
+          {showWarning && (
+            <Alert severity="warning" sx={{ mt: 2, mb: 2 }}>
+              If you do not have sufficient information about the vaccine, please ensure you understand it clearly before submitting. By confirming, you consent to your child receiving the vaccination.
+            </Alert>
+          )}
 
-                <FormControl component={'form'} onSubmit={handleFormSubmit}>
-                  <Box component={'ul'}>
-                    {diseaseList.map((disease, idx) => (
-                      <Box
-                        component={'li'}
-                        key={idx}
-                        sx={styleDiseaseCheckBox}
-                        onClick={(e) => handleDiseaseCheckBoxClick(e, idx)}
-                      >
-                        <Checkbox
-                          // The Checkbox is checked if the status at index 'idx' exists (checkedStates[idx]?) and is equal to 'Approved'
-                          checked={checkedStates[idx]?.status === 'Approved'}
-                          onClick={() => handleCheckBoxClick(idx)}
-                          color="success"
-                        />
-                        <span style={{ fontStyle: "normal" }} >
-                          {disease.diseaseName}
-                        </span>
-                        <Typography>
-                          Discription: {disease.diseaseDescription}
-                        </Typography>
-                      </Box>
-                    ))}
-                  </Box>
-                  {
-                    // at least 1 box is checked:
-                    checkedStates.filter(state => state.status === 'Approved').length > 0
-                    && (
-                      <>
-                        {/* Warning messages  */}
-                        <Box component={'div'}>
-                          <Alert severity="warning" sx={styleCheckedWarningMsg}>
-                            <Typography sx={{ display: "flex", alignItems: 'center', gap: "10px" }}>
-                              <span>By checking this box, you consent to your child receiving the vaccination administered by the school health team as part of the official vaccination campaign.</span>
-                            </Typography>
-                          </Alert>
-                          <Alert severity="warning" sx={styleCheckedWarningMsg}>
-                            <Typography>
-                              <span>Please ensure you have read and understood all the relevant information about the vaccine, including its benefits, possible side effects, and contraindications.</span>
-                            </Typography>
-                          </Alert>
-                          <Alert severity="warning" sx={styleCheckedWarningMsg}>
-                            <Typography>
-                              <span>If you have any concerns or your child has a known allergy or medical condition, please consult your healthcare provider before confirming.</span>
-                            </Typography>
-                          </Alert>
-                        </Box>
-
-                        {/* Submit button: */}
-                        <Box sx={{ display: "flex", justifyContent: "center", marginTop: "25px", gap: "20px" }}>
-                          <Button type={'reset'} onClick={handleClearClick} variant="outlined" color="error" sx={{ width: "20%", background: "white" }}>Clear</Button>
-                          <Button type={'submit'} variant="contained" color="primary" sx={{ width: "20%" }}>Submit</Button>
-                        </Box>
-                      </>
-                    )
-                  }
-                </FormControl>
-              </>
-            )
-          }
-
+          {/* Form with Submit button only visible if checkbox is checked */}
+          <FormControl component={'form'} onSubmit={handleFormSubmit} sx={{ width: '100%', marginTop: '30px' }}>
+            <Box sx={{ display: "flex", justifyContent: "center", marginTop: "25px", gap: "20px" }}>
+              {showWarning && (
+                <Button type={'submit'} variant="contained" color="primary" sx={{ width: "20%" }}>Submit</Button>
+              )}
+            </Box>
+          </FormControl>
         </CardContent>
       </Collapse>
     </Card>
@@ -433,4 +320,11 @@ const styleSubmitButton = {
 
 const styleClearButton = {
 
+}
+
+// Add a placeholder function for submitting to the server
+function submitSurvey(survey) {
+  // TODO: Implement actual API call here
+  // Example: fetch('/api/submit-survey', { method: 'POST', body: JSON.stringify(survey) })
+  console.log('Submitting survey to server:', survey);
 }
