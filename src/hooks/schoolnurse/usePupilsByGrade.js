@@ -1,36 +1,36 @@
-
 import { useState, useEffect } from 'react';
-import { fetchPupilsByGrade } from '../../api/schoolnurse/schoolnurse-requests-action/pupils-request-action'; // Adjust the import path as necessar
+import { fetchPupilsByGrade } from '../../api/schoolnurse/schoolnurse-requests-action/pupils-by-grade-request-action';
 
 const usePupilsByGrade = (currgrade) => {
-
     const [pupils, setPupils] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const loadPupils = async () => {
             if (!currgrade) {
-                console.warn("No grade provided, skipping pupils fetch.");
+                setPupils([]);
                 return;
             }
             setIsLoading(true);
             try {
                 const response = await fetchPupilsByGrade(currgrade);
-                if (response) {
-                    const pupilsGradeData = response;
-                    console.log("Pupils fetched successfully:", pupilsGradeData);
-                    setPupils(pupilsGradeData);
+                // If response is { pupils: [...] }, extract the array
+                if (response && Array.isArray(response.pupils)) {
+                    setPupils(response.pupils);
+                } else if (Array.isArray(response)) {
+                    setPupils(response);
+                } else {
+                    setPupils([]);
                 }
             } catch (error) {
                 console.error("Failed to fetch pupils:", error);
-                setPupils([]); // Clear pupils on error
+                setPupils([]);
             } finally {
                 setIsLoading(false);
             }
         };
-
         loadPupils();
-    }, []);
+    }, [currgrade]);
 
     return { pupils, isLoading };
 }

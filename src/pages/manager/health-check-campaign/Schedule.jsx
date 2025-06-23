@@ -1,8 +1,9 @@
+import HealthCheckScheduleForm from '../../../components/manager/health-check-campaign/schedule/healthcheck-schedule-management/ScheduleForm'
 const Schedule = () => {
 
   return (
     <>
-      Manager - Health Check - Schedule
+      <HealthCheckScheduleForm />
     </>
   );
 }
