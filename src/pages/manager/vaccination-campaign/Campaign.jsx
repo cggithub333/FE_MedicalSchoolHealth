@@ -1,8 +1,9 @@
+import AllCampaign from '../../../components/manager/vaccination-campaign/campaign/Campaign';
 const Campaign = () => {
 
   return (
     <>
-      Manager - Vaccination Campaign - Campaign
+      <AllCampaign />
     </>
   );
 }

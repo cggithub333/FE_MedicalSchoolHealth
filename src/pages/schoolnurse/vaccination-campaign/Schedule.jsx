@@ -1,8 +1,9 @@
+import VaccinationScheduleForm from '../../../components/schoolnurse/vaccination-campaign/schedule/vaccination-schedule-management/ScheduleForm';
 const Schedule = () => {
 
   return (
     <>
-      Schoolnurse - Vaccination Campaign - Schedule
+      <VaccinationScheduleForm />
     </>
   );
 }

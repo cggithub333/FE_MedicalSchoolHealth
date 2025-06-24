@@ -1,26 +1,28 @@
 {
-  "latest_vaccination_campaign": {
-    "parentId": "PR0001",
-    "campaign": {
-      "campaignId": 101,
-      "disease": {
-        "diseaseId": 1,
-        "name": "Measles, Mumps, and Rubella (MMR)",
-        "description": "A combined vaccine to protect against measles, mumps, and rubella.",
-        "doseRequired": 2
-      },
-      "vaccine": {
-        "vaccineId": 301,
-        "name": "MMR-VaxPro",
-        "manufacturer": "PharmaHealth Co.",
-        "recommendedAge": "1 year and older",
-        "description": "Live vaccine for MMR prevention."
-      },
-      "notes": "Ensure your child has eaten before the injection day. Bring student ID.",
-      "consentFormDeadline": "2025-07-10",
-      "startDate": "2025-07-12",
-      "endDate": "2025-07-13",
-      "campaignStatus": "Published"
+  "latest_vaccination_campaign": [
+    {
+      "parentId": "PR0001",
+      "campaign": {
+        "campaignId": 101,
+        "disease": {
+          "diseaseId": 1,
+          "name": "Measles, Mumps, and Rubella (MMR)",
+          "description": "A combined vaccine to protect against measles, mumps, and rubella.",
+          "doseRequired": 2
+        },
+        "vaccine": {
+          "vaccineId": 301,
+          "name": "MMR-VaxPro",
+          "manufacturer": "PharmaHealth Co.",
+          "recommendedAge": "1 year and older",
+          "description": "Live vaccine for MMR prevention."
+        },
+        "notes": "Ensure your child has eaten before the injection day. Bring student ID.",
+        "consentFormDeadline": "2025-07-10",
+        "startDate": "2025-07-12",
+        "endDate": "2025-07-13",
+        "campaignStatus": "Published"
+      }
     }
-  }
+  ]
 }

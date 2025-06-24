@@ -28,7 +28,33 @@ const HealthCheckScheduleForm = () => {
         return { grade, pupils };
     });
 
+    // Filter campaigns by status
+    const filteredNewestCampaigns = Array.isArray(newestCampaign)
+        ? newestCampaign.filter(c => c.status === 'In Progress' || c.status === 'Published')
+        : [];
+
+    // Helper to get and set saved shift data for both morning and afternoon
+    function getShiftSavedData(grade, pupils) {
+        const sharedKey = `healthcheck_students_grade_${grade}`;
+        let students = null;
+        try {
+            students = JSON.parse(localStorage.getItem(sharedKey) || 'null');
+        } catch { }
+        // Always use pupils.length for capacity
+        // Calculate filled from saved students (completed only)
+        const filled = students ? students.filter(s => s.completed).length : 0;
+        return {
+            morning: students || [],
+            afternoon: students || [],
+            capacity: pupils.length,
+            filled
+        };
+    }
+
     if (isLoading) return <div className="vaccine-schedule-root">Loading...</div>;
+    if (filteredNewestCampaigns.length === 0) {
+        return <div className="vaccine-schedule-root">Don't have any campaign now</div>;
+    }
     if (showInjectionList && selectedShift) {
         return (
             <div>
@@ -60,32 +86,36 @@ const HealthCheckScheduleForm = () => {
 
     return (
         <div className="vaccine-schedule-root">
-            {newestCampaign && newestCampaign.length > 0 && (() => {
-                const campaignStatus = newestCampaign[0]?.status || "";
+            {filteredNewestCampaigns.length > 0 && (() => {
+                const campaignStatus = filteredNewestCampaigns[0]?.status || "";
                 return GRADES.map((grade) => {
                     const pupils = pupilsByGrade.find(p => p.grade === grade)?.pupils || [];
                     const capacity = pupils.length;
                     // For demo, let's create two shifts per grade
+                    const saved = getShiftSavedData(grade, pupils);
                     const shifts = [
                         {
                             id: `${grade}-morning`,
                             name: `Grade ${grade} - Morning`,
                             time: "08:00 - 11:00",
-                            filled: Math.floor(capacity * 0.7),
-                            capacity,
-                            status: capacity === 0 ? "Full" : (capacity - Math.floor(capacity * 0.7) <= 2 ? "Almost Full" : "Available"),
-                            grade
-                        },
-                        {
-                            id: `${grade}-afternoon`,
-                            name: `Grade ${grade} - Afternoon`,
-                            time: "13:00 - 16:00",
-                            filled: Math.floor(capacity * 0.5),
-                            capacity,
-                            status: capacity === 0 ? "Full" : (capacity - Math.floor(capacity * 0.5) <= 2 ? "Almost Full" : "Available"),
-                            grade
+                            grade,
+                            students: saved.morning,
+                            capacity: saved.capacity,
+                            filled: saved.filled
                         }
                     ];
+                    // Calculate total/filled for both shifts
+                    const total = saved.capacity;
+                    // Use filled from saved (completed pupils)
+                    const filled = saved.filled;
+
+                    // Update capacity and filled for each shift
+                    shifts.forEach(shift => {
+                        shift.capacity = total;
+                        shift.filled = filled;
+                        shift.status = shift.capacity === 0 ? "Full" : (shift.capacity - shift.filled <= 2 ? "Almost Full" : "Available");
+                    });
+
                     return (
                         <div className="vaccine-schedule-card" key={grade}>
                             <div className="vaccine-schedule-header">
@@ -160,12 +190,20 @@ const HealthCheckScheduleForm = () => {
                                 onMouseOut={e => e.currentTarget.classList.remove('hovered')}
                                 onClick={() => alert("Campaign marked as finished!")}
                             >
-                                {campaignStatus}
+                                Confirm
                             </button>
                         </div>
                     );
                 });
             })()}
+            <button
+                className="confirm-campaign-btn"
+                onMouseOver={e => e.currentTarget.classList.add('hovered')}
+                onMouseOut={e => e.currentTarget.classList.remove('hovered')}
+                onClick={() => alert("Campaign marked as finished!")}
+            >
+                Completed
+            </button>
         </div>
     );
 };

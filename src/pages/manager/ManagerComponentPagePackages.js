@@ -5,7 +5,6 @@ import Profile from './main-contents/Profile.jsx';
 import CampaignVaccination from './vaccination-campaign/Campaign.jsx';
 import NewCampaignVaccination from './vaccination-campaign/NewCampaign.jsx';
 import ScheduleVaccination from './vaccination-campaign/Schedule.jsx';
-import VaccinationCampaign from './vaccination-campaign/VaccinationCampaign.jsx';
 
 import NewCampaignHealthCheck from './health-check-campaign/NewCampaign.jsx';
 import ScheduleHealthCheck from './health-check-campaign/Schedule.jsx';
@@ -22,7 +21,6 @@ const ManagerComponentPagePackages = {
   CampaignVaccination,
   NewCampaignVaccination,
   ScheduleVaccination,
-  VaccinationCampaign,
   NewCampaignHealthCheck,
   ScheduleHealthCheck,
   HealthCheckCampaign,

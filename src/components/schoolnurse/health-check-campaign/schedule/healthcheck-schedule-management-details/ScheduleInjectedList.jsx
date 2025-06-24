@@ -13,8 +13,18 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
     const [students, setStudents] = useState([]);
 
     useEffect(() => {
+        // Shared key for both morning and afternoon shifts of the same grade
+        const sharedKey = `healthcheck_students_grade_${grade}`;
+        let saved = localStorage.getItem(sharedKey);
+        if (saved) {
+            try {
+                setStudents(JSON.parse(saved));
+                return;
+            } catch (e) {
+                // fallback to pupils if parse fails
+            }
+        }
         if (pupils && pupils.length > 0) {
-            // Normalize pupils data for table
             setStudents(
                 pupils.map((pupil) => ({
                     ...pupil,
@@ -26,7 +36,7 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
         } else {
             setStudents([]);
         }
-    }, [pupils]);
+    }, [pupils, grade]);
 
     const handleCheck = (index) => {
         const updated = [...students];
@@ -48,11 +58,32 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
         setStudents(updated);
     };
 
+    const handleSave = () => {
+        // Save students state to localStorage with a shared key for both shifts
+        const sharedKey = `healthcheck_students_grade_${grade}`;
+        localStorage.setItem(sharedKey, JSON.stringify(students));
+        alert("Saved successfully!");
+    };
+
     if (isLoading) return <div className="vaccine-injection-root">Loading...</div>;
 
-    const completedCount = students.filter((s) => s.completed).length;
-    const total = students.length;
+    // Calculate completed and total from localStorage if available
+    const sharedKey = `healthcheck_students_grade_${grade}`;
+    let completedCount = 0;
+    let total = pupils.length; // Always use the real pupils count for capacity
+    let saved = localStorage.getItem(sharedKey);
+    if (saved) {
+        try {
+            const arr = JSON.parse(saved);
+            completedCount = arr.filter(s => s.completed).length;
+        } catch (e) {
+            completedCount = students.filter((s) => s.completed).length;
+        }
+    } else {
+        completedCount = students.filter((s) => s.completed).length;
+    }
     const remaining = total - completedCount;
+
     return (
         <div className="vaccine-injection-root">
             <div className="vaccine-injection-header-container">
@@ -156,6 +187,7 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
             </div>
             <div className="vaccine-injection-footer">
                 <button className="save-btn" onClick={onBack}>Back</button>
+                <button className="save-btn" onClick={handleSave}>Save</button>
             </div>
         </div>
     );

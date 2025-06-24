@@ -4,15 +4,30 @@ import TextField from "@mui/material/TextField";
 import Checkbox from "@mui/material/Checkbox";
 import Alert from "@mui/material/Alert";
 import CheckIcon from "@mui/icons-material/Check";
-import usePupilsByGrade from "../../../../../hooks/schoolnurse/usePupilsByGrade";
+import useGetAllPupilsByGrade from '../../../../../hooks/schoolnurse/vaccination/useGetAllPupilsByGrade';
 
 const ScheduleInjectedList = ({ shift, onBack }) => {
     // Fallback: if shift.grade is undefined, default to 1 for demo/testing
     const grade = Number(shift?.grade ?? shift?.Grade ?? 1);
-    const { pupils = [], isLoading } = usePupilsByGrade(grade);
+    const { pupils = [], isLoading } = useGetAllPupilsByGrade(grade);
     const [students, setStudents] = useState([]);
 
     useEffect(() => {
+        // Try to load saved students from localStorage for this shift
+        let saved = null;
+        if (shift && shift.id) {
+            saved = localStorage.getItem(`vaccination_students_shift_${shift.id}`);
+        } else {
+            saved = localStorage.getItem(`vaccination_students_grade_${grade}_${shift?.time || ''}`);
+        }
+        if (saved) {
+            try {
+                setStudents(JSON.parse(saved));
+                return;
+            } catch (e) {
+                // fallback to pupils if parse fails
+            }
+        }
         if (pupils && pupils.length > 0) {
             // Normalize pupils data for table
             setStudents(
@@ -26,7 +41,7 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
         } else {
             setStudents([]);
         }
-    }, [pupils]);
+    }, [pupils, shift, grade]);
 
     const handleCheck = (index) => {
         const updated = [...students];
@@ -48,17 +63,54 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
         setStudents(updated);
     };
 
+    const handleSave = () => {
+        // Save students state to localStorage with a unique key per shift
+        if (shift && shift.id) {
+            localStorage.setItem(
+                `vaccination_students_shift_${shift.id}`,
+                JSON.stringify(students)
+            );
+        } else {
+            // fallback: use grade and time as key
+            localStorage.setItem(
+                `vaccination_students_grade_${grade}_${shift?.time || ''}`,
+                JSON.stringify(students)
+            );
+        }
+        alert("Saved successfully!");
+    };
+
     if (isLoading) return <div className="vaccine-injection-root">Loading...</div>;
 
-    const completedCount = students.filter((s) => s.completed).length;
-    const total = students.length;
+    // Calculate completed and total from localStorage if available
+    let completedCount = 0;
+    let total = 0;
+    let saved = null;
+    if (shift && shift.id) {
+        saved = localStorage.getItem(`vaccination_students_shift_${shift.id}`);
+    } else {
+        saved = localStorage.getItem(`vaccination_students_grade_${grade}_${shift?.time || ''}`);
+    }
+    if (saved) {
+        try {
+            const arr = JSON.parse(saved);
+            completedCount = arr.filter(s => s.completed).length;
+            total = arr.length;
+        } catch (e) {
+            completedCount = students.filter((s) => s.completed).length;
+            total = students.length;
+        }
+    } else {
+        completedCount = students.filter((s) => s.completed).length;
+        total = students.length;
+    }
     const remaining = total - completedCount;
     return (
         <div className="vaccine-injection-root">
             <div className="vaccine-injection-header-container">
                 <div className="vaccine-injection-header">
                     <div>
-                        <h2>Health Check - Grade {grade}</h2>
+                        <h2>Vaccination - Grade {grade}</h2>
                         <div className="vaccine-injection-meta">
                             <span>{shift?.time}</span>
                             <span>• Grade {grade}</span>
@@ -156,6 +208,7 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
             </div>
             <div className="vaccine-injection-footer">
                 <button className="save-btn" onClick={onBack}>Back</button>
+                <button className="save-btn" onClick={handleSave}>Save</button>
             </div>
         </div>
     );

@@ -1,7 +1,7 @@
 {
     "getnewestcampaign": [
         {
-            "id": 5,
+            "id": "5",
             "address": "123 Main St, Chu City",
             "startExaminationDate": "2026-07-01T08:00:00Z",
             "endExaminationDate": "2026-07-03T17:00:00Z",

@@ -10,6 +10,9 @@ import SchoolNurseDashboardRoutes from "./components/schoolnurse/Dashboard/Schoo
 import ParentDashboardRoutes from "./components/parent/Dashboard/ParentDashboardRoutes";
 
 import BuildingImage from './assets/images/building_worker.jpg';
+import { Button, FormControl } from '@mui/material';
+
+import { updateStatusOfNewestCampaignAction } from './api/manager/manager-requests-action/newest-campaign-request-action';
 
 function App() {
 
@@ -27,6 +30,38 @@ function App() {
             </Router>
         </>
     );
+
+    // const handleSubmit = (e) => {
+
+    //     console.log("Form submitted");
+
+    //     e.preventDefault();
+
+    //     try {
+    //         const updateStatus = async () => {
+    //             const response = await updateStatusOfNewestCampaignAction(5, 'In Progress');
+    //             if (response.status === 200) {
+    //                 console.log("Status updated successfully");
+    //             } else {
+    //                 console.error("Failed to update status");
+    //             }
+    //         }
+
+    //         updateStatus();
+    //         console.log("Form submitted successfully");
+
+    //     } catch (error) {
+    //         console.error("Error updating status:", error);
+    //     }
+    // }
+
+    // return (
+    //     <FormControl>
+    //         <Button type={'submit'} variant="contained" color="primary" onClick={handleSubmit} style={{ margin: "30px" }}>
+    //             Submit
+    //         </Button>
+    //     </FormControl>
+    // )
 }
 
 const BuildingPage = () => {

@@ -1,8 +1,9 @@
+import NewVaccinationCampaign from '../../../components/manager/vaccination-campaign/new-vaccination/NewVaccinationCampaign'
 const NewCampaign = () => {
 
   return (
     <>
-      Manager - Vaccination Campaign - New Campaign
+      <NewVaccinationCampaign />
     </>
   );
 }
