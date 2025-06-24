@@ -469,58 +469,6 @@
           "vaccinatedAt": "2025-06-21T09:00:00Z",
           "notes": "Annual measles vaccination",
           "isActive": true
-        },
-        {
-          "historyId": 2,
-          "vaccine": {
-            "vaccineId": 105,
-            "name": "Measles-Mumps-Rubella (MMR) Vaccine",
-            "manufacturer": "GlobalVax",
-            "recommendedAge": "15 months",
-            "description": "Combined vaccine for measles, mumps, and rubella.",
-            "visibleStatus": "Visible"
-          },
-          "campaign": {
-            "campaignId": 105,
-            "disease_id": 1,
-            "vaccineId": 105,
-            "stopDate": "2025-08-01",
-            "startDate": "2025-07-15",
-            "endDate": "2025-07-25",
-            "notes": "MMR vaccination campaign for toddlers.",
-            "status": "Completed",
-            "isActive": true
-          },
-          "source": "campaign",
-          "vaccinatedAt": "2025-07-20T10:00:00Z",
-          "notes": "MMR vaccination",
-          "isActive": true
-        },
-        {
-          "historyId": 3,
-          "vaccine": {
-            "vaccineId": 106,
-            "name": "Measles Booster Vaccine",
-            "manufacturer": "HealthPlus",
-            "recommendedAge": "6 years",
-            "description": "Booster dose for measles.",
-            "visibleStatus": "Visible"
-          },
-          "campaign": {
-            "campaignId": 106,
-            "disease_id": 1,
-            "vaccineId": 106,
-            "stopDate": "2025-09-01",
-            "startDate": "2025-08-10",
-            "endDate": "2025-08-20",
-            "notes": "Booster campaign for school-age children.",
-            "status": "Completed",
-            "isActive": true
-          },
-          "source": "parentDeclaration",
-          "vaccinatedAt": "2025-08-15T11:00:00Z",
-          "notes": "Booster dose declared by parent",
-          "isActive": true
         }
       ]
     },
@@ -556,32 +504,6 @@
           "source": "campaign",
           "vaccinatedAt": "2025-09-16T09:00:00Z",
           "notes": "Mumps vaccination",
-          "isActive": true
-        },
-        {
-          "historyId": 5,
-          "vaccine": {
-            "vaccineId": 107,
-            "name": "Mumps Booster Vaccine",
-            "manufacturer": "VaxMakers",
-            "recommendedAge": "6 years",
-            "description": "Booster dose for mumps.",
-            "visibleStatus": "Visible"
-          },
-          "campaign": {
-            "campaignId": 107,
-            "disease_id": 2,
-            "vaccineId": 107,
-            "stopDate": "2025-11-01",
-            "startDate": "2025-10-15",
-            "endDate": "2025-10-25",
-            "notes": "Booster campaign for mumps.",
-            "status": "Completed",
-            "isActive": true
-          },
-          "source": "parentDeclaration",
-          "vaccinatedAt": "2025-10-20T10:00:00Z",
-          "notes": "Mumps booster declared by parent",
           "isActive": true
         }
       ]
