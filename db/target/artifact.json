@@ -268,8 +268,8 @@
   ],
   "health-check-consent-form": [
     {
+      "id": 28,
       "pupilId": "PP0001",
-      "healthCheckConsentFormId": 28,
       "healthCheckCampaignId": 301,
       "healthCheckCampaignAddress": "ABC School",
       "startExaminationDate": "2025-07-28",
@@ -435,9 +435,222 @@
       "address": "123 Health St."
     }
   ],
+  "vaccination-history-by-pupilid": [
+    {
+      "pupilId": "PP0001",
+      "disease_id": 1,
+      "disease_name": "Measles",
+      "disease_description": "A highly contagious viral disease causing fever and rash. Measles can spread rapidly among children and may lead to serious complications such as pneumonia, encephalitis, and even death if not treated promptly. Vaccination is the most effective way to prevent measles outbreaks in the community.",
+      "doseQuantity": 2,
+      "currDoseQuantity": 1,
+      "vaccinations": [
+        {
+          "historyId": 1,
+          "vaccine": {
+            "vaccineId": 101,
+            "name": "Measles Vaccine",
+            "manufacturer": "BioPharm",
+            "recommendedAge": "12 months",
+            "description": "Live attenuated measles vaccine.",
+            "visibleStatus": "Visible"
+          },
+          "campaign": {
+            "campaignId": 101,
+            "disease_id": 1,
+            "vaccineId": 101,
+            "stopDate": "2025-07-01",
+            "startDate": "2025-06-20",
+            "endDate": "2025-06-30",
+            "notes": "Annual measles vaccination campaign for all grades.",
+            "status": "Completed",
+            "isActive": true
+          },
+          "source": "campaign",
+          "vaccinatedAt": "2025-06-21T09:00:00Z",
+          "notes": "Annual measles vaccination",
+          "isActive": true
+        },
+        {
+          "historyId": 2,
+          "vaccine": {
+            "vaccineId": 105,
+            "name": "Measles-Mumps-Rubella (MMR) Vaccine",
+            "manufacturer": "GlobalVax",
+            "recommendedAge": "15 months",
+            "description": "Combined vaccine for measles, mumps, and rubella.",
+            "visibleStatus": "Visible"
+          },
+          "campaign": {
+            "campaignId": 105,
+            "disease_id": 1,
+            "vaccineId": 105,
+            "stopDate": "2025-08-01",
+            "startDate": "2025-07-15",
+            "endDate": "2025-07-25",
+            "notes": "MMR vaccination campaign for toddlers.",
+            "status": "Completed",
+            "isActive": true
+          },
+          "source": "campaign",
+          "vaccinatedAt": "2025-07-20T10:00:00Z",
+          "notes": "MMR vaccination",
+          "isActive": true
+        },
+        {
+          "historyId": 3,
+          "vaccine": {
+            "vaccineId": 106,
+            "name": "Measles Booster Vaccine",
+            "manufacturer": "HealthPlus",
+            "recommendedAge": "6 years",
+            "description": "Booster dose for measles.",
+            "visibleStatus": "Visible"
+          },
+          "campaign": {
+            "campaignId": 106,
+            "disease_id": 1,
+            "vaccineId": 106,
+            "stopDate": "2025-09-01",
+            "startDate": "2025-08-10",
+            "endDate": "2025-08-20",
+            "notes": "Booster campaign for school-age children.",
+            "status": "Completed",
+            "isActive": true
+          },
+          "source": "parentDeclaration",
+          "vaccinatedAt": "2025-08-15T11:00:00Z",
+          "notes": "Booster dose declared by parent",
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "pupilId": "PP0001",
+      "disease_id": 2,
+      "disease_name": "Mumps",
+      "disease_description": "Mumps is a viral infection that primarily affects the salivary glands, causing swelling and pain. It can also lead to complications such as meningitis, hearing loss, and inflammation of the testicles or ovaries. Vaccination is crucial to control the spread of mumps, especially in school-aged children.",
+      "doseQuantity": 2,
+      "currDoseQuantity": 1,
+      "vaccinations": [
+        {
+          "historyId": 4,
+          "vaccine": {
+            "vaccineId": 102,
+            "name": "Mumps Vaccine",
+            "manufacturer": "HealthCorp",
+            "recommendedAge": "18 months",
+            "description": "Live attenuated mumps vaccine.",
+            "visibleStatus": "Visible"
+          },
+          "campaign": {
+            "campaignId": 102,
+            "disease_id": 2,
+            "vaccineId": 102,
+            "stopDate": "2025-10-01",
+            "startDate": "2025-09-15",
+            "endDate": "2025-09-25",
+            "notes": "Mumps vaccination campaign for grade 2.",
+            "status": "Completed",
+            "isActive": true
+          },
+          "source": "campaign",
+          "vaccinatedAt": "2025-09-16T09:00:00Z",
+          "notes": "Mumps vaccination",
+          "isActive": true
+        },
+        {
+          "historyId": 5,
+          "vaccine": {
+            "vaccineId": 107,
+            "name": "Mumps Booster Vaccine",
+            "manufacturer": "VaxMakers",
+            "recommendedAge": "6 years",
+            "description": "Booster dose for mumps.",
+            "visibleStatus": "Visible"
+          },
+          "campaign": {
+            "campaignId": 107,
+            "disease_id": 2,
+            "vaccineId": 107,
+            "stopDate": "2025-11-01",
+            "startDate": "2025-10-15",
+            "endDate": "2025-10-25",
+            "notes": "Booster campaign for mumps.",
+            "status": "Completed",
+            "isActive": true
+          },
+          "source": "parentDeclaration",
+          "vaccinatedAt": "2025-10-20T10:00:00Z",
+          "notes": "Mumps booster declared by parent",
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "pupilId": "PP0001",
+      "disease_id": 3,
+      "disease_name": "Rubella",
+      "disease_description": "Rubella, also known as German measles, is a contagious viral infection best known by its distinctive red rash. While generally mild in children, rubella can cause serious birth defects if a woman is infected during pregnancy. Vaccination is the best protection against rubella and its complications.",
+      "doseQuantity": 2,
+      "currDoseQuantity": 2,
+      "vaccinations": [
+        {
+          "historyId": 6,
+          "vaccine": {
+            "vaccineId": 103,
+            "name": "Rubella Vaccine",
+            "manufacturer": "VaxMakers",
+            "recommendedAge": "24 months",
+            "description": "Live attenuated rubella vaccine.",
+            "visibleStatus": "Visible"
+          },
+          "campaign": {
+            "campaignId": 103,
+            "disease_id": 3,
+            "vaccineId": 103,
+            "stopDate": "2025-12-01",
+            "startDate": "2025-11-15",
+            "endDate": "2025-11-25",
+            "notes": "Rubella vaccination campaign for grade 3.",
+            "status": "Completed",
+            "isActive": true
+          },
+          "source": "campaign",
+          "vaccinatedAt": "2025-11-16T09:00:00Z",
+          "notes": "Rubella vaccination",
+          "isActive": true
+        },
+        {
+          "historyId": 7,
+          "vaccine": {
+            "vaccineId": 108,
+            "name": "Rubella Booster Vaccine",
+            "manufacturer": "ImmunoTech",
+            "recommendedAge": "6 years",
+            "description": "Booster dose for rubella.",
+            "visibleStatus": "Visible"
+          },
+          "campaign": {
+            "campaignId": 108,
+            "disease_id": 3,
+            "vaccineId": 108,
+            "stopDate": "2026-01-01",
+            "startDate": "2025-12-15",
+            "endDate": "2025-12-25",
+            "notes": "Booster campaign for rubella.",
+            "status": "Completed",
+            "isActive": true
+          },
+          "source": "parentDeclaration",
+          "vaccinatedAt": "2025-12-20T10:00:00Z",
+          "notes": "Rubella booster declared by parent",
+          "isActive": true
+        }
+      ]
+    }
+  ],
   "latest_vaccination_campaign": [
     {
-      "parentId": "PR0001",
       "campaign": {
         "campaignId": 101,
         "disease": {

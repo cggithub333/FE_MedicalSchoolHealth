@@ -1,7 +1,6 @@
 {
   "latest_vaccination_campaign": [
     {
-      "parentId": "PR0001",
       "campaign": {
         "campaignId": 101,
         "disease": {

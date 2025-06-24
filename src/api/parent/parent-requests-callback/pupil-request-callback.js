@@ -12,3 +12,7 @@ export const getSurveyByPupilId = async (pupilId) => {
 export const getVaccinationSurvey = async () => {
   return Request.get('vaccination_survey_by_parentId');
 }
+
+export const getVaccinationHistoryByPupilId = async (pupilId) => {
+  return Request.get(`vaccination-history-by-pupilid?pupilId=${pupilId}`);
+}
