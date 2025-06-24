@@ -3,17 +3,6 @@ import { useEffect, useState } from 'react';
 import { fetchSurveyByPupilId } from '../../api/parent/parent-requests-action/pupil-request-action';
 import usePupils from './usePupils';
 
-import { Base64 } from 'js-base64';
-
-const savePupilInforToLocalStorage = (pupil) => {
-  window.localStorage.setItem('pupilId', pupil.pupilId);
-  window.localStorage.setItem('pupilGender', pupil.gender);
-  window.localStorage.setItem('pupilName', `${pupil.lastName} ${pupil.firstName}}`);
-  const encodedInfor = Base64.encode(JSON.stringify(pupil));
-  window.localStorage.setItem('pupilInfor', encodedInfor);
-  location.reload();
-} 
-
 const useSurveyByPupilId = () => {
 
   // get pupilId from localStorage:

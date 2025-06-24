@@ -6,7 +6,7 @@ export const getAllPupils = async () => {
 }
 
 export const getSurveyByPupilId = async (pupilId) => {
-  return Request.get(`surveys/?pupilId=${pupilId}`);
+  return Request.get(`health-check-consent-form/?pupilId=${pupilId}`);
 }
 
 export const getVaccinationSurvey = async () => {

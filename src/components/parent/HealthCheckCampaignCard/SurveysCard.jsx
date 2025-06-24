@@ -134,9 +134,6 @@ export default function SurveysCard({ survey }) {
 
       return updated;
     })
-
-    // hide the form:
-    setExpanded(false);
   }
 
   return (
@@ -288,7 +285,7 @@ export default function SurveysCard({ survey }) {
                         <Box component={'div'}>
                           <Alert severity="warning" sx={styleCheckedWarningMsg}>
                             <Typography sx={{ display: "flex", alignItems: 'center', gap: "10px" }}>
-                              <span>By checking this box, you consent to your child receiving the vaccination administered by the school health team as part of the official vaccination campaign.</span>
+                              <span>By checking these box, you consent to your child receiving the vaccination administered by the school health team as part of the official vaccination campaign.</span>
                             </Typography>
                           </Alert>
                           <Alert severity="warning" sx={styleCheckedWarningMsg}>
