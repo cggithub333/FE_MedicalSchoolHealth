@@ -15,15 +15,17 @@ import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Alert, Box, Button, FormControl } from '@mui/material';
-
-// import HealthCheckSurveyImage from '../../../assets/images/health_check_survey_image.png';
 import WarningIcon from '@mui/icons-material/ReportGmailerrorred';
 import { RiInformation2Line as InformationIcon } from "react-icons/ri";
 import ListItemIcon from '@mui/icons-material/IndeterminateCheckBox';
-
-// material UI table, checkbox:
 import { TableBody, TableContainer, TableHead, TableRow, Table, TableCell } from '@mui/material';
 import { Checkbox } from '@mui/material';
+import useLatestVaccinationCampaign from '../../../hooks/parent/useLatestVaccinationCampaign';
+
+
+import { updateVaccinationConsentFormStatus } from '../../../api/parent/parent-requests-action/parent-request-action';
+
+import { formatDateToDDMMYYYY } from '../../../utils/date-utils';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -52,21 +54,49 @@ const ExpandMore = styled((props) => {
 export default function SurveysCard({ survey }) {
   const [expanded, setExpanded] = React.useState(false);
   const [showWarning, setShowWarning] = React.useState(false);
+  const { latestVaccinationCampaign, isLoading } = useLatestVaccinationCampaign();
+
+  // Extract campaign data from latestVaccinationCampaign
+  let campaignData = null;
+  if (latestVaccinationCampaign) {
+    campaignData = (latestVaccinationCampaign.campaign) ? latestVaccinationCampaign.campaign : null;    
+  }
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
   const handleFormSubmit = (e) => {
-    e.preventDefault();
-    // submit logic removed
-    alert('Form submitted successfully!');
+    // Update vaccination consent form status:
+    try {
+      if (survey) {
+        const newStatus = "Approved"
+        updateVaccinationConsentFormStatus(survey.id, newStatus);
+        alert("Survey submitted successfully!")
+      } 
+      else {
+        throw new Error("SurveysCard.jsx: Can't found `survey`!");
+      }
+    }
+    catch(error) {
+      console.error("Can't update vaccination consent form status:", error);
+      alert("Survey submitted failed!")
+    }
+
     setExpanded(false);
   };
 
-  const handleClearClick = (e) => {
-    // clear logic removed
-    setExpanded(false);
+  // Stub for reject button click handler
+  const handleRejectButtonClick = (e) => {
+    // TODO: Implement reject logic here
+  };
+
+  if (isLoading) {
+    return <div>Loading campaign information...</div>;
+  }
+
+  if (!campaignData) {
+    return <div>No vaccination campaign data available.</div>;
   }
 
   return (
@@ -92,15 +122,14 @@ export default function SurveysCard({ survey }) {
         alt="Paella dish"
       /> */}
       <CardContent>
-        <Typography variant="h1" sx={styleHealthCheckSurveyTitle}>
+        <Typography variant="h1" sx={styleHealthCheckSurveyTitle(survey)}>
           <span>Vaccination Survey Required</span>
           <span><InformationIcon /></span>
         </Typography>
         <Typography variant="p" sx={{ color: 'text.secondary', display: "flex", gap: "10px", alignItems: "center" }}>
           <ListItemIcon />
           <span>
-            We need your confirmation for an upcomming vaccination campaign {` `}
-            {survey.healthCheckCampaignAddress && <span>at {survey.healthCheckCampaignAddress}</span>}.
+            We need your confirmation for an upcoming vaccination campaign {campaignData.name && <span>({campaignData.name})</span>}.
           </span>
         </Typography>
         <br />
@@ -113,15 +142,30 @@ export default function SurveysCard({ survey }) {
         <Alert
           sx={styleWarningMsg}
           severity="warning"
-        >Form Deadline: {survey.deadlineDate}</Alert>
+        >Form Deadline: {formatDateToDDMMYYYY(campaignData.consentFormDeadline)}</Alert>
       </CardContent>
       <CardActions disableSpacing>
         {/* <IconButton aria-label="add to favorites">
           <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label="share">
-          <ShareIcon />
-        </IconButton> */}
+        </IconButton>*/}
+        {
+          survey && survey.status && (
+            <IconButton aria-label="share" sx={{
+              borderRadius: "8px",
+              boxShadow: "0 2px 2px 2px rgba(0, 0, 0, 0.1)",
+              fontSize: "17px",
+              background: (survey.status === "Approved") ? "green" : "red",
+              "&:hover": {
+                background: "orange"
+              }
+            }}
+            >
+                <span style={{ color: "#fff" }}>{survey.status}</span>
+            </IconButton>
+          )
+        }
+
+        
         <ExpandMore
           expand={expanded}
           onClick={handleExpandClick}
@@ -143,7 +187,7 @@ export default function SurveysCard({ survey }) {
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent sx={{ background: "#a7c5d2", color: "#fff", margin: "10px", borderRadius: "10px" }}>
-          {/* Campaign infromation */}
+          {/* Campaign information */}
           <Typography sx={styleTitleDetail}>Campaign Information</Typography>
           <TableContainer sx={styleTableCampaignInfor}>
             <Table>
@@ -155,20 +199,32 @@ export default function SurveysCard({ survey }) {
               </TableHead>
               <TableBody>
                 <TableRow>
-                  <TableCell>Address</TableCell>
-                  <TableCell>{survey.healthCheckCampaignAddress}</TableCell>
+                  <TableCell>Disease</TableCell>
+                  <TableCell>{campaignData.disease?.name}</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell>From date</TableCell>
-                  <TableCell>{survey.startExaminationDate}</TableCell>
+                  <TableCell>Vaccine</TableCell>
+                  <TableCell>{campaignData.vaccine?.name}</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell>To date</TableCell>
-                  <TableCell>{survey.endExaminationDate}</TableCell>
+                  <TableCell>Manufacturer</TableCell>
+                  <TableCell>{campaignData.vaccine?.manufacturer}</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell>School year</TableCell>
-                  <TableCell>{survey.schoolYear}</TableCell>
+                  <TableCell>From Date</TableCell>
+                  <TableCell>{formatDateToDDMMYYYY(campaignData.startDate)}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>To Date</TableCell>
+                  <TableCell>{formatDateToDDMMYYYY(campaignData.endDate)}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Status</TableCell>
+                  <TableCell>{campaignData.campaignStatus}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Notes</TableCell>
+                  <TableCell>{campaignData.notes}</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -183,20 +239,40 @@ export default function SurveysCard({ survey }) {
               id="consent-checkbox"
             />
             <label htmlFor="consent-checkbox" style={{ color: '#fff', fontSize: '16px', cursor: 'pointer' }}>
-              I confirm I have read and understood the vaccination information
+              {survey?.status === "Approved"
+                ? "I want to reject vaccination form"
+                : "I confirm I have read and understood the vaccination information"
+              }
             </label>
           </Box>
           {showWarning && (
-            <Alert severity="warning" sx={{ mt: 2, mb: 2 }}>
-              If you do not have sufficient information about the vaccine, please ensure you understand it clearly before submitting. By confirming, you consent to your child receiving the vaccination.
-            </Alert>
+            <>
+              {survey?.status === "Approved" ? (
+                <Alert severity="warning" sx={{ mt: 2, mb: 2 }}>
+                  By clicking Reject, you are withdrawing your consent for your child to receive this vaccination. Please ensure you understand the implications before proceeding.
+                </Alert>
+              ) : (
+                <>
+                  <Alert severity="warning" sx={{ mt: 2, mb: 2 }}>
+                    If you do not have sufficient information about the vaccine, please ensure you understand it clearly before submitting.
+                  </Alert>
+                  <Alert severity="warning" sx={{ mt: 2, mb: 2 }}>
+                    By confirming, you consent to your child receiving the vaccination.
+                  </Alert>
+                </>
+              )}
+            </>
           )}
 
           {/* Form with Submit button only visible if checkbox is checked */}
           <FormControl component={'form'} onSubmit={handleFormSubmit} sx={{ width: '100%', marginTop: '30px' }}>
             <Box sx={{ display: "flex", justifyContent: "center", marginTop: "25px", gap: "20px" }}>
               {showWarning && (
-                <Button type={'submit'} variant="contained" color="primary" sx={{ width: "20%" }}>Submit</Button>
+                survey?.status === "Approved" ? (
+                  <Button variant="contained" color="error" sx={{ width: "20%" }} onClick={handleRejectButtonClick}>Reject</Button>
+                ) : (
+                  <Button type={'submit'} variant="contained" color="primary" sx={{ width: "20%" }}>Submit</Button>
+                )
               )}
             </Box>
           </FormControl>
@@ -217,20 +293,22 @@ const styleCard = {
 }
 
 // style for the biggest detail title:
-const styleHealthCheckSurveyTitle = {
-  color: 'text.secondary',
-  fontSize: "35px",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  gap: "10px",
-  fontStyle: "normal",
-  color: "orangered",
-  fontWeight: "600",
-  fontFamily: "Open Sans",
-  marginBottom: "20px",
-  "& span:nth-of-type(2)": {
-    paddingTop: "7px"
+const styleHealthCheckSurveyTitle = (survey) => {
+  const colorStr = (survey?.status ? (survey.status === "Approved" ? "green" : "red") : "black");
+  return {
+    color: colorStr,
+    fontSize: "35px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: "10px",
+    fontStyle: "normal",
+    fontWeight: "600",
+    fontFamily: "Open Sans",
+    marginBottom: "20px",
+    "& span:nth-of-type(2)": {
+      paddingTop: "7px"
+    }
   }
 }
 
@@ -316,15 +394,4 @@ const styleDiseaseCheckBox = {
 
 // submit button, clear button:
 const styleSubmitButton = {
-}
-
-const styleClearButton = {
-
-}
-
-// Add a placeholder function for submitting to the server
-function submitSurvey(survey) {
-  // TODO: Implement actual API call here
-  // Example: fetch('/api/submit-survey', { method: 'POST', body: JSON.stringify(survey) })
-  console.log('Submitting survey to server:', survey);
 }

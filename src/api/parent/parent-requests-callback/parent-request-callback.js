@@ -32,4 +32,19 @@ export const updateSentitiveDisease = async (data) => {
   }
 */
 
+//vaccination campaign:
+export const getLatestVaccinationCampaign = async () => {
 
+  return Request.get('latest_vaccination_campaign');
+}
+
+export const editVaccinationConsentFormStatus = async (consentFormId, status) => {
+  return Request.patch(`vaccination_survey_by_parentId/${consentFormId}`,
+    { status: status },
+    {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+  );
+}

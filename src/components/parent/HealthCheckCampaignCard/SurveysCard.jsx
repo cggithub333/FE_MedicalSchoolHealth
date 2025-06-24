@@ -25,6 +25,9 @@ import ListItemIcon from '@mui/icons-material/IndeterminateCheckBox';
 import { TableBody, TableContainer, TableHead, TableRow, Table, TableCell } from '@mui/material';
 import { Checkbox } from '@mui/material';
 
+// date utils;
+import { formatDateToDDMMYYYY } from '../../../utils/date-utils';
+
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
   return <IconButton {...other} />;
@@ -228,11 +231,11 @@ export default function SurveysCard({ survey }) {
                 </TableRow>
                 <TableRow>
                   <TableCell>From date</TableCell>
-                  <TableCell>{survey.startExaminationDate}</TableCell>
+                  <TableCell>{formatDateToDDMMYYYY(survey.startExaminationDate)}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>To date</TableCell>
-                  <TableCell>{survey.endExaminationDate}</TableCell>
+                  <TableCell>{formatDateToDDMMYYYY(survey.endExaminationDate)}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>School year</TableCell>

@@ -1,10 +1,9 @@
 import { Grid } from '@mui/material';
 
-import HealthCheckCampaignCard from '../../../components/parent/HealthCheckCampaignCard/CampaignsCard';
+import HealthCheckCampaignCard from '../../../components/parent/HealthCheckCampaignCard/HealthCheckCampaignsCard';
 
 import Breadcrumb from '../../../components/magic/Breadcrumb/CustomBreadcrumb';
 import CustomTittle from '../../../components/magic/CustomTittle/CustomTitle';
-
 
 import useLatestHealthCheckCampaign from '../../../hooks/parent/useLatestHealthCheckCampaign';
 
@@ -13,7 +12,7 @@ const Campaigns = () => {
   const { latestHealthCheckCampaign, isLoading } = useLatestHealthCheckCampaign();
 
   return (
-    <div>
+    <div style={{ background: "#e6f8f9", height: "100vh", paddingTop: "20px", paddingBottom: "50px"}}>
       <Grid container>
         <Grid item size={{ xs: 6 }}>
           <Breadcrumb breadcrumbPairs={breadcrumbPairs}/>

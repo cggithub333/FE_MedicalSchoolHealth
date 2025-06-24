@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -6,35 +5,34 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { Alert, Grid } from '@mui/material';
-
-import VaccinationDialog from './VaccinationDialogButton';
-
-import VaccinationCampaignImg from '../../../assets/images/vaccination_campaign.jpg'
+import { Alert } from '@mui/material';
+import { Grid } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-export default function VaccinationCampaignCard({ latestVaccinationCampaign }) {
+import HealthCheckImg from '../../../assets/images/health_check_image.png';
+import HealthCheckDialog from './HealthCheckDialog';
 
+export default function CampaignsCard({ latestHealthCheckCampaign }) {
   return (
     <Card sx={{ maxWidth: "600px", boxShadow: "0px 2px 2px 2px rgba(0, 0, 0, 0.1)" }}>
       <CardMedia
         component="img"
-        alt="vaccination campaign image"
+        alt="health check image"
         height="300"
-        image={VaccinationCampaignImg}
+        image={HealthCheckImg}
       />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
           Ongoing vaccination campaign
         </Typography>
         <Alert severity="success">
-          "The Power of a Shot: Why Vaccination Matters."
+          "These efforts are made to ensure the best <br/>possible health and well-being of your children."
         </Alert>
       </CardContent>
       <CardActions>
-        <Grid container justifyContent='space-between'spacing={'15px'} >
+        <Grid container justifyContent='space-between' spacing={'15px'} >
           <Grid item>
-            <VaccinationDialog latestVaccinationCampaign={latestVaccinationCampaign}/>
+            <HealthCheckDialog latestHealthCheckCampaign={latestHealthCheckCampaign} />
           </Grid>
           <Grid item>
             <Link to={'../schedule'}>
@@ -54,9 +52,9 @@ export default function VaccinationCampaignCard({ latestVaccinationCampaign }) {
 
 const styleActionBtn = {
   fontSize: "16px",
-  transition: "all 0.3s ease", 
+  transition: "all 0.3s ease",
   "&:hover": {
-    background:"#5e79b8",
+    background: "#5e79b8",
     color: "#fff"
   }
 }

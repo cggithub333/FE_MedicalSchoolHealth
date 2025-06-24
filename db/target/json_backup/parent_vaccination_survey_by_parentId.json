@@ -1,0 +1,22 @@
+{
+  "vaccination_survey_by_parentId": [
+    {
+      "id": 28,
+      "respondedAt": "2025-06-30T10:15:00",
+      "status": "Approved",
+      "isActive": true,
+      "pupilId": "PP0001",
+      "doseQuantity": 2,
+      "currDoseQuantity": 1
+    },
+    {
+      "id": 35,
+      "respondedAt": "2025-06-29T09:00:00",
+      "status": "Rejected",
+      "isActive": true,
+      "pupilId": "PP0002",
+      "doseQuantity": 3,
+      "currDoseQuantity": 2
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "getallcampaign": [
     {
-      "id": 1,
+      "id": "1",
       "address": "123 Main St, Cityville",
       "startExaminationDate": "2022-07-01T08:00:00Z",
       "endExaminationDate": "2022-07-03T17:00:00Z",
@@ -12,7 +12,7 @@
       "isActive": true
     },
     {
-      "id": 2,
+      "id": "2",
       "address": "456 Elm St, Townsburg",
       "startExaminationDate": "2023-08-10T08:00:00Z",
       "endExaminationDate": "2023-08-12T17:00:00Z",
@@ -23,7 +23,7 @@
       "isActive": true
     },
     {
-      "id": 3,
+      "id": "3",
       "address": "789 Oak Ave, Villageton",
       "startExaminationDate": "2024-09-15T08:00:00Z",
       "endExaminationDate": "2024-09-17T17:00:00Z",
@@ -34,7 +34,7 @@
       "isActive": true
     },
     {
-      "id": 4,
+      "id": "4",
       "address": "123 Main St, Cityville",
       "startExaminationDate": "2025-07-01T08:00:00Z",
       "endExaminationDate": "2025-07-03T17:00:00Z",
@@ -56,7 +56,8 @@
       "endDate": "2025-06-30",
       "notes": "Annual measles vaccination campaign for all grades.",
       "status": "Completed",
-      "isActive": true
+      "isActive": true,
+      "id": "c508"
     },
     {
       "vaccinationCampaign": 2,
@@ -68,7 +69,8 @@
       "endDate": "2025-07-25",
       "notes": "Mumps vaccination campaign for grade 2.",
       "status": "Completed",
-      "isActive": true
+      "isActive": true,
+      "id": "83c1"
     },
     {
       "vaccinationCampaign": 3,
@@ -80,7 +82,8 @@
       "endDate": "2025-08-20",
       "notes": "Rubella vaccination campaign for grade 3.",
       "status": "Completed",
-      "isActive": true
+      "isActive": true,
+      "id": "711a"
     },
     {
       "vaccinationCampaign": 4,
@@ -92,7 +95,8 @@
       "endDate": "2025-09-25",
       "notes": "Hepatitis B vaccination campaign for grade 4.",
       "status": "Completed",
-      "isActive": true
+      "isActive": true,
+      "id": "dfa4"
     }
   ],
   "getPupilsApprovedByGrade": [
@@ -110,7 +114,8 @@
       "vaccineId": 101,
       "respondedAt": "2025-06-10T09:00:00",
       "status": "Approved",
-      "Grade": 1
+      "Grade": 1,
+      "id": "7b50"
     },
     {
       "pupilId": "PP00002",
@@ -126,7 +131,8 @@
       "vaccineId": 101,
       "respondedAt": "2025-06-11T10:30:00",
       "status": "Approved",
-      "Grade": 2
+      "Grade": 2,
+      "id": "dcd8"
     },
     {
       "pupilId": "PP00003",
@@ -142,7 +148,8 @@
       "vaccineId": 101,
       "respondedAt": "2025-06-12T08:45:00",
       "status": "Approved",
-      "Grade": 3
+      "Grade": 3,
+      "id": "8599"
     },
     {
       "pupilId": "PP00004",
@@ -158,7 +165,8 @@
       "vaccineId": 101,
       "respondedAt": "2025-06-13T09:15:00",
       "status": "Approved",
-      "Grade": 4
+      "Grade": 4,
+      "id": "c2c7"
     },
     {
       "pupilId": "PP00005",
@@ -174,7 +182,8 @@
       "vaccineId": 101,
       "respondedAt": "2025-06-14T10:00:00",
       "status": "Approved",
-      "Grade": 5
+      "Grade": 5,
+      "id": "3d87"
     }
   ],
   "VaccinationGetDisease": [
@@ -183,35 +192,40 @@
       "name": "Measles",
       "description": "A highly contagious viral disease causing fever and rash.",
       "isInjectedVaccine": true,
-      "doseQuantity": 2
+      "doseQuantity": 2,
+      "id": "e043"
     },
     {
       "disease_id": 2,
       "name": "Mumps",
       "description": "A viral infection that affects the salivary glands.",
       "isInjectedVaccine": true,
-      "doseQuantity": 2
+      "doseQuantity": 2,
+      "id": "5628"
     },
     {
       "disease_id": 3,
       "name": "Rubella",
       "description": "A contagious viral infection best known by its distinctive red rash.",
       "isInjectedVaccine": true,
-      "doseQuantity": 1
+      "doseQuantity": 1,
+      "id": "6dfb"
     },
     {
       "disease_id": 4,
       "name": "Hepatitis B",
       "description": "A serious liver infection caused by the hepatitis B virus.",
       "isInjectedVaccine": true,
-      "doseQuantity": 3
+      "doseQuantity": 3,
+      "id": "e90b"
     },
     {
       "disease_id": 5,
       "name": "Diphtheria",
       "description": "A serious bacterial infection affecting the mucous membranes of the throat and nose.",
       "isInjectedVaccine": true,
-      "doseQuantity": 3
+      "doseQuantity": 3,
+      "id": "cee6"
     }
   ],
   "VaccinationGetVaccineByDisease": [
@@ -228,509 +242,46 @@
           "doseNumber": 2,
           "isActive": true
         }
-      ]
+      ],
+      "id": "81c8"
     }
   ],
-  "pupils": [
+  "parent_pupils": [
     {
       "pupilId": "PP0001",
-      "dateOfBirth": "2017-09-01",
-      "gender": "Male",
-      "lastName": "Nguyen",
+      "classId": 101,
+      "dateOfBirth": "2012-05-14",
+      "gender": "M",
+      "lastName": "Nguyen Van",
       "firstName": "An",
-      "avatar": "avatar.png",
+      "avatar": "avatar1.png",
+      "grade": "1",
       "isActive": true,
-      "Grade": 1
+      "id": "2a20"
     },
     {
       "pupilId": "PP0002",
-      "dateOfBirth": "2017-09-02",
-      "gender": "Female",
-      "lastName": "Tran",
-      "firstName": "Hong",
-      "avatar": "girl.svg",
+      "classId": 102,
+      "dateOfBirth": "2013-08-22",
+      "gender": "F",
+      "lastName": "Nguyen Thi",
+      "firstName": "Binh",
+      "avatar": "avatar2.png",
+      "grade": "2",
       "isActive": true,
-      "Grade": 1
+      "id": "7141"
     },
     {
       "pupilId": "PP0003",
-      "dateOfBirth": "2017-09-03",
-      "gender": "Male",
-      "lastName": "Le",
-      "firstName": "Bao",
-      "avatar": "boy.svg",
-      "isActive": true,
-      "Grade": 1
-    },
-    {
-      "pupilId": "PP0004",
-      "dateOfBirth": "2017-09-04",
-      "gender": "Female",
-      "lastName": "Pham",
-      "firstName": "Linh",
-      "avatar": "girl.svg",
-      "isActive": true,
-      "Grade": 1
-    },
-    {
-      "pupilId": "PP0005",
-      "dateOfBirth": "2017-09-05",
-      "gender": "Male",
-      "lastName": "Hoang",
-      "firstName": "Minh",
-      "avatar": "boy.svg",
-      "isActive": true,
-      "Grade": 1
-    },
-    {
-      "pupilId": "PP0006",
-      "dateOfBirth": "2017-09-06",
-      "gender": "Female",
-      "lastName": "Do",
-      "firstName": "Mai",
-      "avatar": "girl.svg",
-      "isActive": true,
-      "Grade": 1
-    },
-    {
-      "pupilId": "PP0007",
-      "dateOfBirth": "2017-09-07",
-      "gender": "Male",
-      "lastName": "Bui",
-      "firstName": "Khanh",
-      "avatar": "boy.svg",
-      "isActive": true,
-      "Grade": 1
-    },
-    {
-      "pupilId": "PP0008",
-      "dateOfBirth": "2017-09-08",
-      "gender": "Female",
-      "lastName": "Vu",
-      "firstName": "Yen",
-      "avatar": "girl.svg",
-      "isActive": true,
-      "Grade": 1
-    },
-    {
-      "pupilId": "PP0009",
-      "dateOfBirth": "2017-09-09",
-      "gender": "Male",
-      "lastName": "Dang",
-      "firstName": "Hieu",
-      "avatar": "boy.svg",
-      "isActive": true,
-      "Grade": 1
-    },
-    {
-      "pupilId": "PP0010",
-      "dateOfBirth": "2017-09-10",
-      "gender": "Female",
-      "lastName": "Ngo",
-      "firstName": "Thao",
-      "avatar": "girl.svg",
-      "isActive": true,
-      "Grade": 1
-    },
-    {
-      "pupilId": "PP0011",
-      "dateOfBirth": "2016-09-01",
-      "gender": "Male",
-      "lastName": "Nguyen",
-      "firstName": "Binh",
-      "avatar": "avatar.png",
-      "isActive": true,
-      "Grade": 2
-    },
-    {
-      "pupilId": "PP0012",
-      "dateOfBirth": "2016-09-02",
-      "gender": "Female",
-      "lastName": "Tran",
-      "firstName": "Lan",
-      "avatar": "girl.svg",
-      "isActive": true,
-      "Grade": 2
-    },
-    {
-      "pupilId": "PP0013",
-      "dateOfBirth": "2016-09-03",
-      "gender": "Male",
-      "lastName": "Le",
-      "firstName": "Nam",
-      "avatar": "boy.svg",
-      "isActive": true,
-      "Grade": 2
-    },
-    {
-      "pupilId": "PP0014",
-      "dateOfBirth": "2016-09-04",
-      "gender": "Female",
-      "lastName": "Pham",
-      "firstName": "Thu",
-      "avatar": "girl.svg",
-      "isActive": true,
-      "Grade": 2
-    },
-    {
-      "pupilId": "PP0015",
-      "dateOfBirth": "2016-09-05",
-      "gender": "Male",
-      "lastName": "Hoang",
-      "firstName": "Long",
-      "avatar": "boy.svg",
-      "isActive": true,
-      "Grade": 2
-    },
-    {
-      "pupilId": "PP0016",
-      "dateOfBirth": "2016-09-06",
-      "gender": "Female",
-      "lastName": "Do",
-      "firstName": "Anh",
-      "avatar": "girl.svg",
-      "isActive": true,
-      "Grade": 2
-    },
-    {
-      "pupilId": "PP0017",
-      "dateOfBirth": "2016-09-07",
-      "gender": "Male",
-      "lastName": "Bui",
-      "firstName": "Quang",
-      "avatar": "boy.svg",
-      "isActive": true,
-      "Grade": 2
-    },
-    {
-      "pupilId": "PP0018",
-      "dateOfBirth": "2016-09-08",
-      "gender": "Female",
-      "lastName": "Vu",
-      "firstName": "Hoa",
-      "avatar": "girl.svg",
-      "isActive": true,
-      "Grade": 2
-    },
-    {
-      "pupilId": "PP0019",
-      "dateOfBirth": "2016-09-09",
-      "gender": "Male",
-      "lastName": "Dang",
-      "firstName": "Son",
-      "avatar": "boy.svg",
-      "isActive": true,
-      "Grade": 2
-    },
-    {
-      "pupilId": "PP0020",
-      "dateOfBirth": "2016-09-10",
-      "gender": "Female",
-      "lastName": "Ngo",
-      "firstName": "Dao",
-      "avatar": "girl.svg",
-      "isActive": true,
-      "Grade": 2
-    },
-    {
-      "pupilId": "PP0021",
-      "dateOfBirth": "2015-09-01",
-      "gender": "Male",
-      "lastName": "Nguyen",
-      "firstName": "Cuong",
-      "avatar": "avatar.png",
-      "isActive": true,
-      "Grade": 3
-    },
-    {
-      "pupilId": "PP0022",
-      "dateOfBirth": "2015-09-02",
-      "gender": "Female",
-      "lastName": "Tran",
-      "firstName": "Hien",
-      "avatar": "girl.svg",
-      "isActive": true,
-      "Grade": 3
-    },
-    {
-      "pupilId": "PP0023",
-      "dateOfBirth": "2015-09-03",
-      "gender": "Male",
-      "lastName": "Le",
-      "firstName": "Tuan",
-      "avatar": "boy.svg",
-      "isActive": true,
-      "Grade": 3
-    },
-    {
-      "pupilId": "PP0024",
-      "dateOfBirth": "2015-09-04",
-      "gender": "Female",
-      "lastName": "Pham",
-      "firstName": "My",
-      "avatar": "girl.svg",
-      "isActive": true,
-      "Grade": 3
-    },
-    {
-      "pupilId": "PP0025",
-      "dateOfBirth": "2015-09-05",
-      "gender": "Male",
-      "lastName": "Hoang",
-      "firstName": "Phat",
-      "avatar": "boy.svg",
-      "isActive": true,
-      "Grade": 3
-    },
-    {
-      "pupilId": "PP0026",
-      "dateOfBirth": "2015-09-06",
-      "gender": "Female",
-      "lastName": "Do",
-      "firstName": "Linh",
-      "avatar": "girl.svg",
-      "isActive": true,
-      "Grade": 3
-    },
-    {
-      "pupilId": "PP0027",
-      "dateOfBirth": "2015-09-07",
-      "gender": "Male",
-      "lastName": "Bui",
-      "firstName": "Duc",
-      "avatar": "boy.svg",
-      "isActive": true,
-      "Grade": 3
-    },
-    {
-      "pupilId": "PP0028",
-      "dateOfBirth": "2015-09-08",
-      "gender": "Female",
-      "lastName": "Vu",
-      "firstName": "Trang",
-      "avatar": "girl.svg",
-      "isActive": true,
-      "Grade": 3
-    },
-    {
-      "pupilId": "PP0029",
-      "dateOfBirth": "2015-09-09",
-      "gender": "Male",
-      "lastName": "Dang",
-      "firstName": "Kiet",
-      "avatar": "boy.svg",
-      "isActive": true,
-      "Grade": 3
-    },
-    {
-      "pupilId": "PP0030",
-      "dateOfBirth": "2015-09-10",
-      "gender": "Female",
-      "lastName": "Ngo",
-      "firstName": "Nhi",
-      "avatar": "girl.svg",
-      "isActive": true,
-      "Grade": 3
-    },
-    {
-      "pupilId": "PP0031",
-      "dateOfBirth": "2014-09-01",
-      "gender": "Male",
-      "lastName": "Nguyen",
-      "firstName": "Hao",
-      "avatar": "avatar.png",
-      "isActive": true,
-      "Grade": 4
-    },
-    {
-      "pupilId": "PP0032",
-      "dateOfBirth": "2014-09-02",
-      "gender": "Female",
-      "lastName": "Tran",
-      "firstName": "Quynh",
-      "avatar": "girl.svg",
-      "isActive": true,
-      "Grade": 4
-    },
-    {
-      "pupilId": "PP0033",
-      "dateOfBirth": "2014-09-03",
-      "gender": "Male",
-      "lastName": "Le",
-      "firstName": "Hieu",
-      "avatar": "boy.svg",
-      "isActive": true,
-      "Grade": 4
-    },
-    {
-      "pupilId": "PP0034",
-      "dateOfBirth": "2014-09-04",
-      "gender": "Female",
-      "lastName": "Pham",
-      "firstName": "Vy",
-      "avatar": "girl.svg",
-      "isActive": true,
-      "Grade": 4
-    },
-    {
-      "pupilId": "PP0035",
-      "dateOfBirth": "2014-09-05",
-      "gender": "Male",
-      "lastName": "Hoang",
-      "firstName": "Dat",
-      "avatar": "boy.svg",
-      "isActive": true,
-      "Grade": 4
-    },
-    {
-      "pupilId": "PP0036",
-      "dateOfBirth": "2014-09-06",
-      "gender": "Female",
-      "lastName": "Do",
-      "firstName": "Cam",
-      "avatar": "girl.svg",
-      "isActive": true,
-      "Grade": 4
-    },
-    {
-      "pupilId": "PP0037",
-      "dateOfBirth": "2014-09-07",
-      "gender": "Male",
-      "lastName": "Bui",
-      "firstName": "Tien",
-      "avatar": "boy.svg",
-      "isActive": true,
-      "Grade": 4
-    },
-    {
-      "pupilId": "PP0038",
-      "dateOfBirth": "2014-09-08",
-      "gender": "Female",
-      "lastName": "Vu",
-      "firstName": "Dao",
-      "avatar": "girl.svg",
-      "isActive": true,
-      "Grade": 4
-    },
-    {
-      "pupilId": "PP0039",
-      "dateOfBirth": "2014-09-09",
-      "gender": "Male",
-      "lastName": "Dang",
-      "firstName": "Phuc",
-      "avatar": "boy.svg",
-      "isActive": true,
-      "Grade": 4
-    },
-    {
-      "pupilId": "PP0040",
-      "dateOfBirth": "2014-09-10",
-      "gender": "Female",
-      "lastName": "Ngo",
-      "firstName": "Luan",
-      "avatar": "girl.svg",
-      "isActive": true,
-      "Grade": 4
-    },
-    {
-      "pupilId": "PP0041",
-      "dateOfBirth": "2013-09-01",
-      "gender": "Male",
-      "lastName": "Nguyen",
-      "firstName": "Thanh",
-      "avatar": "avatar.png",
-      "isActive": true,
-      "Grade": 5
-    },
-    {
-      "pupilId": "PP0042",
-      "dateOfBirth": "2013-09-02",
-      "gender": "Female",
-      "lastName": "Tran",
-      "firstName": "Hanh",
-      "avatar": "girl.svg",
-      "isActive": true,
-      "Grade": 5
-    },
-    {
-      "pupilId": "PP0043",
-      "dateOfBirth": "2013-09-03",
-      "gender": "Male",
-      "lastName": "Le",
-      "firstName": "Khoa",
-      "avatar": "boy.svg",
-      "isActive": true,
-      "Grade": 5
-    },
-    {
-      "pupilId": "PP0044",
-      "dateOfBirth": "2013-09-04",
-      "gender": "Female",
-      "lastName": "Pham",
-      "firstName": "Tuyet",
-      "avatar": "girl.svg",
-      "isActive": true,
-      "Grade": 5
-    },
-    {
-      "pupilId": "PP0045",
-      "dateOfBirth": "2013-09-05",
-      "gender": "Male",
-      "lastName": "Hoang",
-      "firstName": "Duy",
-      "avatar": "boy.svg",
-      "isActive": true,
-      "Grade": 5
-    },
-    {
-      "pupilId": "PP0046",
-      "dateOfBirth": "2013-09-06",
-      "gender": "Female",
-      "lastName": "Do",
-      "firstName": "Phuong",
-      "avatar": "girl.svg",
-      "isActive": true,
-      "Grade": 5
-    },
-    {
-      "pupilId": "PP0047",
-      "dateOfBirth": "2013-09-07",
-      "gender": "Male",
-      "lastName": "Bui",
-      "firstName": "Hao",
-      "avatar": "boy.svg",
-      "isActive": true,
-      "Grade": 5
-    },
-    {
-      "pupilId": "PP0048",
-      "dateOfBirth": "2013-09-08",
-      "gender": "Female",
-      "lastName": "Vu",
-      "firstName": "Minh",
-      "avatar": "girl.svg",
-      "isActive": true,
-      "Grade": 5
-    },
-    {
-      "pupilId": "PP0049",
-      "dateOfBirth": "2013-09-09",
-      "gender": "Male",
-      "lastName": "Dang",
-      "firstName": "Bao",
-      "avatar": "boy.svg",
-      "isActive": true,
-      "Grade": 5
-    },
-    {
-      "pupilId": "PP0050",
-      "dateOfBirth": "2013-09-10",
-      "gender": "Female",
-      "lastName": "Ngo",
-      "firstName": "Linh",
-      "avatar": "girl.svg",
-      "isActive": true,
-      "Grade": 5
+      "classId": 101,
+      "dateOfBirth": "2012-11-30",
+      "gender": "F",
+      "lastName": "Le Thi",
+      "firstName": "Chi",
+      "avatar": "avatar3.png",
+      "grade": "3",
+      "isActive": false,
+      "id": "7bc2"
     }
   ],
   "surveys": [
@@ -781,10 +332,11 @@
           "isInjectedVaccin": false,
           "isActive": false
         }
-      ]
+      ],
+      "id": "fa1e"
     },
     {
-      "id": 45,
+      "id": "45",
       "pupilId": "PP0002",
       "healthCheckCampaignId": 301,
       "healthCheckCampaignAddress": "ABC School",
@@ -833,7 +385,7 @@
       ]
     },
     {
-      "id": 23,
+      "id": "23",
       "pupilId": "PP0003",
       "healthCheckCampaignId": 301,
       "healthCheckCampaignAddress": "ABC School",
@@ -884,13 +436,13 @@
   ],
   "latest_campaign": [
     {
-      "id": 12,
+      "id": "12",
       "address": "123 Health St.",
       "startExaminationDate": "2025-06-02",
       "endExaminationDate": "2025-06-10",
       "description": "Annual health check for grade 1-5.",
       "created_at": "2025-04-01T10:00:00",
-      "status": "Pending",
+      "status": "Published",
       "isActive": true
     }
   ],
@@ -899,33 +451,57 @@
       "healthCheckCampaignId": 12,
       "startExaminationDate": "2025-06-02",
       "endExaminationDate": "2025-06-10",
-      "address": "123 Health St."
+      "address": "123 Health St.",
+      "id": "659c"
     }
   ],
-  "latest_vaccination_campaign": {
-    "parentId": "PR0001",
-    "campaign": {
-      "campaignId": 101,
-      "disease": {
-        "diseaseId": 1,
-        "name": "Measles, Mumps, and Rubella (MMR)",
-        "description": "A combined vaccine to protect against measles, mumps, and rubella.",
-        "doseRequired": 2
+  "latest_vaccination_campaign": [
+    {
+      "parentId": "PR0001",
+      "campaign": {
+        "campaignId": 101,
+        "disease": {
+          "diseaseId": 1,
+          "name": "Measles, Mumps, and Rubella (MMR)",
+          "description": "A combined vaccine to protect against measles, mumps, and rubella.",
+          "doseRequired": 2
+        },
+        "vaccine": {
+          "vaccineId": 301,
+          "name": "MMR-VaxPro",
+          "manufacturer": "PharmaHealth Co.",
+          "recommendedAge": "1 year and older",
+          "description": "Live vaccine for MMR prevention."
+        },
+        "notes": "Ensure your child has eaten before the injection day. Bring student ID.",
+        "consentFormDeadline": "2025-07-10",
+        "startDate": "2025-07-12",
+        "endDate": "2025-07-13",
+        "campaignStatus": "Published"
       },
-      "vaccine": {
-        "vaccineId": 301,
-        "name": "MMR-VaxPro",
-        "manufacturer": "PharmaHealth Co.",
-        "recommendedAge": "1 year and older",
-        "description": "Live vaccine for MMR prevention."
-      },
-      "notes": "Ensure your child has eaten before the injection day. Bring student ID.",
-      "consentFormDeadline": "2025-07-10",
-      "startDate": "2025-07-12",
-      "endDate": "2025-07-13",
-      "campaignStatus": "Published"
+      "id": "db73"
     }
-  },
+  ],
+  "vaccination_survey_by_parentId": [
+    {
+      "id": "28",
+      "respondedAt": "2025-06-30T10:15:00",
+      "status": "Approved",
+      "isActive": true,
+      "pupilId": "PP0001",
+      "doseQuantity": 2,
+      "currDoseQuantity": 1
+    },
+    {
+      "id": "35",
+      "respondedAt": "2025-06-29T09:00:00",
+      "status": "Approved",
+      "isActive": true,
+      "pupilId": "PP0002",
+      "doseQuantity": 3,
+      "currDoseQuantity": 2
+    }
+  ],
   "sensitive_disease": [
     {
       "pupil_id": "PP0001",
@@ -1027,12 +603,13 @@
           "disease_id": 24,
           "name": "Dị tật bẩm sinh cơ quan sinh dục"
         }
-      ]
+      ],
+      "id": "caa4"
     }
   ],
   "getnewestcampaign": [
     {
-      "id": 5,
+      "id": "5",
       "address": "123 Main St, Chu City",
       "startExaminationDate": "2026-07-01T08:00:00Z",
       "endExaminationDate": "2026-07-03T17:00:00Z",
@@ -1041,6 +618,558 @@
       "created_at": "2026-06-21T10:00:00Z",
       "status": "Pending",
       "isActive": true
+    }
+  ],
+  "pupils": [
+    {
+      "pupilId": "PP0001",
+      "dateOfBirth": "2017-09-01",
+      "gender": "Male",
+      "lastName": "Nguyen",
+      "firstName": "An",
+      "avatar": "avatar.png",
+      "isActive": true,
+      "Grade": 1,
+      "id": "cb3d"
+    },
+    {
+      "pupilId": "PP0002",
+      "dateOfBirth": "2017-09-02",
+      "gender": "Female",
+      "lastName": "Tran",
+      "firstName": "Hong",
+      "avatar": "girl.svg",
+      "isActive": true,
+      "Grade": 1,
+      "id": "85b9"
+    },
+    {
+      "pupilId": "PP0003",
+      "dateOfBirth": "2017-09-03",
+      "gender": "Male",
+      "lastName": "Le",
+      "firstName": "Bao",
+      "avatar": "boy.svg",
+      "isActive": true,
+      "Grade": 1,
+      "id": "0417"
+    },
+    {
+      "pupilId": "PP0004",
+      "dateOfBirth": "2017-09-04",
+      "gender": "Female",
+      "lastName": "Pham",
+      "firstName": "Linh",
+      "avatar": "girl.svg",
+      "isActive": true,
+      "Grade": 1,
+      "id": "2429"
+    },
+    {
+      "pupilId": "PP0005",
+      "dateOfBirth": "2017-09-05",
+      "gender": "Male",
+      "lastName": "Hoang",
+      "firstName": "Minh",
+      "avatar": "boy.svg",
+      "isActive": true,
+      "Grade": 1,
+      "id": "9e00"
+    },
+    {
+      "pupilId": "PP0006",
+      "dateOfBirth": "2017-09-06",
+      "gender": "Female",
+      "lastName": "Do",
+      "firstName": "Mai",
+      "avatar": "girl.svg",
+      "isActive": true,
+      "Grade": 1,
+      "id": "d0d8"
+    },
+    {
+      "pupilId": "PP0007",
+      "dateOfBirth": "2017-09-07",
+      "gender": "Male",
+      "lastName": "Bui",
+      "firstName": "Khanh",
+      "avatar": "boy.svg",
+      "isActive": true,
+      "Grade": 1,
+      "id": "0dfb"
+    },
+    {
+      "pupilId": "PP0008",
+      "dateOfBirth": "2017-09-08",
+      "gender": "Female",
+      "lastName": "Vu",
+      "firstName": "Yen",
+      "avatar": "girl.svg",
+      "isActive": true,
+      "Grade": 1,
+      "id": "0a0a"
+    },
+    {
+      "pupilId": "PP0009",
+      "dateOfBirth": "2017-09-09",
+      "gender": "Male",
+      "lastName": "Dang",
+      "firstName": "Hieu",
+      "avatar": "boy.svg",
+      "isActive": true,
+      "Grade": 1,
+      "id": "ff31"
+    },
+    {
+      "pupilId": "PP0010",
+      "dateOfBirth": "2017-09-10",
+      "gender": "Female",
+      "lastName": "Ngo",
+      "firstName": "Thao",
+      "avatar": "girl.svg",
+      "isActive": true,
+      "Grade": 1,
+      "id": "dd75"
+    },
+    {
+      "pupilId": "PP0011",
+      "dateOfBirth": "2016-09-01",
+      "gender": "Male",
+      "lastName": "Nguyen",
+      "firstName": "Binh",
+      "avatar": "avatar.png",
+      "isActive": true,
+      "Grade": 2,
+      "id": "7166"
+    },
+    {
+      "pupilId": "PP0012",
+      "dateOfBirth": "2016-09-02",
+      "gender": "Female",
+      "lastName": "Tran",
+      "firstName": "Lan",
+      "avatar": "girl.svg",
+      "isActive": true,
+      "Grade": 2,
+      "id": "4ee5"
+    },
+    {
+      "pupilId": "PP0013",
+      "dateOfBirth": "2016-09-03",
+      "gender": "Male",
+      "lastName": "Le",
+      "firstName": "Nam",
+      "avatar": "boy.svg",
+      "isActive": true,
+      "Grade": 2,
+      "id": "60d8"
+    },
+    {
+      "pupilId": "PP0014",
+      "dateOfBirth": "2016-09-04",
+      "gender": "Female",
+      "lastName": "Pham",
+      "firstName": "Thu",
+      "avatar": "girl.svg",
+      "isActive": true,
+      "Grade": 2,
+      "id": "06c0"
+    },
+    {
+      "pupilId": "PP0015",
+      "dateOfBirth": "2016-09-05",
+      "gender": "Male",
+      "lastName": "Hoang",
+      "firstName": "Long",
+      "avatar": "boy.svg",
+      "isActive": true,
+      "Grade": 2,
+      "id": "0dfa"
+    },
+    {
+      "pupilId": "PP0016",
+      "dateOfBirth": "2016-09-06",
+      "gender": "Female",
+      "lastName": "Do",
+      "firstName": "Anh",
+      "avatar": "girl.svg",
+      "isActive": true,
+      "Grade": 2,
+      "id": "095d"
+    },
+    {
+      "pupilId": "PP0017",
+      "dateOfBirth": "2016-09-07",
+      "gender": "Male",
+      "lastName": "Bui",
+      "firstName": "Quang",
+      "avatar": "boy.svg",
+      "isActive": true,
+      "Grade": 2,
+      "id": "17d3"
+    },
+    {
+      "pupilId": "PP0018",
+      "dateOfBirth": "2016-09-08",
+      "gender": "Female",
+      "lastName": "Vu",
+      "firstName": "Hoa",
+      "avatar": "girl.svg",
+      "isActive": true,
+      "Grade": 2,
+      "id": "47a5"
+    },
+    {
+      "pupilId": "PP0019",
+      "dateOfBirth": "2016-09-09",
+      "gender": "Male",
+      "lastName": "Dang",
+      "firstName": "Son",
+      "avatar": "boy.svg",
+      "isActive": true,
+      "Grade": 2,
+      "id": "8c50"
+    },
+    {
+      "pupilId": "PP0020",
+      "dateOfBirth": "2016-09-10",
+      "gender": "Female",
+      "lastName": "Ngo",
+      "firstName": "Dao",
+      "avatar": "girl.svg",
+      "isActive": true,
+      "Grade": 2,
+      "id": "ff21"
+    },
+    {
+      "pupilId": "PP0021",
+      "dateOfBirth": "2015-09-01",
+      "gender": "Male",
+      "lastName": "Nguyen",
+      "firstName": "Cuong",
+      "avatar": "avatar.png",
+      "isActive": true,
+      "Grade": 3,
+      "id": "5723"
+    },
+    {
+      "pupilId": "PP0022",
+      "dateOfBirth": "2015-09-02",
+      "gender": "Female",
+      "lastName": "Tran",
+      "firstName": "Hien",
+      "avatar": "girl.svg",
+      "isActive": true,
+      "Grade": 3,
+      "id": "a6b7"
+    },
+    {
+      "pupilId": "PP0023",
+      "dateOfBirth": "2015-09-03",
+      "gender": "Male",
+      "lastName": "Le",
+      "firstName": "Tuan",
+      "avatar": "boy.svg",
+      "isActive": true,
+      "Grade": 3,
+      "id": "48e8"
+    },
+    {
+      "pupilId": "PP0024",
+      "dateOfBirth": "2015-09-04",
+      "gender": "Female",
+      "lastName": "Pham",
+      "firstName": "My",
+      "avatar": "girl.svg",
+      "isActive": true,
+      "Grade": 3,
+      "id": "f126"
+    },
+    {
+      "pupilId": "PP0025",
+      "dateOfBirth": "2015-09-05",
+      "gender": "Male",
+      "lastName": "Hoang",
+      "firstName": "Phat",
+      "avatar": "boy.svg",
+      "isActive": true,
+      "Grade": 3,
+      "id": "a30c"
+    },
+    {
+      "pupilId": "PP0026",
+      "dateOfBirth": "2015-09-06",
+      "gender": "Female",
+      "lastName": "Do",
+      "firstName": "Linh",
+      "avatar": "girl.svg",
+      "isActive": true,
+      "Grade": 3,
+      "id": "4fc5"
+    },
+    {
+      "pupilId": "PP0027",
+      "dateOfBirth": "2015-09-07",
+      "gender": "Male",
+      "lastName": "Bui",
+      "firstName": "Duc",
+      "avatar": "boy.svg",
+      "isActive": true,
+      "Grade": 3,
+      "id": "8792"
+    },
+    {
+      "pupilId": "PP0028",
+      "dateOfBirth": "2015-09-08",
+      "gender": "Female",
+      "lastName": "Vu",
+      "firstName": "Trang",
+      "avatar": "girl.svg",
+      "isActive": true,
+      "Grade": 3,
+      "id": "4946"
+    },
+    {
+      "pupilId": "PP0029",
+      "dateOfBirth": "2015-09-09",
+      "gender": "Male",
+      "lastName": "Dang",
+      "firstName": "Kiet",
+      "avatar": "boy.svg",
+      "isActive": true,
+      "Grade": 3,
+      "id": "f902"
+    },
+    {
+      "pupilId": "PP0030",
+      "dateOfBirth": "2015-09-10",
+      "gender": "Female",
+      "lastName": "Ngo",
+      "firstName": "Nhi",
+      "avatar": "girl.svg",
+      "isActive": true,
+      "Grade": 3,
+      "id": "52b4"
+    },
+    {
+      "pupilId": "PP0031",
+      "dateOfBirth": "2014-09-01",
+      "gender": "Male",
+      "lastName": "Nguyen",
+      "firstName": "Hao",
+      "avatar": "avatar.png",
+      "isActive": true,
+      "Grade": 4,
+      "id": "c82b"
+    },
+    {
+      "pupilId": "PP0032",
+      "dateOfBirth": "2014-09-02",
+      "gender": "Female",
+      "lastName": "Tran",
+      "firstName": "Quynh",
+      "avatar": "girl.svg",
+      "isActive": true,
+      "Grade": 4,
+      "id": "3ae4"
+    },
+    {
+      "pupilId": "PP0033",
+      "dateOfBirth": "2014-09-03",
+      "gender": "Male",
+      "lastName": "Le",
+      "firstName": "Hieu",
+      "avatar": "boy.svg",
+      "isActive": true,
+      "Grade": 4,
+      "id": "00d9"
+    },
+    {
+      "pupilId": "PP0034",
+      "dateOfBirth": "2014-09-04",
+      "gender": "Female",
+      "lastName": "Pham",
+      "firstName": "Vy",
+      "avatar": "girl.svg",
+      "isActive": true,
+      "Grade": 4,
+      "id": "2469"
+    },
+    {
+      "pupilId": "PP0035",
+      "dateOfBirth": "2014-09-05",
+      "gender": "Male",
+      "lastName": "Hoang",
+      "firstName": "Dat",
+      "avatar": "boy.svg",
+      "isActive": true,
+      "Grade": 4,
+      "id": "53ef"
+    },
+    {
+      "pupilId": "PP0036",
+      "dateOfBirth": "2014-09-06",
+      "gender": "Female",
+      "lastName": "Do",
+      "firstName": "Cam",
+      "avatar": "girl.svg",
+      "isActive": true,
+      "Grade": 4,
+      "id": "886a"
+    },
+    {
+      "pupilId": "PP0037",
+      "dateOfBirth": "2014-09-07",
+      "gender": "Male",
+      "lastName": "Bui",
+      "firstName": "Tien",
+      "avatar": "boy.svg",
+      "isActive": true,
+      "Grade": 4,
+      "id": "baf4"
+    },
+    {
+      "pupilId": "PP0038",
+      "dateOfBirth": "2014-09-08",
+      "gender": "Female",
+      "lastName": "Vu",
+      "firstName": "Dao",
+      "avatar": "girl.svg",
+      "isActive": true,
+      "Grade": 4,
+      "id": "7e67"
+    },
+    {
+      "pupilId": "PP0039",
+      "dateOfBirth": "2014-09-09",
+      "gender": "Male",
+      "lastName": "Dang",
+      "firstName": "Phuc",
+      "avatar": "boy.svg",
+      "isActive": true,
+      "Grade": 4,
+      "id": "9218"
+    },
+    {
+      "pupilId": "PP0040",
+      "dateOfBirth": "2014-09-10",
+      "gender": "Female",
+      "lastName": "Ngo",
+      "firstName": "Luan",
+      "avatar": "girl.svg",
+      "isActive": true,
+      "Grade": 4,
+      "id": "23ec"
+    },
+    {
+      "pupilId": "PP0041",
+      "dateOfBirth": "2013-09-01",
+      "gender": "Male",
+      "lastName": "Nguyen",
+      "firstName": "Thanh",
+      "avatar": "avatar.png",
+      "isActive": true,
+      "Grade": 5,
+      "id": "5ae9"
+    },
+    {
+      "pupilId": "PP0042",
+      "dateOfBirth": "2013-09-02",
+      "gender": "Female",
+      "lastName": "Tran",
+      "firstName": "Hanh",
+      "avatar": "girl.svg",
+      "isActive": true,
+      "Grade": 5,
+      "id": "da05"
+    },
+    {
+      "pupilId": "PP0043",
+      "dateOfBirth": "2013-09-03",
+      "gender": "Male",
+      "lastName": "Le",
+      "firstName": "Khoa",
+      "avatar": "boy.svg",
+      "isActive": true,
+      "Grade": 5,
+      "id": "41da"
+    },
+    {
+      "pupilId": "PP0044",
+      "dateOfBirth": "2013-09-04",
+      "gender": "Female",
+      "lastName": "Pham",
+      "firstName": "Tuyet",
+      "avatar": "girl.svg",
+      "isActive": true,
+      "Grade": 5,
+      "id": "ec61"
+    },
+    {
+      "pupilId": "PP0045",
+      "dateOfBirth": "2013-09-05",
+      "gender": "Male",
+      "lastName": "Hoang",
+      "firstName": "Duy",
+      "avatar": "boy.svg",
+      "isActive": true,
+      "Grade": 5,
+      "id": "d9ff"
+    },
+    {
+      "pupilId": "PP0046",
+      "dateOfBirth": "2013-09-06",
+      "gender": "Female",
+      "lastName": "Do",
+      "firstName": "Phuong",
+      "avatar": "girl.svg",
+      "isActive": true,
+      "Grade": 5,
+      "id": "8f1e"
+    },
+    {
+      "pupilId": "PP0047",
+      "dateOfBirth": "2013-09-07",
+      "gender": "Male",
+      "lastName": "Bui",
+      "firstName": "Hao",
+      "avatar": "boy.svg",
+      "isActive": true,
+      "Grade": 5,
+      "id": "14a8"
+    },
+    {
+      "pupilId": "PP0048",
+      "dateOfBirth": "2013-09-08",
+      "gender": "Female",
+      "lastName": "Vu",
+      "firstName": "Minh",
+      "avatar": "girl.svg",
+      "isActive": true,
+      "Grade": 5,
+      "id": "1422"
+    },
+    {
+      "pupilId": "PP0049",
+      "dateOfBirth": "2013-09-09",
+      "gender": "Male",
+      "lastName": "Dang",
+      "firstName": "Bao",
+      "avatar": "boy.svg",
+      "isActive": true,
+      "Grade": 5,
+      "id": "6a5d"
+    },
+    {
+      "pupilId": "PP0050",
+      "dateOfBirth": "2013-09-10",
+      "gender": "Female",
+      "lastName": "Ngo",
+      "firstName": "Linh",
+      "avatar": "girl.svg",
+      "isActive": true,
+      "Grade": 5,
+      "id": "cf39"
     }
   ],
   "newest_campaign": [
@@ -1053,7 +1182,8 @@
       "endDate": "2025-06-30",
       "notes": "Annual school vaccination campaign for grade 1-5.",
       "status": "Pending",
-      "isActive": true
+      "isActive": true,
+      "id": "0a42"
     }
   ]
 }

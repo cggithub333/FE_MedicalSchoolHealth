@@ -8,9 +8,10 @@ import {
   Box
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import VaccinationInfoCard from './VaccinationInfo';
 
-export default function VaccinationDialog({ latestVaccinationCampaign }) {
+import HealthCheckInfor from './HealthCheckInfor';
+
+export default function HealthCheckDialog({ latestHealthCheckCampaign }) {
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(true);
@@ -24,7 +25,7 @@ export default function VaccinationDialog({ latestVaccinationCampaign }) {
 
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
         <DialogTitle sx={{ m: 0, p: 2 }}>
-          Vaccination Campaign Details
+          Health Check Campaign Details
           <IconButton
             aria-label="close"
             onClick={handleClose}
@@ -40,7 +41,7 @@ export default function VaccinationDialog({ latestVaccinationCampaign }) {
         </DialogTitle>
 
         <DialogContent dividers>
-          <VaccinationInfoCard latestVaccinationCampaign={latestVaccinationCampaign }/>
+          <HealthCheckInfor latestHealthCheckCampaign={latestHealthCheckCampaign }/>
         </DialogContent>
       </Dialog>
     </Box>
