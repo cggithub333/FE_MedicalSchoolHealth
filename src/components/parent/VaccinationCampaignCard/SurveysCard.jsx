@@ -22,6 +22,7 @@ import { TableBody, TableContainer, TableHead, TableRow, Table, TableCell } from
 import { Checkbox } from '@mui/material';
 import useLatestVaccinationCampaign from '../../../hooks/parent/useLatestVaccinationCampaign';
 
+import { useState } from 'react';
 
 import { updateVaccinationConsentFormStatus } from '../../../api/parent/parent-requests-action/parent-request-action';
 
@@ -52,8 +53,8 @@ const ExpandMore = styled((props) => {
 }));
 
 export default function SurveysCard({ survey }) {
-  const [expanded, setExpanded] = React.useState(false);
-  const [showWarning, setShowWarning] = React.useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
   const { latestVaccinationCampaign, isLoading } = useLatestVaccinationCampaign();
 
   // Extract campaign data from latestVaccinationCampaign
@@ -72,7 +73,7 @@ export default function SurveysCard({ survey }) {
       if (survey) {
         const newStatus = "Approved"
         updateVaccinationConsentFormStatus(survey.id, newStatus);
-        alert("Survey submitted successfully!")
+        alert("Approved vaccination campaign!")
       } 
       else {
         throw new Error("SurveysCard.jsx: Can't found `survey`!");
@@ -83,13 +84,32 @@ export default function SurveysCard({ survey }) {
       alert("Survey submitted failed!")
     }
 
+    // close survey:
     setExpanded(false);
   };
 
   // Stub for reject button click handler
   const handleRejectButtonClick = (e) => {
-    // TODO: Implement reject logic here
-  };
+
+    try {
+      
+      if (survey) {
+        const newStatus = "Rejected";
+        updateVaccinationConsentFormStatus(survey.id, newStatus);
+        alert("Rejected vaccination campaign!");
+        location.reload();
+      }
+      else {
+        throw new Error("SurveysCard.jsx: Can't found `survey`!");
+      }
+    } catch(error) {
+      console.error("Can't update vaccination consent form status:", error);
+      alert("Survey submitted failed!")
+    }
+
+    // close survey:
+    setExpanded(false);
+  }
 
   if (isLoading) {
     return <div>Loading campaign information...</div>;
@@ -271,7 +291,7 @@ export default function SurveysCard({ survey }) {
                 survey?.status === "Approved" ? (
                   <Button variant="contained" color="error" sx={{ width: "20%" }} onClick={handleRejectButtonClick}>Reject</Button>
                 ) : (
-                  <Button type={'submit'} variant="contained" color="primary" sx={{ width: "20%" }}>Submit</Button>
+                  <Button type={'submit'} variant="contained" color="primary" sx={{ width: "20%" }}>Confirm</Button>
                 )
               )}
             </Box>
