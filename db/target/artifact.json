@@ -1,7 +1,7 @@
 {
   "getallcampaign": [
     {
-      "id": "1",
+      "id": 1,
       "address": "123 Main St, Cityville",
       "startExaminationDate": "2022-07-01T08:00:00Z",
       "endExaminationDate": "2022-07-03T17:00:00Z",
@@ -12,7 +12,7 @@
       "isActive": true
     },
     {
-      "id": "2",
+      "id": 2,
       "address": "456 Elm St, Townsburg",
       "startExaminationDate": "2023-08-10T08:00:00Z",
       "endExaminationDate": "2023-08-12T17:00:00Z",
@@ -23,7 +23,7 @@
       "isActive": true
     },
     {
-      "id": "3",
+      "id": 3,
       "address": "789 Oak Ave, Villageton",
       "startExaminationDate": "2024-09-15T08:00:00Z",
       "endExaminationDate": "2024-09-17T17:00:00Z",
@@ -34,7 +34,7 @@
       "isActive": true
     },
     {
-      "id": "4",
+      "id": 4,
       "address": "123 Main St, Cityville",
       "startExaminationDate": "2025-07-01T08:00:00Z",
       "endExaminationDate": "2025-07-03T17:00:00Z",
@@ -56,8 +56,7 @@
       "endDate": "2025-06-30",
       "notes": "Annual measles vaccination campaign for all grades.",
       "status": "Completed",
-      "isActive": true,
-      "id": "c508"
+      "isActive": true
     },
     {
       "vaccinationCampaign": 2,
@@ -69,8 +68,7 @@
       "endDate": "2025-07-25",
       "notes": "Mumps vaccination campaign for grade 2.",
       "status": "Completed",
-      "isActive": true,
-      "id": "83c1"
+      "isActive": true
     },
     {
       "vaccinationCampaign": 3,
@@ -82,8 +80,7 @@
       "endDate": "2025-08-20",
       "notes": "Rubella vaccination campaign for grade 3.",
       "status": "Completed",
-      "isActive": true,
-      "id": "711a"
+      "isActive": true
     },
     {
       "vaccinationCampaign": 4,
@@ -95,8 +92,7 @@
       "endDate": "2025-09-25",
       "notes": "Hepatitis B vaccination campaign for grade 4.",
       "status": "Completed",
-      "isActive": true,
-      "id": "dfa4"
+      "isActive": true
     }
   ],
   "getPupilsApprovedByGrade": [
@@ -114,8 +110,7 @@
       "vaccineId": 101,
       "respondedAt": "2025-06-10T09:00:00",
       "status": "Approved",
-      "Grade": 1,
-      "id": "7b50"
+      "Grade": 1
     },
     {
       "pupilId": "PP00002",
@@ -131,8 +126,7 @@
       "vaccineId": 101,
       "respondedAt": "2025-06-11T10:30:00",
       "status": "Approved",
-      "Grade": 2,
-      "id": "dcd8"
+      "Grade": 2
     },
     {
       "pupilId": "PP00003",
@@ -148,8 +142,7 @@
       "vaccineId": 101,
       "respondedAt": "2025-06-12T08:45:00",
       "status": "Approved",
-      "Grade": 3,
-      "id": "8599"
+      "Grade": 3
     },
     {
       "pupilId": "PP00004",
@@ -165,8 +158,7 @@
       "vaccineId": 101,
       "respondedAt": "2025-06-13T09:15:00",
       "status": "Approved",
-      "Grade": 4,
-      "id": "c2c7"
+      "Grade": 4
     },
     {
       "pupilId": "PP00005",
@@ -182,8 +174,7 @@
       "vaccineId": 101,
       "respondedAt": "2025-06-14T10:00:00",
       "status": "Approved",
-      "Grade": 5,
-      "id": "3d87"
+      "Grade": 5
     }
   ],
   "VaccinationGetDisease": [
@@ -192,40 +183,35 @@
       "name": "Measles",
       "description": "A highly contagious viral disease causing fever and rash.",
       "isInjectedVaccine": true,
-      "doseQuantity": 2,
-      "id": "e043"
+      "doseQuantity": 2
     },
     {
       "disease_id": 2,
       "name": "Mumps",
       "description": "A viral infection that affects the salivary glands.",
       "isInjectedVaccine": true,
-      "doseQuantity": 2,
-      "id": "5628"
+      "doseQuantity": 2
     },
     {
       "disease_id": 3,
       "name": "Rubella",
       "description": "A contagious viral infection best known by its distinctive red rash.",
       "isInjectedVaccine": true,
-      "doseQuantity": 1,
-      "id": "6dfb"
+      "doseQuantity": 1
     },
     {
       "disease_id": 4,
       "name": "Hepatitis B",
       "description": "A serious liver infection caused by the hepatitis B virus.",
       "isInjectedVaccine": true,
-      "doseQuantity": 3,
-      "id": "e90b"
+      "doseQuantity": 3
     },
     {
       "disease_id": 5,
       "name": "Diphtheria",
       "description": "A serious bacterial infection affecting the mucous membranes of the throat and nose.",
       "isInjectedVaccine": true,
-      "doseQuantity": 3,
-      "id": "cee6"
+      "doseQuantity": 3
     }
   ],
   "VaccinationGetVaccineByDisease": [
@@ -242,8 +228,7 @@
           "doseNumber": 2,
           "isActive": true
         }
-      ],
-      "id": "81c8"
+      ]
     }
   ],
   "parent_pupils": [
@@ -256,8 +241,7 @@
       "firstName": "An",
       "avatar": "avatar1.png",
       "grade": "1",
-      "isActive": true,
-      "id": "2a20"
+      "isActive": true
     },
     {
       "pupilId": "PP0002",
@@ -268,8 +252,7 @@
       "firstName": "Binh",
       "avatar": "avatar2.png",
       "grade": "2",
-      "isActive": true,
-      "id": "7141"
+      "isActive": true
     },
     {
       "pupilId": "PP0003",
@@ -280,8 +263,7 @@
       "firstName": "Chi",
       "avatar": "avatar3.png",
       "grade": "3",
-      "isActive": false,
-      "id": "7bc2"
+      "isActive": false
     }
   ],
   "surveys": [
@@ -332,11 +314,10 @@
           "isInjectedVaccin": false,
           "isActive": false
         }
-      ],
-      "id": "fa1e"
+      ]
     },
     {
-      "id": "45",
+      "id": 45,
       "pupilId": "PP0002",
       "healthCheckCampaignId": 301,
       "healthCheckCampaignAddress": "ABC School",
@@ -385,7 +366,7 @@
       ]
     },
     {
-      "id": "23",
+      "id": 23,
       "pupilId": "PP0003",
       "healthCheckCampaignId": 301,
       "healthCheckCampaignAddress": "ABC School",
@@ -436,7 +417,7 @@
   ],
   "latest_campaign": [
     {
-      "id": "12",
+      "id": 12,
       "address": "123 Health St.",
       "startExaminationDate": "2025-06-02",
       "endExaminationDate": "2025-06-10",
@@ -451,8 +432,7 @@
       "healthCheckCampaignId": 12,
       "startExaminationDate": "2025-06-02",
       "endExaminationDate": "2025-06-10",
-      "address": "123 Health St.",
-      "id": "659c"
+      "address": "123 Health St."
     }
   ],
   "latest_vaccination_campaign": [
@@ -478,13 +458,12 @@
         "startDate": "2025-07-12",
         "endDate": "2025-07-13",
         "campaignStatus": "Published"
-      },
-      "id": "db73"
+      }
     }
   ],
   "vaccination_survey_by_parentId": [
     {
-      "id": "28",
+      "id": 28,
       "respondedAt": "2025-06-30T10:15:00",
       "status": "Approved",
       "isActive": true,
@@ -493,9 +472,9 @@
       "currDoseQuantity": 1
     },
     {
-      "id": "35",
+      "id": 35,
       "respondedAt": "2025-06-29T09:00:00",
-      "status": "Approved",
+      "status": "Rejected",
       "isActive": true,
       "pupilId": "PP0002",
       "doseQuantity": 3,
@@ -603,13 +582,12 @@
           "disease_id": 24,
           "name": "Dị tật bẩm sinh cơ quan sinh dục"
         }
-      ],
-      "id": "caa4"
+      ]
     }
   ],
   "getnewestcampaign": [
     {
-      "id": "5",
+      "id": 5,
       "address": "123 Main St, Chu City",
       "startExaminationDate": "2026-07-01T08:00:00Z",
       "endExaminationDate": "2026-07-03T17:00:00Z",
@@ -629,8 +607,7 @@
       "firstName": "An",
       "avatar": "avatar.png",
       "isActive": true,
-      "Grade": 1,
-      "id": "cb3d"
+      "Grade": 1
     },
     {
       "pupilId": "PP0002",
@@ -640,8 +617,7 @@
       "firstName": "Hong",
       "avatar": "girl.svg",
       "isActive": true,
-      "Grade": 1,
-      "id": "85b9"
+      "Grade": 1
     },
     {
       "pupilId": "PP0003",
@@ -651,8 +627,7 @@
       "firstName": "Bao",
       "avatar": "boy.svg",
       "isActive": true,
-      "Grade": 1,
-      "id": "0417"
+      "Grade": 1
     },
     {
       "pupilId": "PP0004",
@@ -662,8 +637,7 @@
       "firstName": "Linh",
       "avatar": "girl.svg",
       "isActive": true,
-      "Grade": 1,
-      "id": "2429"
+      "Grade": 1
     },
     {
       "pupilId": "PP0005",
@@ -673,8 +647,7 @@
       "firstName": "Minh",
       "avatar": "boy.svg",
       "isActive": true,
-      "Grade": 1,
-      "id": "9e00"
+      "Grade": 1
     },
     {
       "pupilId": "PP0006",
@@ -684,8 +657,7 @@
       "firstName": "Mai",
       "avatar": "girl.svg",
       "isActive": true,
-      "Grade": 1,
-      "id": "d0d8"
+      "Grade": 1
     },
     {
       "pupilId": "PP0007",
@@ -695,8 +667,7 @@
       "firstName": "Khanh",
       "avatar": "boy.svg",
       "isActive": true,
-      "Grade": 1,
-      "id": "0dfb"
+      "Grade": 1
     },
     {
       "pupilId": "PP0008",
@@ -706,8 +677,7 @@
       "firstName": "Yen",
       "avatar": "girl.svg",
       "isActive": true,
-      "Grade": 1,
-      "id": "0a0a"
+      "Grade": 1
     },
     {
       "pupilId": "PP0009",
@@ -717,8 +687,7 @@
       "firstName": "Hieu",
       "avatar": "boy.svg",
       "isActive": true,
-      "Grade": 1,
-      "id": "ff31"
+      "Grade": 1
     },
     {
       "pupilId": "PP0010",
@@ -728,8 +697,7 @@
       "firstName": "Thao",
       "avatar": "girl.svg",
       "isActive": true,
-      "Grade": 1,
-      "id": "dd75"
+      "Grade": 1
     },
     {
       "pupilId": "PP0011",
@@ -739,8 +707,7 @@
       "firstName": "Binh",
       "avatar": "avatar.png",
       "isActive": true,
-      "Grade": 2,
-      "id": "7166"
+      "Grade": 2
     },
     {
       "pupilId": "PP0012",
@@ -750,8 +717,7 @@
       "firstName": "Lan",
       "avatar": "girl.svg",
       "isActive": true,
-      "Grade": 2,
-      "id": "4ee5"
+      "Grade": 2
     },
     {
       "pupilId": "PP0013",
@@ -761,8 +727,7 @@
       "firstName": "Nam",
       "avatar": "boy.svg",
       "isActive": true,
-      "Grade": 2,
-      "id": "60d8"
+      "Grade": 2
     },
     {
       "pupilId": "PP0014",
@@ -772,8 +737,7 @@
       "firstName": "Thu",
       "avatar": "girl.svg",
       "isActive": true,
-      "Grade": 2,
-      "id": "06c0"
+      "Grade": 2
     },
     {
       "pupilId": "PP0015",
@@ -783,8 +747,7 @@
       "firstName": "Long",
       "avatar": "boy.svg",
       "isActive": true,
-      "Grade": 2,
-      "id": "0dfa"
+      "Grade": 2
     },
     {
       "pupilId": "PP0016",
@@ -794,8 +757,7 @@
       "firstName": "Anh",
       "avatar": "girl.svg",
       "isActive": true,
-      "Grade": 2,
-      "id": "095d"
+      "Grade": 2
     },
     {
       "pupilId": "PP0017",
@@ -805,8 +767,7 @@
       "firstName": "Quang",
       "avatar": "boy.svg",
       "isActive": true,
-      "Grade": 2,
-      "id": "17d3"
+      "Grade": 2
     },
     {
       "pupilId": "PP0018",
@@ -816,8 +777,7 @@
       "firstName": "Hoa",
       "avatar": "girl.svg",
       "isActive": true,
-      "Grade": 2,
-      "id": "47a5"
+      "Grade": 2
     },
     {
       "pupilId": "PP0019",
@@ -827,8 +787,7 @@
       "firstName": "Son",
       "avatar": "boy.svg",
       "isActive": true,
-      "Grade": 2,
-      "id": "8c50"
+      "Grade": 2
     },
     {
       "pupilId": "PP0020",
@@ -838,8 +797,7 @@
       "firstName": "Dao",
       "avatar": "girl.svg",
       "isActive": true,
-      "Grade": 2,
-      "id": "ff21"
+      "Grade": 2
     },
     {
       "pupilId": "PP0021",
@@ -849,8 +807,7 @@
       "firstName": "Cuong",
       "avatar": "avatar.png",
       "isActive": true,
-      "Grade": 3,
-      "id": "5723"
+      "Grade": 3
     },
     {
       "pupilId": "PP0022",
@@ -860,8 +817,7 @@
       "firstName": "Hien",
       "avatar": "girl.svg",
       "isActive": true,
-      "Grade": 3,
-      "id": "a6b7"
+      "Grade": 3
     },
     {
       "pupilId": "PP0023",
@@ -871,8 +827,7 @@
       "firstName": "Tuan",
       "avatar": "boy.svg",
       "isActive": true,
-      "Grade": 3,
-      "id": "48e8"
+      "Grade": 3
     },
     {
       "pupilId": "PP0024",
@@ -882,8 +837,7 @@
       "firstName": "My",
       "avatar": "girl.svg",
       "isActive": true,
-      "Grade": 3,
-      "id": "f126"
+      "Grade": 3
     },
     {
       "pupilId": "PP0025",
@@ -893,8 +847,7 @@
       "firstName": "Phat",
       "avatar": "boy.svg",
       "isActive": true,
-      "Grade": 3,
-      "id": "a30c"
+      "Grade": 3
     },
     {
       "pupilId": "PP0026",
@@ -904,8 +857,7 @@
       "firstName": "Linh",
       "avatar": "girl.svg",
       "isActive": true,
-      "Grade": 3,
-      "id": "4fc5"
+      "Grade": 3
     },
     {
       "pupilId": "PP0027",
@@ -915,8 +867,7 @@
       "firstName": "Duc",
       "avatar": "boy.svg",
       "isActive": true,
-      "Grade": 3,
-      "id": "8792"
+      "Grade": 3
     },
     {
       "pupilId": "PP0028",
@@ -926,8 +877,7 @@
       "firstName": "Trang",
       "avatar": "girl.svg",
       "isActive": true,
-      "Grade": 3,
-      "id": "4946"
+      "Grade": 3
     },
     {
       "pupilId": "PP0029",
@@ -937,8 +887,7 @@
       "firstName": "Kiet",
       "avatar": "boy.svg",
       "isActive": true,
-      "Grade": 3,
-      "id": "f902"
+      "Grade": 3
     },
     {
       "pupilId": "PP0030",
@@ -948,8 +897,7 @@
       "firstName": "Nhi",
       "avatar": "girl.svg",
       "isActive": true,
-      "Grade": 3,
-      "id": "52b4"
+      "Grade": 3
     },
     {
       "pupilId": "PP0031",
@@ -959,8 +907,7 @@
       "firstName": "Hao",
       "avatar": "avatar.png",
       "isActive": true,
-      "Grade": 4,
-      "id": "c82b"
+      "Grade": 4
     },
     {
       "pupilId": "PP0032",
@@ -970,8 +917,7 @@
       "firstName": "Quynh",
       "avatar": "girl.svg",
       "isActive": true,
-      "Grade": 4,
-      "id": "3ae4"
+      "Grade": 4
     },
     {
       "pupilId": "PP0033",
@@ -981,8 +927,7 @@
       "firstName": "Hieu",
       "avatar": "boy.svg",
       "isActive": true,
-      "Grade": 4,
-      "id": "00d9"
+      "Grade": 4
     },
     {
       "pupilId": "PP0034",
@@ -992,8 +937,7 @@
       "firstName": "Vy",
       "avatar": "girl.svg",
       "isActive": true,
-      "Grade": 4,
-      "id": "2469"
+      "Grade": 4
     },
     {
       "pupilId": "PP0035",
@@ -1003,8 +947,7 @@
       "firstName": "Dat",
       "avatar": "boy.svg",
       "isActive": true,
-      "Grade": 4,
-      "id": "53ef"
+      "Grade": 4
     },
     {
       "pupilId": "PP0036",
@@ -1014,8 +957,7 @@
       "firstName": "Cam",
       "avatar": "girl.svg",
       "isActive": true,
-      "Grade": 4,
-      "id": "886a"
+      "Grade": 4
     },
     {
       "pupilId": "PP0037",
@@ -1025,8 +967,7 @@
       "firstName": "Tien",
       "avatar": "boy.svg",
       "isActive": true,
-      "Grade": 4,
-      "id": "baf4"
+      "Grade": 4
     },
     {
       "pupilId": "PP0038",
@@ -1036,8 +977,7 @@
       "firstName": "Dao",
       "avatar": "girl.svg",
       "isActive": true,
-      "Grade": 4,
-      "id": "7e67"
+      "Grade": 4
     },
     {
       "pupilId": "PP0039",
@@ -1047,8 +987,7 @@
       "firstName": "Phuc",
       "avatar": "boy.svg",
       "isActive": true,
-      "Grade": 4,
-      "id": "9218"
+      "Grade": 4
     },
     {
       "pupilId": "PP0040",
@@ -1058,8 +997,7 @@
       "firstName": "Luan",
       "avatar": "girl.svg",
       "isActive": true,
-      "Grade": 4,
-      "id": "23ec"
+      "Grade": 4
     },
     {
       "pupilId": "PP0041",
@@ -1069,8 +1007,7 @@
       "firstName": "Thanh",
       "avatar": "avatar.png",
       "isActive": true,
-      "Grade": 5,
-      "id": "5ae9"
+      "Grade": 5
     },
     {
       "pupilId": "PP0042",
@@ -1080,8 +1017,7 @@
       "firstName": "Hanh",
       "avatar": "girl.svg",
       "isActive": true,
-      "Grade": 5,
-      "id": "da05"
+      "Grade": 5
     },
     {
       "pupilId": "PP0043",
@@ -1091,8 +1027,7 @@
       "firstName": "Khoa",
       "avatar": "boy.svg",
       "isActive": true,
-      "Grade": 5,
-      "id": "41da"
+      "Grade": 5
     },
     {
       "pupilId": "PP0044",
@@ -1102,8 +1037,7 @@
       "firstName": "Tuyet",
       "avatar": "girl.svg",
       "isActive": true,
-      "Grade": 5,
-      "id": "ec61"
+      "Grade": 5
     },
     {
       "pupilId": "PP0045",
@@ -1113,8 +1047,7 @@
       "firstName": "Duy",
       "avatar": "boy.svg",
       "isActive": true,
-      "Grade": 5,
-      "id": "d9ff"
+      "Grade": 5
     },
     {
       "pupilId": "PP0046",
@@ -1124,8 +1057,7 @@
       "firstName": "Phuong",
       "avatar": "girl.svg",
       "isActive": true,
-      "Grade": 5,
-      "id": "8f1e"
+      "Grade": 5
     },
     {
       "pupilId": "PP0047",
@@ -1135,8 +1067,7 @@
       "firstName": "Hao",
       "avatar": "boy.svg",
       "isActive": true,
-      "Grade": 5,
-      "id": "14a8"
+      "Grade": 5
     },
     {
       "pupilId": "PP0048",
@@ -1146,8 +1077,7 @@
       "firstName": "Minh",
       "avatar": "girl.svg",
       "isActive": true,
-      "Grade": 5,
-      "id": "1422"
+      "Grade": 5
     },
     {
       "pupilId": "PP0049",
@@ -1157,8 +1087,7 @@
       "firstName": "Bao",
       "avatar": "boy.svg",
       "isActive": true,
-      "Grade": 5,
-      "id": "6a5d"
+      "Grade": 5
     },
     {
       "pupilId": "PP0050",
@@ -1168,8 +1097,7 @@
       "firstName": "Linh",
       "avatar": "girl.svg",
       "isActive": true,
-      "Grade": 5,
-      "id": "cf39"
+      "Grade": 5
     }
   ],
   "newest_campaign": [
@@ -1182,8 +1110,7 @@
       "endDate": "2025-06-30",
       "notes": "Annual school vaccination campaign for grade 1-5.",
       "status": "Pending",
-      "isActive": true,
-      "id": "0a42"
+      "isActive": true
     }
   ]
 }

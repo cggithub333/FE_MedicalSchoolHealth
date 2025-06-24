@@ -16,6 +16,11 @@ import ChecklistIcon from '@mui/icons-material/Checklist';
 
 export default function VaccinationInfoCard({ latestVaccinationCampaign }) {
 
+  let campaignInfor = null;
+  if (latestVaccinationCampaign && latestVaccinationCampaign.campaign) {
+    campaignInfor = latestVaccinationCampaign.campaign;
+  }
+
   return (
     <Box sx={{ maxWidth: 700, mx: 'auto', mt: 5, px: 2 }}>
       <Typography variant="h4" align="center" gutterBottom>
@@ -33,17 +38,23 @@ export default function VaccinationInfoCard({ latestVaccinationCampaign }) {
           </Grid>
         </Grid>
         <Grid container spacing={1}>
-          <Grid item xs={6}><strong>Campaign name:</strong></Grid>
-          <Grid item xs={6}>{latestVaccinationCampaign.name}</Grid>
+          <Grid item size={{ xs: 12 }} display={"flex"} gap={1}>
+            <span><strong>Campaign name:</strong></span>
+            <span>{campaignInfor?.disease?.name}</span>
+          </Grid>
 
-          <Grid item xs={6}><strong>Status:</strong></Grid>
-          <Grid item xs={6}>{latestVaccinationCampaign.status}</Grid>
+          {/* <Grid item xs={6}><strong>Status:</strong></Grid>
+          <Grid item xs={6}>{campaignInfor?.campaignStatus}</Grid> */}
 
-          <Grid item xs={6}><strong>Date:</strong></Grid>
-          <Grid item xs={6}>{latestVaccinationCampaign.startDate}</Grid>
+          <Grid item size={{ xs: 12}} display={"flex"} gap={1}>
+            <span><strong>Date:</strong></span>
+            <span>{campaignInfor?.startDate}</span>
+          </Grid>
 
-          <Grid item xs={6}><strong>Consent Deadline:</strong></Grid>
-          <Grid item xs={6}>{latestVaccinationCampaign.consentDeadline}</Grid>
+          <Grid item size={{ xs: 12}} display={"flex"} gap={1}>
+            <span><strong>Consent Deadline:</strong></span>
+            <span>{campaignInfor?.consentFormDeadline}</span>
+          </Grid>
         </Grid>
       </Paper>
 
@@ -60,37 +71,37 @@ export default function VaccinationInfoCard({ latestVaccinationCampaign }) {
         <Grid container spacing={1}>
           <Grid container size={{ xs: 12 }}>
             <Grid item xs={6}><strong>Disease:</strong></Grid>
-            <Grid item xs={6}>{latestVaccinationCampaign.disease.name}</Grid>
+            <Grid item xs={6}>{campaignInfor?.disease?.name}</Grid>
           </Grid>
 
           <Grid container size={{ xs: 12 }}>
             <Grid item xs={6}><strong>Description:</strong></Grid>
-            <Grid item xs={6}>{latestVaccinationCampaign.disease.description}</Grid>
+            <Grid item xs={6}>{campaignInfor?.disease?.description}</Grid>
           </Grid>
 
           <Grid container size={{ xs: 12 }}>
             <Grid item><strong>Dose Required:</strong></Grid>
-            <Grid item>{latestVaccinationCampaign.disease.doseRequired} doses</Grid>
+            <Grid item>{campaignInfor?.disease?.doseRequired} doses</Grid>
           </Grid>
           
           <Grid container size={{ xs: 12 }}>
             <Grid item><strong>Vaccine Name:</strong></Grid>
-            <Grid item>{latestVaccinationCampaign.vaccine.name}</Grid>
+            <Grid item>{campaignInfor?.vaccine?.name}</Grid>
           </Grid>
           
           <Grid container size={{ xs: 12 }}>
             <Grid item><strong>Manufacturer:</strong></Grid>
-            <Grid item>{latestVaccinationCampaign.vaccine.manufacturer}</Grid>
+            <Grid item>{campaignInfor?.vaccine?.manufacturer}</Grid>
           </Grid>
           
           <Grid container size={{ xs: 12 }}> 
             <Grid item><strong>Recommended Age:</strong></Grid>
-            <Grid item>{latestVaccinationCampaign.vaccine.recommendedAge}</Grid>
+            <Grid item>{campaignInfor?.vaccine?.recommendedAge}</Grid>
           </Grid>
           
           <Grid container size={{ xs: 12 }}>
             <Grid item><strong>Vaccine Type:</strong></Grid>
-            <Grid item>{latestVaccinationCampaign.vaccine.description}</Grid>
+            <Grid item>{campaignInfor?.vaccine?.description}</Grid>
           </Grid>
         </Grid>
       </Paper>
@@ -106,12 +117,10 @@ export default function VaccinationInfoCard({ latestVaccinationCampaign }) {
           </Grid>
         </Grid>
         <List dense>
-          {latestVaccinationCampaign.notes.map((note, idx) => (
-            <ListItem key={idx} disableGutters>
+            <ListItem disableGutters>
               <ListItemIcon sx={{ minWidth: '30px' }}>•</ListItemIcon>
-              <ListItemText primary={note} />
+            <ListItemText primary={campaignInfor?.notes} />
             </ListItem>
-          ))}
         </List>
       </Paper>
     </Box>

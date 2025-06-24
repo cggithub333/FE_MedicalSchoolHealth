@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const API_CONFIG = {
     JSON_SERVER_API: {
-        baseURL: "http://localhost:3000",
+        baseURL: import.meta.env.VITE_BASE_URL,
         timeout: 10 * 1000, // 10secs
     },
 };
