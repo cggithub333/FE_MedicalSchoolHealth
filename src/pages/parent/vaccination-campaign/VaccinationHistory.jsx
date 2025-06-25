@@ -6,7 +6,7 @@ import { Grid } from '@mui/material';
 import DiseaseBoxList from '../../../components/parent/VaccinationCampaign/CampaignHistory/DiseaseBoxList';
 
 import InstructChooseChildImg from '../../../assets/images/instruct_choose_child.png';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import useHealthCheckHistoryByPupilId from '../../../hooks/parent/useHealthCheckHistoryByPupilId.js';
 
