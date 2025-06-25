@@ -58,24 +58,7 @@ const HealthCheckScheduleForm = () => {
     if (showInjectionList && selectedShift) {
         return (
             <div>
-                <div className="close-btn-container">
-                    <button
-                        className="close-btn"
-                        title="Close"
-                        onMouseOver={e => {
-                            e.currentTarget.classList.add('hovered');
-                        }}
-                        onMouseOut={e => {
-                            e.currentTarget.classList.remove('hovered');
-                        }}
-                        onClick={() => {
-                            setShowInjectionList(false);
-                            setSelectedShift(null);
-                        }}
-                    >
-                        ×
-                    </button>
-                </div>
+
                 <ScheduleInjectedList shift={selectedShift} onBack={() => {
                     setShowInjectionList(false);
                     setSelectedShift(null);

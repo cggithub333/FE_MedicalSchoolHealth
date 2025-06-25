@@ -20,7 +20,7 @@ const NewHealthCheckCampaign = () => {
     const [publishStatus, setPublishStatus] = useState(false);
 
     const filteredNewestCampaigns = Array.isArray(newestCampaign)
-        ? newestCampaign.filter(c => c.status === 'Pending')
+        ? newestCampaign.filter(c => c.status === 'Pending' || c.status === 'Published')
         : [];
 
     const handleCardClick = (campaign) => {
@@ -119,8 +119,15 @@ const NewHealthCheckCampaign = () => {
                             <Card
                                 key={campaign.id}
                                 className="campaign-card"
-                                onClick={() => handleCardClick(campaign)}
-                                style={{ cursor: 'pointer', width: 360, minWidth: 360, maxWidth: 360 }}
+                                onClick={() => campaign.status === 'Pending' && handleCardClick(campaign)}
+                                style={{
+                                    cursor: campaign.status === 'Pending' ? 'pointer' : 'not-allowed',
+                                    width: 360,
+                                    minWidth: 360,
+                                    maxWidth: 360,
+                                    opacity: campaign.status === 'Published' ? 0.6 : 1,
+                                    pointerEvents: campaign.status === 'Pending' ? 'auto' : 'none',
+                                }}
                             >
                                 <CardContent>
                                     <Typography variant="h6" color="primary" gutterBottom>

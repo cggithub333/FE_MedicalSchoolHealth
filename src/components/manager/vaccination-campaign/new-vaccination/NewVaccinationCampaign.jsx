@@ -52,7 +52,7 @@ const NewVaccinationCampaign = () => {
         <Box p={3} sx={{ position: 'relative' }}>
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
                 <Typography variant="h4" color="primary.main" fontWeight={700}>
-                    Health Check Campaigns
+                    Vaccination Campaigns
                 </Typography>
                 <Button
                     variant="contained"
