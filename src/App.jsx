@@ -12,9 +12,34 @@ import ParentDashboardRoutes from "./components/parent/Dashboard/ParentDashboard
 import BuildingImage from './assets/images/building_worker.jpg';
 import { Button, FormControl } from '@mui/material';
 
+import useAuth from './hooks/auth/useAuth';
 import { updateStatusOfNewestCampaignAction } from './api/manager/manager-requests-action/newest-campaign-request-action';
 
+import { Base64 } from 'js-base64';
+
 function App() {
+
+    // authorize:
+    const { success, error, isLoading } = useAuth();
+
+    if (isLoading) {
+        return <>Loading ...</>
+    }
+
+    if (error) {
+        return <LoginFailed/>
+    }
+
+    if (success) {
+
+        const token = localStorage.getItem('jwtToken');
+        if (token == null) {
+            return <>Token null roi</>
+        }
+        const payloadStr = token.split('.')[1];
+        const decodedPayload = Base64.decode(payloadStr);
+        return <LoginSuccess />
+    }
 
     return (
         <>
@@ -62,6 +87,25 @@ function App() {
     //         </Button>
     //     </FormControl>
     // )
+}
+
+const LoginFailed = () => {
+    return <>
+        Login Failed!
+    </>
+}
+
+const LoginSuccess = () => {
+
+    // const token = localStorage.getItem('jwtToken');
+    // const payloadStr = Base64.decode(token.split('.')[1]);
+    // const objInfor = JSON.parse(payloadStr);
+
+    // console.log(objInfor);
+
+    return <>
+        Login Success! . Logined as role: `{localStorage.getItem('userRole')}`
+    </>
 }
 
 const BuildingPage = () => {
