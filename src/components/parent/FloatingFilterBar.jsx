@@ -1,9 +1,32 @@
 import React from 'react';
 import { Box, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 
-const FloatingFilterBar = ({ childrenList = [], yearList = [] }) => {
-  const [child, setChild] = React.useState('');
+import { Base64} from 'js-base64'
+
+const FloatingFilterBar = ({ pupils = [], yearList = [] }) => {
+  const [childName, setChildName] = React.useState('');
   const [year, setYear] = React.useState('');
+
+  const handleChildChange = (event) => {
+    setChildName(event.target.value);
+  }
+
+  const handleChildOptionClick = (event, pupil) => {
+    // store pupilId, pupilName, pupilInfor in localStorage:
+    localStorage.setItem('pupilId', pupil.pupilId); // assuming pupilId is the unique identifier
+    localStorage.setItem('pupilName', `${pupil.lastName} ${pupil.firstName}`);
+    localStorage.setItem('pupilGender', pupil.gender);
+    localStorage.setItem('pupilInfo', Base64.encode(JSON.stringify(pupil))); // store the whole
+    setChildName(`${pupil.lastName} ${pupil.firstName}`); // update the displayed name
+    location.reload(); // reload the page to reflect changes
+  }
+
+  const handleYearOptionClick = (event, year) => {
+    // store selected year in localStorage:
+    localStorage.setItem('healthCheckYear', year);
+    setYear(year);
+    location.reload(); // reload the page to reflect changes
+  }
 
   return (
     <Box
@@ -23,11 +46,11 @@ const FloatingFilterBar = ({ childrenList = [], yearList = [] }) => {
       }}
     >
       <FormControl variant="outlined" size="small" sx={{ minWidth: 150, color: 'white' }}>
-        <InputLabel sx={{ color: 'white' }}>Select Child</InputLabel>
+        <InputLabel sx={{ color: 'white' }}>{(localStorage.getItem('pupilName') ? localStorage.getItem('pupilName') : 'Select Child')}</InputLabel>
         <Select
-          value={child}
-          onChange={(e) => setChild(e.target.value)}
-          label="Select Child"
+          value={childName}
+          onChange={handleChildChange}
+          label={(localStorage.getItem('pupilName') ? localStorage.getItem('pupilName') : 'Select Child')}
           sx={{
             color: 'white',
             '.MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.2)' },
@@ -39,16 +62,18 @@ const FloatingFilterBar = ({ childrenList = [], yearList = [] }) => {
             },
           }}
         >
-          {childrenList.map((name, index) => (
-            <MenuItem key={index} value={name}>
-              {name}
+          {pupils.map((pupil, index) => (
+            <MenuItem onClick={(e) => handleChildOptionClick(e, pupil)} key={index} value={pupil.pupilId}> {/* marked for pupilId value change */}
+              {`${pupil.lastName} ${pupil.firstName}`}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
 
       <FormControl variant="outlined" size="small" sx={{ minWidth: 120, color: 'white' }}>
-        <InputLabel sx={{ color: 'white' }}>Select Year</InputLabel>
+        <InputLabel sx={{ color: 'white' }}>
+          {localStorage.getItem('healthCheckYear') ? localStorage.getItem('healthCheckYear') : 'Select Year'}
+        </InputLabel>
         <Select
           value={year}
           onChange={(e) => setYear(e.target.value)}
@@ -65,7 +90,7 @@ const FloatingFilterBar = ({ childrenList = [], yearList = [] }) => {
           }}
         >
           {yearList.map((y, index) => (
-            <MenuItem key={index} value={y}>
+            <MenuItem onClick={(e) => handleYearOptionClick(e, y)} key={index} value={y}>
               {y}
             </MenuItem>
           ))}

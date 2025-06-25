@@ -4,7 +4,8 @@ import {
   getAllPupils, 
   getSurveyByPupilId,
   getVaccinationSurvey,
-  getVaccinationHistoryByPupilId
+  getVaccinationHistoryByPupilId,
+  getHealthCheckHistoryByPupilId
 } from '../parent-requests-callback/pupil-request-callback'; 
 
 export const fetchAllPupils = async () => {
@@ -83,6 +84,31 @@ export const fetchVaccinationHistoryByPupilId = async (pupilId) => {
 
   } catch (error) {
     console.error(`pupilRequestAction.js:  Can't fetch vaccination history of pupilId=${pupilId}!`);
+    console.error("details: " + error);
+    throw error; // throw for far processing in other components;
+  }
+}
+
+export const fetchHealthCheckHistoryByPupilId = async (pupilId) => {
+
+  try {
+
+    const getProperCallback = () => getHealthCheckHistoryByPupilId(pupilId);
+
+    const resp = await fetchResponse(getProperCallback);
+
+    if (resp.status === false)
+      throw new Error(`pupilRequestAction.js: Can't fetch health check history of pupilId=${pupilId}!`);
+
+    const healthCheckHistory = await resp.data;
+
+    console.log('pupil-request-action.js: ', healthCheckHistory)
+
+    // no errors:
+    return healthCheckHistory;
+
+  } catch (error) {
+    console.error(`pupilRequestAction.js:  Can't fetch health check history of pupilId=${pupilId}!`);
     console.error("details: " + error);
     throw error; // throw for far processing in other components;
   }
