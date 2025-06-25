@@ -1,31 +1,31 @@
 import { useState, useEffect } from "react";
-import { fetchDiseaseHealthCheck } from "../../api/schoolnurse/schoolnurse-requests-action/disease-health-check-request-action"; // Adjust the import path as necessary
+import { fetchHealthCheckDisease } from "../../api/schoolnurse/schoolnurse-requests-action/health-check-disease-action"; // Adjust the import path as necessary
 
-const useDiseaseHealthCheck = () => {
-    const [diseaseHealthCheck, setDiseaseHealthCheck] = useState([]);
+const useDiseaseByPupilId = (pupilId) => {
+    const [diseaseData, setDiseaseData] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        const loadDiseaseHealthCheck = async () => {
+        if (!pupilId) return;
+
+        const fetchData = async () => {
             setIsLoading(true);
             try {
-                const response = await fetchDiseaseHealthCheck();
-                if (response) {
-                    console.log("Disease health check fetched successfully:", response);
-                    setDiseaseHealthCheck(response);
-                }
+                const response = await fetchHealthCheckDisease(pupilId); // response = data
+                setDiseaseData(response); // ✅ FIXED HERE
             } catch (error) {
-                console.error("Failed to fetch disease health check:", error);
-                setDiseaseHealthCheck(null); // Clear data on error
+                console.error(error);
+                setDiseaseData(null);
             } finally {
                 setIsLoading(false);
             }
         };
 
-        loadDiseaseHealthCheck();
-    }, []);
+        fetchData();
+    }, [pupilId]);
 
-    return { diseaseHealthCheck, isLoading };
-}
+    return { diseaseData, isLoading };
+};
 
-export default useDiseaseHealthCheck;
+
+export default useDiseaseByPupilId;

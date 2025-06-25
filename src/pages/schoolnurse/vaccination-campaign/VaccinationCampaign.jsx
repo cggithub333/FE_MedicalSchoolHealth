@@ -1,8 +1,10 @@
+import Campaign from '../../../components/schoolnurse/vaccination-campaign/campaign/Campaign';
+
 const VaccinationCampaign = () => {
 
   return (
     <>
-      Schoolnurse - Vaccination Campaign - Vaccination Campaign
+      <Campaign />
     </>
   );
 }

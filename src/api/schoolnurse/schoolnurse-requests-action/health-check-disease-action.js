@@ -1,9 +1,9 @@
 import { fetchResponse } from "../../fetch-response.js";
-import { getHealthCheckDisease } from "../schoolnurse-requests-callback/health-check-disease-callback.js";
+import { getHealthCheckDiseaseByPupilId } from "../schoolnurse-requests-callback/health-check-disease-callback.js";
 
-export const fetchHealthCheckDisease = async () => {
+export const fetchHealthCheckDisease = async (pupilId) => {
     try {
-        const response = await fetchResponse(() => getHealthCheckDisease());
+        const response = await fetchResponse(() => getHealthCheckDiseaseByPupilId(pupilId));
 
         if (response.status === false)
             throw new Error("Can't fetch health check disease");

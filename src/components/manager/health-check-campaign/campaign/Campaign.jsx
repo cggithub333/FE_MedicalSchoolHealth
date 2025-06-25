@@ -107,7 +107,7 @@ const AllCampaign = () => {
                         key={campaign.id}
                         className="campaign-card"
                         onClick={() => handleCardClick(campaign)}
-                        style={{ cursor: 'pointer' }}
+                        style={{ cursor: 'pointer', width: 340, minWidth: 340, maxWidth: 340 }}
                     >
                         <CardContent>
                             <Typography variant="h6" color="primary" gutterBottom>

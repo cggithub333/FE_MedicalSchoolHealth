@@ -1,3 +1,4 @@
 import request from "../../request";
 
-export const getHealthCheckDisease = async () => request.get('sensitive_disease');
+export const getHealthCheckDiseaseByPupilId = async (pupilId) =>
+    request.get(`sensitive_disease?pupil_id=${pupilId}`);

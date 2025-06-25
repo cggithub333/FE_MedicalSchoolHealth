@@ -5,16 +5,24 @@ import Checkbox from "@mui/material/Checkbox";
 import Alert from "@mui/material/Alert";
 import CheckIcon from "@mui/icons-material/Check";
 import usePupilsByGrade from "../../../../../hooks/schoolnurse/usePupilsByGrade";
+import ScheduleDetails from "../healthcheck-schedule-management-form/ScheduleDetails";
 
 const ScheduleInjectedList = ({ shift, onBack }) => {
-    // Fallback: if shift.grade is undefined, default to 1 for demo/testing
     const grade = Number(shift?.grade ?? shift?.Grade ?? 1);
     const { pupils = [], isLoading } = usePupilsByGrade(grade);
     const [students, setStudents] = useState([]);
+    const [selectedPupilId, setSelectedPupilId] = useState(null);
 
     useEffect(() => {
+        const sharedKey = `healthcheck_students_grade_${grade}`;
+        let saved = localStorage.getItem(sharedKey);
+        if (saved) {
+            try {
+                setStudents(JSON.parse(saved));
+                return;
+            } catch (e) { }
+        }
         if (pupils && pupils.length > 0) {
-            // Normalize pupils data for table
             setStudents(
                 pupils.map((pupil) => ({
                     ...pupil,
@@ -26,7 +34,7 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
         } else {
             setStudents([]);
         }
-    }, [pupils]);
+    }, [pupils, grade]);
 
     const handleCheck = (index) => {
         const updated = [...students];
@@ -48,11 +56,35 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
         setStudents(updated);
     };
 
+    const handleSave = () => {
+        const sharedKey = `healthcheck_students_grade_${grade}`;
+        localStorage.setItem(sharedKey, JSON.stringify(students));
+        alert("Saved successfully!");
+    };
+
     if (isLoading) return <div className="vaccine-injection-root">Loading...</div>;
 
-    const completedCount = students.filter((s) => s.completed).length;
-    const total = students.length;
+    const sharedKey = `healthcheck_students_grade_${grade}`;
+    let completedCount = 0;
+    let total = pupils.length;
+    let saved = localStorage.getItem(sharedKey);
+    if (saved) {
+        try {
+            const arr = JSON.parse(saved);
+            completedCount = arr.filter(s => s.completed).length;
+        } catch (e) {
+            completedCount = students.filter((s) => s.completed).length;
+        }
+    } else {
+        completedCount = students.filter((s) => s.completed).length;
+    }
     const remaining = total - completedCount;
+
+    // Show ScheduleDetails if a pupil is selected
+    if (selectedPupilId) {
+        return <ScheduleDetails pupilId={selectedPupilId} onBack={() => setSelectedPupilId(null)} />;
+    }
+
     return (
         <div className="vaccine-injection-root">
             <div className="vaccine-injection-header-container">
@@ -143,7 +175,7 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
                                 <td className="details-td">
                                     <button
                                         className="details-btn"
-                                        onClick={() => alert(`Show details for ${student.lastName} ${student.firstName}`)}
+                                        onClick={() => setSelectedPupilId(student.pupilId)}
                                     >
                                         <CheckIcon className="details-icon" />
                                         Details
@@ -156,6 +188,7 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
             </div>
             <div className="vaccine-injection-footer">
                 <button className="save-btn" onClick={onBack}>Back</button>
+                <button className="save-btn" onClick={handleSave}>Save</button>
             </div>
         </div>
     );
