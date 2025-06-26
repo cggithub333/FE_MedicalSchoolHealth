@@ -27,7 +27,7 @@ function App() {
     }
 
     if (error) {
-        return <LoginFailed/>
+        return <LoginFailed />
     }
 
     if (success) {

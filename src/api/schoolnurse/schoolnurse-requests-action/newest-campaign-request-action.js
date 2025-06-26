@@ -5,7 +5,7 @@ export const fetchNewestCampaign = async () => {
     try {
         // You want Published or InProgress only:
         const response = await fetchResponse(() =>
-            getCampaignsByStatus(['Published', 'InProgress'])
+            getCampaignsByStatus()
         );
 
         if (response.status === false)

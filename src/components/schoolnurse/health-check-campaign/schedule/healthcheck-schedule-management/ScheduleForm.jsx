@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./StyleScheduleForm.scss";
 import ScheduleInjectedList from "../healthcheck-schedule-management-details/ScheduleInjectedList";
-import useNewestCampaignByStatus from "../../../../../hooks/manager/useNewestCampaignByStatus";
+import useNewestCampaignByStatus from '../../../../hooks/schoolnurse/useNewestCampaignByStatus';
 import usePupilsByGrade from "../../../../../hooks/schoolnurse/usePupilsByGrade";
 
 const statusColors = {

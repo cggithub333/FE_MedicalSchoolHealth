@@ -8,7 +8,7 @@ import img3 from '../../../../assets/images/3.jpg';
 import img4 from '../../../../assets/images/4.jpg';
 import img5 from '../../../../assets/images/5.jpg';
 import './Campaign.scss';
-import useNewestCampaignByStatus from '../../../../hooks/manager/useNewestCampaignByStatus';
+import useNewestCampaignByStatus from '../../../../hooks/schoolnurse/useNewestCampaignByStatus';
 
 const Campaign = () => {
     const textRef = useRef();    // Create a ref for the animated text element

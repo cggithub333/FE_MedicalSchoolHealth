@@ -12,9 +12,9 @@ const useAuth = () => {
   //parent login:
   // const [ phoneNumber, setPhoneNumber ] = useState('');
   // const [ password, setPassword ] = useState('');
-  const [ success, setSuccess ] = useState(false);
-  const [ error, setError ] = useState(null);
-  const [ isLoading, setIsLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
 
@@ -23,14 +23,14 @@ const useAuth = () => {
       setIsLoading(true);
 
       try {
-        
+
         // authorize:
         authorizeAction(parentPhonenumber, parentPassword);
 
         // no errors:
         setSuccess(true);
-        
-      } catch(error) {
+
+      } catch (error) {
         console.error("useAuth.js: ", error);
         setError(error);
       } finally {
