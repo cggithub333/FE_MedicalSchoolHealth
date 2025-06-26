@@ -2,21 +2,19 @@
 import axios from "axios";
 
 export const API_CONFIG = {
-    JSON_SERVER_API: {
-        baseURL: import.meta.env.VITE_BASE_URL,
-        headers: {
-            "Content-type": "application/json"
-        },
-        timeout: 10 * 1000, // 10secs
+    baseURL: import.meta.env.VITE_BASE_URL,
+    headers: {
+        "Content-type": "application/json",
     },
+    timeout: 10000,
 };
 
-const request = axios.create(API_CONFIG.JSON_SERVER_API);
+const request = axios.create(API_CONFIG);
 
 // Add request interceptor for JWT -  run BEFORE every request is sent.
 request.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('jwtToken');
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -27,40 +25,27 @@ request.interceptors.request.use(
     }
 );
 
-// Add response interceptor for handling token expiration - run AFTER every request receives a response
 request.interceptors.response.use(
     (response) => response,
-    async (error) => {
-        const originalRequest = error.config;
 
-        // If error is 401 and we haven't tried to refresh token yet
-        if (error.response?.status === 401 && !originalRequest._retry) {
-            originalRequest._retry = true;
+    (error) => {
+        const status = error.response?.status;
 
-            try {
-                // Attempt to refresh token
-                const refreshToken = localStorage.getItem('refreshToken');
-                const response = await request.post('/auth/refresh-token', { refreshToken });
-                const { token } = response.data;
+        if (status === 401) {
+            // Clear stored tokens
+            localStorage.removeItem('jwtToken');
+            localStorage.removeItem('refreshToken'); // optional, if stored
 
-                // Store new token
-                localStorage.setItem('token', token);
-
-                // Retry original request with new token
-                originalRequest.headers.Authorization = `Bearer ${token}`;
-                return request(originalRequest);
-            } catch (refreshError) {
-                // If refresh fails, redirect to login
-                localStorage.removeItem('token');
-                localStorage.removeItem('refreshToken');
-                window.location.href = '/login';
-                return Promise.reject(refreshError);
+            // Redirect to homepage
+            if (window.location.pathname !== '/homepage') {
+                window.location.href = '/homepage';
             }
         }
 
         return Promise.reject(error);
     }
 );
+
 
 export default request;
 

@@ -27,3 +27,9 @@ export const getPayloadResources = () => {
     }
   }
 }
+
+export const getJWTToken = () => {
+  const token = localStorage.getItem('jwtToken');
+  console.log("getJWTToken() -> JWT Token: " + token);
+  return token; 
+}
