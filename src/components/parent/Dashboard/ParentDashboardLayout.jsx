@@ -35,6 +35,7 @@ import usePupils from '../../../hooks/parent/usePupils';
 import { Base64 } from 'js-base64';
 
 import { stylePupilBtn, styleChildItem } from './parent-dashboard-layout-custom-css.js';
+import Logout from '../../Logout.jsx';
 
 function ToolbarActionsUtility() {
 
@@ -188,6 +189,8 @@ function CustomAppTitle() {
 }
 
 function DashboardLayoutSlots(props) {
+
+  const [ isLogout, setIsLogout ] = React.useState(false);
   const { window } = props;
 
   const [session, setSession] = React.useState({
@@ -211,10 +214,14 @@ function DashboardLayoutSlots(props) {
       },
       signOut: () => {
         setSession(null);
+        setIsLogout(true);
       },
     };
   }, []);
 
+  if (isLogout) {
+    return <Logout/>;
+  }
   return (
     // Remove this provider when copying and pasting into your project.
     <>
