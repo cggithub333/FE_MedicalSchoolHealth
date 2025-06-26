@@ -1,12 +1,17 @@
 import request from "../../../request.js";
 
-// upddate campaign status
-export const updateCampaignStatus = async (campaignId, status) => {
+import request from "../../../request.js"
 
-    request.put(`management/health-check-campaigns/status/${campaignId}`,
-        {
-            statusHealthCampaign: status
-        }
-    )
-};
+// Update campaign status
+export const updateCampaignStatus = async (campaignId, status) => {
+    try {
+        const response = await request.put(`management/health-check-campaigns/status/${campaignId}`, {
+            statusHealthCampaign: status,
+        })
+        return response // Make sure to return the response
+    } catch (error) {
+        console.error("Error in updateCampaignStatus:", error)
+        throw error
+    }
+}
 

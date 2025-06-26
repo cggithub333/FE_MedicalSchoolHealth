@@ -1,16 +1,26 @@
-import { createNewCampaignAction } from "../../../../api/manager/manager-requests-action/newest-campaign-request-action";
+import { useState } from "react";
+import { createNewCampaignAction } from "../../../../api/manager/manager-requests-action/healthcheck/create-new-healthcheck-campaign-action";
 
 const useCreateNewCampaign = () => {
-    const createNewCampaign = async (campaignData) => {
-        try {
-            const response = await createNewCampaignAction(campaignData);
-            return response;
-        } catch (error) {
-            console.error("Failed to create new campaign:", error);
-            throw error;
-        }
-    };
+    const [isCreating, setIsCreating] = useState(false)
+    const [error, setError] = useState(null)
 
-    return { createNewCampaign };
+    const createNewCampaign = async (campaignData) => {
+        setIsCreating(true)
+        setError(null)
+        try {
+            const response = await createNewCampaignAction(campaignData)
+            return response
+        } catch (error) {
+            console.error("Failed to create new campaign:", error)
+            setError(error.message || "Failed to create campaign")
+            throw error
+        } finally {
+            setIsCreating(false)
+        }
+    }
+
+    return { createNewCampaign, isCreating, error }
 }
-export default useCreateNewCampaign;
+
+export default useCreateNewCampaign

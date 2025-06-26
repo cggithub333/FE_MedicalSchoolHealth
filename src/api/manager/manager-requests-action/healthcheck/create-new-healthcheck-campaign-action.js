@@ -3,17 +3,15 @@ import { createNewCampaign } from "../../manager-request-callback/healthcheck/cr
 
 export const createNewCampaignAction = async (campaignData) => {
     try {
-        const response = await fetchResponse(() => createNewCampaign(campaignData));
+        const response = await fetchResponse(() => createNewCampaign(campaignData))
 
-        console.log("Response from createNewCampaign:", response);
+        console.log("Response from createNewCampaign:", response)
 
-        if (response.status === false)
-            throw new Error("Can't create new campaign");
+        if (response.status === false) throw new Error("Can't create new campaign")
 
-        return response.data;
-
+        return response.data
     } catch (error) {
-        console.error("Error : " + error);
-        throw error; // Re-throw the error to handle it in the component
+        console.error("Error creating new campaign:", error)
+        throw error // Re-throw the error to handle it in the component
     }
 }

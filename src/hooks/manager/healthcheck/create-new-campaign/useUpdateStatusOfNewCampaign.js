@@ -1,19 +1,23 @@
 import { useState, useEffect } from 'react';
-import { updateCampaignStatus } from '../../../../api/manager/manager-requests-action/healthcheck/get-all-campaign-request-action';
+import { updateNewestCampaignStatusAction } from '../../../../api/manager/manager-requests-action/healthcheck/update-newest-healthcheck-campaign-action';
 
-//update status of newest campaign
-export const updateStatusOfNewestCampaignAction = async (campaignId, status) => {
-    try {
-        const response = await updateCampaignStatus(campaignId, status);
+export const useUpdateCampaignStatus = () => {
+    const [isUpdating, setIsUpdating] = useState(false)
 
-        if (response.status === false)
-            throw new Error("Can't update campaign status");
-
-        return response.data;
-
-    } catch (error) {
-        console.error("Error : " + error);
-        throw error;
+    const updateCampaignStatus = async (campaignId, status) => {
+        setIsUpdating(true)
+        try {
+            const response = await updateNewestCampaignStatusAction(campaignId, status)
+            return response
+        } catch (error) {
+            console.error("Error updating campaign status:", error)
+            throw error
+        } finally {
+            setIsUpdating(false)
+        }
     }
-};
+
+    return { updateCampaignStatus, isUpdating }
+}
+
 
