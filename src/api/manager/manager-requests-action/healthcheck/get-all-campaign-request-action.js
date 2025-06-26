@@ -1,5 +1,6 @@
 import { fetchResponse } from "../../../fetch-response";
-import { deleteNewestCampaignAction } from "../../../../api/manager/manager-requests-action/healthcheck/delete-newest-healthcheck-campaign-action";
+import { getAllCampaigns } from "../../manager-request-callback/healthcheck/get-all-campaign-request-callback";
+
 
 export const fetchAllCampaigns = async () => {
     try {

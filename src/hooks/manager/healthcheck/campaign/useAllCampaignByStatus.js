@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { fetchAllCampaigns } from "../../../../api/manager/manager-requests-action/healthcheck/get-all-campaign-request-action";
 
 export const useAllCampaign = () => {

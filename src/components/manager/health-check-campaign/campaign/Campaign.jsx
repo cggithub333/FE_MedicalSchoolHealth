@@ -4,7 +4,6 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useAllCampaign } from '../../../../hooks/manager/healthcheck/campaign/useAllCampaignByStatus'
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -15,6 +14,7 @@ import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 
+import { useAllCampaign } from '../../../../hooks/manager/healthcheck/campaign/useAllCampaignByStatus';
 
 const AllCampaign = () => {
     const { allCampaigns, isLoading, error } = useAllCampaign();
