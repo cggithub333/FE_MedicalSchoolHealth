@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { fetchPupilsByGrade } from '../../api/schoolnurse/schoolnurse-requests-action/pupils-by-grade-request-action';
+import { fetchPupilsByGrade } from '../../../api/schoolnurse/schoolnurse-requests-action/healthcheck/pupils-by-grade-request-action';
 
 const usePupilsByGrade = (currgrade) => {
     const [pupils, setPupils] = useState([]);

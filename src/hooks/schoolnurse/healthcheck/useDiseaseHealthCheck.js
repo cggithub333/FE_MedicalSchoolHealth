@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchHealthCheckDisease } from "../../api/schoolnurse/schoolnurse-requests-action/health-check-disease-action"; // Adjust the import path as necessary
+import { fetchHealthCheckDisease } from "../../../api/schoolnurse/schoolnurse-requests-action/healthcheck/health-check-disease-action"; // Adjust the import path as necessary
 
 const useDiseaseByPupilId = (pupilId) => {
     const [diseaseData, setDiseaseData] = useState(null);

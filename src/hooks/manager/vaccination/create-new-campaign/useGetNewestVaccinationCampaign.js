@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { fetchNewestVaccinationCampaign } from '../../../api/manager/manager-requests-action/vaccination/newest-vaccination-campaign-request-action';
+import { fetchNewestVaccinationCampaign } from '../../../../api/manager/manager-requests-action/vaccination/newest-vaccination-campaign-request-action';
 
 const useNewestVaccinationCampaign = () => {
     const [newestVaccinationCampaign, setNewestVaccinationCampaign] = useState([]);

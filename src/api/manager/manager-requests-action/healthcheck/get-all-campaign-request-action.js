@@ -1,9 +1,11 @@
-import { fetchResponse } from "../../fetch-response";
-import { getAllCampaigns } from "../manager-request-callback/get-all-campaign-request-callback";
+import { fetchResponse } from "../../../fetch-response";
+import { deleteNewestCampaignAction } from "../../../../api/manager/manager-requests-action/healthcheck/delete-newest-healthcheck-campaign-action";
 
 export const fetchAllCampaigns = async () => {
     try {
         const response = await fetchResponse(() => getAllCampaigns());
+
+        console.log("Response from getAllCampaigns:", response);
 
         if (response.status === false)
             throw new Error("Can't fetch all campaigns");

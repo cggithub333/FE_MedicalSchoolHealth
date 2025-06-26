@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./StyleVaccineCampaignForm.css";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import useGetVaccineByDisease from "../../../../../hooks/manager/vaccination/useGetVaccineByDisease";
+import useGetVaccineByDisease from "../../../../../hooks/manager/vaccination/create-new-campaign/useGetVaccineByDisease";
 
 const VaccineCampaignForm = () => {
     const { vaccines: diseases, isLoading: isVaccineLoading } = useGetVaccineByDisease();

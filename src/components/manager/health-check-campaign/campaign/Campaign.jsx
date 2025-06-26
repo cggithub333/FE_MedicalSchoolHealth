@@ -4,8 +4,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useAllCampaign } from '../../../../hooks/manager/useAllCampaignByStatus'
-import { useAllCampaignByYear } from '../../../../hooks/manager/useAllCampaignByYear';
+import { useAllCampaign } from '../../../../hooks/manager/healthcheck/campaign/useAllCampaignByStatus'
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -31,11 +30,12 @@ const AllCampaign = () => {
         return Array.from(new Set(years)).sort((a, b) => b - a);
     }, [allCampaigns]);
 
-    // Get campaigns by year if filtered, else all (compare with created_at year)
-    const { campaigns: campaignsByYear, isLoading: isLoadingByYear, error: errorByYear } = useAllCampaignByYear(year !== 'all' ? year : null);
-    const campaigns = year === 'all'
-        ? (allCampaigns.getallcampaign || allCampaigns)
-        : (allCampaigns.getallcampaign || allCampaigns).filter(c => new Date(c.created_at).getFullYear() === Number(year));
+    // Filter campaigns by year (no hook)
+    const campaigns = React.useMemo(() => {
+        const list = allCampaigns.getallcampaign || allCampaigns;
+        if (year === 'all') return list;
+        return list.filter(c => new Date(c.created_at).getFullYear() === Number(year));
+    }, [allCampaigns, year]);
     const loading = isLoading;
     const err = error;
 

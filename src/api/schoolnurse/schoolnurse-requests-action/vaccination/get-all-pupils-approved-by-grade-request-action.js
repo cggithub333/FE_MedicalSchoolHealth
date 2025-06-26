@@ -1,10 +1,10 @@
 import { fetchResponse } from "../../../fetch-response";
 import { getPupilsByGradeAndStatus } from "../../schoolnurse-requests-callback/vaccination/get-all-pupils-approved-by-grade-request-callback";
 
-export const fetchPupilsByGradeAndStatus = async (grade) => {
+export const fetchPupilsByGradeAndStatus = async (campaignId, gradeLevel) => {
     try {
         const response = await fetchResponse(() =>
-            getPupilsByGradeAndStatus(grade)
+            getPupilsByGradeAndStatus(campaignId, gradeLevel)
         );
 
         if (response.status === false)

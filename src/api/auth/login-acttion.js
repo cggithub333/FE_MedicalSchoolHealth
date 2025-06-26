@@ -13,6 +13,7 @@ export const authorizeAction = async (phoneNumber, password) => {
     const callback = () => authorizeCallback(phoneNumber, password);
     const response = await fetchResponse(callback);
 
+
     if (response.status === false) {
       console.error("Login failed!");
     }

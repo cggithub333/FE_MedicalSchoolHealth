@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
-import { fetchNewestCampaign } from '../../api/manager/manager-requests-action/newest-campaign-request-action';
+import { fetchNewestCampaign } from '../../../api/schoolnurse/schoolnurse-requests-action/newest-campaign-request-action';
 
+
+// This hook fetches the newest campaign for the school nurse he status is In Peogress
 const useNewestCampaign = () => {
     const [newestCampaign, setNewestCampaign] = useState([]);
     const [isLoading, setIsLoading] = useState(false);

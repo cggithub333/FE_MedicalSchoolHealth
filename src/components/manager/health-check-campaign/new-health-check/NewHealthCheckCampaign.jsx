@@ -1,17 +1,21 @@
+// for save health check campaign details 
+
 import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
-import useNewestCampaign from '../../../../hooks/manager/useNewestCampaignByStatus';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import HealthCheckCampaignForm from '../new-health-check/health-check-campaign-form/HealthCheckCampaignForm';
-import { updateStatusOfNewestCampaignAction } from '../../../../api/manager/manager-requests-action/newest-campaign-request-action';
+import { useNewestCampaign } from '../../../../hooks/manager/healthcheck/create-new-campaign/useNewestCampaignByStatus';
+import { updateStatusOfNewestCampaignAction } from '../../../../api/manager/manager-requests-action/healthcheck/newest-campaign-request-action';
+
+
 const NewHealthCheckCampaign = () => {
     const { newestCampaign = [], isLoading } = useNewestCampaign();
     const [open, setOpen] = useState(false);

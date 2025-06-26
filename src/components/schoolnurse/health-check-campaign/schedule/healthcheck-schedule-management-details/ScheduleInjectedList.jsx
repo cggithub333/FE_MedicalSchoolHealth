@@ -4,7 +4,7 @@ import TextField from "@mui/material/TextField";
 import Checkbox from "@mui/material/Checkbox";
 import Alert from "@mui/material/Alert";
 import CheckIcon from "@mui/icons-material/Check";
-import usePupilsByGrade from "../../../../../hooks/schoolnurse/usePupilsByGrade";
+import usePupilsByGrade from "../../../../../hooks/schoolnurse/healthcheck/usePupilsByGrade";
 import ScheduleDetails from "../healthcheck-schedule-management-form/ScheduleDetails";
 
 const ScheduleInjectedList = ({ shift, onBack }) => {

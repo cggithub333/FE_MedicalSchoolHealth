@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchVaccinationCampaignByYear } from "../../../api/manager/manager-requests-action/vaccination/get-campaign-by-year-request-action";
+import { fetchVaccinationCampaignByYear } from "../../../../api/manager/manager-requests-action/vaccination/get-campaign-by-year-request-action";
 
 export const useAllCampaignByYear = (year) => {
     const [campaigns, setCampaigns] = useState([]);

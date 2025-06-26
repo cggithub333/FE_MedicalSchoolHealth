@@ -1,5 +1,5 @@
-import { fetchResponse } from "../../fetch-response.js";
-import { getCampaignsByStatus } from "../schoolnurse-requests-callback/newest-campaign-request-callback.js";
+import { fetchResponse } from "../../../fetch-response.js";
+import { getCampaignsByStatus } from "../../schoolnurse-requests-callback/newest-campaign-request-callback.js";
 
 export const fetchNewestCampaign = async () => {
     try {

@@ -1,27 +1,17 @@
+// for creating a health check campaign form done
 import React, { useState, useEffect } from "react";
 import {
     Box,
     TextField,
     Typography,
     Button,
-    Checkbox,
-    FormControlLabel,
-    FormGroup,
-    IconButton,
     Paper,
     Divider,
-    Select,
-    MenuItem,
-    InputLabel,
-    FormControl,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AddIcon from "@mui/icons-material/Add";
+import { useCreateNewCampaign } from "../../../../hooks/manager/healthcheck/campaign/useCreateNewCampaign";
 import "./HealthCheckCampaignForm.scss";
-import useAllDisease from "../../../../../hooks/manager/useAllDisease"; // Adjust path if needed
 
 const HealthCheckCampaignForm = () => {
-    const { sensitiveDiseases, isLoading } = useAllDisease(); // Assume hook returns { diseases, isLoading }
     const [form, setForm] = useState({
         title: "",
         description: "",
@@ -32,56 +22,16 @@ const HealthCheckCampaignForm = () => {
         selectedConsents: [],
     });
     const [errors, setErrors] = useState({});
-    const [diseaseDetails, setDiseaseDetails] = useState({});
-    const [openDetailIdx, setOpenDetailIdx] = useState(null);
-    const [availableOptions, setAvailableOptions] = useState([]);
     const [selectDisease, setSelectDisease] = useState("");
 
     // Populate availableOptions and diseaseDetails from diseases data
-    useEffect(() => {
-        if (sensitiveDiseases && Array.isArray(sensitiveDiseases)) {
-            setAvailableOptions(sensitiveDiseases.map(d => d.name));
-            const details = {};
-            sensitiveDiseases.forEach(d => {
-                details[d.name] = d.detail || "";
-            });
-            setDiseaseDetails(details);
-        }
-    }, [sensitiveDiseases]);
+
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-    const handleConsentChange = (option) => {
-        setForm((prev) => ({
-            ...prev,
-            selectedConsents: prev.selectedConsents.includes(option)
-                ? prev.selectedConsents.filter((o) => o !== option)
-                : [...prev.selectedConsents, option],
-        }));
-    };
 
-    const handleDeleteConsent = (option) => {
-        setForm((prev) => ({
-            ...prev,
-            selectedConsents: prev.selectedConsents.filter((o) => o !== option),
-        }));
-    };
-
-    // Add selected disease from dropdown to selectedConsents
-    const handleAddConsent = () => {
-        if (
-            selectDisease &&
-            !form.selectedConsents.includes(selectDisease)
-        ) {
-            setForm((prev) => ({
-                ...prev,
-                selectedConsents: [...prev.selectedConsents, selectDisease],
-            }));
-            setSelectDisease("");
-        }
-    };
 
     const validate = () => {
         let temp = {};

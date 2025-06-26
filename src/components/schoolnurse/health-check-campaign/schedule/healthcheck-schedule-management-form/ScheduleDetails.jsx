@@ -1,6 +1,6 @@
 // ScheduleDetails.jsx
 import React, { useState } from "react";
-import useDiseaseByPupilId from "../../../../../hooks/schoolnurse/useDiseaseHealthCheck";
+import useDiseaseByPupilId from "../../../../../hooks/schoolnurse/healthcheck/useDiseaseHealthCheck";
 import "./StyleScheduleDetails.scss";
 
 const ScheduleDetails = ({ pupilId, onBack }) => {
