@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { fetchAllVaccinationCampaigns } from "../../../../api/manager/manager-requests-action/vaccination/get-all-vaccination-campaign-request-action";
 
-export const useAllCampaignByStatus = () => {
+export const useNewestCampaignByStatus = () => {
     const [allCampaigns, setAllCampaigns] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
