@@ -4,12 +4,16 @@ import { authorizeCallback } from "./login-callback";
 import { fetchResponse } from "../fetch-response";
 
 export const authorizeAction = async (phoneNumber, password) => {
+
+
+  console.log("login action runned");
+
   try {
 
     const callback = () => authorizeCallback(phoneNumber, password);
     const response = await fetchResponse(callback);
 
-    if (response.status === false)  {
+    if (response.status === false) {
       console.error("Login failed!");
     }
 
@@ -24,7 +28,7 @@ export const authorizeAction = async (phoneNumber, password) => {
     localStorage.setItem('userRole', userRole);
     localStorage.setItem('userFullName', userFullName);
   }
-  catch(error) {
+  catch (error) {
     console.log("Login failed!");
     throw error;
   }
