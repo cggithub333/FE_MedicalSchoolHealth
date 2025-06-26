@@ -20,6 +20,7 @@ import { FaChildReaching as ChildIcon } from "react-icons/fa6";
 import NavbarData from './NavbarData';
 import NavbarTheme from './navbar-theme';
 import { Link, Outlet } from 'react-router-dom';
+import Logout from '../../Logout';
 
 
 
@@ -106,6 +107,8 @@ function CustomAppTitle() {
 }
 
 function DashboardLayoutSlots(props) {
+
+    const [isLogout, setIsLogout] = React.useState(false);
     const { window } = props;
 
     const [session, setSession] = React.useState({
@@ -129,12 +132,14 @@ function DashboardLayoutSlots(props) {
             },
             signOut: () => {
                 setSession(null);
+                setIsLogout(true);
             },
         };
     }, []);
 
-
-
+    if (isLogout) {
+        return <Logout/>
+    }
     return (
         // Remove this provider when copying and pasting into your project.
         <>

@@ -2,7 +2,7 @@
 import Request from '../../request';
 
 export const getAllPupils = async () => {
-  return Request.get('parent_pupils');
+  return Request.get('pupils/listPupils');
 }
 
 export const getSurveyByPupilId = async (pupilId) => {
