@@ -1,211 +1,360 @@
-import React, { useState } from 'react';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import CircularProgress from '@mui/material/CircularProgress';
-import useNewestVaccinationCampaign from '../../../../hooks/schoolnurse/vaccination/useNewestCampaignByStatus';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import Button from '@mui/material/Button';
-import VaccineCampaignForm from './vaccination-campaign-form/VaccineCampaignForm';
+import { useState } from "react"
+import {
+    Box,
+    Card,
+    CardContent,
+    Typography,
+    Button,
+    Stepper,
+    Step,
+    StepLabel,
+    StepContent,
+    Fab,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    CircularProgress,
+    Alert,
+    Chip,
+} from "@mui/material"
+import AddIcon from "@mui/icons-material/Add"
+import { useNewestCampaignByStatus } from "../../../../hooks/manager/vaccination/create-new-campaign/useGetNewestCampaingByStatus"
+import { useUpdateNewCampaign } from "../../../../hooks/manager/vaccination/create-new-campaign/useUpdateNewCampaign"
+import VaccineCampaignForm from "./components/VaccineCampaignForm"
+import "./StyleNewVaccinationCampaign.scss"
 
 const NewVaccinationCampaign = () => {
-    const { newestVaccinationCampaign = [], isLoading } = useNewestVaccinationCampaign();
-    const [open, setOpen] = useState(false);
-    const [selectedCampaign, setSelectedCampaign] = useState(null);
-    const [showAddForm, setShowAddForm] = useState(false);
+    const { allCampaigns, isLoading } = useNewestCampaignByStatus()
+    const { updateNewCampaign, isLoading: isUpdating } = useUpdateNewCampaign()
+    const [selectedCampaign, setSelectedCampaign] = useState(null)
+    const [dialogOpen, setDialogOpen] = useState(false)
+    const [createFormOpen, setCreateFormOpen] = useState(false)
+    const [activeStep, setActiveStep] = useState(0)
 
-    // Flatten and map the campaign data from the custom hook
-    const campaigns = Array.isArray(newestVaccinationCampaign)
-        ? newestVaccinationCampaign.map(item => item.campaign)
-        : [];
+    // Filter campaigns by status
+    const pendingCampaigns = allCampaigns.filter((c) => c.status === "PENDING")
+    const inProgressCampaigns = allCampaigns.filter((c) => c.status === "IN_PROGRESS")
+    const completedCampaigns = allCampaigns.filter((c) => c.status === "COMPLETED")
 
-    const filteredNewestCampaigns = campaigns.filter(c => c.status === 'Pending' || c.status === 'Published');
+    const steps = [
+        {
+            label: "Pending Campaigns",
+            description: "Select a campaign to start",
+            campaigns: pendingCampaigns,
+            nextStatus: "IN_PROGRESS",
+            actionLabel: "Start Campaign",
+        },
+        {
+            label: "In Progress Campaigns",
+            description: "Active vaccination campaigns",
+            campaigns: inProgressCampaigns,
+            nextStatus: "COMPLETED",
+            actionLabel: "Complete Campaign",
+        },
+        {
+            label: "Completed Campaigns",
+            description: "Finished vaccination campaigns",
+            campaigns: completedCampaigns,
+            nextStatus: null,
+            actionLabel: null,
+        },
+    ]
 
-    const handleCardClick = (campaign) => {
-        setSelectedCampaign(campaign);
-        setOpen(true);
-    };
-    const handleClose = () => {
-        setOpen(false);
-        setSelectedCampaign(null);
-    };
-    const handleAddFormClose = () => setShowAddForm(false);
+    const handleCampaignClick = (campaign) => {
+        setSelectedCampaign(campaign)
+        setDialogOpen(true)
+    }
+
+    const handleStatusUpdate = async (campaign, newStatus) => {
+        try {
+            await updateNewCampaign(campaign.campaignId, newStatus)
+            setDialogOpen(false)
+            // Refresh data
+            window.location.reload()
+        } catch (error) {
+            console.error("Failed to update campaign status:", error)
+            alert("Failed to update campaign status")
+        }
+    }
+
+    const formatDate = (dateString) => {
+        // Handle different date formats from API
+        if (!dateString) return "N/A"
+
+        // If it's in DD-MM-YYYY format, convert it
+        if (dateString.includes("-") && dateString.split("-")[0].length === 2) {
+            const [day, month, year] = dateString.split("-")
+            return new Date(`${year}-${month}-${day}`).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+            })
+        }
+
+        return new Date(dateString).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+        })
+    }
+
+    const getStatusColor = (status) => {
+        switch (status) {
+            case "PENDING":
+                return "warning"
+            case "IN_PROGRESS":
+                return "info"
+            case "COMPLETED":
+                return "success"
+            default:
+                return "default"
+        }
+    }
+
+    const canUpdateToInProgress = (campaign) => {
+        return campaign.status === "PENDING" && inProgressCampaigns.length === 0
+    }
+
+    const canUpdateToCompleted = (campaign) => {
+        return campaign.status === "IN_PROGRESS"
+    }
 
     if (isLoading) {
         return (
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="300px">
+            <Box className="loading-container">
                 <CircularProgress />
             </Box>
-        );
-    }
-
-    if (!filteredNewestCampaigns.length) {
-        return (
-            <Box textAlign="center" mt={4}>
-                No campaigns found.
-            </Box>
-        );
+        )
     }
 
     return (
-        <Box p={3} sx={{ position: 'relative' }}>
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-                <Typography variant="h4" color="primary.main" fontWeight={700}>
-                    Vaccination Campaigns
-                </Typography>
-                <Button
-                    variant="contained"
-                    color="success"
-                    onClick={() => setShowAddForm(true)}
-                    sx={{ fontWeight: 700, fontSize: 16, px: 3, py: 1.5 }}
-                >
-                    + Add New Campaign
-                </Button>
-            </Box>
-            <Box
-                display="flex"
-                flexWrap="wrap"
-                gap={3}
-                justifyContent="center"
-                className={open || showAddForm ? 'blurred-cards' : ''}
-                style={
-                    open || showAddForm
-                        ? { filter: 'blur(4px)', pointerEvents: 'none', userSelect: 'none', transition: 'filter 0.3s' }
-                        : {}
-                }
-            >
-                {filteredNewestCampaigns.map((campaign) => (
-                    <Card
-                        key={campaign.campaignId}
-                        className="campaign-card"
-                        onClick={() => campaign.status === 'Pending' && handleCardClick(campaign)}
-                        style={{
-                            cursor: campaign.status === 'Pending' ? 'pointer' : 'not-allowed',
-                            width: 360,
-                            minWidth: 360,
-                            maxWidth: 360,
-                            opacity: campaign.status === 'Published' ? 0.6 : 1,
-                            pointerEvents: campaign.status === 'Pending' ? 'auto' : 'none',
-                        }}
-                    >
-                        <CardContent>
-                            <Typography variant="h6" color="primary" gutterBottom>
-                                {campaign.disease?.name} ({campaign.vaccine?.name})
+        <Box className="vaccination-workflow-container">
+            <Typography variant="h4" className="workflow-title">
+                Vaccination Campaign Workflow
+            </Typography>
+
+            <Stepper activeStep={activeStep} orientation="vertical" className="workflow-stepper">
+                {steps.map((step, index) => (
+                    <Step key={step.label}>
+                        <StepLabel>
+                            <Typography variant="h6" className="step-label">
+                                {step.label}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                <strong>Disease:</strong> {campaign.disease?.name}
+                        </StepLabel>
+                        <StepContent>
+                            <Typography variant="body2" className="step-description">
+                                {step.description}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                <strong>Vaccine:</strong> {campaign.vaccine?.name}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                <strong>Manufacturer:</strong> {campaign.vaccine?.manufacturer}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                <strong>Recommended Age:</strong> {campaign.vaccine?.recommendedAge}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                <strong>Notes:</strong> {campaign.notes}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                <strong>Consent Form Deadline:</strong> {new Date(campaign.consentFormDeadline).toLocaleDateString()}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                <strong>Start:</strong> {new Date(campaign.startDate).toLocaleString()}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                <strong>End:</strong> {new Date(campaign.endDate).toLocaleString()}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                <strong>Status:</strong> {campaign.status}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                <strong>Campaign Status:</strong> {campaign.campaignStatus}
-                            </Typography>
-                        </CardContent>
-                    </Card>
+
+                            {step.campaigns.length === 0 ? (
+                                <Alert severity="info" className="no-campaigns-alert">
+                                    No campaigns in this stage
+                                </Alert>
+                            ) : (
+                                <Box className="campaigns-container">
+                                    {step.campaigns.map((campaign) => (
+                                        <Card
+                                            key={campaign.campaignId}
+                                            className={`campaign-card ${step.nextStatus ? "clickable" : ""}`}
+                                            onClick={() => step.nextStatus && handleCampaignClick(campaign)}
+                                        >
+                                            <CardContent>
+                                                <Box className="campaign-header">
+                                                    <Typography variant="h6" className="campaign-title">
+                                                        {campaign.titleCampaign}
+                                                    </Typography>
+                                                    <Chip
+                                                        label={campaign.status}
+                                                        color={getStatusColor(campaign.status)}
+                                                        size="small"
+                                                        className="status-chip"
+                                                    />
+                                                </Box>
+                                                <Typography variant="body2" className="campaign-description">
+                                                    <strong>Disease:</strong> {campaign.diseaseName}
+                                                </Typography>
+                                                <Typography variant="body2" className="campaign-description">
+                                                    <strong>Vaccine:</strong> {campaign.vaccineName}
+                                                </Typography>
+                                                <div className="campaign-details">
+                                                    <Typography variant="body2">
+                                                        <strong>Start Date:</strong> {formatDate(campaign.startDate)}
+                                                    </Typography>
+                                                    <Typography variant="body2">
+                                                        <strong>End Date:</strong> {formatDate(campaign.endDate)}
+                                                    </Typography>
+                                                    <Typography variant="body2">
+                                                        <strong>Form Deadline:</strong> {formatDate(campaign.formDeadline)}
+                                                    </Typography>
+                                                    {campaign.notes && (
+                                                        <Typography variant="body2">
+                                                            <strong>Notes:</strong> {campaign.notes}
+                                                        </Typography>
+                                                    )}
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    ))}
+                                </Box>
+                            )}
+
+                            {/* Step Navigation */}
+                            <Box className="step-navigation">
+                                <Button disabled={index === 0} onClick={() => setActiveStep(index - 1)} className="nav-button">
+                                    Back
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    onClick={() => setActiveStep(index + 1)}
+                                    disabled={index === steps.length - 1}
+                                    className="nav-button"
+                                >
+                                    Next
+                                </Button>
+                            </Box>
+                        </StepContent>
+                    </Step>
                 ))}
-            </Box>
-            <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+            </Stepper>
+
+            {/* Campaign Details Dialog */}
+            <Dialog
+                open={dialogOpen}
+                onClose={() => setDialogOpen(false)}
+                maxWidth="md"
+                fullWidth
+                className="campaign-dialog"
+            >
                 <DialogTitle>
-                    <Box display="flex" alignItems="center" gap={1}>
-                        <span role="img" aria-label="campaign" style={{ fontSize: 28 }}>📋</span>
-                        <Typography variant="h6" component="span" color="primary.main">
-                            Campaign Details
-                        </Typography>
-                    </Box>
+                    <Typography variant="h6" className="dialog-title">
+                        Vaccination Campaign Details
+                    </Typography>
                 </DialogTitle>
-                <DialogContent dividers sx={{ background: "#f8fafc" }}>
+                <DialogContent className="dialog-content">
                     {selectedCampaign && (
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: 2,
-                                mt: 1,
-                                fontSize: 16,
-                            }}
-                        >
-                            <Typography variant="h6" color="primary" gutterBottom>
-                                {selectedCampaign.disease?.name} ({selectedCampaign.vaccine?.name})
+                        <Box className="campaign-details-container">
+                            <Typography variant="h6" className="selected-campaign-title">
+                                {selectedCampaign.titleCampaign}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                <strong>Disease:</strong> {selectedCampaign.disease?.name}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                <strong>Vaccine:</strong> {selectedCampaign.vaccine?.name}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                <strong>Manufacturer:</strong> {selectedCampaign.vaccine?.manufacturer}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                <strong>Recommended Age:</strong> {selectedCampaign.vaccine?.recommendedAge}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                <strong>Notes:</strong> {selectedCampaign.notes}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                <strong>Consent Form Deadline:</strong> {new Date(selectedCampaign.consentFormDeadline).toLocaleDateString()}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                <strong>Start:</strong> {new Date(selectedCampaign.startDate).toLocaleString()}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                <strong>End:</strong> {new Date(selectedCampaign.endDate).toLocaleString()}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                <strong>Status:</strong> {selectedCampaign.status}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                <strong>Campaign Status:</strong> {selectedCampaign.campaignStatus}
-                            </Typography>
+
+                            <Box className="details-grid">
+                                <Box className="detail-item">
+                                    <Typography variant="subtitle2" className="detail-label">
+                                        Disease
+                                    </Typography>
+                                    <Typography variant="body2">{selectedCampaign.diseaseName}</Typography>
+                                </Box>
+                                <Box className="detail-item">
+                                    <Typography variant="subtitle2" className="detail-label">
+                                        Vaccine
+                                    </Typography>
+                                    <Typography variant="body2">{selectedCampaign.vaccineName}</Typography>
+                                </Box>
+                                <Box className="detail-item">
+                                    <Typography variant="subtitle2" className="detail-label">
+                                        Status
+                                    </Typography>
+                                    <Chip label={selectedCampaign.status} color={getStatusColor(selectedCampaign.status)} size="small" />
+                                </Box>
+                                <Box className="detail-item">
+                                    <Typography variant="subtitle2" className="detail-label">
+                                        Active
+                                    </Typography>
+                                    <Typography variant="body2">{selectedCampaign.active ? "Yes" : "No"}</Typography>
+                                </Box>
+                                <Box className="detail-item">
+                                    <Typography variant="subtitle2" className="detail-label">
+                                        Start Date
+                                    </Typography>
+                                    <Typography variant="body2">{formatDate(selectedCampaign.startDate)}</Typography>
+                                </Box>
+                                <Box className="detail-item">
+                                    <Typography variant="subtitle2" className="detail-label">
+                                        End Date
+                                    </Typography>
+                                    <Typography variant="body2">{formatDate(selectedCampaign.endDate)}</Typography>
+                                </Box>
+                                <Box className="detail-item">
+                                    <Typography variant="subtitle2" className="detail-label">
+                                        Form Deadline
+                                    </Typography>
+                                    <Typography variant="body2">{formatDate(selectedCampaign.formDeadline)}</Typography>
+                                </Box>
+                                {selectedCampaign.notes && (
+                                    <Box className="detail-item" style={{ gridColumn: "1 / -1" }}>
+                                        <Typography variant="subtitle2" className="detail-label">
+                                            Notes
+                                        </Typography>
+                                        <Typography variant="body2">{selectedCampaign.notes}</Typography>
+                                    </Box>
+                                )}
+                            </Box>
                         </Box>
                     )}
                 </DialogContent>
-                <DialogActions sx={{ background: "#f8fafc" }}>
-                    <Button onClick={handleClose} variant="contained" color="primary">
-                        Publish
-                    </Button>
-                    <Button onClick={handleClose} variant="contained" color="secondary">
-                        Update
-                    </Button>
-                    <Button onClick={handleClose} variant="contained" color="error">
-                        Delete
-                    </Button>
+                <DialogActions className="dialog-actions">
+                    <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
+                    {selectedCampaign && (
+                        <>
+                            {canUpdateToInProgress(selectedCampaign) && (
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={() => handleStatusUpdate(selectedCampaign, "IN_PROGRESS")}
+                                    disabled={isUpdating}
+                                    className="action-button"
+                                >
+                                    {isUpdating ? <CircularProgress size={20} /> : "Start Campaign"}
+                                </Button>
+                            )}
+                            {canUpdateToCompleted(selectedCampaign) && (
+                                <Button
+                                    variant="contained"
+                                    color="success"
+                                    onClick={() => handleStatusUpdate(selectedCampaign, "COMPLETED")}
+                                    disabled={isUpdating}
+                                    className="action-button"
+                                >
+                                    {isUpdating ? <CircularProgress size={20} /> : "Complete Campaign"}
+                                </Button>
+                            )}
+                            {selectedCampaign.status === "PENDING" && inProgressCampaigns.length > 0 && (
+                                <Alert severity="warning" className="warning-alert">
+                                    Cannot start: There is already a campaign in progress
+                                </Alert>
+                            )}
+                        </>
+                    )}
                 </DialogActions>
             </Dialog>
-            <Dialog open={showAddForm} onClose={handleAddFormClose} maxWidth="sm" fullWidth>
-                <DialogTitle>Add New Vaccination Campaign</DialogTitle>
+
+            {/* Floating Action Button for Create New Campaign */}
+            <Fab color="primary" aria-label="add" className="create-fab" onClick={() => setCreateFormOpen(true)}>
+                <AddIcon />
+            </Fab>
+
+            {/* Create Campaign Dialog */}
+            <Dialog
+                open={createFormOpen}
+                onClose={() => setCreateFormOpen(false)}
+                maxWidth="lg"
+                fullWidth
+                className="create-dialog"
+            >
+                <DialogTitle>Create New Vaccination Campaign</DialogTitle>
                 <DialogContent>
-                    <VaccineCampaignForm onSuccess={handleAddFormClose} onCancel={handleAddFormClose} />
+                    <VaccineCampaignForm
+                        onSuccess={() => {
+                            setCreateFormOpen(false)
+                            window.location.reload()
+                        }}
+                        onCancel={() => setCreateFormOpen(false)}
+                    />
                 </DialogContent>
             </Dialog>
         </Box>
-    );
-};
+    )
+}
 
-export default NewVaccinationCampaign;
+export default NewVaccinationCampaign

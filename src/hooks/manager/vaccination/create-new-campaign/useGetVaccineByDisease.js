@@ -1,30 +1,30 @@
 import { useState, useEffect } from "react";
 import { fetchAllVaccinationDiseases } from "../../../../api/manager/manager-requests-action/vaccination/get-all-vaccination-disease-request.action";
 
-const useGetVaccineByDisease = () => {
-    const [vaccinesByDisease, setVaccinesByDisease] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
+export const useGetVaccineByDisease = () => {
+    const [vaccinesByDisease, setVaccinesByDisease] = useState([])
+    const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
         const loadVaccines = async () => {
-            setIsLoading(true);
+            setIsLoading(true)
             try {
-                const response = await fetchAllVaccinationDiseases();
-                console.log("✅ API raw response:", response);
-                // ✅ response is ALREADY an array
-                setVaccinesByDisease(response || []);
+                const response = await fetchAllVaccinationDiseases()
+                console.log("✅ API raw response:", response)
+                // Extract the GetVaccineByDisease array from the response
+                const diseases = response?.GetVaccineByDisease || response || []
+                setVaccinesByDisease(diseases)
             } catch (error) {
-                console.error("Failed to fetch:", error);
-                setVaccinesByDisease([]);
+                console.error("Failed to fetch:", error)
+                setVaccinesByDisease([])
             } finally {
-                setIsLoading(false);
+                setIsLoading(false)
             }
-        };
+        }
 
-        loadVaccines();
-    }, []);
+        loadVaccines()
+    }, [])
 
-    return { vaccines: vaccinesByDisease, isLoading };
-};
+    return { vaccines: vaccinesByDisease, isLoading }
+}
 
-export default useGetVaccineByDisease;

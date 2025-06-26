@@ -1,5 +1,5 @@
 import { fetchResponse } from "../../../fetch-response";
-import { updateVaccinationCampaignStatus } from "../../../manager/manager-request-callback/vaccination/update-vaccination-campaign-status-callback";
+import { updateVaccinationCampaignStatus } from "../../manager-request-callback/vaccination/update-new-vaccination-campaign-callback";
 
 export const updateVaccinationCampaignStatusAction = async ({ campaignId, status }) => {
     try {

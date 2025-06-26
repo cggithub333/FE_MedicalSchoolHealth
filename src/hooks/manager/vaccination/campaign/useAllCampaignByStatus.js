@@ -1,23 +1,31 @@
 import { useState } from "react";
 import { fetchAllVaccinationCampaigns } from "../../../../api/manager/manager-requests-action/vaccination/get-all-vaccination-campaign-request-action";
 
-export const useAllCampaignByStatus = () => {
-    const [allCampaigns, setAllCampaigns] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null);
+export const useAllVaccinationCampaign = () => {
+    const [allCampaigns, setAllCampaigns] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
+    const [error, setError] = useState(null)
 
-    const loadCampaigns = async () => {
+    const fetchCampaigns = async () => {
         try {
-            const response = await fetchAllVaccinationCampaigns();
-            setAllCampaigns(response || []);
+            setIsLoading(true)
+            const campaigns = await fetchAllVaccinationCampaigns()
+            setAllCampaigns(campaigns)
+            setError(null)
         } catch (err) {
-            console.error("Failed to fetch campaigns:", err);
-            setError(err);
+            setError(err.message)
         } finally {
-            setIsLoading(false);
+            setIsLoading(false)
         }
-    };
-    loadCampaigns();
+    }
 
-    return { allCampaigns, isLoading, error };
+    useEffect(() => {
+        fetchCampaigns()
+    }, [])
+
+    const refetch = () => {
+        fetchCampaigns()
+    }
+
+    return { allCampaigns, isLoading, error, refetch }
 }
