@@ -25,18 +25,18 @@ export default function LoginModal() {
     }
 
     // for debug:
-    console.log("OTP button clicked!");
-    console.log("phoneNumber: " + phoneNumber);
+    // console.log("OTP button clicked!");
+    // console.log("phoneNumber: " + phoneNumber);
   }
 
   const handleLoginWithPwd = async () => {
-
+      
     await loginWithPwd(phoneNumber, password);
 
     // for debug:
-    console.log("Login password button clicked!");
-    console.log("phoneNumber: " + phoneNumber);
-    console.log("password: " + password);
+    // console.log("Login password button clicked!");
+    // console.log("phoneNumber: " + phoneNumber);
+    // console.log("password: " + password);
   }
 
   const handlePressEnter = (e) => {
@@ -48,7 +48,7 @@ export default function LoginModal() {
 
   if (success && role) {
     const adjustRole = (role === "SCHOOL_NURSE") ? "schoolnurse" : role.toLowerCase();
-    return <Navigate to={`/${adjustRole}/dashboard`} />
+    return <Navigate to={`/${adjustRole}/dashboard`}  replace/>
   }
   return (
     <>
@@ -65,6 +65,11 @@ export default function LoginModal() {
             Welcome back
           <Typography variant="body2" color="text.secondary">
             Enter your phone number and password to sign in
+            <br/> Admin:        0848025113
+            <br/> Manager:      0848025114
+            <br/> Parent:       0848025115
+            <br/> School Nurse: 0848025116 
+            <br/> Password: 12345
           </Typography>
         </DialogTitle>
         <DialogContent sx={{ px: 3, pb: 3 }}>

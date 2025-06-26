@@ -24,6 +24,7 @@ import NavbarData from './NavbarData';
 import NavbarTheme from './navbar-theme';
 import { Link, Outlet } from 'react-router-dom';
 
+import Logout from '../../Logout';
 
 function ToolbarActionsUtility() {
     return (
@@ -108,6 +109,8 @@ function CustomAppTitle() {
 }
 
 function DashboardLayoutSlots(props) {
+
+    const [ isSignOut, setIsSignOut ] = React.useState(false);
     const { window } = props;
 
     const [session, setSession] = React.useState({
@@ -131,12 +134,15 @@ function DashboardLayoutSlots(props) {
             },
             signOut: () => {
                 setSession(null);
+                setIsSignOut(true);
             },
         };
     }, []);
 
 
-
+    if (isSignOut) {
+        return <Logout />;
+    }
     return (
         // Remove this provider when copying and pasting into your project.
         <>

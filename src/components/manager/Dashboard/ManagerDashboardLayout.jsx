@@ -83,6 +83,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { useTheme } from "@mui/material/styles";
+import Logout from '../../Logout';
 
 function CustomNavItem({ icon, title, active, ...props }) {
     const theme = useTheme();
@@ -136,6 +137,8 @@ function CustomAppTitle() {
 }
 
 function DashboardLayoutSlots(props) {
+
+    const [ isLogout, setIsLogout ] = React.useState(false);
     const { window } = props;
 
     const [session, setSession] = React.useState({
@@ -159,10 +162,14 @@ function DashboardLayoutSlots(props) {
             },
             signOut: () => {
                 setSession(null);
+                setIsLogout(true);
             },
         };
     }, []);
 
+    if (isLogout) {
+        return <Logout/>
+    }
     return (
         // Remove this provider when copying and pasting into your project.
         <>

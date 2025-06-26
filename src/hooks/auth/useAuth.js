@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { authorizeAction } from '../../api/auth/login-acttion';
+import { getPayloadResources } from '../../utils/jwt-utils';
 
 const useAuth = () => {
   const [success, setSuccess] = useState(false);
@@ -12,7 +13,7 @@ const useAuth = () => {
     try {
       await authorizeAction(phoneNumber, password);
       setSuccess(true);
-      setRole(localStorage.getItem('userRole'));
+      setRole(getPayloadResources().role);
     } catch (error) {
       setError(error);
       setSuccess(false);

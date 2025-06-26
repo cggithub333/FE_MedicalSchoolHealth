@@ -2,7 +2,7 @@ import './index.css';
 
 import "./App.css";
 
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link, Navigate, useLocation, Outlet } from "react-router-dom";
 
 import AdminDashboardRoutes from "./components/admin/Dashboard/AdminDashboardRoutes";
 import ManagerDashboardRoutes from "./components/manager/Dashboard/ManagerDashboardRoutes";
@@ -11,37 +11,117 @@ import ParentDashboardRoutes from "./components/parent/Dashboard/ParentDashboard
 import BuildingImage from './assets/images/building_worker.jpg';
 import Homepage from './components/homepage-resources/Homepage';
 
+
+import { getPayloadResources } from './utils/jwt-utils';
+import { isContained } from './utils/string-utils';
+
+
 function App() {
 
+    const RouteProtecter = protecter();
+
     return (
-        <>
         <Router>
             <Routes>
                 <Route path="/homepage" element={<Homepage />}/>
-                <Route path="/admin/*" element={<AdminDashboardRoutes />}/>
-                <Route path="/manager/*" element={<ManagerDashboardRoutes />} />
-                <Route path="/schoolnurse/*" element={<SchoolNurseDashboardRoutes />}/>
-                <Route path="/parent/*" element={<ParentDashboardRoutes />} />
-                <Route path="/*" element={<BuildingPage />} />
+                <Route element={<RouteProtecter.forAll/>}>
+
+                    <Route path="/admin/*" element={<RouteProtecter.forAdmin>
+                                                        <AdminDashboardRoutes/>
+                                                    </RouteProtecter.forAdmin>} />
+                    
+                    <Route path="/manager/*" element={<RouteProtecter.forManager>
+                                                        <ManagerDashboardRoutes />
+                                                    </RouteProtecter.forManager>} />
+
+                    <Route path="/schoolnurse/*" element={<RouteProtecter.forSchoolNurse>
+                                                            <SchoolNurseDashboardRoutes />
+                                                        </RouteProtecter.forSchoolNurse>} />
+
+                    <Route path="/parent/*" element={<RouteProtecter.forParent>
+                                                        <ParentDashboardRoutes />
+                                                    </RouteProtecter.forParent>} />
+                </Route>
+                <Route path="/*" element={<Navigate to={"/homepage"}/>}/>
             </Routes>
         </Router>
-        </>
     );
 }
 
-const BuildingPage = () => {
-    return <>
-        <h1 style={{ fontSize: "20px", fontWeight: "700", margin: "30px" }}>Oops! This page's is in building. Comming soon</h1>
+const protecter = () => {
+    const ProtectAllRoute = ({ children }) => {
+        const currPath = useLocation().pathname;
+        if (!isContained(currPath, "/parent/") && !isContained(currPath, "/schoolnurse/") &&
+            !isContained(currPath, "/admin/") && !isContained(currPath, "/manager/")) {
 
-        <div style={{ marginLeft: "30px" }} >Back to admin page: <Link to={"/admin/"}>Click!</Link></div>
-        <div style={{ marginLeft: "30px" }} >Back to manager page:<Link to={"/manager/"}>Click!</Link></div>
-        <div style={{ marginLeft: "30px" }} >Back to school nurse page:<Link to={"/schoolnurse/"}>Click!</Link></div>
-        <div style={{ marginLeft: "30px" }} >Back to parent page:<Link to={"/parent/"}>Click!</Link></div>
+            return <Navigate to={"/homepage"} replace />
+        }
+        return <Outlet />;
+    }
 
-        <div>
-            <img style={{ width: "50vw", height: "auto", margin: "15px 30px" }} src={BuildingImage} alt={"building image"} />
-        </div>
-    </>
+    const ProtectAdminRoute = ({ children }) => {
+        const adminPrefix = "AD";
+        const currentSeconds = Math.floor(Date.now() / 1000);
+        const { role, userId, exp, error } = getPayloadResources();
+
+        if (error) {
+            // error happened
+            return <Navigate to={"/homepage"} replace />;
+        }
+        
+        if (role != "ADMIN" || currentSeconds >= exp || !isContained(userId, adminPrefix)) {
+            return <Navigate to={"/homepage"} replace />;
+        }
+        //else:
+        return children;
+    }
+
+    const ProtectParentRoute = ({ children }) => {
+        const parentPrefix = "PR";
+        const currentSeconds = Math.floor(Date.now() / 1000);
+        const { role, userId, exp, error } = getPayloadResources() || {};
+        if (error) {
+            return <Navigate to={"/homepage"} replace />;
+        }
+        if (role !== "PARENT" || currentSeconds >= exp || !isContained(userId, parentPrefix)) {
+            return <Navigate to={"/homepage"} replace />
+        }
+        return children;
+    }
+
+    const ProtectSchoolNurseRoute = ({ children }) => {
+        const schoolNursePrefix = "SN";
+        const currentSeconds = Math.floor(Date.now() / 1000);
+        const { role, userId, exp, error } = getPayloadResources() || {};
+        if (error) {
+            return <Navigate to={"/homepage"} replace />;
+        }
+        if (role !== "SCHOOL_NURSE" || currentSeconds >= exp || !isContained(userId, schoolNursePrefix)) {
+            return <Navigate to={"/homepage"} replace />
+        }
+        return children;
+    }
+
+    const ProtectManagerRoute = ({ children }) => {
+        const managerPrefix = "MN";
+        const currentSeconds = Math.floor(Date.now() / 1000);
+        const { role, userId, exp, error } = getPayloadResources() || {};
+        if (error) {
+            return <Navigate to={"/homepage"} replace />;
+        }
+        if (role !== "MANAGER" || currentSeconds >= exp || !isContained(userId, managerPrefix)) {
+            return <Navigate to={"/homepage"} replace />
+        }
+        return children;
+    }
+
+    return {
+        forAdmin: ProtectAdminRoute,
+        forParent: ProtectParentRoute,
+        forSchoolNurse: ProtectSchoolNurseRoute,
+        forManager: ProtectManagerRoute,
+        forAll: ProtectAllRoute
+    }
 }
 
 export default App;
