@@ -4,6 +4,10 @@ import { authorizeCallback } from "./login-callback";
 import { fetchResponse } from "../fetch-response";
 
 export const authorizeAction = async (phoneNumber, password) => {
+
+
+  console.log("login action runned");
+
   try {
 
     const callback = () => authorizeCallback(phoneNumber, password);
