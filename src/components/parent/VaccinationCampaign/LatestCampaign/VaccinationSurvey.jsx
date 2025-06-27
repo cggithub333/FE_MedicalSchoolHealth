@@ -33,105 +33,82 @@ import {
   Close,
 } from "@mui/icons-material"
 
-// const consentForms = [
-//   {
-//     consentFormId: 1,
-//     respondedAt: null,
-//     status: "REJECTED",
-//     formDeadline: "2025-07-04T23:59:59.999999999",
-//     campaignId: 1,
-//     campaignName: "Vaccination campaign middle 2025",
-//     diseaseId: 5,
-//     diseaseName: "Rubella",
-//     doseNumber: 1,
-//     currDoseNumber: 0,
-//     vaccineId: 1,
-//     vaccineName: "Vaccine MMR",
-//     pupilId: "PP0001",
-//     pupilName: "An",
-//     gradeLevel: "GRADE_1"
-//   },
-//   {
-//     consentFormId: 7,
-//     respondedAt: null,
-//     status: "REJECTED",
-//     formDeadline: "2025-07-04T23:59:59.999999999",
-//     campaignId: 1,
-//     campaignName: "Vaccination campaign middle 2025",
-//     diseaseId: 5,
-//     diseaseName: "Rubella",
-//     doseNumber: 1,
-//     currDoseNumber: 0,
-//     vaccineId: 1,
-//     vaccineName: "Vaccine MMR",
-//     pupilId: "PP0008",
-//     pupilName: "Phát",
-//     gradeLevel: "GRADE_5"
-//   }
-// ];
 
 import useAllVaccinationSurveys from "@hooks/parent/vaccination/useAllVaccinationSurveys"
+import useUpdateVaccineSurveyStatus from "@hooks/parent/vaccination/useUpdateVaccineSurveyStatus"
+
+const formatDate = (dateString) => {
+  return new Date(dateString).toLocaleDateString("en-EN", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  })
+}
+
+const getGradeName = (gradeLevel) => {
+  const gradeMap = {
+    GRADE_1: "Lớp 1",
+    GRADE_2: "Lớp 2",
+    GRADE_3: "Lớp 3",
+    GRADE_4: "Lớp 4",
+    GRADE_5: "Lớp 5",
+  }
+  return gradeMap[gradeLevel] || gradeLevel
+}
+
+const getStatusChip = (status) => {
+  if (status === "APPROVED") {
+    return (
+      <Chip
+        label="Injected"
+        size="small"
+        sx={{
+          bgcolor: "success.main",
+          color: "white",
+          fontWeight: "bold",
+        }}
+      />
+    )
+  } else if (status === "REJECTED") {
+    return (
+      <Chip
+        label="Injected"
+        size="small"
+        sx={{
+          bgcolor: "error.main",
+          color: "white",
+          fontWeight: "bold",
+        }}
+      />
+    )
+  }
+  return null
+}
+
 
 const VaccinationSurvey = () => {
-  const { vaccinationSurveys, loading, error, refetch, submitResponse } = useAllVaccinationSurveys();
+  const { vaccinationSurveys, loading, error, refetch } = useAllVaccinationSurveys();
+  const { updateStatus, updateLoading, updateError, responseData } = useUpdateVaccineSurveyStatus();
   
   const [selectedForm, setSelectedForm] = useState(null)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [isConfirmed, setIsConfirmed] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [needReload, setNeedReload] = useState(false) // help page reload every time a response is submitted successfully
 
   // Debug log
   // console.log("Vaccination Surveys:\n", JSON.stringify(vaccinationSurveys))
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-EN", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-  }
-
-  const getGradeName = (gradeLevel) => {
-    const gradeMap = {
-      GRADE_1: "Lớp 1",
-      GRADE_2: "Lớp 2",
-      GRADE_3: "Lớp 3",
-      GRADE_4: "Lớp 4",
-      GRADE_5: "Lớp 5",
+  // Refetch data everytime `needReload` changes. (true when a response is submitted successfully)
+  // This ensures the page is updated with the latest data after parent 'rejects' or 'approves' the surveys.
+  useEffect(() => {
+    if (needReload) {
+      refetch();
+      setNeedReload(false); // Reset after refetching
     }
-    return gradeMap[gradeLevel] || gradeLevel
-  }
-
-  const getStatusChip = (status) => {
-    if (status === "APPROVED") {
-      return (
-        <Chip
-          label="Injected"
-          size="small"
-          sx={{
-            bgcolor: "success.main",
-            color: "white",
-            fontWeight: "bold",
-          }}
-        />
-      )
-    } else if (status === "REJECTED") {
-      return (
-        <Chip
-          label="Injected"
-          size="small"
-          sx={{
-            bgcolor: "error.main",
-            color: "white",
-            fontWeight: "bold",
-          }}
-        />
-      )
-    }
-    return null
-  }
+  }, [needReload, refetch]);  
 
   const handleCardClick = (form) => {
     setSelectedForm(form)
@@ -146,14 +123,33 @@ const VaccinationSurvey = () => {
   }
 
   const handleSubmitResponse = async (response) => {
-    if (!selectedForm || !isConfirmed) return
+    if (!selectedForm || !isConfirmed) return;
+
+    // check status of selectedForm:
+    if (selectedForm.status === response) {
+      alert(`This survey has already been ${selectedForm.status.toLowerCase()}!`);
+      return;
+    }
 
     setSubmitting(true)
     try {
-      await submitResponse(selectedForm.consentFormId, response)
-      handleCloseDialog()
+
+      await updateStatus(selectedForm.consentFormId, response);
+
+      // debug:
+      console.log("Response submitted:", responseData);
+
+      // alert information:
+      alert(`Your survey of  disease "${selectedForm.diseaseName}" for student "${selectedForm.pupilName}" has been ${response === "APPROVED" ? "approved" : "rejected"} successfully.`);
+
+      handleCloseDialog(); // now `selectedForm` is null;
+
+      // reload page:
+      setNeedReload(true); 
+
     } catch (err) {
       console.error("Error submitting response:", err)
+      alert(`OOps! There was an error submitting your response!`);
     } finally {
       setSubmitting(false)
     }
