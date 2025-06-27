@@ -15,7 +15,12 @@ const useHealthCheckHistoryByPupilIdSchoolYear = (pupilId, schoolYear) => {
             setIsLoading(true);
             const record = await getHealthCheckHistoryByPupilIdSchoolYear(localPupilId, localSchoolYear);
 
-            setHistoryRecords([].push(record));
+            setHistoryRecords(prev => {
+                // clear previous records and push the new record
+                prev = [];
+                prev.push(record);
+                return prev;
+            });
         } catch (err) {
             console.error('Error fetching health check history:', err);
             setError(err);

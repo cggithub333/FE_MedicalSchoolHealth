@@ -28,14 +28,22 @@ import { Search, Person, CalendarToday, Favorite, Visibility, LocalHospital, War
 
 const HistoryByPupilBySchoolYear = () => {
   const { pupils } = usePupils()
-  const [selectedPupilId, setSelectedPupilId] = useState(localStorage.getItem("pupilId") || "")
-  const [selectedSchoolYear, setSelectedSchoolYear] = useState(2025)
+  const [selectedPupilId, setSelectedPupilId] = useState(localStorage.getItem("pupilId") || "")      // Default to empty string if no pupilId in localStorage
+  const [selectedSchoolYear, setSelectedSchoolYear] = useState(new Date().getFullYear().toString()); // Default to current year
+  const [ anySelected, setAnySelected ] = useState(false);
+
+  // debug:
+  // console.log("Selected Pupil ID:", selectedPupilId);
+  // console.log("Selected School Year:", selectedSchoolYear);
+  
   const { fetchHealthCheckHistory, historyRecords, isLoading, error } = useHealthCheckHistoryByPupilIdSchoolYear(
     selectedPupilId,
     selectedSchoolYear,
   )
 
-  console.log("HistoryByPupilBySchoolYear", historyRecords);
+  // debug:
+  // console.log("HistoryByPupilBySchoolYear :", historyRecords);
+  // console.log("HistoryByPupilBySchoolYear :", typeof historyRecords);
 
   // Initial fetch
   useEffect(() => {
@@ -58,15 +66,30 @@ const HistoryByPupilBySchoolYear = () => {
   }
 
   const renderHealthMetrics = () => {
-    if (!historyRecords) return null
+    if (!historyRecords || historyRecords[0] == null || historyRecords.length == 0) 
+      return (
+        <Alert severity="info" sx={{ mt: 2 }}>
+          No health check records found for the selected pupil and school year.
+        </Alert>
+      );
+
+    // debug:
+    console.log("History Records:", historyRecords);
+
+    // const properties:
+    const height = `${historyRecords[0].height} cm` || "No Information";
+    const weight = historyRecords[0].weight ? `${historyRecords[0].weight} kg` : "No Information";
+    const rightEyeVision = historyRecords[0].rightEyeVision || "No Information";
+    const leftEyeVision = historyRecords[0].leftEyeVision || "No Information";
+    const bloodPressure = historyRecords[0].bloodPressure ? `${historyRecords[0].bloodPressure} mmHg` : "No Information";
+    const heartRate = historyRecords[0].heartRate ? `${historyRecords[0].heartRate} bpm` : "No Information";
 
     const metrics = [
-      { label: "Height", value: `${historyRecords.height} cm`, icon: <Person /> },
-      { label: "Weight", value: `${historyRecords.weight} kg`, icon: <Person /> },
-      { label: "Right Eye Vision", value: historyRecords.rightEyeVision, icon: <Visibility /> },
-      { label: "Left Eye Vision", value: historyRecords.leftEyeVision, icon: <Visibility /> },
-      { label: "Blood Pressure", value: `${historyRecords.bloodPressure} mmHg`, icon: <Favorite /> },
-      { label: "Heart Rate", value: `${historyRecords.heartRate} bpm`, icon: <Favorite /> },
+      { label: "Height", value: height, icon: <Person /> },
+      { label: "Weight", value: weight, icon: <Person /> },
+      { label: "Right Eye Vision", value: rightEyeVision, icon: <Visibility /> },
+      { label: "Left Eye Vision", value: leftEyeVision, icon: <Visibility /> },
+      { label: "Blood Pressure", value: bloodPressure, icon: <Favorite /> }, 
     ]
 
     return (
@@ -93,22 +116,49 @@ const HistoryByPupilBySchoolYear = () => {
   }
 
   const renderDetailedExamination = () => {
-    if (!historyRecords) return null
+    if (!historyRecords || historyRecords[0] == null || historyRecords.length == 0) 
+      return (
+        <Alert severity="info" sx={{ mt: 2 }}>
+          No detailed examination records found for the selected pupil and school year.
+        </Alert>
+      );
 
+    // debug:
+    console.log("Detailed Examination Records:", historyRecords);
+
+    // take only the first record for detailed examination:
+    const historyRecord = historyRecords[0];
+
+    // stored properties's value:
+    const dentailCheck = historyRecord.dentalCheck || "No Information";
+    const earCondition = historyRecord.earCondition || "No Information";
+    const noseCondition = historyRecord.noseCondition || "No Information"; 
+    const throatCondition = historyRecord.throatCondition || "No Information";
+    const skinAndMucosa = historyRecord.skinAndMucosa || "No Information";
+    const hearAnuscultaion = historyRecord.hearAnuscultaion || "No Information";
+    const chestShape = historyRecord.chestShape || "No Information";
+    const lungs = historyRecord.lungs || "No Information";
+    const digestiveSystem = historyRecord.digestiveSystem || "No Information";
+    const urinarySystem = historyRecord.urinarySystem || "No Information";
+    const musculoskeletalSystem = historyRecord.musculoskeletalSystem || "No Information";
+    const neurologyAndPsychiatry = historyRecord.neurologyAndPsychiatry || "No Information";
+    const genitalExamination = historyRecord.genitalExamination || "No Information";
+
+    // properties:
     const examinations = [
-      { label: "Dental", value: historyRecords.dentalCheck },
-      { label: "Ears", value: historyRecords.earCondition },
-      { label: "Nose", value: historyRecords.noseCondition },
-      { label: "Throat", value: historyRecords.throatCondition },
-      { label: "Skin and mucosa", value: historyRecords.skinAndMucosa },
-      { label: "Cardiovascular", value: historyRecords.hearAnuscultaion },
-      { label: "Chest shape", value: historyRecords.chestShape },
-      { label: "Lungs", value: historyRecords.lungs },
-      { label: "Digestive system", value: historyRecords.digestiveSystem },
-      { label: "Urinary system", value: historyRecords.urinarySystem },
-      { label: "Musculoskeletal system", value: historyRecords.musculoskeletalSystem },
-      { label: "Neurology and psychiatry", value: historyRecords.neurologyAndPsychiatry },
-      { label: "Genital examination", value: historyRecords.genitalExamination },
+      { label: "Dental", value: dentailCheck },
+      { label: "Ear Condition", value: earCondition },
+      { label: "Nose Condition", value: noseCondition },
+      { label: "Throat Condition", value: throatCondition },
+      { label: "Skin and Mucosa", value: skinAndMucosa },
+      { label: "Heart Auscultation", value: hearAnuscultaion },
+      { label: "Chest Shape", value: chestShape },
+      { label: "Lungs", value: lungs },
+      { label: "Digestive System", value: digestiveSystem },
+      { label: "Urinary System", value: urinarySystem },
+      { label: "Musculoskeletal System", value: musculoskeletalSystem },
+      { label: "Neurology and Psychiatry", value: neurologyAndPsychiatry },
+      { label: "Genital Examination", value: genitalExamination },
     ]
 
     return (
@@ -154,7 +204,10 @@ const HistoryByPupilBySchoolYear = () => {
             <Grid item size={{ xs: 3, md: 3}}>
               <FormControl fullWidth>
                 <InputLabel>Child</InputLabel>
-                <Select value={selectedPupilId} label="pupil" onChange={(e) => setSelectedPupilId(e.target.value)}>
+                <Select value={selectedPupilId} label="pupil" onChange={(e) => {
+                                                                          setSelectedPupilId(e.target.value);
+                                                                          setAnySelected(true);
+                                                                        }}>
                   {pupils.map((pupil) => (
                     <MenuItem key={pupil.pupilId} value={pupil.pupilId}>
                       <Box sx={{ display: "flex", alignItems: "center", gap: 2, width: "100%" }}>
@@ -182,7 +235,10 @@ const HistoryByPupilBySchoolYear = () => {
                 label="School Year"
                 type="number"
                 value={selectedSchoolYear}
-                onChange={(e) => setSelectedSchoolYear(Number.parseInt(e.target.value) || 2025)}
+                onChange={(e) => {
+                  setSelectedSchoolYear(Number.parseInt(e.target.value) || 2025);
+                  setAnySelected(true);
+                }}
                 inputProps={{ min: 2020, max: 2030 }}
               />
             </Grid>
@@ -191,10 +247,18 @@ const HistoryByPupilBySchoolYear = () => {
               <Button
                 fullWidth
                 variant="contained"
-                onClick={handleSearch}
+                onClick={(e) => {
+                  handleSearch();
+                  setAnySelected(false);
+                }}
                 disabled={isLoading}
                 startIcon={<Search />}
-                sx={{ py: 1.5 }}
+                sx={{ 
+                  py: 1.5 ,
+                  fontSize: "1rem",
+                  backgroundColor: anySelected ? "#f1fa8c" : "primary.main",
+                  color: anySelected ? "black" : "white",
+                }}
               >
                 {isLoading ? "Searching..." : "Search"}
               </Button>
@@ -272,7 +336,7 @@ const HistoryByPupilBySchoolYear = () => {
       )}
 
       {/* Health Check Results */}
-      {!isLoading && !error && historyRecords && (
+      {!isLoading && !error && historyRecords  && historyRecords.length >  0 && (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
           <Card>
             <CardHeader>
@@ -317,7 +381,9 @@ const HistoryByPupilBySchoolYear = () => {
                     Additional Notes
                   </Typography>
                   <Paper sx={{ p: 2, bgcolor: "grey.50" }}>
-                    <Typography variant="body2">{historyRecords.additionalNotes}</Typography>
+                    <Typography variant="body2">
+                      {historyRecords[0]?.additionalNotes}
+                    </Typography>
                   </Paper>
                 </Box>
                 <Box>
@@ -325,7 +391,7 @@ const HistoryByPupilBySchoolYear = () => {
                     Unusual Signs
                   </Typography>
                   <Paper sx={{ p: 2, bgcolor: "grey.50" }}>
-                    <Typography variant="body2">{historyRecords.unusualSigns}</Typography>
+                    <Typography variant="body2">{historyRecords[0]?.unusualSigns}</Typography>
                   </Paper>
                 </Box>
               </Box>
@@ -334,8 +400,24 @@ const HistoryByPupilBySchoolYear = () => {
         </Box>
       )}
 
+      {
+        !isLoading && !error && historyRecords && historyRecords.length == 0 && (
+          <Card sx={{ mb: 3 }}>
+            <CardContent sx={{ textAlign: "center", py: 4 }}>
+              <Warning sx={{ fontSize: 48, color: "text.secondary", mb: 2 }} />
+              <Typography variant="h6" fontWeight="bold" sx={{ mb: 1 }}>
+                No health check records found
+              </Typography>
+              <Typography color="text.secondary">
+                There are no health check records for pupil {selectedPupilId} in school year {selectedSchoolYear}
+              </Typography>
+            </CardContent>
+          </Card>
+        )
+      }
+
       {/* No Data State */}
-      {!isLoading && !error && !historyRecords && selectedPupilId && selectedSchoolYear && (
+      {!isLoading && !error && (!historyRecords || historyRecords.length == 0) && selectedPupilId && selectedSchoolYear && (
         <Card>
           <CardContent sx={{ textAlign: "center", py: 4 }}>
             <Warning sx={{ fontSize: 48, color: "text.secondary", mb: 2 }} />
