@@ -206,6 +206,9 @@ const allCampaign = () => {
         if (status === "PENDING") {
             actions.push({ label: "Start Campaign", status: "IN_PROGRESS", icon: <PlayArrowIcon /> })
         }
+        if (status === "PUBLISHED") {
+            actions.push({ label: "Start", status: "IN_PROGRESS", icon: <PlayArrowIcon /> })
+        }
         if (status === "IN_PROGRESS") {
             actions.push({ label: "Complete", status: "COMPLETED", icon: <CheckCircleIcon /> })
         }

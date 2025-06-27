@@ -499,7 +499,15 @@ const HealthCampaignManager = () => {
                 </MenuItem>
 
                 <Divider sx={{ my: 1 }} />
+                {menuCampaignId &&
+                    getStatusActions(allCampaigns.find((c) => c.campaignId === menuCampaignId)).map((action) => (
+                        <MenuItem key={action.status} sx={{ borderRadius: 1, mx: 1, my: 0.5 }}>
+                            <ListItemIcon>{action.icon}</ListItemIcon>
+                            <ListItemText>{action.label}</ListItemText>
+                        </MenuItem>
+                    ))}
 
+                <Divider sx={{ my: 1 }} />
                 <MenuItem onClick={handleMenuClose} sx={{ borderRadius: 1, mx: 1, my: 0.5, color: "error.main" }}>
                     <ListItemIcon>
                         <DeleteIcon color="error" />

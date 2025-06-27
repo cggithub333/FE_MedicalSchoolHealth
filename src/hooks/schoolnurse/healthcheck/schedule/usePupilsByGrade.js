@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { fetchPupilsByGrade } from '../../../../api/schoolnurse/schoolnurse-requests-action/healthcheck/pupils-by-grade-request-action';
 
-
 // This hook fetches pupils by their grade level. and their disease in here too
 export const usePupilsByGrade = (currgrade) => {
     const [pupils, setPupils] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const loadPupils = async () => {

@@ -18,7 +18,7 @@ export const useNewestCampaignByStatus = () => {
             console.error("Error fetching newest campaign:", err);
             setError(err);
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
         fetchNewestCampaignByStatus();
     };

@@ -1,3 +1,4 @@
+//health check-schedule-management/ScheduleForm.jsx
 import { useState, useEffect } from "react"
 import "./StyleScheduleForm.scss"
 import ScheduleInjectedList from "../healthcheck-schedule-management-details/ScheduleInjectedList"
@@ -5,19 +6,6 @@ import { usePupilsByGrade } from "../../../../../hooks/schoolnurse/healthcheck/s
 import { CircularProgress, Fade, Grow, Chip, Paper, Card, CardContent, Grid, Box, Typography, Button, Skeleton } from "@mui/material"
 import { Schedule, Group, CheckCircle, Warning, Error, LocationOn, CalendarToday } from "@mui/icons-material"
 import { useNewestCampaignByStatus } from "../../../../../hooks/schoolnurse/healthcheck/schedule/useNewestCampaignByStatus"
-
-
-const statusColors = {
-    Available: "available",
-    Full: "full",
-    "Almost Full": "almostfull",
-}
-
-const statusBarColors = {
-    Available: "#43a047",
-    Full: "#e53935",
-    "Almost Full": "#fbc02d",
-}
 
 const GRADES = [1, 2, 3, 4, 5]
 

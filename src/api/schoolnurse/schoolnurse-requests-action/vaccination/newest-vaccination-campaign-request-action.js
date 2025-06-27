@@ -1,7 +1,6 @@
 import { fetchResponse } from "../../../fetch-response.js";
 import { getNewestCampaignsByStatus } from "../../schoolnurse-requests-callback/vaccination/newest-vaccination-campaign-request-callback.js";
 
-
 export const fetchNewestVaccinationCampaign = async () => {
     try {
         // Pass ['Pending'] as intended:
