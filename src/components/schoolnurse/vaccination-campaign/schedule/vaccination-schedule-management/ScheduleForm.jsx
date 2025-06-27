@@ -12,7 +12,7 @@ import {
     Fade,
     Skeleton,
 } from "@mui/material"
-import Alert from '@mui/material/Alert';
+
 import {
     Vaccines as VaccinesIcon,
     Schedule as ScheduleIcon,
