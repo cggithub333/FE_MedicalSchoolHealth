@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { fetchAllVaccinationCampaigns } from "../../../../api/manager/manager-requests-action/vaccination/get-all-vaccination-campaign-request-action";
 
 export const useAllVaccinationCampaign = () => {

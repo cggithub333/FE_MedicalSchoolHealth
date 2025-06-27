@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Box, TextField, Button, Typography, Grid, Alert, CircularProgress } from "@mui/material"
+import { Box, TextField, Button, Typography, Grid, Alert, CircularProgress, Paper, Fade } from "@mui/material"
 import useCreateNewCampaign from "../../../../../hooks/manager/healthcheck/create-new-campaign/useCreateNewCampaign"
 import "./HealthCheckCampaignForm.scss"
 
@@ -129,20 +129,34 @@ const HealthCheckCampaignForm = ({ onSuccess, onCancel }) => {
     }
 
     return (
-        <Box className="campaign-form-container">
-            <Typography variant="h6" className="form-title">
-                Create New Health Check Campaign
-            </Typography>
-
-            {error && (
-                <Alert severity="error" className="error-alert">
-                    {error}
-                </Alert>
-            )}
-
-            <form onSubmit={handleSubmit} className="campaign-form">
-                <Grid container spacing={3}>
-                    <Grid item xs={12} md={6}>
+        <Fade in timeout={500}>
+            <Paper elevation={4} sx={{
+                maxWidth: 600,
+                mx: "auto",
+                mt: 4,
+                p: { xs: 2, sm: 4 },
+                borderRadius: 4,
+                background: "rgba(255,255,255,0.98)",
+                boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
+                transition: "box-shadow 0.3s"
+            }}>
+                <form onSubmit={handleSubmit} autoComplete="off">
+                    <Typography variant="h5" fontWeight={700} align="center" mb={3} color="primary.main" letterSpacing={1}>
+                        Create New Health Check Campaign
+                    </Typography>
+                    {error && (
+                        <Box mb={2}>
+                            <Paper elevation={0} sx={{ background: "#ffeaea", p: 1, borderRadius: 2 }}>
+                                <Typography color="error" align="center" fontSize={15}>
+                                    Error: {error}
+                                </Typography>
+                            </Paper>
+                        </Box>
+                    )}
+                    <Box mb={3}>
+                        <Typography variant="subtitle1" fontWeight={600} mb={1} color="text.secondary">
+                            Campaign Information
+                        </Typography>
                         <TextField
                             fullWidth
                             label="Campaign Title"
@@ -153,10 +167,8 @@ const HealthCheckCampaignForm = ({ onSuccess, onCancel }) => {
                             error={!!validationErrors.title}
                             helperText={validationErrors.title}
                             disabled={isCreating}
+                            sx={{ mb: 1.5, background: "#f7fafd", borderRadius: 2, transition: "background 0.2s" }}
                         />
-                    </Grid>
-
-                    <Grid item xs={12} md={6}>
                         <TextField
                             fullWidth
                             label="Address"
@@ -167,10 +179,13 @@ const HealthCheckCampaignForm = ({ onSuccess, onCancel }) => {
                             error={!!validationErrors.address}
                             helperText={validationErrors.address}
                             disabled={isCreating}
+                            sx={{ background: "#f7fafd", borderRadius: 2, transition: "background 0.2s" }}
                         />
-                    </Grid>
-
-                    <Grid item xs={12}>
+                    </Box>
+                    <Box mb={3}>
+                        <Typography variant="subtitle1" fontWeight={600} mb={1} color="text.secondary">
+                            Description
+                        </Typography>
                         <TextField
                             fullWidth
                             label="Description"
@@ -183,75 +198,107 @@ const HealthCheckCampaignForm = ({ onSuccess, onCancel }) => {
                             error={!!validationErrors.description}
                             helperText={validationErrors.description}
                             disabled={isCreating}
+                            sx={{ background: "#f7fafd", borderRadius: 2 }}
                         />
+                    </Box>
+                    <Box mb={3}>
+                        <Typography variant="subtitle1" fontWeight={600} mb={1} color="text.secondary">
+                            Schedule
+                        </Typography>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} sm={4}>
+                                <TextField
+                                    fullWidth
+                                    label="Registration Deadline"
+                                    type="date"
+                                    value={formData.deadlineDate}
+                                    onChange={(e) => handleInputChange("deadlineDate", e.target.value)}
+                                    required
+                                    InputLabelProps={{ shrink: true }}
+                                    variant="outlined"
+                                    error={!!validationErrors.deadlineDate}
+                                    helperText={validationErrors.deadlineDate || "Deadline for registration"}
+                                    disabled={isCreating}
+                                    sx={{ background: "#f7fafd", borderRadius: 2 }}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={4}>
+                                <TextField
+                                    fullWidth
+                                    label="Start Date & Time"
+                                    type="datetime-local"
+                                    value={formData.startExaminationDate}
+                                    onChange={(e) => handleInputChange("startExaminationDate", e.target.value)}
+                                    required
+                                    InputLabelProps={{ shrink: true }}
+                                    variant="outlined"
+                                    error={!!validationErrors.startExaminationDate}
+                                    helperText={validationErrors.startExaminationDate || "When examination starts"}
+                                    disabled={isCreating}
+                                    sx={{ background: "#f7fafd", borderRadius: 2 }}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={4}>
+                                <TextField
+                                    fullWidth
+                                    label="End Date & Time"
+                                    type="datetime-local"
+                                    value={formData.endExaminationDate}
+                                    onChange={(e) => handleInputChange("endExaminationDate", e.target.value)}
+                                    required
+                                    InputLabelProps={{ shrink: true }}
+                                    variant="outlined"
+                                    error={!!validationErrors.endExaminationDate}
+                                    helperText={validationErrors.endExaminationDate || "When examination ends"}
+                                    disabled={isCreating}
+                                    sx={{ background: "#f7fafd", borderRadius: 2 }}
+                                />
+                            </Grid>
+                        </Grid>
+                    </Box>
+                    <Grid container spacing={2} justifyContent="flex-end" mt={2}>
+                        <Grid item>
+                            <Button
+                                type="button"
+                                variant="outlined"
+                                onClick={onCancel}
+                                disabled={isCreating}
+                                sx={{
+                                    px: 3,
+                                    py: 1.2,
+                                    borderRadius: 2,
+                                    fontWeight: 600,
+                                    textTransform: "none",
+                                    boxShadow: "none",
+                                    transition: "background 0.2s, color 0.2s"
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                        </Grid>
+                        <Grid item>
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                disabled={isCreating}
+                                sx={{
+                                    px: 3,
+                                    py: 1.2,
+                                    borderRadius: 2,
+                                    fontWeight: 600,
+                                    textTransform: "none",
+                                    boxShadow: "0 2px 8px 0 rgba(25, 118, 210, 0.08)",
+                                    transition: "background 0.2s, color 0.2s"
+                                }}
+                                endIcon={isCreating ? <CircularProgress size={18} color="inherit" /> : null}
+                            >
+                                {isCreating ? "Creating..." : "Create Campaign"}
+                            </Button>
+                        </Grid>
                     </Grid>
-
-                    <Grid item xs={12} md={4}>
-                        <TextField
-                            fullWidth
-                            label="Registration Deadline"
-                            type="date"
-                            value={formData.deadlineDate}
-                            onChange={(e) => handleInputChange("deadlineDate", e.target.value)}
-                            required
-                            InputLabelProps={{ shrink: true }}
-                            variant="outlined"
-                            error={!!validationErrors.deadlineDate}
-                            helperText={validationErrors.deadlineDate || "Deadline for registration"}
-                            disabled={isCreating}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} md={4}>
-                        <TextField
-                            fullWidth
-                            label="Start Date & Time"
-                            type="datetime-local"
-                            value={formData.startExaminationDate}
-                            onChange={(e) => handleInputChange("startExaminationDate", e.target.value)}
-                            required
-                            InputLabelProps={{ shrink: true }}
-                            variant="outlined"
-                            error={!!validationErrors.startExaminationDate}
-                            helperText={validationErrors.startExaminationDate || "When examination starts"}
-                            disabled={isCreating}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} md={4}>
-                        <TextField
-                            fullWidth
-                            label="End Date & Time"
-                            type="datetime-local"
-                            value={formData.endExaminationDate}
-                            onChange={(e) => handleInputChange("endExaminationDate", e.target.value)}
-                            required
-                            InputLabelProps={{ shrink: true }}
-                            variant="outlined"
-                            error={!!validationErrors.endExaminationDate}
-                            helperText={validationErrors.endExaminationDate || "When examination ends"}
-                            disabled={isCreating}
-                        />
-                    </Grid>
-                </Grid>
-
-                <Box className="form-actions">
-                    <Button type="button" variant="outlined" onClick={onCancel} disabled={isCreating} className="cancel-button">
-                        Cancel
-                    </Button>
-                    <Button type="submit" variant="contained" disabled={isCreating} className="submit-button">
-                        {isCreating ? (
-                            <>
-                                <CircularProgress size={20} style={{ marginRight: 8 }} />
-                                Creating...
-                            </>
-                        ) : (
-                            "Create Campaign"
-                        )}
-                    </Button>
-                </Box>
-            </form>
-        </Box>
+                </form>
+            </Paper>
+        </Fade>
     )
 }
 

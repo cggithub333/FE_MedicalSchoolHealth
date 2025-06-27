@@ -60,6 +60,13 @@ const statusConfig = {
         gradient: "linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%)",
         shadowColor: "rgba(255, 193, 7, 0.3)",
     },
+    PUBLISHED: {
+        color: "info",
+        label: "Published",
+        icon: "📢",
+        gradient: "linear-gradient(135deg, #E3F2FD 0%, #B3E5FC 100%)",
+        shadowColor: "rgba(3, 169, 244, 0.2)",
+    },
     IN_PROGRESS: {
         color: "primary",
         label: "In Progress",
@@ -110,7 +117,8 @@ const allCampaign = () => {
     const [anchorEl, setAnchorEl] = useState(null)
     const [menuCampaignId, setMenuCampaignId] = useState(null)
 
-    const statusTabs = ["ALL", "PENDING", "IN_PROGRESS", "COMPLETED"]
+    // Use the same statusTabs as health check campaign
+    const statusTabs = ["ALL", "PENDING", "PUBLISHED", "IN_PROGRESS", "COMPLETED"]
 
     // Filter campaigns by status and search term
     const filteredCampaigns = useMemo(() => {
@@ -223,7 +231,8 @@ const allCampaign = () => {
     }
 
     return (
-        <Box sx={styleCampaign.bg}>
+        <div style={styleCampaign.bg}>
+            <div style={styleCampaign.bgGradient}></div>
             {/* Header */}
             <AppBar
                 position="static"
@@ -317,170 +326,155 @@ const allCampaign = () => {
                     </Paper>
                 </Slide>
 
-                {/* Loading State */}
-                {isLoading && <LoadingSkeleton />}
-
-                {/* Campaign Cards */}
-                {!isLoading && (
-                    <Grid container spacing={3}>
-                        {filteredCampaigns.map((campaign, index) => (
-                            <Grid item xs={12} md={6} lg={4} key={campaign.campaignId}>
-                                <Zoom in timeout={600 + index * 100}>
-                                    <Card
-                                        sx={styleCampaign.card(
-                                            statusConfig[campaign.status]?.gradient,
-                                            statusConfig[campaign.status]?.shadowColor
-                                        )}
-                                    >
-                                        <CardContent sx={{ flexGrow: 1, p: 3 }}>
-                                            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 2 }}>
-                                                <Typography
-                                                    variant="h6"
-                                                    sx={{
-                                                        fontWeight: 700,
-                                                        flex: 1,
-                                                        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                                                        backgroundClip: "text",
-                                                        WebkitBackgroundClip: "text",
-                                                        WebkitTextFillColor: "transparent",
-                                                        lineHeight: 1.3,
-                                                    }}
-                                                >
-                                                    {campaign.titleCampaign}
-                                                </Typography>
-                                                <IconButton
-                                                    size="small"
-                                                    onClick={(e) => handleMenuClick(e, campaign.campaignId)}
-                                                    sx={{
-                                                        background: "rgba(255,255,255,0.8)",
-                                                        backdropFilter: "blur(10px)",
-                                                        "&:hover": {
-                                                            background: "rgba(255,255,255,0.9)",
-                                                            transform: "scale(1.1)",
-                                                        },
-                                                        transition: "all 0.3s ease",
-                                                    }}
-                                                >
-                                                    <MoreVertIcon />
-                                                </IconButton>
-                                            </Box>
-
-                                            <Chip
-                                                label={`${statusConfig[campaign.status]?.icon} ${statusConfig[campaign.status]?.label}`}
-                                                color={statusConfig[campaign.status]?.color}
-                                                size="small"
-                                                sx={styleCampaign.chip}
-                                            />
-
-                                            <Box sx={styleCampaign.vaccine}>
-                                                <VaccinesIcon sx={{ fontSize: 18, color: "text.secondary", mr: 1 }} />
-                                                <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
-                                                    {campaign.vaccineName}
-                                                </Typography>
-                                            </Box>
-
-                                            <Box sx={styleCampaign.disease}>
-                                                <LocalHospitalIcon sx={{ fontSize: 18, color: "text.secondary", mr: 1 }} />
-                                                <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
-                                                    {campaign.diseaseName}
-                                                </Typography>
-                                            </Box>
-
-                                            <Box sx={styleCampaign.date}>
-                                                <CalendarTodayIcon sx={{ fontSize: 18, color: "text.secondary", mr: 1 }} />
-                                                <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
-                                                    {formatDate(campaign.startDate)} - {formatDate(campaign.endDate)}
-                                                </Typography>
-                                            </Box>
-
-                                            <Box sx={styleCampaign.deadline}>
-                                                <CalendarTodayIcon sx={{ fontSize: 18, color: "error.main", mr: 1 }} />
-                                                <Typography variant="body2" color="error.main" sx={{ fontWeight: 500 }}>
-                                                    Deadline: {formatDate(campaign.formDeadline)}
-                                                </Typography>
-                                            </Box>
-
-                                            {campaign.notes && (
-                                                <Box sx={styleCampaign.notes}>
-                                                    <NotesIcon sx={{ fontSize: 18, color: "text.secondary", mr: 1, mt: 0.2 }} />
+                {/* Main Content Area: Card Grid or Empty State */}
+                <Paper sx={{ background: '#fff', borderRadius: 3, boxShadow: '0 8px 32px rgba(102,126,234,0.08)', p: 3, minHeight: '60vh', width: '100%', mt: 3, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
+                    {isLoading ? (
+                        <LoadingSkeleton />
+                    ) : filteredCampaigns.length > 0 ? (
+                        <Grid container spacing={3}>
+                            {filteredCampaigns.map((campaign, index) => (
+                                <Grid item xs={12} md={6} lg={4} key={campaign.campaignId}>
+                                    <Zoom in timeout={600 + index * 100}>
+                                        <Card
+                                            sx={styleCampaign.card(
+                                                statusConfig[campaign.status]?.gradient,
+                                                statusConfig[campaign.status]?.shadowColor
+                                            )}
+                                        >
+                                            <CardContent sx={{ flexGrow: 1, p: 3 }}>
+                                                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 2 }}>
                                                     <Typography
-                                                        variant="body2"
-                                                        color="text.secondary"
+                                                        variant="h6"
+                                                        sx={{
+                                                            fontWeight: 700,
+                                                            flex: 1,
+                                                            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                                                            backgroundClip: "text",
+                                                            WebkitBackgroundClip: "text",
+                                                            WebkitTextFillColor: "transparent",
+                                                            lineHeight: 1.3,
+                                                        }}
                                                     >
-                                                        {campaign.notes}
+                                                        {campaign.titleCampaign}
+                                                    </Typography>
+                                                    <IconButton
+                                                        size="small"
+                                                        onClick={(e) => handleMenuClick(e, campaign.campaignId)}
+                                                        sx={{
+                                                            background: "rgba(255,255,255,0.8)",
+                                                            backdropFilter: "blur(10px)",
+                                                            "&:hover": {
+                                                                background: "rgba(255,255,255,0.9)",
+                                                                transform: "scale(1.1)",
+                                                            },
+                                                            transition: "all 0.3s ease",
+                                                        }}
+                                                    >
+                                                        <MoreVertIcon />
+                                                    </IconButton>
+                                                </Box>
+
+                                                <Chip
+                                                    label={`${statusConfig[campaign.status]?.icon} ${statusConfig[campaign.status]?.label}`}
+                                                    color={statusConfig[campaign.status]?.color}
+                                                    size="small"
+                                                    sx={styleCampaign.chip}
+                                                />
+
+                                                <Box sx={styleCampaign.vaccine}>
+                                                    <VaccinesIcon sx={{ fontSize: 18, color: "text.secondary", mr: 1 }} />
+                                                    <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
+                                                        {campaign.vaccineName}
                                                     </Typography>
                                                 </Box>
-                                            )}
 
-                                            <Box sx={styleCampaign.active}>
-                                                <Chip
-                                                    label={campaign.active ? "Active" : "Inactive"}
-                                                    color={campaign.active ? "success" : "default"}
-                                                    variant="outlined"
-                                                    size="small"
-                                                />
-                                            </Box>
-                                        </CardContent>
-                                    </Card>
-                                </Zoom>
-                            </Grid>
-                        ))}
-                    </Grid>
-                )}
+                                                <Box sx={styleCampaign.disease}>
+                                                    <LocalHospitalIcon sx={{ fontSize: 18, color: "text.secondary", mr: 1 }} />
+                                                    <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
+                                                        {campaign.diseaseName}
+                                                    </Typography>
+                                                </Box>
 
-                {/* Empty State */}
-                {!isLoading && filteredCampaigns.length === 0 && (
-                    <Fade in timeout={800}>
-                        <Paper sx={styleCampaign.empty}>
-                            <VaccinesIcon sx={{ fontSize: 64, color: "text.secondary", mb: 2 }} />
-                            <Typography variant="h5" color="text.secondary" gutterBottom>
-                                No vaccination campaigns found
-                            </Typography>
-                            <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-                                {searchTerm
-                                    ? "Try adjusting your search terms"
-                                    : "Create your first vaccination campaign to get started"}
-                            </Typography>
-                            {!searchTerm && (
-                                <Button
-                                    variant="contained"
-                                    size="large"
-                                    onClick={() => {
-                                        setSelectedCampaign(null)
-                                        setDialogMode("create")
-                                        setOpenDialog(true)
-                                    }}
-                                    sx={{
-                                        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                                        borderRadius: 3,
-                                        px: 4,
-                                        py: 1.5,
-                                        textTransform: "none",
-                                        fontSize: "1.1rem",
-                                        fontWeight: 600,
-                                    }}
-                                >
-                                    Create Your First Campaign
-                                </Button>
-                            )}
-                        </Paper>
-                    </Fade>
-                )}
+                                                <Box sx={styleCampaign.date}>
+                                                    <CalendarTodayIcon sx={{ fontSize: 18, color: "text.secondary", mr: 1 }} />
+                                                    <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
+                                                        {formatDate(campaign.startDate)} - {formatDate(campaign.endDate)}
+                                                    </Typography>
+                                                </Box>
+
+                                                <Box sx={styleCampaign.deadline}>
+                                                    <CalendarTodayIcon sx={{ fontSize: 18, color: "error.main", mr: 1 }} />
+                                                    <Typography variant="body2" color="error.main" sx={{ fontWeight: 500 }}>
+                                                        Deadline: {formatDate(campaign.formDeadline)}
+                                                    </Typography>
+                                                </Box>
+
+                                                {campaign.notes && (
+                                                    <Box sx={styleCampaign.notes}>
+                                                        <NotesIcon sx={{ fontSize: 18, color: "text.secondary", mr: 1, mt: 0.2 }} />
+                                                        <Typography
+                                                            variant="body2"
+                                                            color="text.secondary"
+                                                        >
+                                                            {campaign.notes}
+                                                        </Typography>
+                                                    </Box>
+                                                )}
+
+                                                <Box sx={styleCampaign.active}>
+                                                    <Chip
+                                                        label={campaign.active ? "Active" : "Inactive"}
+                                                        color={campaign.active ? "success" : "default"}
+                                                        variant="outlined"
+                                                        size="small"
+                                                    />
+                                                </Box>
+                                            </CardContent>
+                                        </Card>
+                                    </Zoom>
+                                </Grid>
+                            ))}
+                        </Grid>
+                    ) : (
+                        <Fade in timeout={800}>
+                            <Box sx={{ ...styleCampaign.empty, background: 'transparent', boxShadow: 'none', minHeight: 320 }}>
+                                <VaccinesIcon sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
+                                <Typography variant="h5" color="text.secondary" gutterBottom>
+                                    No vaccination campaigns found
+                                </Typography>
+                                <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+                                    {searchTerm
+                                        ? 'Try adjusting your search terms'
+                                        : 'Create your first vaccination campaign to get started'}
+                                </Typography>
+                                {!searchTerm && (
+                                    <Button
+                                        variant="contained"
+                                        size="large"
+                                        onClick={() => {
+                                            setSelectedCampaign(null)
+                                            setDialogMode('create')
+                                            setOpenDialog(true)
+                                        }}
+                                        sx={{
+                                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                            borderRadius: 3,
+                                            px: 4,
+                                            py: 1.5,
+                                            textTransform: 'none',
+                                            fontSize: '1.1rem',
+                                            fontWeight: 600,
+                                        }}
+                                    >
+                                        Create Your First Campaign
+                                    </Button>
+                                )}
+                            </Box>
+                        </Fade>
+                    )}
+                </Paper>
             </Container>
 
-            {/* Floating Action Button */}
-            <Fab
-                color="primary"
-                aria-label="add"
-                sx={styleCampaign.fab}
-                onClick={() => {
-                    setSelectedCampaign(null)
-                    setDialogMode("create")
-                    setOpenDialog(true)
-                }}
-            >
-                <AddIcon />
-            </Fab>
 
             {/* Action Menu */}
             <Menu
@@ -571,7 +565,20 @@ const allCampaign = () => {
                 </DialogTitle>
                 <DialogContent sx={{ p: 3 }}>
                     {selectedCampaign && (
-                        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                gap: 3,
+                                mt: 1,
+                                background: "linear-gradient(135deg, #f8fafc 0%, #e3e9f7 100%)",
+                                borderRadius: 3,
+                                boxShadow: "0 4px 24px rgba(102,126,234,0.08)",
+                                px: { xs: 1, sm: 4 },
+                                py: { xs: 2, sm: 4 },
+                            }}
+                        >
                             {dialogMode === "view" ? (
                                 <>
                                     <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>
@@ -612,76 +619,142 @@ const allCampaign = () => {
                                     </Box>
                                 </>
                             ) : (
-                                <>
-                                    <TextField
-                                        fullWidth
-                                        label="Campaign Title"
-                                        defaultValue={selectedCampaign?.titleCampaign || ""}
-                                        variant="outlined"
-                                        sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
-                                    />
-                                    <TextField
-                                        fullWidth
-                                        label="Vaccine Name"
-                                        defaultValue={selectedCampaign?.vaccineName || ""}
-                                        variant="outlined"
-                                        sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
-                                    />
-                                    <TextField
-                                        fullWidth
-                                        label="Disease Name"
-                                        defaultValue={selectedCampaign?.diseaseName || ""}
-                                        variant="outlined"
-                                        sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
-                                    />
-                                    <FormControl fullWidth>
-                                        <InputLabel>Status</InputLabel>
-                                        <Select
-                                            defaultValue={selectedCampaign?.status || "PENDING"}
-                                            label="Status"
-                                            sx={{ borderRadius: 2 }}
-                                        >
-                                            {Object.keys(statusConfig).map((status) => (
-                                                <MenuItem key={status} value={status}>
-                                                    {statusConfig[status].icon} {statusConfig[status].label}
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
-                                    </FormControl>
-                                    <TextField
-                                        fullWidth
-                                        label="Start Date"
-                                        type="date"
-                                        defaultValue={selectedCampaign?.startDate || ""}
-                                        InputLabelProps={{ shrink: true }}
-                                        sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
-                                    />
-                                    <TextField
-                                        fullWidth
-                                        label="End Date"
-                                        type="date"
-                                        defaultValue={selectedCampaign?.endDate || ""}
-                                        InputLabelProps={{ shrink: true }}
-                                        sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
-                                    />
-                                    <TextField
-                                        fullWidth
-                                        label="Form Deadline"
-                                        type="date"
-                                        defaultValue={selectedCampaign?.formDeadline || ""}
-                                        InputLabelProps={{ shrink: true }}
-                                        sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
-                                    />
-                                    <TextField
-                                        fullWidth
-                                        label="Notes"
-                                        defaultValue={selectedCampaign?.notes || ""}
-                                        multiline
-                                        rows={3}
-                                        variant="outlined"
-                                        sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
-                                    />
-                                </>
+                                <Grid container spacing={2} sx={{ width: "100%" }}>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Campaign Title"
+                                            defaultValue={selectedCampaign?.titleCampaign || ""}
+                                            variant="outlined"
+                                            InputProps={{
+                                                startAdornment: (
+                                                    <InputAdornment position="start">
+                                                        <VaccinesIcon color="primary" />
+                                                    </InputAdornment>
+                                                ),
+                                            }}
+                                            sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <FormControl fullWidth>
+                                            <InputLabel>Status</InputLabel>
+                                            <Select
+                                                defaultValue={selectedCampaign?.status || "PENDING"}
+                                                label="Status"
+                                                sx={{ borderRadius: 2 }}
+                                            >
+                                                {Object.keys(statusConfig).map((status) => (
+                                                    <MenuItem key={status} value={status}>
+                                                        <span style={{ marginRight: 8 }}>{statusConfig[status].icon}</span>
+                                                        {statusConfig[status].label}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Vaccine Name"
+                                            defaultValue={selectedCampaign?.vaccineName || ""}
+                                            variant="outlined"
+                                            InputProps={{
+                                                startAdornment: (
+                                                    <InputAdornment position="start">
+                                                        <VaccinesIcon color="info" />
+                                                    </InputAdornment>
+                                                ),
+                                            }}
+                                            sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Disease Name"
+                                            defaultValue={selectedCampaign?.diseaseName || ""}
+                                            variant="outlined"
+                                            InputProps={{
+                                                startAdornment: (
+                                                    <InputAdornment position="start">
+                                                        <LocalHospitalIcon color="secondary" />
+                                                    </InputAdornment>
+                                                ),
+                                            }}
+                                            sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={4}>
+                                        <TextField
+                                            fullWidth
+                                            label="Start Date"
+                                            type="date"
+                                            defaultValue={selectedCampaign?.startDate || ""}
+                                            InputLabelProps={{ shrink: true }}
+                                            InputProps={{
+                                                startAdornment: (
+                                                    <InputAdornment position="start">
+                                                        <CalendarTodayIcon color="action" />
+                                                    </InputAdornment>
+                                                ),
+                                            }}
+                                            sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={4}>
+                                        <TextField
+                                            fullWidth
+                                            label="End Date"
+                                            type="date"
+                                            defaultValue={selectedCampaign?.endDate || ""}
+                                            InputLabelProps={{ shrink: true }}
+                                            InputProps={{
+                                                startAdornment: (
+                                                    <InputAdornment position="start">
+                                                        <CalendarTodayIcon color="action" />
+                                                    </InputAdornment>
+                                                ),
+                                            }}
+                                            sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={4}>
+                                        <TextField
+                                            fullWidth
+                                            label="Form Deadline"
+                                            type="date"
+                                            defaultValue={selectedCampaign?.formDeadline || ""}
+                                            InputLabelProps={{ shrink: true }}
+                                            InputProps={{
+                                                startAdornment: (
+                                                    <InputAdornment position="start">
+                                                        <CalendarTodayIcon color="error" />
+                                                    </InputAdornment>
+                                                ),
+                                            }}
+                                            sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            fullWidth
+                                            label="Notes"
+                                            defaultValue={selectedCampaign?.notes || ""}
+                                            multiline
+                                            rows={3}
+                                            variant="outlined"
+                                            InputProps={{
+                                                startAdornment: (
+                                                    <InputAdornment position="start">
+                                                        <NotesIcon color="disabled" />
+                                                    </InputAdornment>
+                                                ),
+                                            }}
+                                            sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                                        />
+                                    </Grid>
+                                </Grid>
                             )}
                         </Box>
                     )}
@@ -705,7 +778,7 @@ const allCampaign = () => {
                     )}
                 </DialogActions>
             </Dialog>
-        </Box>
+        </div>
     )
 }
 

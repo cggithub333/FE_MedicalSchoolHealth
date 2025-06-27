@@ -5,10 +5,6 @@ import {
     CardContent,
     Typography,
     Button,
-    Stepper,
-    Step,
-    StepLabel,
-    StepContent,
     Fab,
     Dialog,
     DialogTitle,
@@ -17,6 +13,8 @@ import {
     CircularProgress,
     Alert,
     Chip,
+    Paper,
+    Fade,
 } from "@mui/material"
 import AddIcon from "@mui/icons-material/Add"
 import { useNewestCampaign } from "../../../../hooks/manager/healthcheck/create-new-campaign/useNewestCampaignByStatus"
@@ -32,10 +30,16 @@ const NewHealthCheckCampaign = () => {
     const [createFormOpen, setCreateFormOpen] = useState(false)
     const [activeStep, setActiveStep] = useState(0)
 
-    // Filter campaigns by status
-    const pendingCampaigns = newestCampaign.filter((c) => c.statusHealthCampaign === "PENDING")
-    const publishedCampaigns = newestCampaign.filter((c) => c.statusHealthCampaign === "PUBLISHED")
-    const inProgressCampaigns = newestCampaign.filter((c) => c.statusHealthCampaign === "IN_PROGRESS")
+    // Ensure newestCampaign is always an array
+    const campaigns = Array.isArray(newestCampaign) ? newestCampaign : []
+
+    // Debug: log all campaign statuses
+    console.log("Campaign statuses:", campaigns.map(c => c.statusHealthCampaign))
+
+    // Filter campaigns by status (robust to whitespace/case)
+    const pendingCampaigns = campaigns.filter((c) => (c.statusHealthCampaign || "").trim().toUpperCase() === "PENDING")
+    const publishedCampaigns = campaigns.filter((c) => (c.statusHealthCampaign || "").trim().toUpperCase() === "PUBLISHED")
+    const inProgressCampaigns = campaigns.filter((c) => (c.statusHealthCampaign || "").trim().toUpperCase() === "IN_PROGRESS")
 
     const steps = [
         {
@@ -88,117 +92,137 @@ const NewHealthCheckCampaign = () => {
         })
     }
 
-    const getStatusColor = (status) => {
-        switch (status) {
-            case "PENDING":
-                return "warning"
-            case "PUBLISHED":
-                return "info"
-            case "IN_PROGRESS":
-                return "success"
-            default:
-                return "default"
-        }
+    const cardSx = {
+        minWidth: 320,
+        maxWidth: 340,
+        minHeight: 220,
+        borderRadius: 3,
+        boxShadow: "0 8px 32px rgba(102,126,234,0.10)",
+        background: "linear-gradient(135deg, #e3f2fd 0%, #f8fafc 100%)",
+        transition: "all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+        cursor: "pointer",
+        mb: 2,
+        '&:hover': {
+            boxShadow: "0 16px 40px rgba(102,126,234,0.18)",
+            transform: "translateY(-4px) scale(1.02)",
+        },
     }
 
-    const canUpdateToPending = (campaign) => {
-        return campaign.statusHealthCampaign === "PENDING" && publishedCampaigns.length === 0
+    const fabSx = {
+        position: "fixed",
+        bottom: 32,
+        right: 32,
+        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        color: "white",
+        boxShadow: "0 8px 32px rgba(102,126,234,0.4)",
+        '&:hover': {
+            background: "linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%)",
+            transform: "scale(1.1)",
+        },
     }
 
-    const canUpdateToProgress = (campaign) => {
-        return campaign.statusHealthCampaign === "PUBLISHED" && inProgressCampaigns.length === 0
+    const bgGradientSx = {
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: -1,
+        background: "linear-gradient(135deg, #667eea 0%, #764ba2 60%, #f7971e 100%)",
+        minHeight: "100vh",
+        width: "100vw",
+    }
+
+    const statusColors = {
+        PENDING: "warning",
+        PUBLISHED: "info",
+        IN_PROGRESS: "primary",
+    }
+    const statusLabels = {
+        PENDING: "Pending",
+        PUBLISHED: "Published",
+        IN_PROGRESS: "In Progress",
+    }
+    const statusDescriptions = {
+        PENDING: "Campaigns waiting to be published.",
+        PUBLISHED: "Campaigns ready to start.",
+        IN_PROGRESS: "Active health check campaigns.",
+    }
+    function getStatusColor(status) {
+        return statusColors[status] || "default";
+    }
+    const statusOrder = ["PENDING", "PUBLISHED", "IN_PROGRESS"];
+
+    function canUpdateToProgress(campaign) {
+        return campaign.statusHealthCampaign === "PUBLISHED" && inProgressCampaigns.length === 0;
+    }
+
+    function canUpdateToPending(campaign) {
+        return campaign.statusHealthCampaign === "PENDING" && publishedCampaigns.length === 0;
     }
 
     if (isLoading) {
         return (
-            <Box className="loading-container">
+            <Box sx={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f8fafc" }}>
                 <CircularProgress />
             </Box>
         )
     }
 
     return (
-        <Box className="workflow-container">
-            <Typography variant="h4" className="workflow-title">
-                Health Check Campaign Workflow
-            </Typography>
-
-            <Stepper activeStep={activeStep} orientation="vertical" className="workflow-stepper">
-                {steps.map((step, index) => (
-                    <Step key={step.label}>
-                        <StepLabel>
-                            <Typography variant="h6" className="step-label">
-                                {step.label}
-                            </Typography>
-                        </StepLabel>
-                        <StepContent>
-                            <Typography variant="body2" className="step-description">
-                                {step.description}
-                            </Typography>
-
-                            {step.campaigns.length === 0 ? (
-                                <Alert severity="info" className="no-campaigns-alert">
-                                    No campaigns in this stage
-                                </Alert>
-                            ) : (
-                                <Box className="campaigns-container">
-                                    {step.campaigns.map((campaign) => (
-                                        <Card
-                                            key={campaign.campaignId}
-                                            className={`campaign-card ${step.nextStatus ? "clickable" : ""}`}
-                                            onClick={() => step.nextStatus && handleCampaignClick(campaign)}
-                                        >
-                                            <CardContent>
-                                                <Box className="campaign-header">
-                                                    <Typography variant="h6" className="campaign-title">
-                                                        {campaign.title}
-                                                    </Typography>
-                                                    <Chip
-                                                        label={campaign.statusHealthCampaign}
-                                                        color={getStatusColor(campaign.statusHealthCampaign)}
-                                                        size="small"
-                                                        className="status-chip"
-                                                    />
-                                                </Box>
-                                                <Typography variant="body2" className="campaign-description">
-                                                    {campaign.description}
-                                                </Typography>
-                                                <div className="campaign-details">
-                                                    <Typography variant="body2">
-                                                        <strong>Address:</strong> {campaign.address}
-                                                    </Typography>
-                                                    <Typography variant="body2">
-                                                        <strong>Deadline:</strong> {formatDate(campaign.deadlineDate)}
-                                                    </Typography>
-                                                    <Typography variant="body2">
-                                                        <strong>Examination:</strong> {formatDate(campaign.startExaminationDate)} -{" "}
-                                                        {formatDate(campaign.endExaminationDate)}
-                                                    </Typography>
-                                                </div>
-                                            </CardContent>
-                                        </Card>
-                                    ))}
+        <Box sx={{ minHeight: "100vh", position: "relative", display: "flex", flexDirection: "column" }}>
+            <Box sx={bgGradientSx}></Box>
+            <Fade in timeout={800}>
+                <Paper elevation={3} sx={{ maxWidth: 1400, mx: "auto", mt: 6, mb: 6, p: 4, borderRadius: 4, boxShadow: "0 12px 48px rgba(102,126,234,0.12)", background: "#fff", position: "relative" }}>
+                    <Typography variant="h4" sx={{ fontWeight: 700, mb: 4, background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                        Health Check Campaign Workflow
+                    </Typography>
+                    <Box sx={{ display: "flex", gap: 4, flexWrap: "wrap", justifyContent: "space-between" }}>
+                        {statusOrder.map((status) => (
+                            <Box key={status} sx={{ flex: 1, minWidth: 280, maxWidth: 340, display: "flex", flexDirection: "column" }}>
+                                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1, color: '#764ba2' }}>{statusLabels[status]}</Typography>
+                                <Typography variant="body2" sx={{ mb: 2, color: "text.secondary" }}>{statusDescriptions[status]}</Typography>
+                                <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 2 }}>
+                                    {steps.find((s) => s.label.toUpperCase().includes(statusLabels[status].toUpperCase())).campaigns.length === 0 ? (
+                                        <Alert severity="info" sx={{ borderRadius: 2 }}>
+                                            No campaigns in this stage
+                                        </Alert>
+                                    ) : (
+                                        steps.find((s) => s.label.toUpperCase().includes(statusLabels[status].toUpperCase())).campaigns.map((campaign) => (
+                                            <Card
+                                                key={campaign.campaignId}
+                                                sx={cardSx}
+                                                onClick={() => setSelectedCampaign(campaign) || setDialogOpen(true)}
+                                            >
+                                                <CardContent>
+                                                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
+                                                        <Typography variant="h6" sx={{ fontWeight: 700, background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                                                            {campaign.title}
+                                                        </Typography>
+                                                        <Chip
+                                                            label={statusLabels[campaign.statusHealthCampaign]}
+                                                            color={statusColors[campaign.statusHealthCampaign]}
+                                                            size="small"
+                                                            sx={{ fontWeight: 600 }}
+                                                        />
+                                                    </Box>
+                                                    <Typography variant="body2" sx={{ mb: 0.5 }}><strong>Description:</strong> {campaign.description}</Typography>
+                                                    <Typography variant="body2" sx={{ mb: 0.5 }}><strong>Address:</strong> {campaign.address}</Typography>
+                                                    <Box sx={{ mt: 1 }}>
+                                                        <Typography variant="body2"><strong>Start Date:</strong> {formatDate(campaign.startExaminationDate)}</Typography>
+                                                        <Typography variant="body2"><strong>End Date:</strong> {formatDate(campaign.endExaminationDate)}</Typography>
+                                                        <Typography variant="body2"><strong>Deadline:</strong> {formatDate(campaign.deadlineDate)}</Typography>
+                                                    </Box>
+                                                </CardContent>
+                                            </Card>
+                                        ))
+                                    )}
                                 </Box>
-                            )}
-
-                            {/* Step Navigation */}
-                            <Box className="step-navigation">
-                                <Button disabled={index === 0} onClick={() => setActiveStep(index - 1)} className="nav-button">
-                                    Back
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    onClick={() => setActiveStep(index + 1)}
-                                    disabled={index === steps.length - 1}
-                                    className="nav-button"
-                                >
-                                    Next
-                                </Button>
                             </Box>
-                        </StepContent>
-                    </Step>
-                ))}
-            </Stepper>
+                        ))}
+                    </Box>
+                </Paper>
+            </Fade>
 
             {/* Campaign Details Dialog */}
             <Dialog
@@ -206,101 +230,78 @@ const NewHealthCheckCampaign = () => {
                 onClose={() => setDialogOpen(false)}
                 maxWidth="md"
                 fullWidth
-                className="campaign-dialog"
+                PaperProps={{
+                    sx: {
+                        borderRadius: 3,
+                        background: "rgba(255,255,255,0.97)",
+                        backdropFilter: "blur(20px)",
+                        boxShadow: "0 20px 60px rgba(0,0,0,0.18)",
+                    },
+                }}
             >
                 <DialogTitle>
-                    <Typography variant="h6" className="dialog-title">
-                        Campaign Details
+                    <Typography variant="h6" sx={{ fontWeight: 700, background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                        Health Check Campaign Details
                     </Typography>
                 </DialogTitle>
-                <DialogContent className="dialog-content">
+                <DialogContent>
                     {selectedCampaign && (
-                        <Box className="campaign-details-container">
-                            <Typography variant="h6" className="selected-campaign-title">
-                                {selectedCampaign.title}
-                            </Typography>
-                            <Typography variant="body1" className="selected-campaign-description">
-                                {selectedCampaign.description}
-                            </Typography>
-
-                            <Box className="details-grid">
-                                <Box className="detail-item">
-                                    <Typography variant="subtitle2" className="detail-label">
-                                        Address
-                                    </Typography>
-                                    <Typography variant="body2">{selectedCampaign.address}</Typography>
-                                </Box>
-                                <Box className="detail-item">
-                                    <Typography variant="subtitle2" className="detail-label">
-                                        Status
-                                    </Typography>
-                                    <Chip
-                                        label={selectedCampaign.statusHealthCampaign}
-                                        color={getStatusColor(selectedCampaign.statusHealthCampaign)}
-                                        size="small"
-                                    />
-                                </Box>
-                                <Box className="detail-item">
-                                    <Typography variant="subtitle2" className="detail-label">
-                                        Deadline
-                                    </Typography>
-                                    <Typography variant="body2">{formatDate(selectedCampaign.deadlineDate)}</Typography>
-                                </Box>
-                                <Box className="detail-item">
-                                    <Typography variant="subtitle2" className="detail-label">
-                                        Created
-                                    </Typography>
-                                    <Typography variant="body2">{formatDate(selectedCampaign.createdAt)}</Typography>
-                                </Box>
-                                <Box className="detail-item">
-                                    <Typography variant="subtitle2" className="detail-label">
-                                        Start Date
-                                    </Typography>
-                                    <Typography variant="body2">{formatDate(selectedCampaign.startExaminationDate)}</Typography>
-                                </Box>
-                                <Box className="detail-item">
-                                    <Typography variant="subtitle2" className="detail-label">
-                                        End Date
-                                    </Typography>
-                                    <Typography variant="body2">{formatDate(selectedCampaign.endExaminationDate)}</Typography>
-                                </Box>
+                        <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 3, py: 2 }}>
+                            <Box>
+                                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Description</Typography>
+                                <Typography variant="body2">{selectedCampaign.description}</Typography>
+                            </Box>
+                            <Box>
+                                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Address</Typography>
+                                <Typography variant="body2">{selectedCampaign.address}</Typography>
+                            </Box>
+                            <Box>
+                                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Status</Typography>
+                                <Chip label={selectedCampaign.statusHealthCampaign} color={getStatusColor(selectedCampaign.statusHealthCampaign)} size="small" />
+                            </Box>
+                            <Box>
+                                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Start Date</Typography>
+                                <Typography variant="body2">{formatDate(selectedCampaign.startExaminationDate)}</Typography>
+                            </Box>
+                            <Box>
+                                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>End Date</Typography>
+                                <Typography variant="body2">{formatDate(selectedCampaign.endExaminationDate)}</Typography>
+                            </Box>
+                            <Box>
+                                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Deadline</Typography>
+                                <Typography variant="body2">{formatDate(selectedCampaign.deadlineDate)}</Typography>
                             </Box>
                         </Box>
                     )}
                 </DialogContent>
-                <DialogActions className="dialog-actions">
-                    <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
+                <DialogActions>
+                    <Button onClick={() => setDialogOpen(false)} sx={{ borderRadius: 2, textTransform: "none" }}>Cancel</Button>
                     {selectedCampaign && (
                         <>
-                            {canUpdateToPending(selectedCampaign) && (
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={() => handleStatusUpdate(selectedCampaign, "PUBLISHED")}
-                                    disabled={isUpdating}
-                                    className="action-button"
-                                >
-                                    {isUpdating ? <CircularProgress size={20} /> : "Publish Campaign"}
-                                </Button>
-                            )}
                             {canUpdateToProgress(selectedCampaign) && (
                                 <Button
                                     variant="contained"
-                                    color="success"
+                                    color="primary"
                                     onClick={() => handleStatusUpdate(selectedCampaign, "IN_PROGRESS")}
                                     disabled={isUpdating}
-                                    className="action-button"
+                                    sx={{ borderRadius: 2, textTransform: "none" }}
                                 >
                                     {isUpdating ? <CircularProgress size={20} /> : "Start Campaign"}
                                 </Button>
                             )}
-                            {selectedCampaign.statusHealthCampaign === "PENDING" && publishedCampaigns.length > 0 && (
-                                <Alert severity="warning" className="warning-alert">
-                                    Cannot publish: There is already a published campaign
-                                </Alert>
+                            {canUpdateToPending(selectedCampaign) && (
+                                <Button
+                                    variant="contained"
+                                    color="success"
+                                    onClick={() => handleStatusUpdate(selectedCampaign, "PUBLISHED")}
+                                    disabled={isUpdating}
+                                    sx={{ borderRadius: 2, textTransform: "none" }}
+                                >
+                                    {isUpdating ? <CircularProgress size={20} /> : "Publish Campaign"}
+                                </Button>
                             )}
-                            {selectedCampaign.statusHealthCampaign === "PUBLISHED" && inProgressCampaigns.length > 0 && (
-                                <Alert severity="warning" className="warning-alert">
+                            {selectedCampaign.statusHealthCampaign === "PUBLISHED" && (
+                                <Alert severity="warning" sx={{ borderRadius: 2, mt: 2 }}>
                                     Cannot start: There is already a campaign in progress
                                 </Alert>
                             )}
@@ -310,7 +311,7 @@ const NewHealthCheckCampaign = () => {
             </Dialog>
 
             {/* Floating Action Button for Create New Campaign */}
-            <Fab color="primary" aria-label="add" className="create-fab" onClick={() => setCreateFormOpen(true)}>
+            <Fab color="primary" aria-label="add" sx={fabSx} onClick={() => setCreateFormOpen(true)}>
                 <AddIcon />
             </Fab>
 
@@ -318,17 +319,25 @@ const NewHealthCheckCampaign = () => {
             <Dialog
                 open={createFormOpen}
                 onClose={() => setCreateFormOpen(false)}
-                maxWidth="md"
+                maxWidth="lg"
                 fullWidth
-                className="create-dialog"
+                PaperProps={{
+                    sx: {
+                        borderRadius: 3,
+                        background: "rgba(255,255,255,0.97)",
+                        backdropFilter: "blur(20px)",
+                        boxShadow: "0 20px 60px rgba(0,0,0,0.18)",
+                    },
+                }}
             >
-                <DialogTitle>Create New Health Check Campaign</DialogTitle>
+                <DialogTitle sx={{ fontWeight: 700, background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                    Create New Health Check Campaign
+                </DialogTitle>
                 <DialogContent>
                     <HealthCheckCampaignForm
                         onSuccess={() => {
                             setCreateFormOpen(false)
-                            // Refresh the campaigns list
-                            window.location.reload() // Or call a refetch function if available
+                            window.location.reload()
                         }}
                         onCancel={() => setCreateFormOpen(false)}
                     />

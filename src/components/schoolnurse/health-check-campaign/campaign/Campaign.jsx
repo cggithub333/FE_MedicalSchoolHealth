@@ -151,8 +151,9 @@ const Campaign = () => {
                                 <img
                                     src={image || "/placeholder.svg"}
                                     alt={`Health Check ${index + 1}`}
-                                    className={`campaign-image ${imageLoaded ? "loaded" : ""}`}
+                                    className={`campaign-image${index === currentIndex && imageLoaded ? " loaded" : ""}`}
                                     onLoad={index === currentIndex ? handleImageLoad : undefined}
+                                    style={index === currentIndex ? {} : { filter: "none" }}
                                 />
                                 <Box className="image-overlay" />
                             </Box>

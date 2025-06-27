@@ -12,6 +12,7 @@ import {
     Fade,
     Skeleton,
 } from "@mui/material"
+import Alert from '@mui/material/Alert';
 import {
     Vaccines as VaccinesIcon,
     Schedule as ScheduleIcon,
@@ -86,16 +87,18 @@ function calculateScheduleDates(campaign) {
 }
 
 const VaccinationScheduleForm = () => {
-    const { newestCampaign, loading, error } = useNewestVaccinationCampaign()
+    const { newestVaccinationCampaign, isLoading, error } = useNewestVaccinationCampaign()
+    console.log('newestVaccinationCampaign:', newestVaccinationCampaign)
     const [showInjectionList, setShowInjectionList] = useState(false)
     const [selectedShift, setSelectedShift] = useState(null)
     const [refresh, setRefresh] = useState(0)
 
     // Filter campaign by IN_PROGRESS status
     const activeCampaign = useMemo(() => {
-        if (!newestCampaign || !Array.isArray(newestCampaign)) return null
-        return newestCampaign.find((campaign) => campaign.status === "IN_PROGRESS")
-    }, [newestCampaign])
+        if (!newestVaccinationCampaign || !Array.isArray(newestVaccinationCampaign)) return null
+        // Make status check case-insensitive and trim spaces
+        return newestVaccinationCampaign.find((campaign) => String(campaign.status).trim().toUpperCase() === "IN_PROGRESS")
+    }, [newestVaccinationCampaign])
 
     // Get pupils by campaign ID for capacity calculation
     const { pupils: allPupils, isLoading: pupilsLoading } = useGetAllPupilsApprovedByGrade(
@@ -167,7 +170,7 @@ const VaccinationScheduleForm = () => {
         return { filled, total, progress }
     }
 
-    if (loading || pupilsLoading) {
+    if (isLoading || pupilsLoading) {
         return (
             <div className="vaccine-schedule-root">
                 <Box sx={{ width: "100%", maxWidth: 1200, mx: "auto" }}>
@@ -223,6 +226,29 @@ const VaccinationScheduleForm = () => {
     console.log("Active campaign:", activeCampaign)
     console.log("All pupils:", allPupils?.length || 0)
     console.log("Pupils by grade:", pupilsByGrade)
+
+    if ((!activeCampaign) && Array.isArray(newestVaccinationCampaign) && newestVaccinationCampaign.length > 0) {
+        // Fallback: show all campaigns for debugging
+        return (
+            <div className="vaccine-schedule-root">
+                <Paper elevation={3} sx={{ p: 4, textAlign: "center", borderRadius: 3, maxWidth: 600, mx: "auto" }}>
+                    <Typography variant="h5" gutterBottom>
+                        No campaign with status IN_PROGRESS found
+                    </Typography>
+                    <Typography variant="body1" color="text.secondary">
+                        Available campaigns:
+                    </Typography>
+                    <ul style={{ textAlign: 'left' }}>
+                        {newestVaccinationCampaign.map((c) => (
+                            <li key={c.campaignId}>
+                                <b>{c.titleCampaign}</b> (status: {c.status})
+                            </li>
+                        ))}
+                    </ul>
+                </Paper>
+            </div>
+        )
+    }
 
     return (
         <div className="vaccine-schedule-root">

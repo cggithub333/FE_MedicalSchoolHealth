@@ -5,10 +5,6 @@ import {
     CardContent,
     Typography,
     Button,
-    Stepper,
-    Step,
-    StepLabel,
-    StepContent,
     Fab,
     Dialog,
     DialogTitle,
@@ -17,12 +13,65 @@ import {
     CircularProgress,
     Alert,
     Chip,
+    Paper,
+    Fade,
 } from "@mui/material"
 import AddIcon from "@mui/icons-material/Add"
 import { useNewestCampaignByStatus } from "../../../../hooks/manager/vaccination/create-new-campaign/useGetNewestCampaingByStatus"
 import { useUpdateNewCampaign } from "../../../../hooks/manager/vaccination/create-new-campaign/useUpdateNewCampaign"
 import VaccineCampaignForm from "./vaccination-campaign-form/VaccineCampaignForm"
-import "./StyleNewVaccinationCampaign.scss"
+
+const cardSx = {
+    minWidth: 320,
+    maxWidth: 340,
+    minHeight: 220,
+    borderRadius: 3,
+    boxShadow: "0 8px 32px rgba(102,126,234,0.10)",
+    background: "linear-gradient(135deg, #e3f2fd 0%, #f8fafc 100%)",
+    transition: "all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+    cursor: "pointer",
+    mb: 2,
+    '&:hover': {
+        boxShadow: "0 16px 40px rgba(102,126,234,0.18)",
+        transform: "translateY(-4px) scale(1.02)",
+    },
+}
+
+const fabSx = {
+    position: "fixed",
+    bottom: 32,
+    right: 32,
+    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    color: "white",
+    boxShadow: "0 8px 32px rgba(102,126,234,0.4)",
+    '&:hover': {
+        background: "linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%)",
+        transform: "scale(1.1)",
+    },
+}
+
+const bgGradientSx = {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: -1,
+    background: "linear-gradient(135deg, #667eea 0%, #764ba2 60%, #f7971e 100%)",
+    minHeight: "100vh",
+    width: "100vw",
+}
+
+const statusColors = {
+    PENDING: "warning",
+    PUBLISHED: "info",
+    IN_PROGRESS: "primary",
+    COMPLETED: "success",
+};
+
+function getStatusColor(status) {
+    return statusColors[status] || "default";
+}
 
 const NewVaccinationCampaign = () => {
     const { allCampaigns, isLoading } = useNewestCampaignByStatus()
@@ -30,36 +79,30 @@ const NewVaccinationCampaign = () => {
     const [selectedCampaign, setSelectedCampaign] = useState(null)
     const [dialogOpen, setDialogOpen] = useState(false)
     const [createFormOpen, setCreateFormOpen] = useState(false)
-    const [activeStep, setActiveStep] = useState(0)
 
-    // Filter campaigns by status
-    const pendingCampaigns = allCampaigns.filter((c) => c.status === "PENDING")
-    const inProgressCampaigns = allCampaigns.filter((c) => c.status === "IN_PROGRESS")
-    const completedCampaigns = allCampaigns.filter((c) => c.status === "COMPLETED")
-
-    const steps = [
-        {
-            label: "Pending Campaigns",
-            description: "Select a campaign to start",
-            campaigns: pendingCampaigns,
-            nextStatus: "IN_PROGRESS",
-            actionLabel: "Start Campaign",
-        },
-        {
-            label: "In Progress Campaigns",
-            description: "Active vaccination campaigns",
-            campaigns: inProgressCampaigns,
-            nextStatus: "COMPLETED",
-            actionLabel: "Complete Campaign",
-        },
-        {
-            label: "Completed Campaigns",
-            description: "Finished vaccination campaigns",
-            campaigns: completedCampaigns,
-            nextStatus: null,
-            actionLabel: null,
-        },
+    const statusOrder = [
+        "PENDING",
+        "PUBLISHED",
+        "IN_PROGRESS",
     ]
+    const statusLabels = {
+        PENDING: "Pending",
+        PUBLISHED: "Published",
+        IN_PROGRESS: "In Progress",
+        COMPLETED: "Completed",
+    }
+    const statusDescriptions = {
+        PENDING: "Campaigns waiting to be published.",
+        PUBLISHED: "Campaigns ready to start.",
+        IN_PROGRESS: "Active vaccination campaigns.",
+        COMPLETED: "Finished vaccination campaigns.",
+    }
+
+    const getCampaignsByStatus = (status) => allCampaigns.filter((c) => c.status === status)
+
+    const canPublish = () =>
+        getCampaignsByStatus("PUBLISHED").length === 0 && getCampaignsByStatus("IN_PROGRESS").length === 0
+    const canStart = () => getCampaignsByStatus("IN_PROGRESS").length === 0
 
     const handleCampaignClick = (campaign) => {
         setSelectedCampaign(campaign)
@@ -99,124 +142,71 @@ const NewVaccinationCampaign = () => {
         })
     }
 
-    const getStatusColor = (status) => {
-        switch (status) {
-            case "PENDING":
-                return "warning"
-            case "IN_PROGRESS":
-                return "info"
-            case "COMPLETED":
-                return "success"
-            default:
-                return "default"
-        }
-    }
-
-    const canUpdateToInProgress = (campaign) => {
-        return campaign.status === "PENDING" && inProgressCampaigns.length === 0
-    }
-
-    const canUpdateToCompleted = (campaign) => {
-        return campaign.status === "IN_PROGRESS"
-    }
-
     if (isLoading) {
         return (
-            <Box className="loading-container">
+            <Box sx={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f8fafc" }}>
                 <CircularProgress />
             </Box>
         )
     }
 
     return (
-        <Box className="vaccination-workflow-container">
-            <Typography variant="h4" className="workflow-title">
-                Vaccination Campaign Workflow
-            </Typography>
-
-            <Stepper activeStep={activeStep} orientation="vertical" className="workflow-stepper">
-                {steps.map((step, index) => (
-                    <Step key={step.label}>
-                        <StepLabel>
-                            <Typography variant="h6" className="step-label">
-                                {step.label}
-                            </Typography>
-                        </StepLabel>
-                        <StepContent>
-                            <Typography variant="body2" className="step-description">
-                                {step.description}
-                            </Typography>
-
-                            {step.campaigns.length === 0 ? (
-                                <Alert severity="info" className="no-campaigns-alert">
-                                    No campaigns in this stage
-                                </Alert>
-                            ) : (
-                                <Box className="campaigns-container">
-                                    {step.campaigns.map((campaign) => (
-                                        <Card
-                                            key={campaign.campaignId}
-                                            className={`campaign-card ${step.nextStatus ? "clickable" : ""}`}
-                                            onClick={() => step.nextStatus && handleCampaignClick(campaign)}
-                                        >
-                                            <CardContent>
-                                                <Box className="campaign-header">
-                                                    <Typography variant="h6" className="campaign-title">
-                                                        {campaign.titleCampaign}
-                                                    </Typography>
-                                                    <Chip
-                                                        label={campaign.status}
-                                                        color={getStatusColor(campaign.status)}
-                                                        size="small"
-                                                        className="status-chip"
-                                                    />
-                                                </Box>
-                                                <Typography variant="body2" className="campaign-description">
-                                                    <strong>Disease:</strong> {campaign.diseaseName}
-                                                </Typography>
-                                                <Typography variant="body2" className="campaign-description">
-                                                    <strong>Vaccine:</strong> {campaign.vaccineName}
-                                                </Typography>
-                                                <div className="campaign-details">
-                                                    <Typography variant="body2">
-                                                        <strong>Start Date:</strong> {formatDate(campaign.startDate)}
-                                                    </Typography>
-                                                    <Typography variant="body2">
-                                                        <strong>End Date:</strong> {formatDate(campaign.endDate)}
-                                                    </Typography>
-                                                    <Typography variant="body2">
-                                                        <strong>Form Deadline:</strong> {formatDate(campaign.formDeadline)}
-                                                    </Typography>
-                                                    {campaign.notes && (
-                                                        <Typography variant="body2">
-                                                            <strong>Notes:</strong> {campaign.notes}
+        <Box sx={{ minHeight: "100vh", position: "relative", display: "flex", flexDirection: "column" }}>
+            <Box sx={bgGradientSx}></Box>
+            <Fade in timeout={800}>
+                <Paper elevation={3} sx={{ maxWidth: 1400, mx: "auto", mt: 6, mb: 6, p: 4, borderRadius: 4, boxShadow: "0 12px 48px rgba(102,126,234,0.12)", background: "#fff", position: "relative" }}>
+                    <Typography variant="h4" sx={{ fontWeight: 700, mb: 4, background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                        Vaccination Campaign Workflow
+                    </Typography>
+                    <Box sx={{ display: "flex", gap: 4, flexWrap: "wrap", justifyContent: "space-between" }}>
+                        {statusOrder.map((status) => (
+                            <Box key={status} sx={{ flex: 1, minWidth: 280, maxWidth: 340, display: "flex", flexDirection: "column" }}>
+                                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1, color: '#764ba2' }}>{statusLabels[status]}</Typography>
+                                <Typography variant="body2" sx={{ mb: 2, color: "text.secondary" }}>{statusDescriptions[status]}</Typography>
+                                <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 2 }}>
+                                    {getCampaignsByStatus(status).length === 0 ? (
+                                        <Alert severity="info" sx={{ borderRadius: 2 }}>
+                                            No campaigns in this stage
+                                        </Alert>
+                                    ) : (
+                                        getCampaignsByStatus(status).map((campaign) => (
+                                            <Card
+                                                key={campaign.campaignId}
+                                                sx={{ ...cardSx, cursor: status === "COMPLETED" ? "default" : "pointer" }}
+                                                onClick={() => status !== "COMPLETED" && setSelectedCampaign(campaign) && setDialogOpen(true)}
+                                            >
+                                                <CardContent>
+                                                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
+                                                        <Typography variant="h6" sx={{ fontWeight: 700, background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                                                            {campaign.titleCampaign}
                                                         </Typography>
-                                                    )}
-                                                </div>
-                                            </CardContent>
-                                        </Card>
-                                    ))}
+                                                        <Chip
+                                                            label={statusLabels[campaign.status]}
+                                                            color={statusColors[campaign.status]}
+                                                            size="small"
+                                                            sx={{ fontWeight: 600 }}
+                                                        />
+                                                    </Box>
+                                                    <Typography variant="body2" sx={{ mb: 0.5 }}><strong>Disease:</strong> {campaign.diseaseName}</Typography>
+                                                    <Typography variant="body2" sx={{ mb: 0.5 }}><strong>Vaccine:</strong> {campaign.vaccineName}</Typography>
+                                                    <Box sx={{ mt: 1 }}>
+                                                        <Typography variant="body2"><strong>Start Date:</strong> {formatDate(campaign.startDate)}</Typography>
+                                                        <Typography variant="body2"><strong>End Date:</strong> {formatDate(campaign.endDate)}</Typography>
+                                                        <Typography variant="body2"><strong>Form Deadline:</strong> {formatDate(campaign.formDeadline)}</Typography>
+                                                        {campaign.notes && (
+                                                            <Typography variant="body2" sx={{ mt: 0.5 }}><strong>Notes:</strong> {campaign.notes}</Typography>
+                                                        )}
+                                                    </Box>
+                                                </CardContent>
+                                            </Card>
+                                        ))
+                                    )}
                                 </Box>
-                            )}
-
-                            {/* Step Navigation */}
-                            <Box className="step-navigation">
-                                <Button disabled={index === 0} onClick={() => setActiveStep(index - 1)} className="nav-button">
-                                    Back
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    onClick={() => setActiveStep(index + 1)}
-                                    disabled={index === steps.length - 1}
-                                    className="nav-button"
-                                >
-                                    Next
-                                </Button>
                             </Box>
-                        </StepContent>
-                    </Step>
-                ))}
-            </Stepper>
+                        ))}
+                    </Box>
+                </Paper>
+            </Fade>
 
             {/* Campaign Details Dialog */}
             <Dialog
@@ -224,104 +214,89 @@ const NewVaccinationCampaign = () => {
                 onClose={() => setDialogOpen(false)}
                 maxWidth="md"
                 fullWidth
-                className="campaign-dialog"
+                PaperProps={{
+                    sx: {
+                        borderRadius: 3,
+                        background: "rgba(255,255,255,0.97)",
+                        backdropFilter: "blur(20px)",
+                        boxShadow: "0 20px 60px rgba(0,0,0,0.18)",
+                    },
+                }}
             >
                 <DialogTitle>
-                    <Typography variant="h6" className="dialog-title">
+                    <Typography variant="h6" sx={{ fontWeight: 700, background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
                         Vaccination Campaign Details
                     </Typography>
                 </DialogTitle>
-                <DialogContent className="dialog-content">
+                <DialogContent>
                     {selectedCampaign && (
-                        <Box className="campaign-details-container">
-                            <Typography variant="h6" className="selected-campaign-title">
-                                {selectedCampaign.titleCampaign}
-                            </Typography>
-
-                            <Box className="details-grid">
-                                <Box className="detail-item">
-                                    <Typography variant="subtitle2" className="detail-label">
-                                        Disease
-                                    </Typography>
-                                    <Typography variant="body2">{selectedCampaign.diseaseName}</Typography>
-                                </Box>
-                                <Box className="detail-item">
-                                    <Typography variant="subtitle2" className="detail-label">
-                                        Vaccine
-                                    </Typography>
-                                    <Typography variant="body2">{selectedCampaign.vaccineName}</Typography>
-                                </Box>
-                                <Box className="detail-item">
-                                    <Typography variant="subtitle2" className="detail-label">
-                                        Status
-                                    </Typography>
-                                    <Chip label={selectedCampaign.status} color={getStatusColor(selectedCampaign.status)} size="small" />
-                                </Box>
-                                <Box className="detail-item">
-                                    <Typography variant="subtitle2" className="detail-label">
-                                        Active
-                                    </Typography>
-                                    <Typography variant="body2">{selectedCampaign.active ? "Yes" : "No"}</Typography>
-                                </Box>
-                                <Box className="detail-item">
-                                    <Typography variant="subtitle2" className="detail-label">
-                                        Start Date
-                                    </Typography>
-                                    <Typography variant="body2">{formatDate(selectedCampaign.startDate)}</Typography>
-                                </Box>
-                                <Box className="detail-item">
-                                    <Typography variant="subtitle2" className="detail-label">
-                                        End Date
-                                    </Typography>
-                                    <Typography variant="body2">{formatDate(selectedCampaign.endDate)}</Typography>
-                                </Box>
-                                <Box className="detail-item">
-                                    <Typography variant="subtitle2" className="detail-label">
-                                        Form Deadline
-                                    </Typography>
-                                    <Typography variant="body2">{formatDate(selectedCampaign.formDeadline)}</Typography>
-                                </Box>
-                                {selectedCampaign.notes && (
-                                    <Box className="detail-item" style={{ gridColumn: "1 / -1" }}>
-                                        <Typography variant="subtitle2" className="detail-label">
-                                            Notes
-                                        </Typography>
-                                        <Typography variant="body2">{selectedCampaign.notes}</Typography>
-                                    </Box>
-                                )}
+                        <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 3, py: 2 }}>
+                            <Box>
+                                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Disease</Typography>
+                                <Typography variant="body2">{selectedCampaign.diseaseName}</Typography>
                             </Box>
+                            <Box>
+                                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Vaccine</Typography>
+                                <Typography variant="body2">{selectedCampaign.vaccineName}</Typography>
+                            </Box>
+                            <Box>
+                                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Status</Typography>
+                                <Chip label={selectedCampaign.status} color={getStatusColor(selectedCampaign.status)} size="small" />
+                            </Box>
+                            <Box>
+                                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Active</Typography>
+                                <Typography variant="body2">{selectedCampaign.active ? "Yes" : "No"}</Typography>
+                            </Box>
+                            <Box>
+                                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Start Date</Typography>
+                                <Typography variant="body2">{formatDate(selectedCampaign.startDate)}</Typography>
+                            </Box>
+                            <Box>
+                                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>End Date</Typography>
+                                <Typography variant="body2">{formatDate(selectedCampaign.endDate)}</Typography>
+                            </Box>
+                            <Box>
+                                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Form Deadline</Typography>
+                                <Typography variant="body2">{formatDate(selectedCampaign.formDeadline)}</Typography>
+                            </Box>
+                            {selectedCampaign.notes && (
+                                <Box sx={{ gridColumn: "1 / -1" }}>
+                                    <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Notes</Typography>
+                                    <Typography variant="body2">{selectedCampaign.notes}</Typography>
+                                </Box>
+                            )}
                         </Box>
                     )}
                 </DialogContent>
-                <DialogActions className="dialog-actions">
-                    <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
+                <DialogActions>
+                    <Button onClick={() => setDialogOpen(false)} sx={{ borderRadius: 2, textTransform: "none" }}>Cancel</Button>
                     {selectedCampaign && (
                         <>
-                            {canUpdateToInProgress(selectedCampaign) && (
+                            {canStart(selectedCampaign) && (
                                 <Button
                                     variant="contained"
                                     color="primary"
                                     onClick={() => handleStatusUpdate(selectedCampaign, "IN_PROGRESS")}
                                     disabled={isUpdating}
-                                    className="action-button"
+                                    sx={{ borderRadius: 2, textTransform: "none" }}
                                 >
                                     {isUpdating ? <CircularProgress size={20} /> : "Start Campaign"}
                                 </Button>
                             )}
-                            {canUpdateToCompleted(selectedCampaign) && (
+                            {selectedCampaign.status === "PENDING" && canPublish() && (
                                 <Button
                                     variant="contained"
                                     color="success"
-                                    onClick={() => handleStatusUpdate(selectedCampaign, "COMPLETED")}
+                                    onClick={() => handleStatusUpdate(selectedCampaign, "PUBLISHED")}
                                     disabled={isUpdating}
-                                    className="action-button"
+                                    sx={{ borderRadius: 2, textTransform: "none" }}
                                 >
-                                    {isUpdating ? <CircularProgress size={20} /> : "Complete Campaign"}
+                                    {isUpdating ? <CircularProgress size={20} /> : "Publish Campaign"}
                                 </Button>
                             )}
-                            {selectedCampaign.status === "PENDING" && inProgressCampaigns.length > 0 && (
-                                <Alert severity="warning" className="warning-alert">
-                                    Cannot start: There is already a campaign in progress
+                            {selectedCampaign.status === "PUBLISHED" && (
+                                <Alert severity="warning" sx={{ borderRadius: 2, mt: 2 }}>
+                                    Cannot start: There is already a campaign published
                                 </Alert>
                             )}
                         </>
@@ -330,7 +305,7 @@ const NewVaccinationCampaign = () => {
             </Dialog>
 
             {/* Floating Action Button for Create New Campaign */}
-            <Fab color="primary" aria-label="add" className="create-fab" onClick={() => setCreateFormOpen(true)}>
+            <Fab color="primary" aria-label="add" sx={fabSx} onClick={() => setCreateFormOpen(true)}>
                 <AddIcon />
             </Fab>
 
@@ -340,9 +315,18 @@ const NewVaccinationCampaign = () => {
                 onClose={() => setCreateFormOpen(false)}
                 maxWidth="lg"
                 fullWidth
-                className="create-dialog"
+                PaperProps={{
+                    sx: {
+                        borderRadius: 3,
+                        background: "rgba(255,255,255,0.97)",
+                        backdropFilter: "blur(20px)",
+                        boxShadow: "0 20px 60px rgba(0,0,0,0.18)",
+                    },
+                }}
             >
-                <DialogTitle>Create New Vaccination Campaign</DialogTitle>
+                <DialogTitle sx={{ fontWeight: 700, background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                    Create New Vaccination Campaign
+                </DialogTitle>
                 <DialogContent>
                     <VaccineCampaignForm
                         onSuccess={() => {

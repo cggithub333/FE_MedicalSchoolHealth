@@ -1,8 +1,23 @@
 export const styleCampaign = {
     bg: {
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        background: "none",
         pb: 4,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "stretch",
+        position: "relative",
+    },
+    bgGradient: {
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: -1,
+        background: "linear-gradient(135deg, #667eea 0%, #764ba2 60%, #f7971e 100%)",
+        minHeight: "100vh",
+        width: "100vw",
     },
     header: {
         background: "transparent",
@@ -33,6 +48,10 @@ export const styleCampaign = {
     },
     card: (gradient, shadowColor) => ({
         height: "100%",
+        minHeight: 320,
+        width: 300,
+        minWidth: 300,
+        maxWidth: 300,
         display: "flex",
         flexDirection: "column",
         borderRadius: 3,

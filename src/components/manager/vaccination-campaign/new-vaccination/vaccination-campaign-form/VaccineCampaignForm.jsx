@@ -292,17 +292,18 @@ const VaccineCampaignForm = ({ onSuccess, onCancel }) => {
 
                 <div style={{ display: "flex", gap: "16px", justifyContent: "flex-end", marginTop: "24px" }}>
                     <button
+                        className="vaccine-submit-btn"
                         type="button"
                         onClick={onCancel}
                         disabled={isCreating}
-                        style={{
-                            padding: "12px 24px",
-                            border: "1px solid #1976d2",
-                            background: "white",
-                            color: "#1976d2",
-                            borderRadius: "8px",
-                            cursor: "pointer",
-                        }}
+                    // style={{
+                    //     padding: "0px 24px",
+                    //     border: "1px solid #1976d2",
+                    //     background: "white",
+                    //     color: "#1976d2",
+                    //     borderRadius: "8px",
+                    //     cursor: "pointer",
+                    // }}
                     >
                         Cancel
                     </button>

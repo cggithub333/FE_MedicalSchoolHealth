@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { fetchNewestVaccinationCampaign } from '../../../../api/schoolnurse/schoolnurse-requests-action/vaccination/newest-vaccination-campaign-request-action';
 
 
@@ -6,21 +6,27 @@ import { fetchNewestVaccinationCampaign } from '../../../../api/schoolnurse/scho
 export const useNewestVaccinationCampaign = () => {
     const [newestVaccinationCampaign, setNewestVaccinationCampaign] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
 
-    const loadNewestVaccinationCampaign = async () => {
-        setIsLoading(true);
-        try {
-            const response = await fetchNewestVaccinationCampaign();
-            setNewestVaccinationCampaign(response || []);
-        } catch (error) {
-            console.error("Failed to fetch newest campaign:", error);
-            setNewestVaccinationCampaign([]);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-    loadNewestVaccinationCampaign();
+    useEffect(() => {
+        const loadNewestCampaign = async () => {
+            setIsLoading(true);
+            try {
+                const response = await fetchNewestVaccinationCampaign();
+                console.log("Fetched newest vaccination campaign:", response);
+                setNewestVaccinationCampaign(response || []);
+            } catch (error) {
+                console.error("Failed to fetch newest vaccination campaign:", error);
+                setNewestVaccinationCampaign([]);
+                setError(error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
 
-    return { newestVaccinationCampaign, isLoading };
+        loadNewestCampaign();
+    }, []);
+
+    return { newestVaccinationCampaign, isLoading, error };
 };
 

@@ -6,19 +6,28 @@ export const useNewestCampaign = () => {
     const [newestCampaign, setNewestCampaign] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
-    const loadNewestCampaign = async () => {
-        setIsLoading(true);
-        try {
-            const response = await fetchAllCampaigns();
-            setNewestCampaign(response || []);
-        } catch (error) {
-            console.error("Failed to fetch newest campaign:", error);
-            setNewestCampaign([]);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-    loadNewestCampaign();
+    useEffect(() => {
+        const loadNewestCampaign = async () => {
+            setIsLoading(true);
+            try {
+                const response = await fetchAllCampaigns();
+                console.log("Fetched newest campaign:", response);
+                // Return all campaigns, not just the most recent one
+                if (response && response.length > 0) {
+                    setNewestCampaign(response);
+                } else {
+                    setNewestCampaign([]);
+                }
+            } catch (error) {
+                console.error("Failed to fetch newest campaign:", error);
+                setNewestCampaign([]);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        loadNewestCampaign();
+    }, []);
 
     return { newestCampaign, isLoading };
 };

@@ -22,29 +22,13 @@ const statusBarColors = {
 const GRADES = [1, 2, 3, 4, 5]
 
 const HealthCheckScheduleForm = () => {
-    const { newestCampaign, loading, error, fetchNewestCampaignByStatus } = useNewestCampaignByStatus()
+    const { newestCampaign, loading, error } = useNewestCampaignByStatus()
     const [showInjectionList, setShowInjectionList] = useState(false)
     const [selectedShift, setSelectedShift] = useState(null)
     const [animateCards, setAnimateCards] = useState(false)
 
     const [pupilsByGradeData, setPupilsByGradeData] = useState(GRADES.map(() => null))
 
-    // Fetch campaign data on component mount
-    useEffect(() => {
-        fetchNewestCampaignByStatus()
-    }, [])
-
-    // Fetch pupils data for each grade
-    useEffect(() => {
-        if (newestCampaign) {
-            const fetchPupilsData = async () => {
-                const dataPromises = GRADES.map((grade) => usePupilsByGrade(grade))
-                const dataResults = await Promise.all(dataPromises)
-                setPupilsByGradeData(dataResults)
-            }
-            fetchPupilsData()
-        }
-    }, [newestCampaign])
 
     // Animate cards after data loads
     useEffect(() => {
@@ -53,8 +37,14 @@ const HealthCheckScheduleForm = () => {
         }
     }, [newestCampaign, loading])
 
-    // Check if campaign is active (IN_PROGRESS)
-    const isActiveCampaign = newestCampaign && newestCampaign.statusHealthCampaign === "IN_PROGRESS"
+    // Support both array and object for newestCampaign
+    let activeCampaign = null
+    if (Array.isArray(newestCampaign)) {
+        activeCampaign = newestCampaign.find(c => c.statusHealthCampaign === "IN_PROGRESS") || null
+    } else if (newestCampaign && newestCampaign.statusHealthCampaign === "IN_PROGRESS") {
+        activeCampaign = newestCampaign
+    }
+    const isActiveCampaign = !!activeCampaign
 
     // Generate schedule dates based on campaign dates (5 days for 5 grades)
     const generateScheduleDates = (campaign) => {
@@ -81,7 +71,7 @@ const HealthCheckScheduleForm = () => {
         return scheduleDates
     }
 
-    const scheduleDates = generateScheduleDates(newestCampaign)
+    const scheduleDates = generateScheduleDates(activeCampaign)
 
     // Helper to get and set saved shift data
     function getShiftSavedData(grade, pupils) {
@@ -163,13 +153,11 @@ const HealthCheckScheduleForm = () => {
                 <Schedule sx={{ fontSize: 80, color: "#bdbdbd", mb: 2 }} />
                 <h3 className="empty-title">No Active Campaign</h3>
                 <p className="empty-text">
-                    {newestCampaign
-                        ? `Current campaign status: ${newestCampaign.statusHealthCampaign}`
+                    {Array.isArray(newestCampaign) && newestCampaign.length > 0
+                        ? `Current campaign statuses: ${newestCampaign.map(c => c.statusHealthCampaign).join(", ")}`
                         : "There are currently no health check campaigns in progress."}
                 </p>
-                <button className="retry-btn" onClick={fetchNewestCampaignByStatus}>
-                    Refresh
-                </button>
+
             </div>
         )
     }
@@ -198,18 +186,18 @@ const HealthCheckScheduleForm = () => {
                     <div className="header-content">
                         <Schedule sx={{ fontSize: 40, color: "#1976d2", mr: 2 }} />
                         <div>
-                            <h1 className="main-title">{newestCampaign.title}</h1>
-                            <p className="main-subtitle">{newestCampaign.description}</p>
+                            <h1 className="main-title">{activeCampaign.title}</h1>
+                            <p className="main-subtitle">{activeCampaign.description}</p>
                             <div className="campaign-details">
                                 <div className="campaign-detail-item">
                                     <LocationOn sx={{ fontSize: 16, mr: 0.5 }} />
-                                    <span>{newestCampaign.address}</span>
+                                    <span>{activeCampaign.address}</span>
                                 </div>
                                 <div className="campaign-detail-item">
                                     <CalendarToday sx={{ fontSize: 16, mr: 0.5 }} />
                                     <span>
-                                        {new Date(newestCampaign.startExaminationDate).toLocaleDateString()} -{" "}
-                                        {new Date(newestCampaign.endExaminationDate).toLocaleDateString()}
+                                        {new Date(activeCampaign.startExaminationDate).toLocaleDateString()} -{" "}
+                                        {new Date(activeCampaign.endExaminationDate).toLocaleDateString()}
                                     </span>
                                 </div>
                             </div>
@@ -217,13 +205,13 @@ const HealthCheckScheduleForm = () => {
                     </div>
                     <div className="header-actions">
                         <Chip
-                            label={newestCampaign.statusHealthCampaign}
+                            label={activeCampaign.statusHealthCampaign}
                             color="success"
                             variant="outlined"
                             sx={{ fontSize: "0.9rem", padding: "4px" }}
                         />
                         <Chip
-                            label={`Campaign ID: ${newestCampaign.campaignId}`}
+                            label={`Campaign ID: ${activeCampaign.campaignId}`}
                             color="primary"
                             variant="outlined"
                             sx={{ fontSize: "0.9rem", padding: "4px" }}
@@ -260,7 +248,7 @@ const HealthCheckScheduleForm = () => {
                         students: saved.morning,
                         capacity: saved.capacity,
                         filled: saved.filled,
-                        campaignId: newestCampaign.campaignId,
+                        campaignId: activeCampaign.campaignId,
                         scheduleDate: scheduleDate?.date || new Date(),
                         pupils: pupils, // Pass the transformed pupils data
                     }
@@ -374,7 +362,7 @@ const HealthCheckScheduleForm = () => {
                 <div className="final-actions">
                     <button
                         className="complete-all-btn modern-btn-success"
-                        onClick={() => alert(`Campaign "${newestCampaign.title}" marked as completed!`)}
+                        onClick={() => alert(`Campaign "${activeCampaign.title}" marked as completed!`)}
                     >
                         <CheckCircle sx={{ fontSize: 20, mr: 1 }} />
                         Complete Campaign
