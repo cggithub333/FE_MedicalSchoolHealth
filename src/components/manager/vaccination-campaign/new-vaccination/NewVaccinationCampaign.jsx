@@ -19,6 +19,7 @@ import {
 import AddIcon from "@mui/icons-material/Add"
 import { useNewestCampaignByStatus } from "../../../../hooks/manager/vaccination/create-new-campaign/useGetNewestCampaingByStatus"
 import { useUpdateNewCampaign } from "../../../../hooks/manager/vaccination/create-new-campaign/useUpdateNewCampaign"
+import { useDeleteCampaign } from "../../../../hooks/manager/vaccination/create-new-campaign/useDeleteCampaign"
 import VaccineCampaignForm from "./vaccination-campaign-form/VaccineCampaignForm"
 
 const cardSx = {
@@ -76,6 +77,7 @@ function getStatusColor(status) {
 const NewVaccinationCampaign = () => {
     const { allCampaigns, isLoading } = useNewestCampaignByStatus()
     const { updateNewCampaign, isLoading: isUpdating } = useUpdateNewCampaign()
+    const { deleteCampaign, isLoading: isDeleting } = useDeleteCampaign()
     const [selectedCampaign, setSelectedCampaign] = useState(null)
     const [dialogOpen, setDialogOpen] = useState(false)
     const [createFormOpen, setCreateFormOpen] = useState(false)
@@ -121,6 +123,19 @@ const NewVaccinationCampaign = () => {
         }
     }
 
+    const handleDelete = async (campaignId) => {
+        if (window.confirm("Are you sure you want to delete this campaign? This action cannot be undone.")) {
+            const success = await deleteCampaign(campaignId)
+            if (success) {
+                setDialogOpen(false)
+                setCreateFormOpen(false)
+                window.location.reload()
+            } else {
+                alert("Failed to delete campaign.")
+            }
+        }
+    }
+
     const formatDate = (dateString) => {
         // Handle different date formats from API
         if (!dateString) return "N/A"
@@ -156,7 +171,7 @@ const NewVaccinationCampaign = () => {
             <Fade in timeout={800}>
                 <Paper elevation={3} sx={{ maxWidth: 1400, mx: "auto", mt: 6, mb: 6, p: 4, borderRadius: 4, boxShadow: "0 12px 48px rgba(102,126,234,0.12)", background: "#fff", position: "relative" }}>
                     <Typography variant="h4" sx={{ fontWeight: 700, mb: 4, background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                        Vaccination Campaign Workflow
+                        Vaccination Campaign
                     </Typography>
                     <Box sx={{ display: "flex", gap: 4, flexWrap: "wrap", justifyContent: "space-between" }}>
                         {statusOrder.map((status) => (
@@ -173,7 +188,12 @@ const NewVaccinationCampaign = () => {
                                             <Card
                                                 key={campaign.campaignId}
                                                 sx={{ ...cardSx, cursor: status === "COMPLETED" ? "default" : "pointer" }}
-                                                onClick={() => status !== "COMPLETED" && setSelectedCampaign(campaign) && setDialogOpen(true)}
+                                                onClick={() => {
+                                                    if (status !== "COMPLETED") {
+                                                        setSelectedCampaign(campaign);
+                                                        setDialogOpen(true);
+                                                    }
+                                                }}
                                             >
                                                 <CardContent>
                                                     <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
@@ -272,37 +292,68 @@ const NewVaccinationCampaign = () => {
                     <Button onClick={() => setDialogOpen(false)} sx={{ borderRadius: 2, textTransform: "none" }}>Cancel</Button>
                     {selectedCampaign && (
                         <>
-                            {canStart(selectedCampaign) && (
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={() => handleStatusUpdate(selectedCampaign, "IN_PROGRESS")}
-                                    disabled={isUpdating}
-                                    sx={{ borderRadius: 2, textTransform: "none" }}
-                                >
-                                    {isUpdating ? <CircularProgress size={20} /> : "Start Campaign"}
-                                </Button>
-                            )}
                             {selectedCampaign.status === "PENDING" && canPublish() && (
-                                <Button
-                                    variant="contained"
-                                    color="success"
-                                    onClick={() => handleStatusUpdate(selectedCampaign, "PUBLISHED")}
-                                    disabled={isUpdating}
-                                    sx={{ borderRadius: 2, textTransform: "none" }}
-                                >
-                                    {isUpdating ? <CircularProgress size={20} /> : "Publish Campaign"}
-                                </Button>
+                                <>
+                                    <Button
+                                        variant="outlined"
+                                        color="error"
+                                        onClick={() => handleDelete(selectedCampaign.campaignId)}
+                                        disabled={isDeleting}
+                                        sx={{ borderRadius: 2, textTransform: "none" }}
+                                    >
+                                        {isDeleting ? <CircularProgress size={20} /> : "Delete"}
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="success"
+                                        onClick={() => handleStatusUpdate(selectedCampaign, "PUBLISHED")}
+                                        disabled={isUpdating}
+                                        sx={{ borderRadius: 2, textTransform: "none" }}
+                                    >
+                                        {isUpdating ? <CircularProgress size={20} /> : "Publish Campaign"}
+                                    </Button>
+                                </>
                             )}
                             {selectedCampaign.status === "PUBLISHED" && (
-                                <Alert severity="warning" sx={{ borderRadius: 2, mt: 2 }}>
-                                    Cannot start: There is already a campaign published
-                                </Alert>
+                                <>
+                                    <Button
+                                        variant="outlined"
+                                        color="error"
+                                        onClick={() => handleDelete(selectedCampaign.campaignId)}
+                                        disabled={isDeleting}
+                                        sx={{ borderRadius: 2, textTransform: "none" }}
+                                    >
+                                        {isDeleting ? <CircularProgress size={20} /> : "Delete"}
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={() => handleStatusUpdate(selectedCampaign, "IN_PROGRESS")}
+                                        disabled={isUpdating}
+                                        sx={{ borderRadius: 2, textTransform: "none" }}
+                                    >
+                                        {isUpdating ? <CircularProgress size={20} /> : "Start Campaign"}
+                                    </Button>
+                                </>
+                            )}
+                            {selectedCampaign.status === "IN_PROGRESS" && (
+                                <>
+                                    <Button
+                                        variant="contained"
+                                        color="success"
+                                        onClick={() => handleStatusUpdate(selectedCampaign, "COMPLETED")}
+                                        disabled={isUpdating}
+                                        sx={{ borderRadius: 2, textTransform: "none" }}
+                                    >
+                                        {isUpdating ? <CircularProgress size={20} /> : "Complete Campaign"}
+                                    </Button>
+                                </>
                             )}
                         </>
                     )}
                 </DialogActions>
             </Dialog>
+
 
             {/* Floating Action Button for Create New Campaign */}
             <Fab color="primary" aria-label="add" sx={fabSx} onClick={() => setCreateFormOpen(true)}>

@@ -1,51 +1,183 @@
 //health check-schedule-management/ScheduleForm.jsx
-import { useState, useEffect } from "react"
+import { useState, useMemo, useEffect } from "react"
+import {
+    Card,
+    CardContent,
+    Typography,
+    Button,
+    LinearProgress,
+    Chip,
+    Box,
+    Grid,
+    Paper,
+    Fade,
+    Skeleton,
+    Grow,
+} from "@mui/material"
+import {
+    Schedule as ScheduleIcon,
+    Group as GroupIcon,
+    CheckCircle as CheckCircleIcon,
+    Warning as WarningIcon,
+    Error as ErrorIcon,
+    Visibility as VisibilityIcon,
+} from "@mui/icons-material"
 import "./StyleScheduleForm.scss"
 import ScheduleInjectedList from "../healthcheck-schedule-management-details/ScheduleInjectedList"
-import { usePupilsByGrade } from "../../../../../hooks/schoolnurse/healthcheck/schedule/usePupilsByGrade"
-import { CircularProgress, Fade, Grow, Chip, Paper, Card, CardContent, Grid, Box, Typography, Button, Skeleton } from "@mui/material"
-import { Schedule, Group, CheckCircle, Warning, Error, LocationOn, CalendarToday } from "@mui/icons-material"
 import { useNewestCampaignByStatus } from "../../../../../hooks/schoolnurse/healthcheck/schedule/useNewestCampaignByStatus"
+import { fetchPupilsByGrade } from "../../../../../api/schoolnurse/schoolnurse-requests-action/healthcheck/pupils-by-grade-request-action"
 
 const GRADES = [1, 2, 3, 4, 5]
 
-// Status configuration with enhanced styling and icons
 const statusConfig = {
     Available: {
         color: "#4caf50",
         bgColor: "#e8f5e9",
-        icon: CheckCircle,
+        icon: CheckCircleIcon,
         label: "Available",
     },
     "Almost Full": {
         color: "#ff9800",
         bgColor: "#fff3e0",
-        icon: Warning,
+        icon: WarningIcon,
         label: "Almost Full",
     },
     Full: {
         color: "#f44336",
         bgColor: "#ffebee",
-        icon: Error,
+        icon: ErrorIcon,
         label: "Full",
     },
+}
+
+// Helper to get saved shift data for a specific campaign and grade, always synced with current pupils
+function getShiftSavedData(campaignId, grade, currentPupils) {
+    const storageKey = `healthcheck_students_campaign_${campaignId}_grade_${grade}`
+    let savedData = null
+    try {
+        savedData = JSON.parse(localStorage.getItem(storageKey) || "null")
+    } catch (error) {
+        console.error("Error loading saved data:", error)
+    }
+    savedData = savedData || []
+    // Merge: for each current pupil, use saved if exists, else default
+    return (currentPupils || []).map((pupil) => {
+        const pupilId = pupil.pupilId || pupil.id
+        const saved = savedData.find((s) => s.pupilId === pupilId)
+        return saved || {
+            pupilId,
+            firstName: pupil.firstName,
+            lastName: pupil.lastName,
+            Grade: pupil.Grade || pupil.grade,
+            avatar: pupil.avatar || `/placeholder.svg?height=40&width=40`,
+            completed: false,
+            time: "",
+            notes: "",
+        }
+    })
+}
+
+// Helper to calculate schedule dates based on campaign
+function calculateScheduleDates(campaign) {
+    if (!campaign?.startExaminationDate) return []
+    const startDate = new Date(campaign.startExaminationDate)
+    const dates = []
+    for (let i = 0; i < 5; i++) {
+        const date = new Date(startDate)
+        date.setDate(startDate.getDate() + i)
+        dates.push({
+            day: i + 1,
+            date: date.toLocaleDateString("vi-VN", {
+                weekday: "long",
+                day: "2-digit",
+                month: "2-digit",
+            }),
+        })
+    }
+    return dates
 }
 
 const HealthCheckScheduleForm = () => {
     const { newestCampaign, loading, error } = useNewestCampaignByStatus()
     const [showInjectionList, setShowInjectionList] = useState(false)
     const [selectedShift, setSelectedShift] = useState(null)
+    const [refresh, setRefresh] = useState(0)
+    const [pupilsByGrade, setPupilsByGrade] = useState({})
+    const [pupilsLoading, setPupilsLoading] = useState(true)
     const [animateCards, setAnimateCards] = useState(false)
-    const [pupilsByGradeData, setPupilsByGradeData] = useState(GRADES.map(() => null))
 
-    // Support both array and object for newestCampaign
-    let activeCampaign = null
-    if (Array.isArray(newestCampaign)) {
-        activeCampaign = newestCampaign.find(c => c.statusHealthCampaign === "IN_PROGRESS") || null
-    } else if (newestCampaign && newestCampaign.statusHealthCampaign === "IN_PROGRESS") {
-        activeCampaign = newestCampaign
+    // Find active campaign (IN_PROGRESS)
+    const activeCampaign = useMemo(() => {
+        if (!newestCampaign || !Array.isArray(newestCampaign)) return null
+        return newestCampaign.find((c) => String(c.statusHealthCampaign).trim().toUpperCase() === "IN_PROGRESS")
+    }, [newestCampaign])
+
+    // Fetch all grades' pupils in parallel using API
+    useEffect(() => {
+        let isMounted = true
+        async function fetchAllPupils() {
+            setPupilsLoading(true)
+            const results = {}
+            await Promise.all(
+                GRADES.map(async (grade) => {
+                    try {
+                        const pupils = await fetchPupilsByGrade(grade)
+                        results[grade] = Array.isArray(pupils) ? pupils : []
+                    } catch {
+                        results[grade] = []
+                    }
+                })
+            )
+            if (isMounted) setPupilsByGrade(results)
+            setPupilsLoading(false)
+        }
+        if (activeCampaign) fetchAllPupils()
+        else setPupilsLoading(false)
+        return () => { isMounted = false }
+    }, [activeCampaign, refresh])
+
+    const scheduleDates = useMemo(() => {
+        return activeCampaign ? calculateScheduleDates(activeCampaign) : []
+    }, [activeCampaign])
+
+    // Handle navigation to student list
+    const handleViewStudents = (grade) => {
+        if (!activeCampaign) return
+        const gradePupils = pupilsByGrade[grade] || []
+        const savedData = getShiftSavedData(activeCampaign.campaignId, grade, gradePupils)
+        const scheduleDate = scheduleDates[grade - 1]
+        const shift = {
+            id: `${activeCampaign.campaignId}-${grade}-morning`,
+            name: `Grade ${grade} - Morning`,
+            time: "08:00 - 11:00",
+            grade: grade,
+            campaignId: activeCampaign.campaignId,
+            students: savedData,
+            totalPupils: gradePupils.length,
+            scheduleDate: scheduleDate?.date || `Day ${grade}`,
+        }
+        setSelectedShift(shift)
+        setShowInjectionList(true)
     }
-    const isActiveCampaign = !!activeCampaign
+
+    // Handle back navigation from student list
+    const handleBackFromStudentList = () => {
+        setShowInjectionList(false)
+        setSelectedShift(null)
+        setRefresh((r) => r + 1)
+    }
+
+    // Calculate progress for each grade
+    const getGradeProgress = (grade) => {
+        if (!activeCampaign) return { filled: 0, total: 0, progress: 0 }
+        const gradePupils = pupilsByGrade[grade] || []
+        const savedData = getShiftSavedData(activeCampaign.campaignId, grade, gradePupils)
+        let filled = savedData.filter((student) => student.completed).length
+        const total = gradePupils.length
+        if (total === 0) filled = 0
+        const progress = total === 0 ? 0 : (filled / total) * 100
+        return { filled, total, progress }
+    }
 
     // Animate cards after data loads
     useEffect(() => {
@@ -54,154 +186,54 @@ const HealthCheckScheduleForm = () => {
         }
     }, [newestCampaign, loading])
 
-    // Fetch pupils for each grade and update pupilsByGradeData
-    useEffect(() => {
-        let isMounted = true;
-        setPupilsByGradeData(GRADES.map(() => ({ pupils: [], isLoading: true })));
-        if (!isActiveCampaign) return;
-        Promise.all(
-            GRADES.map(async (grade) => {
-                try {
-                    const { pupils, isLoading } = await usePupilsByGrade(grade);
-                    return { pupils, isLoading };
-                } catch (e) {
-                    return { pupils: [], isLoading: false };
-                }
-            })
-        ).then((results) => {
-            if (isMounted) setPupilsByGradeData(results);
-        });
-        return () => { isMounted = false; };
-    }, [isActiveCampaign]);
-
-    // Generate schedule dates based on campaign dates (5 days for 5 grades)
-    const generateScheduleDates = (campaign) => {
-        if (!campaign || !campaign.startExaminationDate) return []
-
-        const startDate = new Date(campaign.startExaminationDate)
-        const scheduleDates = []
-
-        for (let i = 0; i < 5; i++) {
-            const scheduleDate = new Date(startDate)
-            scheduleDate.setDate(startDate.getDate() + i)
-            scheduleDates.push({
-                grade: i + 1,
-                date: scheduleDate,
-                dateString: scheduleDate.toLocaleDateString("en-US", {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                }),
-            })
-        }
-
-        return scheduleDates
-    }
-
-    const scheduleDates = generateScheduleDates(activeCampaign)
-
-    // Helper to get and set saved shift data
-    function getShiftSavedData(grade, pupils) {
-        const sharedKey = `healthcheck_students_grade_${grade}`
-        let students = null
-        try {
-            students = JSON.parse(localStorage.getItem(sharedKey) || "null")
-        } catch { }
-
-        const capacity = pupils.length
-        const filled = students ? students.filter((s) => s.completed).length : 0
-
-        return {
-            morning: students || [],
-            afternoon: students || [],
-            capacity,
-            filled,
-        }
-    }
-
-    // Transform pupils data to match expected format
-    const transformPupilsData = (pupilsData) => {
-        if (!Array.isArray(pupilsData)) return []
-
-        // Group by pupilId to avoid duplicates
-        const uniquePupils = {}
-        pupilsData.forEach((item) => {
-            const pupilId = item.pupilRes?.pupilId
-            if (pupilId && !uniquePupils[pupilId]) {
-                uniquePupils[pupilId] = {
-                    pupilId: pupilId,
-                    firstName: item.pupilRes.firstName,
-                    lastName: item.pupilRes.lastName,
-                    birthDate: item.pupilRes.birthDate,
-                    gender: item.pupilRes.gender,
-                    Grade: item.pupilRes.gradeName,
-                    gradeName: item.pupilRes.gradeName,
-                    healthCheckConsentId: item.healthCheckConsentId,
-                    schoolYear: item.schoolYear,
-                    diseases: [],
-                }
-            }
-            // Collect all diseases for this pupil
-            if (pupilId && item.disease) {
-                uniquePupils[pupilId].diseases.push(...item.disease)
-            }
-        })
-
-        return Object.values(uniquePupils)
-    }
-
-    // Loading state
-    if (loading) {
+    if (loading || pupilsLoading) {
         return (
-            <div className="vaccine-schedule-root loading-container">
-                <CircularProgress size={60} sx={{ color: "#1976d2" }} />
-                <p className="loading-text">Loading health check campaign...</p>
+            <div className="vaccine-schedule-root">
+                <Box sx={{ width: "100%", maxWidth: 1200, mx: "auto" }}>
+                    {GRADES.map((grade) => (
+                        <Card key={grade} sx={{ mb: 3, borderRadius: 3 }}>
+                            <CardContent>
+                                <Skeleton variant="text" width="60%" height={40} />
+                                <Skeleton variant="text" width="40%" height={20} sx={{ mb: 2 }} />
+                                <Skeleton variant="rectangular" width="100%" height={120} sx={{ borderRadius: 2 }} />
+                            </CardContent>
+                        </Card>
+                    ))}
+                </Box>
             </div>
         )
     }
 
-    // Error state
-    if (error) {
+    if (error || !activeCampaign) {
         return (
-            <div className="vaccine-schedule-root error-container">
-                <Error sx={{ fontSize: 60, color: "#e53935", mb: 2 }} />
-                <p className="error-text">Failed to load campaign. Please try again.</p>
-                <button className="retry-btn" onClick={fetchNewestCampaignByStatus}>
-                    Retry
-                </button>
+            <div className="vaccine-schedule-root">
+                <Paper
+                    elevation={3}
+                    sx={{
+                        p: 4,
+                        textAlign: "center",
+                        borderRadius: 3,
+                        maxWidth: 600,
+                        mx: "auto",
+                    }}
+                >
+                    <ErrorIcon sx={{ fontSize: 64, color: "error.main", mb: 2 }} />
+                    <Typography variant="h5" gutterBottom>
+                        {error ? "Error Loading Campaign" : "No Active Campaign"}
+                    </Typography>
+                    <Typography variant="body1" color="text.secondary">
+                        {error ? "Please try again later." : "There is no health check campaign in progress."}
+                    </Typography>
+                </Paper>
             </div>
         )
     }
 
-    // No active campaign state
-    if (!isActiveCampaign) {
-        return (
-            <div className="vaccine-schedule-root empty-container">
-                <Schedule sx={{ fontSize: 80, color: "#bdbdbd", mb: 2 }} />
-                <h3 className="empty-title">No Active Campaign</h3>
-                <p className="empty-text">
-                    {Array.isArray(newestCampaign) && newestCampaign.length > 0
-                        ? `Current campaign statuses: ${newestCampaign.map(c => c.statusHealthCampaign).join(", ")}`
-                        : "There are currently no health check campaigns in progress."}
-                </p>
-
-            </div>
-        )
-    }
-
-    // Show injection list if selected
     if (showInjectionList && selectedShift) {
         return (
-            <Fade in={true} timeout={300}>
+            <Fade in={showInjectionList}>
                 <div>
-                    <ScheduleInjectedList
-                        shift={selectedShift}
-                        onBack={() => {
-                            setShowInjectionList(false)
-                            setSelectedShift(null)
-                        }}
-                    />
+                    <ScheduleInjectedList shift={selectedShift} campaign={activeCampaign} onBack={handleBackFromStudentList} />
                 </div>
             </Fade>
         )
@@ -209,22 +241,21 @@ const HealthCheckScheduleForm = () => {
 
     return (
         <div className="vaccine-schedule-root">
-            <Fade in={true} timeout={500}>
-                <div style={{ width: "100%", maxWidth: 1200, margin: "0 auto" }}>
+            <Fade in={!showInjectionList}>
+                <Box sx={{ width: "100%", maxWidth: 1200, mx: "auto" }}>
                     {/* Campaign Header */}
                     <Paper
-                        elevation={3}
+                        elevation={2}
                         sx={{
                             p: 3,
                             mb: 4,
-                            borderRadius: 4,
+                            borderRadius: 3,
                             background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
                             color: "white",
-                            boxShadow: "0 8px 32px rgba(102,126,234,0.18)",
                         }}
                     >
                         <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                            <Schedule sx={{ fontSize: 44, mr: 2 }} />
+                            <ScheduleIcon sx={{ fontSize: 40, mr: 2 }} />
                             <Box>
                                 <Typography variant="h4" fontWeight="bold">
                                     {activeCampaign.title}
@@ -236,89 +267,126 @@ const HealthCheckScheduleForm = () => {
                         </Box>
                         <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
                             <Chip
-                                icon={<CalendarToday />}
-                                label={`${new Date(activeCampaign.startExaminationDate).toLocaleDateString()} - ${new Date(activeCampaign.endExaminationDate).toLocaleDateString()}`}
-                                sx={{ bgcolor: "rgba(255,255,255,0.18)", color: "white", fontWeight: 600 }}
+                                icon={<ScheduleIcon />}
+                                label={`${activeCampaign.startExaminationDate} - ${activeCampaign.endExaminationDate}`}
+                                sx={{ bgcolor: "rgba(255,255,255,0.2)", color: "white" }}
                             />
                             <Chip label={activeCampaign.statusHealthCampaign} color="success" sx={{ fontWeight: "bold" }} />
-                            <Chip label={`Campaign ID: ${activeCampaign.campaignId}`} color="primary" sx={{ fontWeight: "bold" }} />
                         </Box>
                     </Paper>
-
                     {/* Grade Cards */}
                     <Box sx={{ display: "flex", justifyContent: "center" }}>
                         <Grid container spacing={3} justifyContent="center">
                             {GRADES.map((grade, index) => {
-                                const gradeData = pupilsByGradeData[index]
-                                const rawPupils = gradeData?.pupils || []
-                                const isGradeLoading = gradeData?.isLoading || false
-                                const scheduleDate = scheduleDates.find((d) => d.grade === grade)
-                                if (isGradeLoading) {
-                                    return (
-                                        <Grid item xs={12} md={6} lg={4} key={grade}>
-                                            <Paper elevation={2} sx={{ p: 3, borderRadius: 3, minHeight: 220 }}>
-                                                <CircularProgress size={40} />
-                                                <Typography mt={2}>Loading Grade {grade} data...</Typography>
-                                            </Paper>
-                                        </Grid>
-                                    )
+                                const gradePupils = pupilsByGrade[grade] || []
+                                const scheduleDate = scheduleDates[index]
+                                const { filled, total, progress } = getGradeProgress(grade)
+                                let status = "Available"
+                                if (total === 0) {
+                                    status = "Full"
+                                } else if (total - filled <= 2) {
+                                    status = "Almost Full"
                                 }
-                                const pupils = transformPupilsData(rawPupils)
-                                const saved = getShiftSavedData(grade, pupils)
-                                const shift = {
-                                    id: `${grade}-session`,
-                                    name: `Grade ${grade} Health Check`,
-                                    time: "08:00 - 11:00",
-                                    grade,
-                                    students: saved.morning,
-                                    capacity: saved.capacity,
-                                    filled: saved.filled,
-                                    campaignId: activeCampaign.campaignId,
-                                    scheduleDate: scheduleDate?.date || new Date(),
-                                    pupils: pupils,
-                                }
-                                if (shift.capacity === 0) {
-                                    shift.status = "Available"
-                                } else if (shift.filled >= shift.capacity) {
-                                    shift.status = "Full"
-                                } else if (shift.capacity - shift.filled <= 2) {
-                                    shift.status = "Almost Full"
-                                } else {
-                                    shift.status = "Available"
-                                }
-                                const config = statusConfig[shift.status]
+                                const config = statusConfig[status]
+                                const StatusIcon = config.icon
                                 return (
-                                    <Grow in={animateCards} timeout={300 + index * 100} key={grade}>
-                                        <Grid item xs={12} md={6} lg={4} sx={{ display: 'flex', justifyContent: 'center' }}>
-                                            <Card sx={{ minWidth: 300, maxWidth: 300, minHeight: 220, borderRadius: 4, boxShadow: "0 8px 32px rgba(102,126,234,0.10)", background: "linear-gradient(135deg, #e3f2fd 0%, #f8fafc 100%)", transition: "all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)", cursor: "pointer", mb: 2, border: '2px solid #bdbdbd', '&:hover': { boxShadow: "0 16px 40px rgba(102,126,234,0.18)", transform: "translateY(-4px) scale(1.02)", border: '2px solid #667eea' } }}>
+                                    <Grow in={true} timeout={300 + index * 100} key={grade}>
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            md={6}
+                                            lg={4}
+                                            sx={{ display: 'flex', justifyContent: 'center' }}
+                                        >
+                                            <Card
+                                                sx={{
+                                                    minWidth: 300,
+                                                    maxWidth: 300,
+                                                    minHeight: 220,
+                                                    borderRadius: 4,
+                                                    mb: 2,
+                                                    cursor: 'pointer',
+                                                    boxShadow: '0 8px 32px rgba(102,126,234,0.10)',
+                                                    background: 'linear-gradient(135deg, #e3f2fd 0%, #f8fafc 100%)',
+                                                    transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                                                    border: '2px solid #bdbdbd',
+                                                    '&:hover': {
+                                                        transform: 'translateY(-4px) scale(1.02)',
+                                                        boxShadow: '0 16px 40px rgba(102,126,234,0.18)',
+                                                        border: '2px solid #667eea',
+                                                    },
+                                                }}
+                                            >
                                                 <CardContent>
-                                                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
-                                                        <Typography variant="h6" sx={{ fontWeight: 700, background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                                                    {/* Title and Status */}
+                                                    <Box
+                                                        sx={{
+                                                            display: 'flex',
+                                                            justifyContent: 'space-between',
+                                                            alignItems: 'center',
+                                                            mb: 1,
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            variant="h6"
+                                                            sx={{
+                                                                fontWeight: 700,
+                                                                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                                                backgroundClip: 'text',
+                                                                WebkitBackgroundClip: 'text',
+                                                                WebkitTextFillColor: 'transparent',
+                                                            }}
+                                                        >
                                                             Grade {grade} Health Check
                                                         </Typography>
+
                                                         <Chip
-                                                            icon={config && config.icon ? <config.icon sx={{ color: config.color }} /> : null}
-                                                            label={config ? config.label : shift.status}
-                                                            sx={{ fontWeight: 600, bgcolor: config ? config.bgColor : undefined, color: config ? config.color : undefined, px: 1.5, fontSize: "1rem" }}
+                                                            icon={
+                                                                StatusIcon ? (
+                                                                    <StatusIcon sx={{ color: config?.color }} />
+                                                                ) : null
+                                                            }
+                                                            label={config?.label || status}
+                                                            sx={{
+                                                                fontWeight: 600,
+                                                                bgcolor: config?.bgColor,
+                                                                color: config?.color,
+                                                                px: 1.5,
+                                                                fontSize: '1rem',
+                                                            }}
                                                         />
                                                     </Box>
-                                                    <Typography variant="body2" sx={{ mb: 0.5 }}><strong>Date:</strong> {scheduleDate?.dateString || "Date TBD"}</Typography>
-                                                    <Typography variant="body2" sx={{ mb: 0.5 }}><strong>Students:</strong> {pupils.length}</Typography>
-                                                    <Box sx={{ mt: 1 }}>
-                                                        <Typography variant="body2"><strong>Time:</strong> {shift.time}</Typography>
-                                                    </Box>
-                                                    <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+
+                                                    {/* Info Fields */}
+                                                    <Typography variant="body2" sx={{ mb: 0.5 }}>
+                                                        <strong>Date:</strong> {scheduleDate?.date || `Day ${grade}`}
+                                                    </Typography>
+                                                    <Typography variant="body2" sx={{ mb: 0.5 }}>
+                                                        <strong>Students:</strong> {gradePupils.length}
+                                                    </Typography>
+                                                    <Typography variant="body2" sx={{ mt: 1 }}>
+                                                        <strong>Time:</strong> 08:00 - 11:00
+                                                    </Typography>
+
+                                                    {/* Button */}
+                                                    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
                                                         <Button
                                                             variant="contained"
                                                             color="primary"
                                                             size="small"
-                                                            onClick={() => {
-                                                                setShowInjectionList(true)
-                                                                setSelectedShift(shift)
+                                                            onClick={() => handleViewStudents(grade)}
+                                                            sx={{
+                                                                borderRadius: 2,
+                                                                fontWeight: 600,
+                                                                textTransform: 'none',
+                                                                boxShadow: '0 2px 8px rgba(102,126,234,0.10)',
+                                                                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                                                '&:hover': {
+                                                                    background: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
+                                                                },
                                                             }}
-                                                            sx={{ borderRadius: 2, textTransform: "none", fontWeight: 600, boxShadow: "0 2px 8px rgba(102,126,234,0.10)", background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", '&:hover': { background: "linear-gradient(135deg, #764ba2 0%, #667eea 100%)" } }}
+                                                            startIcon={<VisibilityIcon sx={{ fontSize: 18 }} />}
                                                         >
-                                                            <Group sx={{ fontSize: 18, mr: 1 }} />
                                                             View Students
                                                         </Button>
                                                     </Box>
@@ -326,42 +394,15 @@ const HealthCheckScheduleForm = () => {
                                             </Card>
                                         </Grid>
                                     </Grow>
-                                )
+                                );
+
                             })}
+
                         </Grid>
                     </Box>
-
-                    {/* Action Button */}
-                    <Fade in={animateCards} timeout={800}>
-                        <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-                            <Button
-                                variant="contained"
-                                size="large"
-                                startIcon={<CheckCircle />}
-                                onClick={() => alert(`Campaign "${activeCampaign.title}" marked as completed!`)}
-                                sx={{
-                                    px: 4,
-                                    py: 1.5,
-                                    borderRadius: 3,
-                                    background: "linear-gradient(135deg, #4caf50 0%, #45a049 100%)",
-                                    fontSize: "1.1rem",
-                                    fontWeight: "bold",
-                                    boxShadow: "0 4px 16px rgba(76,175,80,0.12)",
-                                    "&:hover": {
-                                        background: "linear-gradient(135deg, #45a049 0%, #3d8b40 100%)",
-                                        transform: "translateY(-2px)",
-                                        boxShadow: 4,
-                                    },
-                                    transition: "all 0.3s ease",
-                                }}
-                            >
-                                Complete Campaign
-                            </Button>
-                        </Box>
-                    </Fade>
-                </div>
-            </Fade >
-        </div >
+                </Box>
+            </Fade>
+        </div>
     )
 }
 

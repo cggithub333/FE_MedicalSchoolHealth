@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import "./StyleScheduleInjectedList.scss"
 import { usePupilsByGrade } from "../../../../../hooks/schoolnurse/healthcheck/schedule/usePupilsByGrade"
 import ScheduleDetails from "../healthcheck-schedule-management-form/ScheduleDetails"
@@ -50,6 +50,12 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
     const [autoSaving, setAutoSaving] = useState(false)
     const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" })
     const [animateRows, setAnimateRows] = useState(false)
+    const initializedRef = useRef(false)
+
+    // Reset initializedRef when grade changes
+    useEffect(() => {
+        initializedRef.current = false
+    }, [grade])
 
     // Auto-save delay
     const [saveTimeout, setSaveTimeout] = useState(null)
@@ -94,11 +100,18 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
         const saved = localStorage.getItem(sharedKey)
         if (saved) {
             try {
-                setStudents(JSON.parse(saved))
-                return
+                const parsed = JSON.parse(saved)
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    setStudents(parsed)
+                    initializedRef.current = true
+                    return
+                }
             } catch (e) { }
         }
-        if (pupils && pupils.length > 0) {
+        // Only initialize if not already initialized for this pupils set and students do not match pupils
+        const pupilsIds = (pupils || []).map(p => p.pupilId).join(',')
+        const studentsIds = (students || []).map(s => s.pupilId).join(',')
+        if (!initializedRef.current && pupils && pupils.length > 0 && pupilsIds !== studentsIds) {
             setStudents(
                 pupils.map((pupil) => ({
                     ...pupil,
@@ -107,8 +120,14 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
                     notes: "",
                 })),
             )
-        } else {
+            initializedRef.current = true
+        } else if (pupils && pupils.length === 0 && students.length !== 0) {
             setStudents([])
+            initializedRef.current = true
+        }
+        // Reset flag if pupils changes (by length)
+        return () => {
+            // Do not reset here, only reset on grade change
         }
     }, [pupils, grade])
 

@@ -397,31 +397,7 @@ const VaccinationScheduleForm = () => {
                     </Box>
 
 
-                    {/* Complete Campaign Button */}
-                    <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-                        <Button
-                            variant="contained"
-                            size="large"
-                            startIcon={<CheckCircleIcon />}
-                            onClick={() => alert("Campaign marked as completed!")}
-                            sx={{
-                                px: 4,
-                                py: 1.5,
-                                borderRadius: 3,
-                                background: "linear-gradient(135deg, #4caf50 0%, #45a049 100%)",
-                                fontSize: "1.1rem",
-                                fontWeight: "bold",
-                                "&:hover": {
-                                    background: "linear-gradient(135deg, #45a049 0%, #3d8b40 100%)",
-                                    transform: "translateY(-2px)",
-                                    boxShadow: 4,
-                                },
-                                transition: "all 0.3s ease",
-                            }}
-                        >
-                            Complete Campaign
-                        </Button>
-                    </Box>
+
                 </Box>
             </Fade>
         </div>

@@ -208,11 +208,11 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
     }
 
     return (
-        <div className="schedule-details-root">
+        <div className="schedule-details-root enhanced-ui">
             <Fade in={true} timeout={500}>
-                <Card className="details-header" elevation={0}>
+                <Card className="details-header modern-card" elevation={2}>
                     <CardContent>
-                        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                        <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
                             <Box display="flex" alignItems="center" gap={2}>
                                 <IconButton
                                     onClick={onBack}
@@ -220,16 +220,21 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
                                     sx={{
                                         background: "linear-gradient(135deg, #1976d2, #42a5f5)",
                                         color: "white",
-                                        "&:hover": {
+                                        boxShadow: 2,
+                                        borderRadius: 2,
+                                        p: 1.2,
+                                        transition: "all 0.2s cubic-bezier(.4,2,.6,1)",
+                                        '&:hover': {
                                             background: "linear-gradient(135deg, #1565c0, #1976d2)",
-                                            transform: "translateY(-2px)",
+                                            transform: "translateY(-2px) scale(1.08)",
+                                            boxShadow: 4,
                                         },
                                     }}
                                 >
                                     <ArrowBack />
                                 </IconButton>
                                 <Box>
-                                    <Typography variant="h4" className="header-title">
+                                    <Typography variant="h4" className="header-title" sx={{ fontWeight: 700, letterSpacing: 1 }}>
                                         Health Check Assessment
                                     </Typography>
                                     <Box display="flex" alignItems="center" gap={2} mt={1}>
@@ -237,10 +242,11 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
                                             icon={<Person />}
                                             label={`${pupilData?.firstName} ${pupilData?.lastName}`}
                                             color="primary"
-                                            variant="outlined"
+                                            variant="filled"
+                                            sx={{ fontWeight: 500, fontSize: 16, px: 1.5, py: 0.5, borderRadius: 2 }}
                                         />
-                                        <Chip icon={<Assignment />} label={`ID: ${pupilId}`} color="secondary" variant="outlined" />
-                                        <Chip label={pupilData?.gradeName || "Grade"} color="info" variant="outlined" />
+                                        <Chip icon={<Assignment />} label={`ID: ${pupilId}`} color="secondary" variant="filled" sx={{ fontWeight: 500, px: 1.2, borderRadius: 2 }} />
+                                        <Chip label={pupilData?.gradeName || "Grade"} color="info" variant="filled" sx={{ fontWeight: 500, px: 1.2, borderRadius: 2 }} />
                                     </Box>
                                 </Box>
                             </Box>
@@ -252,13 +258,15 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
                                         size="small"
                                         color="info"
                                         variant="outlined"
+                                        sx={{ fontWeight: 500, px: 1.2, borderRadius: 2 }}
                                     />
                                 )}
                                 <Chip
                                     icon={<CheckCircle />}
                                     label={`${completionPercentage.toFixed(1)}% Complete`}
                                     color={completionPercentage === 100 ? "success" : "warning"}
-                                    variant="outlined"
+                                    variant="filled"
+                                    sx={{ fontWeight: 600, fontSize: 15, px: 1.5, borderRadius: 2, boxShadow: 1 }}
                                 />
                             </Box>
                         </Box>
@@ -267,11 +275,13 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
                             variant="determinate"
                             value={completionPercentage}
                             sx={{
-                                height: 8,
-                                borderRadius: 4,
+                                height: 10,
+                                borderRadius: 5,
                                 backgroundColor: "#e3f2fd",
-                                "& .MuiLinearProgress-bar": {
-                                    borderRadius: 4,
+                                boxShadow: 1,
+                                my: 1,
+                                '& .MuiLinearProgress-bar': {
+                                    borderRadius: 5,
                                     background: "linear-gradient(90deg, #43a047, #66bb6a)",
                                 },
                             }}
@@ -280,7 +290,7 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
                 </Card>
             </Fade>
 
-            <div className="health-check-sections">
+            <div className="health-check-sections modern-section-list">
                 {Object.entries(diseaseCategories).map(([categoryKey, category], index) => {
                     if (category.diseases.length === 0) return null
 
@@ -289,49 +299,70 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
                             <Accordion
                                 expanded={expandedSections[categoryKey]}
                                 onChange={() => handleSectionToggle(categoryKey)}
-                                className="health-section"
+                                className="health-section modern-accordion"
+                                sx={{
+                                    mb: 2.5,
+                                    borderRadius: 3,
+                                    boxShadow: expandedSections[categoryKey] ? 4 : 1,
+                                    background: expandedSections[categoryKey] ? "linear-gradient(120deg, #f5fafd 60%, #e3f2fd 100%)" : "#f8fafc",
+                                    transition: "all 0.25s cubic-bezier(.4,2,.6,1)",
+                                    border: expandedSections[categoryKey] ? "2px solid #90caf9" : "1px solid #e3e3e3",
+                                }}
                             >
-                                <AccordionSummary expandIcon={<ExpandMore />} className="section-header">
+                                <AccordionSummary expandIcon={<ExpandMore />} className="section-header modern-accordion-header" sx={{
+                                    minHeight: 64,
+                                    background: expandedSections[categoryKey] ? "#e3f2fd" : "#f5fafd",
+                                    borderRadius: 3,
+                                    boxShadow: expandedSections[categoryKey] ? 2 : 0,
+                                    px: 3,
+                                    py: 1.5,
+                                    '& .MuiAccordionSummary-content': { alignItems: 'center', gap: 2 },
+                                }}>
                                     <Box display="flex" alignItems="center" gap={2}>
-                                        {category.icon}
-                                        <Typography variant="h6" className="section-title">
+                                        <Box sx={{ fontSize: 30, color: '#1976d2', mr: 1 }}>{category.icon}</Box>
+                                        <Typography variant="h6" className="section-title" sx={{ fontWeight: 700, letterSpacing: 0.5 }}>
                                             {category.title}
                                         </Typography>
                                         <Chip
                                             label={`${category.diseases.filter((d) => healthData[d.disease_id]).length}/${category.diseases.length}`}
                                             size="small"
-                                            color={
-                                                category.diseases.filter((d) => healthData[d.disease_id]).length === category.diseases.length
-                                                    ? "success"
-                                                    : "default"
-                                            }
-                                            variant="outlined"
+                                            color={category.diseases.filter((d) => healthData[d.disease_id]).length === category.diseases.length ? "success" : "default"}
+                                            variant="filled"
+                                            sx={{ fontWeight: 600, px: 1.2, borderRadius: 2, ml: 1 }}
                                         />
                                     </Box>
                                 </AccordionSummary>
-                                <AccordionDetails className="section-content">
-                                    <Grid container spacing={3}>
+                                <AccordionDetails className="section-content modern-accordion-details" sx={{ px: 3, py: 2, background: '#fafdff', borderRadius: 2 }}>
+                                    <Grid container spacing={2}>
                                         {category.diseases.map((disease) => (
                                             <Grid item xs={12} key={disease.disease_id}>
-                                                <Paper className="disease-item" elevation={0}>
-                                                    <Box display="flex" alignItems="flex-start" gap={2}>
+                                                <Paper className="disease-item modern-disease-item" elevation={0} sx={{
+                                                    p: 1.5, // smaller padding
+                                                    borderRadius: 2,
+                                                    background: '#fff',
+                                                    boxShadow: 1,
+                                                    mb: 1,
+                                                    transition: 'box-shadow 0.2s',
+                                                    '&:hover': { boxShadow: 3, background: '#f5fafd' },
+                                                }}>
+                                                    <Box display="flex" alignItems="flex-start" gap={1.5}>
                                                         <FormControlLabel
                                                             control={
                                                                 <Checkbox
                                                                     checked={!!healthData[disease.disease_id]}
                                                                     onChange={(e) => handleHealthCheck(disease.disease_id, e.target.checked)}
                                                                     color="success"
-                                                                    sx={{ transform: "scale(1.2)" }}
+                                                                    sx={{ transform: "scale(1.05)", mx: 0.5 }} // smaller checkbox
                                                                 />
                                                             }
                                                             label=""
                                                             sx={{ margin: 0 }}
                                                         />
                                                         <Box flex={1}>
-                                                            <Typography variant="subtitle1" className="disease-name">
+                                                            <Typography variant="subtitle2" className="disease-name" sx={{ fontWeight: 600, fontSize: 15, mb: 0.25 }}>
                                                                 {disease.name}
                                                             </Typography>
-                                                            <Box display="flex" gap={2} mt={1}>
+                                                            <Box display="flex" gap={1.5} mt={0.5}>
                                                                 {/* Measurement field for physical measurements */}
                                                                 {(disease.name.includes("Chiều cao") ||
                                                                     disease.name.includes("Cân nặng") ||
@@ -360,18 +391,18 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
                                                                                     </InputAdornment>
                                                                                 ),
                                                                             }}
-                                                                            sx={{ minWidth: 120 }}
+                                                                            sx={{ minWidth: 90, maxWidth: 120, background: '#f5fafd', borderRadius: 1, boxShadow: 0, fontWeight: 500, fontSize: 13 }}
                                                                         />
                                                                     )}
                                                                 <TextField
                                                                     size="small"
                                                                     label="Notes & Observations"
                                                                     multiline
-                                                                    rows={2}
+                                                                    rows={1}
                                                                     value={notes[disease.disease_id] || ""}
                                                                     onChange={(e) => handleNoteChange(disease.disease_id, e.target.value)}
-                                                                    placeholder="Add detailed observations, abnormalities, or recommendations..."
-                                                                    sx={{ flex: 1 }}
+                                                                    placeholder="Add notes..."
+                                                                    sx={{ flex: 1, background: '#fafdff', borderRadius: 1, fontWeight: 500, fontSize: 13 }}
                                                                 />
                                                             </Box>
                                                         </Box>
@@ -388,8 +419,23 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
             </div>
 
             <Fade in={true} timeout={800}>
-                <Box className="action-footer">
-                    <Button variant="outlined" size="large" startIcon={<ArrowBack />} onClick={onBack} className="footer-button">
+                <Box className="action-footer modern-footer" sx={{
+                    position: 'sticky',
+                    bottom: 0,
+                    zIndex: 10,
+                    background: 'linear-gradient(90deg, #fafdff 80%, #e3f2fd 100%)',
+                    boxShadow: 3,
+                    borderRadius: 3,
+                    py: 2.5,
+                    px: 4,
+                    mt: 4,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    gap: 3,
+                    transition: 'box-shadow 0.2s',
+                }}>
+                    <Button variant="outlined" size="large" startIcon={<ArrowBack />} onClick={onBack} className="footer-button" sx={{ fontWeight: 600, borderRadius: 2, px: 3, py: 1 }}>
                         Back to Students
                     </Button>
                     <Button
@@ -400,10 +446,19 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
                         className="footer-button save-button"
                         disabled={completionPercentage < 100}
                         sx={{
+                            fontWeight: 700,
+                            borderRadius: 2,
+                            px: 4,
+                            py: 1.2,
+                            fontSize: 18,
                             background: completionPercentage === 100 ? "linear-gradient(135deg, #43a047, #66bb6a)" : undefined,
-                            "&:hover": {
+                            color: completionPercentage === 100 ? "#fff" : undefined,
+                            boxShadow: completionPercentage === 100 ? 4 : 1,
+                            '&:hover': {
                                 background: completionPercentage === 100 ? "linear-gradient(135deg, #388e3c, #43a047)" : undefined,
+                                boxShadow: 6,
                             },
+                            transition: 'all 0.2s cubic-bezier(.4,2,.6,1)',
                         }}
                     >
                         {completionPercentage === 100 ? "Complete Assessment" : `${completionPercentage.toFixed(1)}% Complete`}

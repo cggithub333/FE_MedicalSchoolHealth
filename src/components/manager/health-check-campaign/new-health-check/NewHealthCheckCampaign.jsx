@@ -175,7 +175,7 @@ const NewHealthCheckCampaign = () => {
             <Fade in timeout={800}>
                 <Paper elevation={3} sx={{ maxWidth: 1400, mx: "auto", mt: 6, mb: 6, p: 4, borderRadius: 4, boxShadow: "0 12px 48px rgba(102,126,234,0.12)", background: "#fff", position: "relative" }}>
                     <Typography variant="h4" sx={{ fontWeight: 700, mb: 4, background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                        Health Check Campaign Workflow
+                        Health Check Campaign
                     </Typography>
                     <Box sx={{ display: "flex", gap: 4, flexWrap: "wrap", justifyContent: "space-between" }}>
                         {statusOrder.map((status) => (
@@ -192,7 +192,10 @@ const NewHealthCheckCampaign = () => {
                                             <Card
                                                 key={campaign.campaignId}
                                                 sx={cardSx}
-                                                onClick={() => setSelectedCampaign(campaign) || setDialogOpen(true)}
+                                                onClick={() => {
+                                                    setSelectedCampaign(campaign);
+                                                    setDialogOpen(true);
+                                                }}
                                             >
                                                 <CardContent>
                                                     <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
@@ -298,6 +301,17 @@ const NewHealthCheckCampaign = () => {
                                     sx={{ borderRadius: 2, textTransform: "none" }}
                                 >
                                     {isUpdating ? <CircularProgress size={20} /> : "Publish Campaign"}
+                                </Button>
+                            )}
+                            {selectedCampaign.statusHealthCampaign === "IN_PROGRESS" && (
+                                <Button
+                                    variant="contained"
+                                    color="success"
+                                    onClick={() => handleStatusUpdate(selectedCampaign, "COMPLETED")}
+                                    disabled={isUpdating}
+                                    sx={{ borderRadius: 2, textTransform: "none" }}
+                                >
+                                    {isUpdating ? <CircularProgress size={20} /> : "Complete Campaign"}
                                 </Button>
                             )}
                             {selectedCampaign.statusHealthCampaign === "PUBLISHED" && (
