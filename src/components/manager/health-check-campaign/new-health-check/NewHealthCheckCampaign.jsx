@@ -19,9 +19,9 @@ import {
     Chip,
 } from "@mui/material"
 import AddIcon from "@mui/icons-material/Add"
-import { useNewestCampaign } from "./hooks/useNewestCampaign"
-import { useUpdateCampaignStatus } from "./hooks/useUpdateCampaignStatus"
-import HealthCheckCampaignForm from "./components/HealthCheckCampaignForm"
+import { useNewestCampaign } from "../../../../hooks/manager/healthcheck/create-new-campaign/useNewestCampaignByStatus"
+import { useUpdateCampaignStatus } from "../../../../hooks/manager/healthcheck/create-new-campaign/useUpdateStatusOfNewCampaign"
+import HealthCheckCampaignForm from "./health-check-campaign-form/HealthCheckCampaignForm"
 import "./StyleNewHealthCheckCampaign.scss" // Assuming this file contains the necessary styles
 
 const NewHealthCheckCampaign = () => {

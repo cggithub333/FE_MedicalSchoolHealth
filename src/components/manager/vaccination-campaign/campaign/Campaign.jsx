@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useMemo } from "react"
 import {
     Box,
@@ -51,7 +49,7 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday"
 import VaccinesIcon from "@mui/icons-material/Vaccines"
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital"
 import NotesIcon from "@mui/icons-material/Notes"
-import { useAllVaccinationCampaign } from "./hooks/useAllVaccinationCampaign"
+import { useAllVaccinationCampaign } from "../../../../hooks/manager/vaccination/campaign/useAllCampaignByStatus"
 import { styleCampaign } from "./StyleCampaign"
 
 const statusConfig = {

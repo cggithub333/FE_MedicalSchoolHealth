@@ -21,7 +21,7 @@ import {
 import AddIcon from "@mui/icons-material/Add"
 import { useNewestCampaignByStatus } from "../../../../hooks/manager/vaccination/create-new-campaign/useGetNewestCampaingByStatus"
 import { useUpdateNewCampaign } from "../../../../hooks/manager/vaccination/create-new-campaign/useUpdateNewCampaign"
-import VaccineCampaignForm from "./components/VaccineCampaignForm"
+import VaccineCampaignForm from "./vaccination-campaign-form/VaccineCampaignForm"
 import "./StyleNewVaccinationCampaign.scss"
 
 const NewVaccinationCampaign = () => {

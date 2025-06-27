@@ -5,7 +5,7 @@ import { fetchNewestCampaign } from "../../../../api/schoolnurse/schoolnurse-req
 // This hook fetches the newest campaign by status (Need filter to get the campaign have the status is InProgress).
 export const useNewestCampaignByStatus = () => {
     const [newestCampaign, setNewestCampaign] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
     const fetchNewestCampaignByStatus = async () => {
@@ -20,7 +20,8 @@ export const useNewestCampaignByStatus = () => {
         } finally {
             setLoading(false);
         }
+        fetchNewestCampaignByStatus();
     };
 
-    return { newestCampaign, loading, error, fetchNewestCampaignByStatus };
+    return { newestCampaign, isLoading, error };
 }

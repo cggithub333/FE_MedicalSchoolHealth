@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { Box, TextField } from "@mui/material"
-import useGetVaccineByDisease from "../../../../../hooks/manager/vaccination/create-new-campaign/useGetVaccineByDisease"
+import { useGetVaccineByDisease } from "../../../../../hooks/manager/vaccination/create-new-campaign/useGetVaccineByDisease"
 import { useCreateNewCampaign } from "../../../../../hooks/manager/vaccination/create-new-campaign/useCreateNewCampaign"
 import "./StyleVaccineCampaignForm.css"
 
