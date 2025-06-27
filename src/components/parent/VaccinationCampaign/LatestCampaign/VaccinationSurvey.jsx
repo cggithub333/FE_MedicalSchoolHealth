@@ -84,7 +84,7 @@ const VaccinationSurvey = () => {
   // console.log("Vaccination Surveys:\n", JSON.stringify(vaccinationSurveys))
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("vi-VN", {
+    return new Date(dateString).toLocaleDateString("en-EN", {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -264,6 +264,7 @@ const VaccinationSurvey = () => {
                   severity="warning"
                   icon={<AccessTime />}
                   sx={{
+                    mt: 5,
                     "& .MuiAlert-message": {
                       fontSize: "0.875rem",
                     },
@@ -379,7 +380,7 @@ const VaccinationSurvey = () => {
                 </Typography>
                 <Grid container spacing={2}>
                   <Grid item size={{ xs: 12, md: 6 }}>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" color="text.secondary" >
                       Disease
                     </Typography>
                     <Typography variant="body1" fontWeight="bold">
