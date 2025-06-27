@@ -11,6 +11,7 @@ import {
     Paper,
     Fade,
     Skeleton,
+    Grow,
 } from "@mui/material"
 
 import {
@@ -51,8 +52,8 @@ const statusConfig = {
     },
 }
 
-// Helper to get saved shift data for a specific campaign and grade
-function getShiftSavedData(campaignId, grade) {
+// Helper to get saved shift data for a specific campaign and grade, always synced with current pupils
+function getShiftSavedData(campaignId, grade, currentPupils) {
     const storageKey = `vaccination_students_campaign_${campaignId}_grade_${grade}`
     let savedData = null
     try {
@@ -60,7 +61,22 @@ function getShiftSavedData(campaignId, grade) {
     } catch (error) {
         console.error("Error loading saved data:", error)
     }
-    return savedData || []
+    savedData = savedData || []
+    // Merge: for each current pupil, use saved if exists, else default
+    return (currentPupils || []).map((pupil) => {
+        const pupilId = pupil.pupilId || pupil.id
+        const saved = savedData.find((s) => s.pupilId === pupilId)
+        return saved || {
+            pupilId,
+            firstName: pupil.firstName,
+            lastName: pupil.lastName,
+            Grade: pupil.Grade || pupil.grade,
+            avatar: pupil.avatar || `/placeholder.svg?height=40&width=40`,
+            completed: false,
+            time: "",
+            notes: "",
+        }
+    })
 }
 
 // Helper to calculate schedule dates based on campaign
@@ -126,7 +142,7 @@ const VaccinationScheduleForm = () => {
         if (!activeCampaign) return
 
         const gradePupils = pupilsByGrade[grade] || []
-        const savedData = getShiftSavedData(activeCampaign.campaignId, grade)
+        const savedData = getShiftSavedData(activeCampaign.campaignId, grade, gradePupils)
         const scheduleDate = scheduleDates[grade - 1]
 
         const shift = {
@@ -160,11 +176,11 @@ const VaccinationScheduleForm = () => {
     const getGradeProgress = (grade) => {
         if (!activeCampaign) return { filled: 0, total: 0, progress: 0 }
 
-        const savedData = getShiftSavedData(activeCampaign.campaignId, grade)
         const gradePupils = pupilsByGrade[grade] || []
-
-        const filled = savedData.filter((student) => student.completed).length
-        const total = savedData.length || gradePupils.length
+        const savedData = getShiftSavedData(activeCampaign.campaignId, grade, gradePupils)
+        let filled = savedData.filter((student) => student.completed).length
+        const total = gradePupils.length
+        if (total === 0) filled = 0 // Force filled to 0 if no students in grade
         const progress = total === 0 ? 0 : (filled / total) * 100
 
         return { filled, total, progress }
@@ -287,144 +303,97 @@ const VaccinationScheduleForm = () => {
                     </Paper>
 
                     {/* Grade Cards */}
-                    <Grid container spacing={3}>
-                        {GRADES.map((grade, index) => {
-                            const gradePupils = pupilsByGrade[grade] || []
-                            const scheduleDate = scheduleDates[index]
-                            const { filled, total, progress } = getGradeProgress(grade)
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                        <Grid container spacing={3} justifyContent="center">
+                            {GRADES.map((grade, index) => {
+                                // Adapted from health check design
+                                const gradePupils = pupilsByGrade[grade] || []
+                                const scheduleDate = scheduleDates[index]
+                                const { filled, total, progress } = getGradeProgress(grade)
 
-                            // Determine status based on progress
-                            const status = total === 0 ? "Full" : total - filled <= 2 ? "Almost Full" : "Available"
-                            const config = statusConfig[status]
-                            const StatusIcon = config.icon
+                                // Determine status based on progress
+                                let status = "Available"
+                                if (total === 0) {
+                                    status = "Full"
+                                } else if (total - filled <= 2) {
+                                    status = "Almost Full"
+                                }
+                                const config = statusConfig[status]
+                                const StatusIcon = config.icon
 
-                            return (
-                                <Grid item xs={12} md={6} lg={4} key={grade}>
-                                    <Fade in timeout={300 + index * 100}>
-                                        <Card
-                                            className="grade-card"
-                                            sx={{
-                                                height: "100%",
-                                                borderRadius: 3,
-                                                transition: "all 0.3s ease",
-                                                "&:hover": {
-                                                    transform: "translateY(-4px)",
-                                                    boxShadow: 6,
-                                                },
-                                            }}
-                                        >
-                                            <CardContent sx={{ p: 3 }}>
-                                                {/* Card Header */}
-                                                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                                                    <Box
-                                                        sx={{
-                                                            width: 48,
-                                                            height: 48,
-                                                            borderRadius: "50%",
-                                                            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                                                            display: "flex",
-                                                            alignItems: "center",
-                                                            justifyContent: "center",
-                                                            color: "white",
-                                                            fontWeight: "bold",
-                                                            fontSize: "1.2rem",
-                                                            mr: 2,
-                                                        }}
-                                                    >
-                                                        {grade}
-                                                    </Box>
-                                                    <Box sx={{ flex: 1 }}>
-                                                        <Typography variant="h6" fontWeight="bold">
-                                                            Grade {grade}
-                                                        </Typography>
-                                                        <Typography variant="body2" color="text.secondary">
-                                                            {scheduleDate?.date || `Day ${grade}`}
-                                                        </Typography>
-                                                    </Box>
-                                                </Box>
+                                return (
+                                    <Grow in timeout={300 + index * 100} key={grade}>
+                                        <Grid item xs={12} md={6} lg={4} sx={{ display: 'flex', justifyContent: 'center' }}>
+                                            <Card sx={{ minWidth: 300, maxWidth: 300, minHeight: 220, borderRadius: 4, boxShadow: "0 8px 32px rgba(102,126,234,0.10)", background: "linear-gradient(135deg, #e3f2fd 0%, #f8fafc 100%)", transition: "all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)", cursor: "pointer", mb: 2, border: '2px solid #bdbdbd', '&:hover': { boxShadow: "0 16px 40px rgba(102,126,234,0.18)", transform: "translateY(-4px) scale(1.02)", border: '2px solid #667eea' } }}>
 
-                                                {/* Schedule Info */}
-                                                <Paper
-                                                    sx={{
-                                                        p: 2,
-                                                        mb: 2,
-                                                        bgcolor: config.bgColor,
-                                                        borderRadius: 2,
-                                                    }}
-                                                >
-                                                    <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                                                        <ScheduleIcon sx={{ mr: 1, fontSize: 20 }} />
-                                                        <Typography variant="body2" fontWeight="medium">
-                                                            08:00 - 11:00
-                                                        </Typography>
-                                                    </Box>
-                                                    <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                                                        <StatusIcon sx={{ mr: 1, fontSize: 20, color: config.color }} />
-                                                        <Chip
-                                                            label={config.label}
-                                                            size="small"
+                                                <CardContent>
+                                                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
+                                                        <Typography
+                                                            variant="h6"
                                                             sx={{
-                                                                bgcolor: config.color,
-                                                                color: "white",
-                                                                fontWeight: "bold",
+                                                                fontWeight: 700,
+                                                                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                                                                backgroundClip: "text",
+                                                                WebkitBackgroundClip: "text",
+                                                                WebkitTextFillColor: "transparent",
+                                                            }}
+                                                        >
+                                                            Grade {grade} Vaccination
+                                                        </Typography>
+                                                        <Chip
+                                                            icon={StatusIcon ? <StatusIcon sx={{ color: config.color }} /> : null}
+                                                            label={config ? config.label : status}
+                                                            sx={{
+                                                                fontWeight: 600,
+                                                                bgcolor: config ? config.bgColor : undefined,
+                                                                color: config ? config.color : undefined,
+                                                                px: 1.5,
+                                                                fontSize: "1rem",
                                                             }}
                                                         />
                                                     </Box>
+                                                    <Typography variant="body2" sx={{ mb: 0.5 }}>
+                                                        <strong>Date:</strong> {scheduleDate?.date || `Day ${grade}`}
+                                                    </Typography>
+                                                    <Typography variant="body2" sx={{ mb: 0.5 }}>
+                                                        <strong>Students:</strong> {gradePupils.length}
+                                                    </Typography>
+                                                    <Box sx={{ mt: 1 }}>
+                                                        <Typography variant="body2">
+                                                            <strong>Time:</strong> 08:00 - 11:00
+                                                        </Typography>
 
-                                                    {/* Progress */}
-                                                    <Box sx={{ mb: 1 }}>
-                                                        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
-                                                            <Typography variant="body2">Progress</Typography>
-                                                            <Typography variant="body2" fontWeight="bold">
-                                                                {filled}/{total}
-                                                            </Typography>
-                                                        </Box>
-                                                        <LinearProgress
-                                                            variant="determinate"
-                                                            value={progress}
+                                                    </Box>
+                                                    <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+                                                        <Button
+
+                                                            variant="contained"
+                                                            color="primary"
+                                                            size="small"
+                                                            onClick={() => handleViewStudents(grade)}
                                                             sx={{
-                                                                height: 8,
-                                                                borderRadius: 4,
-                                                                "& .MuiLinearProgress-bar": {
-                                                                    bgcolor: config.color,
+                                                                borderRadius: 2,
+                                                                textTransform: "none",
+                                                                fontWeight: 600,
+                                                                boxShadow: "0 2px 8px rgba(102,126,234,0.10)",
+                                                                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                                                                '&:hover': {
+                                                                    background: "linear-gradient(135deg, #764ba2 0%, #667eea 100%)",
                                                                 },
                                                             }}
-                                                        />
+                                                            startIcon={<VisibilityIcon sx={{ fontSize: 18 }} />}
+                                                        >
+                                                            View Students
+                                                        </Button>
                                                     </Box>
-                                                </Paper>
-
-                                                {/* Students Count */}
-                                                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                                                    <GroupsIcon sx={{ mr: 1, color: "text.secondary" }} />
-                                                    <Typography variant="body2" color="text.secondary">
-                                                        {gradePupils.length} approved students
-                                                    </Typography>
-                                                </Box>
-
-                                                {/* Action Button */}
-                                                <Button
-                                                    variant="contained"
-                                                    fullWidth
-                                                    startIcon={<VisibilityIcon />}
-                                                    onClick={() => handleViewStudents(grade)}
-                                                    sx={{
-                                                        borderRadius: 2,
-                                                        py: 1.5,
-                                                        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                                                        "&:hover": {
-                                                            background: "linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%)",
-                                                        },
-                                                    }}
-                                                >
-                                                    View Students ({gradePupils.length})
-                                                </Button>
-                                            </CardContent>
-                                        </Card>
-                                    </Fade>
-                                </Grid>
-                            )
-                        })}
-                    </Grid>
+                                                </CardContent>
+                                            </Card>
+                                        </Grid>
+                                    </Grow>
+                                )
+                            })}
+                        </Grid>
+                    </Box>
 
                     {/* Complete Campaign Button */}
                     <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>

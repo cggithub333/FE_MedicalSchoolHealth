@@ -13,7 +13,14 @@ export const useGetAllPupilsApprovedByGrade = (campaignId) => {
             setError(null);
             try {
                 const response = await fetchPupilsByGradeAndStatus(campaignId);
-                setPupils(response || []);
+                // Support both array and object-with-array API responses
+                if (Array.isArray(response)) {
+                    setPupils(response);
+                } else if (response && Array.isArray(response.getPupilsApprovedByGrade)) {
+                    setPupils(response.getPupilsApprovedByGrade);
+                } else {
+                    setPupils([]);
+                }
             } catch (err) {
                 console.error("Failed to fetch pupils:", err);
                 setError(err);
@@ -24,7 +31,7 @@ export const useGetAllPupilsApprovedByGrade = (campaignId) => {
         };
 
         loadPupils();
-    }, []);
+    }, [campaignId]);
 
     return { pupils, isLoading, error };
 };

@@ -4,6 +4,7 @@ import { createNewVaccinationCampaign } from "../../manager-request-callback/vac
 export const createNewVaccinationCampaignAction = async (data) => {
     try {
         const response = await fetchResponse(createNewVaccinationCampaign, data);
+        console.log("API response for create campaign:", response); // Add this line
 
         if (response.status === false)
             throw new Error("Can't create new vaccination campaign");

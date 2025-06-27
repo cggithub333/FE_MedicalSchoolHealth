@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import "./StyleScheduleForm.scss"
 import ScheduleInjectedList from "../healthcheck-schedule-management-details/ScheduleInjectedList"
 import { usePupilsByGrade } from "../../../../../hooks/schoolnurse/healthcheck/schedule/usePupilsByGrade"
-import { CircularProgress, Fade, Grow, Chip } from "@mui/material"
+import { CircularProgress, Fade, Grow, Chip, Paper, Card, CardContent, Grid, Box, Typography, Button, Skeleton } from "@mui/material"
 import { Schedule, Group, CheckCircle, Warning, Error, LocationOn, CalendarToday } from "@mui/icons-material"
 import { useNewestCampaignByStatus } from "../../../../../hooks/schoolnurse/healthcheck/schedule/useNewestCampaignByStatus"
 
@@ -21,21 +21,34 @@ const statusBarColors = {
 
 const GRADES = [1, 2, 3, 4, 5]
 
+// Status configuration with enhanced styling and icons
+const statusConfig = {
+    Available: {
+        color: "#4caf50",
+        bgColor: "#e8f5e9",
+        icon: CheckCircle,
+        label: "Available",
+    },
+    "Almost Full": {
+        color: "#ff9800",
+        bgColor: "#fff3e0",
+        icon: Warning,
+        label: "Almost Full",
+    },
+    Full: {
+        color: "#f44336",
+        bgColor: "#ffebee",
+        icon: Error,
+        label: "Full",
+    },
+}
+
 const HealthCheckScheduleForm = () => {
     const { newestCampaign, loading, error } = useNewestCampaignByStatus()
     const [showInjectionList, setShowInjectionList] = useState(false)
     const [selectedShift, setSelectedShift] = useState(null)
     const [animateCards, setAnimateCards] = useState(false)
-
     const [pupilsByGradeData, setPupilsByGradeData] = useState(GRADES.map(() => null))
-
-
-    // Animate cards after data loads
-    useEffect(() => {
-        if (newestCampaign && !loading) {
-            setTimeout(() => setAnimateCards(true), 100)
-        }
-    }, [newestCampaign, loading])
 
     // Support both array and object for newestCampaign
     let activeCampaign = null
@@ -45,6 +58,33 @@ const HealthCheckScheduleForm = () => {
         activeCampaign = newestCampaign
     }
     const isActiveCampaign = !!activeCampaign
+
+    // Animate cards after data loads
+    useEffect(() => {
+        if (newestCampaign && !loading) {
+            setTimeout(() => setAnimateCards(true), 100)
+        }
+    }, [newestCampaign, loading])
+
+    // Fetch pupils for each grade and update pupilsByGradeData
+    useEffect(() => {
+        let isMounted = true;
+        setPupilsByGradeData(GRADES.map(() => ({ pupils: [], isLoading: true })));
+        if (!isActiveCampaign) return;
+        Promise.all(
+            GRADES.map(async (grade) => {
+                try {
+                    const { pupils, isLoading } = await usePupilsByGrade(grade);
+                    return { pupils, isLoading };
+                } catch (e) {
+                    return { pupils: [], isLoading: false };
+                }
+            })
+        ).then((results) => {
+            if (isMounted) setPupilsByGradeData(results);
+        });
+        return () => { isMounted = false; };
+    }, [isActiveCampaign]);
 
     // Generate schedule dates based on campaign dates (5 days for 5 grades)
     const generateScheduleDates = (campaign) => {
@@ -182,194 +222,158 @@ const HealthCheckScheduleForm = () => {
     return (
         <div className="vaccine-schedule-root">
             <Fade in={true} timeout={500}>
-                <div className="schedule-header">
-                    <div className="header-content">
-                        <Schedule sx={{ fontSize: 40, color: "#1976d2", mr: 2 }} />
-                        <div>
-                            <h1 className="main-title">{activeCampaign.title}</h1>
-                            <p className="main-subtitle">{activeCampaign.description}</p>
-                            <div className="campaign-details">
-                                <div className="campaign-detail-item">
-                                    <LocationOn sx={{ fontSize: 16, mr: 0.5 }} />
-                                    <span>{activeCampaign.address}</span>
-                                </div>
-                                <div className="campaign-detail-item">
-                                    <CalendarToday sx={{ fontSize: 16, mr: 0.5 }} />
-                                    <span>
-                                        {new Date(activeCampaign.startExaminationDate).toLocaleDateString()} -{" "}
-                                        {new Date(activeCampaign.endExaminationDate).toLocaleDateString()}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="header-actions">
-                        <Chip
-                            label={activeCampaign.statusHealthCampaign}
-                            color="success"
-                            variant="outlined"
-                            sx={{ fontSize: "0.9rem", padding: "4px" }}
-                        />
-                        <Chip
-                            label={`Campaign ID: ${activeCampaign.campaignId}`}
-                            color="primary"
-                            variant="outlined"
-                            sx={{ fontSize: "0.9rem", padding: "4px" }}
-                        />
-                    </div>
-                </div>
-            </Fade>
-
-            <div className="campaign-schedule">
-                {GRADES.map((grade, index) => {
-                    const gradeData = pupilsByGradeData[index]
-                    const rawPupils = gradeData?.pupils || []
-                    const isGradeLoading = gradeData?.isLoading || false
-                    const scheduleDate = scheduleDates.find((d) => d.grade === grade)
-
-                    if (isGradeLoading) {
-                        return (
-                            <div className="vaccine-schedule-card loading-card" key={grade}>
-                                <CircularProgress size={40} />
-                                <p>Loading Grade {grade} data...</p>
-                            </div>
-                        )
-                    }
-
-                    // Transform the pupils data
-                    const pupils = transformPupilsData(rawPupils)
-                    const saved = getShiftSavedData(grade, pupils)
-
-                    const shift = {
-                        id: `${grade}-session`,
-                        name: `Grade ${grade} Health Check`,
-                        time: "08:00 - 11:00",
-                        grade,
-                        students: saved.morning,
-                        capacity: saved.capacity,
-                        filled: saved.filled,
-                        campaignId: activeCampaign.campaignId,
-                        scheduleDate: scheduleDate?.date || new Date(),
-                        pupils: pupils, // Pass the transformed pupils data
-                    }
-
-                    // Determine status based on capacity and filled
-                    if (shift.capacity === 0) {
-                        shift.status = "Available"
-                    } else if (shift.filled >= shift.capacity) {
-                        shift.status = "Full"
-                    } else if (shift.capacity - shift.filled <= 2) {
-                        shift.status = "Almost Full"
-                    } else {
-                        shift.status = "Available"
-                    }
-
-                    const progressPercentage = shift.capacity > 0 ? (shift.filled / shift.capacity) * 100 : 0
-
-                    return (
-                        <Grow in={animateCards} timeout={300 + index * 100} key={grade}>
-                            <div className="vaccine-schedule-card">
-                                <div className="vaccine-schedule-header">
-                                    <div className="vaccine-schedule-header-icon">
-                                        <Group sx={{ fontSize: 28, color: "#1976d2" }} />
-                                    </div>
-                                    <div className="vaccine-schedule-header-info">
-                                        <h2 className="vaccine-campaign-title">Grade {grade} Health Check</h2>
-                                        <div className="vaccine-schedule-desc">
-                                            Comprehensive health screening for Grade {grade} students
-                                        </div>
-                                        <div className="schedule-date-info">
-                                            <CalendarToday sx={{ fontSize: 16, mr: 0.5 }} />
-                                            <span>{scheduleDate?.dateString || "Date TBD"}</span>
-                                        </div>
-                                        <div className="grade-stats">
-                                            <Chip icon={<Group />} label={`${pupils.length} Students`} size="small" variant="outlined" />
-                                            <Chip
-                                                icon={<CheckCircle />}
-                                                label={`${saved.filled} Completed`}
-                                                size="small"
-                                                color="success"
-                                                variant="outlined"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="shift-details-section">
-                                    <div className={`shift-card ${statusColors[shift.status]} hover-effect`}>
-                                        <div className="shift-header">
-                                            <div className="shift-title">{shift.name}</div>
-                                            <div className="shift-status-badge">
-                                                {shift.status === "Full" && <Error sx={{ fontSize: 16, mr: 0.5 }} />}
-                                                {shift.status === "Almost Full" && <Warning sx={{ fontSize: 16, mr: 0.5 }} />}
-                                                {shift.status === "Available" && <CheckCircle sx={{ fontSize: 16, mr: 0.5 }} />}
-                                                {shift.status}
-                                            </div>
-                                        </div>
-
-                                        <div className="shift-time">
-                                            <Schedule sx={{ fontSize: 16, mr: 1 }} />
-                                            {shift.time}
-                                        </div>
-
-                                        <div className="shift-capacity">
-                                            <span className="capacity-label">Progress:</span>
-                                            <div className="shift-capacity-bar">
-                                                <div
-                                                    className="shift-capacity-fill"
-                                                    style={{
-                                                        width: `${progressPercentage}%`,
-                                                        background: statusBarColors[shift.status],
-                                                    }}
-                                                />
-                                            </div>
-                                            <span className="shift-capacity-count">
-                                                {shift.filled}/{shift.capacity}
-                                            </span>
-                                        </div>
-
-                                        <div className="shift-actions">
-                                            <button
-                                                className="view-btn modern-btn"
-                                                onClick={() => {
-                                                    setShowInjectionList(true)
-                                                    setSelectedShift(shift)
-                                                }}
-                                            >
-                                                <Group sx={{ fontSize: 18, mr: 1 }} />
-                                                View Students
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="card-footer">
-                                    <button
-                                        className="confirm-campaign-btn modern-btn-primary"
-                                        onClick={() => alert(`Grade ${grade} health check confirmed for ${scheduleDate?.dateString}!`)}
-                                    >
-                                        <CheckCircle sx={{ fontSize: 18, mr: 1 }} />
-                                        Confirm Grade {grade}
-                                    </button>
-                                </div>
-                            </div>
-                        </Grow>
-                    )
-                })}
-            </div>
-
-            <Fade in={animateCards} timeout={800}>
-                <div className="final-actions">
-                    <button
-                        className="complete-all-btn modern-btn-success"
-                        onClick={() => alert(`Campaign "${activeCampaign.title}" marked as completed!`)}
+                <div style={{ width: "100%", maxWidth: 1200, margin: "0 auto" }}>
+                    {/* Campaign Header */}
+                    <Paper
+                        elevation={3}
+                        sx={{
+                            p: 3,
+                            mb: 4,
+                            borderRadius: 4,
+                            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                            color: "white",
+                            boxShadow: "0 8px 32px rgba(102,126,234,0.18)",
+                        }}
                     >
-                        <CheckCircle sx={{ fontSize: 20, mr: 1 }} />
-                        Complete Campaign
-                    </button>
+                        <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                            <Schedule sx={{ fontSize: 44, mr: 2 }} />
+                            <Box>
+                                <Typography variant="h4" fontWeight="bold">
+                                    {activeCampaign.title}
+                                </Typography>
+                                <Typography variant="subtitle1" sx={{ opacity: 0.9 }}>
+                                    {activeCampaign.description}
+                                </Typography>
+                            </Box>
+                        </Box>
+                        <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+                            <Chip
+                                icon={<CalendarToday />}
+                                label={`${new Date(activeCampaign.startExaminationDate).toLocaleDateString()} - ${new Date(activeCampaign.endExaminationDate).toLocaleDateString()}`}
+                                sx={{ bgcolor: "rgba(255,255,255,0.18)", color: "white", fontWeight: 600 }}
+                            />
+                            <Chip label={activeCampaign.statusHealthCampaign} color="success" sx={{ fontWeight: "bold" }} />
+                            <Chip label={`Campaign ID: ${activeCampaign.campaignId}`} color="primary" sx={{ fontWeight: "bold" }} />
+                        </Box>
+                    </Paper>
+
+                    {/* Grade Cards */}
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                        <Grid container spacing={3} justifyContent="center">
+                            {GRADES.map((grade, index) => {
+                                const gradeData = pupilsByGradeData[index]
+                                const rawPupils = gradeData?.pupils || []
+                                const isGradeLoading = gradeData?.isLoading || false
+                                const scheduleDate = scheduleDates.find((d) => d.grade === grade)
+                                if (isGradeLoading) {
+                                    return (
+                                        <Grid item xs={12} md={6} lg={4} key={grade}>
+                                            <Paper elevation={2} sx={{ p: 3, borderRadius: 3, minHeight: 220 }}>
+                                                <CircularProgress size={40} />
+                                                <Typography mt={2}>Loading Grade {grade} data...</Typography>
+                                            </Paper>
+                                        </Grid>
+                                    )
+                                }
+                                const pupils = transformPupilsData(rawPupils)
+                                const saved = getShiftSavedData(grade, pupils)
+                                const shift = {
+                                    id: `${grade}-session`,
+                                    name: `Grade ${grade} Health Check`,
+                                    time: "08:00 - 11:00",
+                                    grade,
+                                    students: saved.morning,
+                                    capacity: saved.capacity,
+                                    filled: saved.filled,
+                                    campaignId: activeCampaign.campaignId,
+                                    scheduleDate: scheduleDate?.date || new Date(),
+                                    pupils: pupils,
+                                }
+                                if (shift.capacity === 0) {
+                                    shift.status = "Available"
+                                } else if (shift.filled >= shift.capacity) {
+                                    shift.status = "Full"
+                                } else if (shift.capacity - shift.filled <= 2) {
+                                    shift.status = "Almost Full"
+                                } else {
+                                    shift.status = "Available"
+                                }
+                                const config = statusConfig[shift.status]
+                                return (
+                                    <Grow in={animateCards} timeout={300 + index * 100} key={grade}>
+                                        <Grid item xs={12} md={6} lg={4} sx={{ display: 'flex', justifyContent: 'center' }}>
+                                            <Card sx={{ minWidth: 300, maxWidth: 300, minHeight: 220, borderRadius: 4, boxShadow: "0 8px 32px rgba(102,126,234,0.10)", background: "linear-gradient(135deg, #e3f2fd 0%, #f8fafc 100%)", transition: "all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)", cursor: "pointer", mb: 2, border: '2px solid #bdbdbd', '&:hover': { boxShadow: "0 16px 40px rgba(102,126,234,0.18)", transform: "translateY(-4px) scale(1.02)", border: '2px solid #667eea' } }}>
+                                                <CardContent>
+                                                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
+                                                        <Typography variant="h6" sx={{ fontWeight: 700, background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                                                            Grade {grade} Health Check
+                                                        </Typography>
+                                                        <Chip
+                                                            icon={config && config.icon ? <config.icon sx={{ color: config.color }} /> : null}
+                                                            label={config ? config.label : shift.status}
+                                                            sx={{ fontWeight: 600, bgcolor: config ? config.bgColor : undefined, color: config ? config.color : undefined, px: 1.5, fontSize: "1rem" }}
+                                                        />
+                                                    </Box>
+                                                    <Typography variant="body2" sx={{ mb: 0.5 }}><strong>Date:</strong> {scheduleDate?.dateString || "Date TBD"}</Typography>
+                                                    <Typography variant="body2" sx={{ mb: 0.5 }}><strong>Students:</strong> {pupils.length}</Typography>
+                                                    <Box sx={{ mt: 1 }}>
+                                                        <Typography variant="body2"><strong>Time:</strong> {shift.time}</Typography>
+                                                    </Box>
+                                                    <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+                                                        <Button
+                                                            variant="contained"
+                                                            color="primary"
+                                                            size="small"
+                                                            onClick={() => {
+                                                                setShowInjectionList(true)
+                                                                setSelectedShift(shift)
+                                                            }}
+                                                            sx={{ borderRadius: 2, textTransform: "none", fontWeight: 600, boxShadow: "0 2px 8px rgba(102,126,234,0.10)", background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", '&:hover': { background: "linear-gradient(135deg, #764ba2 0%, #667eea 100%)" } }}
+                                                        >
+                                                            <Group sx={{ fontSize: 18, mr: 1 }} />
+                                                            View Students
+                                                        </Button>
+                                                    </Box>
+                                                </CardContent>
+                                            </Card>
+                                        </Grid>
+                                    </Grow>
+                                )
+                            })}
+                        </Grid>
+                    </Box>
+
+                    {/* Action Button */}
+                    <Fade in={animateCards} timeout={800}>
+                        <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+                            <Button
+                                variant="contained"
+                                size="large"
+                                startIcon={<CheckCircle />}
+                                onClick={() => alert(`Campaign "${activeCampaign.title}" marked as completed!`)}
+                                sx={{
+                                    px: 4,
+                                    py: 1.5,
+                                    borderRadius: 3,
+                                    background: "linear-gradient(135deg, #4caf50 0%, #45a049 100%)",
+                                    fontSize: "1.1rem",
+                                    fontWeight: "bold",
+                                    boxShadow: "0 4px 16px rgba(76,175,80,0.12)",
+                                    "&:hover": {
+                                        background: "linear-gradient(135deg, #45a049 0%, #3d8b40 100%)",
+                                        transform: "translateY(-2px)",
+                                        boxShadow: 4,
+                                    },
+                                    transition: "all 0.3s ease",
+                                }}
+                            >
+                                Complete Campaign
+                            </Button>
+                        </Box>
+                    </Fade>
                 </div>
-            </Fade>
-        </div>
+            </Fade >
+        </div >
     )
 }
 

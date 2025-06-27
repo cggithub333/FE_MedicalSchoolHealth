@@ -4,7 +4,7 @@ import { getPupilsByGrade } from "../../schoolnurse-requests-callback/healthchec
 export const fetchPupilsByGrade = async (grade) => {
     try {
         const response = await fetchResponse(() => getPupilsByGrade(grade));
-
+        console.log("Response from getPupilsByGrade:", response);
         if (response.status === false)
             throw new Error("Can't fetch pupil with grade =" + grade);
 

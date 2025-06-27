@@ -4,6 +4,21 @@ import { useGetVaccineByDisease } from "../../../../../hooks/manager/vaccination
 import { useCreateNewCampaign } from "../../../../../hooks/manager/vaccination/create-new-campaign/useCreateNewCampaign"
 import "./StyleVaccineCampaignForm.css"
 
+// Helper to format date as dd-MM-YYYY
+function formatDate(dateStr) {
+    if (!dateStr) return "";
+    // If already in dd-MM-YYYY, return as is
+    if (/^\d{2}-\d{2}-\d{4}$/.test(dateStr)) return dateStr;
+    // If only day is provided, return empty string (invalid)
+    if (/^\d{1,2}$/.test(dateStr)) return "";
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return "";
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}-${month}-${year}`;
+}
+
 const VaccineCampaignForm = ({ onSuccess, onCancel }) => {
     const { vaccines: diseases, isLoading: isVaccineLoading } = useGetVaccineByDisease()
     const { createNewCampaign, isLoading: isCreating, error } = useCreateNewCampaign()
@@ -113,17 +128,29 @@ const VaccineCampaignForm = ({ onSuccess, onCancel }) => {
                 titleCampaign: form.titleCampaign.trim(),
                 diseaseId: Number.parseInt(form.diseaseId),
                 vaccineId: Number.parseInt(form.vaccineId),
-                startDate: form.startDate,
-                endDate: form.endDate,
-                formDeadline: form.formDeadline,
-                notes: form.notes.trim() || null,
+                startDate: formatDate(form.startDate),
+                endDate: formatDate(form.endDate),
+                formDeadline: formatDate(form.formDeadline),
+                notes: (form.notes && form.notes.trim()) || "", // always send string
             }
 
             console.log("Submitting vaccination campaign data:", campaignData)
+            alert("Payload to be sent:\n" + JSON.stringify(campaignData, null, 2))
 
-            const response = await createNewCampaign(campaignData)
-
-            console.log("Vaccination campaign created successfully:", response)
+            try {
+                const response = await createNewCampaign(campaignData)
+                console.log("Vaccination campaign created successfully:", response)
+            } catch (err) {
+                // Log the error and any error response from backend
+                if (err?.response) {
+                    console.error("Backend error response:", err.response.data)
+                    if (err.response.data && err.response.data.message) {
+                        alert("Backend error: " + err.response.data.message)
+                    }
+                }
+                console.error("Error creating vaccination campaign (full):", err)
+                return;
+            }
 
             // Reset form
             setForm({
