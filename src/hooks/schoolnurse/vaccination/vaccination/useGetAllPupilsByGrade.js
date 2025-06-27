@@ -2,7 +2,7 @@ import { fetchPupilsByGradeAndStatus } from "../../../../api/schoolnurse/schooln
 import { useState } from "react";
 
 // This hook fetches all pupils approved by their grade and status.
-export const useGetAllPupilsApprovedByGrade = (grade) => {
+export const useGetAllPupilsApprovedByGrade = (campaignId) => {
     const [pupils, setPupils] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -10,7 +10,7 @@ export const useGetAllPupilsApprovedByGrade = (grade) => {
         setIsLoading(true);
         setError(null);
         try {
-            const response = await fetchPupilsByGradeAndStatus(grade);
+            const response = await fetchPupilsByGradeAndStatus(campaignId);
             setPupils(response || []);
         } catch (err) {
             console.error("Failed to fetch pupils:", err);

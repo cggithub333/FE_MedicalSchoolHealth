@@ -1,7 +1,5 @@
 import request from "../../../request.js";
 
-import request from "../../../request.js"
-
 // Update campaign status
 export const updateCampaignStatus = async (campaignId, status) => {
     try {

@@ -1,6 +1,3 @@
-import { fetchResponse } from "../../../fetch-response";
-import { updateCampaignStatus } from "../../manager-request-callback/healthcheck/update-newest-healthcheck-campaign-callback";
-
 import { fetchResponse } from "../../../fetch-response"
 import { updateCampaignStatus } from "../../manager-request-callback/healthcheck/update-newest-healthcheck-campaign-callback"
 

@@ -1,431 +1,396 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-.vaccine-injection-root {
-  font-family: 'Roboto', Arial, Helvetica, sans-serif;
-  background: #f8faff;
-  padding: 40px 0 32px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.schedule-list-root {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   min-height: 100vh;
+  padding: 2rem 1rem;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+      radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(255, 206, 84, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  &.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    text-align: center;
+  }
 }
 
-.vaccine-injection-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  background: #fff;
-  border-radius: 18px 18px 0 0;
-  box-shadow: 0 8px 32px 0 rgba(30, 136, 229, 0.10);
-  padding: 32px 8px 18px 36px;
-  width: 100%;
-  max-width: 1000px;
-  margin-bottom: 0;
+// Header Card
+.schedule-list-header {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px);
+  border-radius: 24px !important;
+  margin-bottom: 2rem;
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.1),
+    0 4px 12px rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #1976d2, #42a5f5, #1976d2);
+    background-size: 200% 100%;
+    animation: shimmer 3s ease-in-out infinite;
+  }
 }
 
-.vaccine-injection-header h2 {
-  font-size: 1.7rem;
-  font-weight: 800;
-  margin-bottom: 8px;
-  color: #222b45;
+@keyframes shimmer {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
-.vaccine-injection-meta {
-  color: #7b809a;
-  font-size: 1.08rem;
-  margin-bottom: 6px;
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
+.header-title {
+  font-weight: 700 !important;
+  color: #1a1a1a;
+  background: linear-gradient(135deg, #1976d2, #42a5f5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem !important;
 }
 
-.vaccine-injection-header-actions {
-  display: flex;
-  gap: 16px;
+.back-button {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 4px 16px rgba(25, 118, 210, 0.3) !important;
+
+  &:hover {
+    box-shadow: 0 8px 24px rgba(25, 118, 210, 0.4) !important;
+  }
 }
 
-.mark-all-btn,
-.export-btn {
-  font-weight: 700;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 26px;
-  font-size: 1.08rem;
-  cursor: pointer;
-  transition: background 0.2s;
+.action-button {
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-transform: none !important;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
 }
 
-.mark-all-btn {
-  background: #f5f6fa;
-  color: #1976d2;
+// Progress Section
+.progress-section {
+  background: rgba(248, 250, 255, 0.8);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+  border: 1px solid rgba(25, 118, 210, 0.1);
 }
 
-.export-btn {
-  background: #5c6bc0;
-  color: #fff;
-}
-
-.export-btn:hover {
-  background: #3949ab;
-}
-
-.vaccine-injection-progress {
-  background: #fff;
-  width: 100%;
-  max-width: 1000px;
-  padding: 18px 8px 30px 36px;
-  display: flex;
-  flex-direction: column;
-  border-radius: 0 0 0 0;
-  margin-bottom: 0;
+.progress-title {
+  font-weight: 600 !important;
+  color: #1a1a1a;
+  margin-bottom: 1rem !important;
 }
 
 .progress-bar {
-  background: #e3e8fd;
-  border-radius: 6px;
-  width: 100%;
-  height: 10px;
+  margin: 1rem 0 !important;
+  box-shadow: 0 2px 8px rgba(67, 160, 71, 0.2);
+}
+
+// Students Table
+.students-table-container {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px);
+  border-radius: 24px !important;
+  margin-bottom: 2rem;
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.1),
+    0 4px 12px rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   overflow: hidden;
-  margin-bottom: 10px;
 }
 
-.progress-bar-fill {
-  display: block;
-  height: 100%;
-  background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
-  border-radius: 6px;
-  transition: width 0.3s;
+.table-header {
+  background: linear-gradient(135deg, #f8faff, #e3f2fd) !important;
+  font-weight: 700 !important;
+  color: #1976d2 !important;
+  font-size: 1rem !important;
+  border-bottom: 2px solid rgba(25, 118, 210, 0.1) !important;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
-.progress-stats {
-  display: flex;
-  gap: 24px;
-  font-size: 1.13rem;
-  font-weight: 700;
-  color: #263238;
-}
+.student-row {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
 
-.completed {
-  color: #43a047;
-}
+  &.completed-row {
+    background: rgba(232, 245, 233, 0.7) !important;
 
-.remaining {
-  color: #fbc02d;
-}
+    .student-name {
+      color: #2e7d32 !important;
+    }
 
-.total {
-  color: #1976d2;
-}
+    .student-id {
+      color: #43a047 !important;
+    }
+  }
 
-.vaccine-injection-table {
-  font-family: 'Roboto', Arial, Helvetica, sans-serif;
-  font-size: 1.09rem;
-  color: #263238;
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 4px 24px 0 rgba(30, 136, 229, 0.10);
-  border-collapse: separate;
-  border-spacing: 0;
-  overflow: hidden;
-  margin-bottom: 0;
-  border: 1px solid #e3e8fd;
-}
-
-// Table header columns
-.vaccine-injection-table th {
-  background: #e3e8fd;
-  color: #3949ab;
-  font-size: 1.12rem;
-  font-weight: 900;
-  border-bottom: 2px solid #c5cae9;
-  letter-spacing: 0.5px;
-  padding: 18px 14px;
-  text-align: center;
-}
-
-.vaccine-injection-table th.status-th {
-  background: #f5f7fa;
-  color: #388e3c;
-  font-weight: 700;
-  font-size: 17px;
-  border-top-left-radius: 12px;
-}
-
-.vaccine-injection-table th.info-th,
-.vaccine-injection-table th.grade-th,
-.vaccine-injection-table th.time-th,
-.vaccine-injection-table th.notes-th {
-  background: #f5f7fa;
-  color: #1976d2;
-  font-weight: 700;
-  font-size: 17px;
-}
-
-.vaccine-injection-table th.details-th {
-  background: #f5f7fa;
-  color: #1976d2;
-  font-weight: 700;
-  font-size: 17px;
-  border-top-right-radius: 12px;
-  text-align: center;
-}
-
-// Table body columns
-.grade-td {
-  text-align: center;
-  font-weight: 500;
-  color: #1976d2;
-  font-size: 16px;
-}
-
-.notes-td {
-  text-align: center;
-}
-
-.details-td {
-  text-align: center;
-}
-
-.vaccine-injection-table td {
-  padding: 16px 14px;
-  font-size: 1.08rem;
-  border-bottom: 1px solid #f0f4fa;
-  background: #fff;
-  transition: background 0.2s;
-  position: relative;
-  vertical-align: middle;
-}
-
-.vaccine-injection-table tr.data-row {
-  transition: background 0.2s;
-}
-
-.vaccine-injection-table tr.data-row:nth-child(even) td {
-  background: #f9fbfd;
-}
-
-.vaccine-injection-table tr.data-row td {
-  vertical-align: middle;
-}
-
-.vaccine-injection-table tr:hover:not(.completed-row) td {
-  background: #e3e8fd;
-}
-
-.completed-row td {
-  background: #e8f5e9 !important;
-  color: #388e3c;
-}
-
-.avatar-green {
-  background: #43a047;
-}
-
-.avatar-yellow {
-  background: #fbc02d;
-  color: #222;
-}
-
-.avatar-blue {
-  background: #1976d2;
-}
-
-.avatar-gray {
-  background: #bdbdbd;
-}
-
-.avatar-teal {
-  background: #26a69a;
-}
-
-.avatar-orange {
-  background: #ffa726;
-  color: #222;
-}
-
-.student-info {
-  display: inline-block;
-  vertical-align: top;
-}
-
-.student-info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-// Student avatar
-.student-avatar {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  border: 2px solid #e3eafc;
-  margin-right: 10px;
-  object-fit: cover;
-  background: #fff;
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
 }
 
 .student-name {
-  font-weight: 600;
-  font-size: 16px;
-  color: #222;
+  color: #1a1a1a;
+  font-weight: 600 !important;
+  line-height: 1.3;
 }
 
 .student-id {
-  font-size: 13px;
-  color: #888;
+  color: #666;
+  font-size: 0.875rem !important;
 }
 
-.dose-badge {
-  font-size: 1.01rem;
-  font-weight: 700;
-  border-radius: 10px;
-  padding: 6px 16px;
-  box-shadow: 0 1px 4px 0 rgba(30, 136, 229, 0.08);
+.notes-field {
+  .MuiOutlinedInput-root {
+    background: rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease !important;
+
+    &:focus-within {
+      background: rgba(255, 255, 255, 1);
+      box-shadow: 0 4px 16px rgba(25, 118, 210, 0.15);
+    }
+  }
 }
 
-.dose-1stdose {
-  background: #43a047;
+.details-button {
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 4px 16px rgba(67, 160, 71, 0.3) !important;
+
+  &:hover {
+    box-shadow: 0 8px 24px rgba(67, 160, 71, 0.4) !important;
+  }
 }
 
-.dose-2nddose {
-  background: #fbc02d;
-  color: #222;
-}
-
-.dose-booster {
-  background: #26a69a;
-}
-
-.alert-note {
-  color: #e53935;
-  font-weight: 700;
-}
-
-.warn-note {
-  color: #fbc02d;
-  font-weight: 700;
-}
-
-.time-completed {
-  text-align: center;
-  font-weight: 500;
-  font-size: 15px;
-}
-
-.time-completed.completed {
-  color: #43a047;
-}
-
-.vaccine-injection-footer {
+// Action Footer
+.action-footer {
   display: flex;
-  gap: 16px;
-  margin-top: 22px;
-  width: 100%;
-  max-width: 1050px;
-  justify-content: flex-end;
-}
-
-.print-btn,
-.update-btn,
-.save-btn,
-.complete-btn {
-  font-weight: 700;
-  border: none;
-  border-radius: 8px;
-  padding: 12px 26px;
-  font-size: 1.08rem;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.print-btn,
-.update-btn {
-  background: #f5f6fa;
-  color: #1976d2;
-}
-
-.save-btn {
-  background: #43a047;
-  color: #fff;
-}
-
-.complete-btn {
-  background: #5c6bc0;
-  color: #fff;
-}
-
-.complete-btn:hover {
-  background: #3949ab;
-}
-
-.vaccine-injection-header-container {
-  width: 90%;
-  margin-bottom: 24px;
-  box-shadow: 0 8px 32px 0 rgba(30, 136, 229, 0.10);
-  border-radius: 18px;
-  background: #fff;
-  padding: 32px 36px 18px 36px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  position: relative;
-  z-index: 1;
-  margin-bottom: 24px;
-  box-sizing: border-box;
-  border-bottom: 2px solid #e3e8fd;
-}
-
-.vaccine-injection-alerts {
-  width: 90%;
-  max-width: 1000px;
-  margin-top: 10px;
-  padding: 10px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(30, 136, 229, 0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  font-size: 1.08rem;
-  color: #222b45;
-  font-weight: 500;
-  line-height: 1.5;
-  position: relative;
-  z-index: 1;
-  border: 1px solid #e3e8fd;
-  margin-bottom: 24px;
-  box-sizing: border-box;
-  background: linear-gradient(135deg, #f8faff, #e3e8fd);
-}
-
-.details-btn {
-  background: linear-gradient(90deg, #43a047 60%, #388e3c 100%);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-weight: 700;
-  font-size: 15px;
-  padding: 7px 22px;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(67, 160, 71, 0.10);
-  transition: background 0.2s, box-shadow 0.2s;
-  outline: none;
-  letter-spacing: 1px;
-  margin: 0 auto;
-  display: inline-block;
-  display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
+  gap: 1rem;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: sticky;
+  bottom: 2rem;
+  z-index: 10;
 }
 
-.details-icon {
-  vertical-align: middle;
-  margin-right: 6px;
-  font-size: 20px !important;
+.footer-button {
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  padding: 0.75rem 2rem !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &.save-button {
+    box-shadow: 0 4px 16px rgba(25, 118, 210, 0.3) !important;
+
+    &:hover {
+      box-shadow: 0 8px 24px rgba(25, 118, 210, 0.4) !important;
+    }
+  }
 }
 
-.details-btn:hover {
-  background: #2e7031;
+// Responsive Design
+@media (max-width: 1024px) {
+  .schedule-list-root {
+    padding: 1rem 0.5rem;
+  }
+
+  .schedule-list-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .action-footer {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem;
+
+    .footer-button {
+      width: 100%;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .schedule-list-header {
+    .MuiCardContent-root {
+      padding: 1.5rem !important;
+    }
+
+    .MuiBox-root:first-of-type {
+      flex-direction: column;
+      align-items: flex-start !important;
+      gap: 1rem;
+    }
+
+    .action-button {
+      font-size: 0.875rem !important;
+      padding: 0.5rem 1rem !important;
+    }
+  }
+
+  .progress-section {
+    padding: 1rem;
+  }
+
+  .students-table-container {
+    .MuiTable-root {
+      min-width: 800px; // Enable horizontal scroll on mobile
+    }
+  }
+
+  .header-title {
+    font-size: 1.75rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .schedule-list-root {
+    padding: 1rem 0.25rem;
+  }
+
+  .header-title {
+    font-size: 1.5rem !important;
+  }
+
+  .progress-section {
+    padding: 0.75rem;
+  }
+
+  .action-footer {
+    padding: 1rem;
+    bottom: 1rem;
+  }
+
+  .footer-button {
+    padding: 0.625rem 1.5rem !important;
+    font-size: 0.875rem !important;
+  }
+
+  // Stack chips vertically on very small screens
+  .MuiBox-root {
+    &:has(.MuiChip-root) {
+      flex-direction: column;
+      align-items: flex-start !important;
+      gap: 0.5rem;
+    }
+  }
+}
+
+// Custom scrollbar for table
+.students-table-container {
+  .MuiTableContainer-root {
+    &::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.05);
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(25, 118, 210, 0.3);
+      border-radius: 4px;
+
+      &:hover {
+        background: rgba(25, 118, 210, 0.5);
+      }
+    }
+  }
+}
+
+// Animation for progress bar
+@keyframes progressFill {
+  from {
+    width: 0%;
+  }
+
+  to {
+    width: var(--progress-width);
+  }
+}
+
+.progress-bar .MuiLinearProgress-bar {
+  animation: progressFill 1s ease-out;
+}
+
+// Hover effects for interactive elements
+.MuiCheckbox-root {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+.MuiAvatar-root {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// Loading state improvements
+.loading-container {
+  .MuiCircularProgress-root {
+    margin-bottom: 1rem;
+  }
+
+  .MuiTypography-root {
+    color: #666;
+    font-weight: 500;
+  }
 }

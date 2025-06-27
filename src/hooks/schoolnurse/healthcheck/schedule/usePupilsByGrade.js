@@ -3,7 +3,7 @@ import { fetchPupilsByGrade } from '../../../../api/schoolnurse/schoolnurse-requ
 
 
 // This hook fetches pupils by their grade level. and their disease in here too
-const usePupilsByGrade = (currgrade) => {
+export const usePupilsByGrade = (currgrade) => {
     const [pupils, setPupils] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -36,5 +36,3 @@ const usePupilsByGrade = (currgrade) => {
 
     return { pupils, isLoading };
 }
-
-export default usePupilsByGrade;

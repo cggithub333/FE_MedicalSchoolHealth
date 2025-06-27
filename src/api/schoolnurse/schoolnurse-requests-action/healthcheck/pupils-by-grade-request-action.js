@@ -1,5 +1,5 @@
 import { fetchResponse } from "../../../fetch-response.js";
-import { getPupilsByGrade } from "../../schoolnurse-requests-callback/pupils-by-grade-request-callback.js";
+import { getPupilsByGrade } from "../../schoolnurse-requests-callback/healthcheck/pupils-by-grade-request-callback.js";
 
 export const fetchPupilsByGrade = async (grade) => {
     try {

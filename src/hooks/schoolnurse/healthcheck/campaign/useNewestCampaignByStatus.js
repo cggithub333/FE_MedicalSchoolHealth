@@ -9,7 +9,7 @@ export const useNewestCampaignByStatus = () => {
     const [error, setError] = useState(null);
 
     const fetchNewestCampaignByStatus = async () => {
-        setLoading(true);
+        setIsLoading(true);
         setError(null);
         try {
             const campaign = await fetchNewestCampaign();
