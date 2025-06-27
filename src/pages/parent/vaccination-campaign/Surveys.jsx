@@ -39,7 +39,7 @@ const Surveys = () => {
   }, [surveys, storedPupilId]);
 
   return (
-    <>
+    <div style={{ background: "#e6f8f9", width: "100%", height: "100vh" }}>
       <Grid container>
         <Grid item size={{ xs: 6 }}>
           <Breadcrumbs breadcrumbPairs={breadcrumbPairs} />
@@ -75,7 +75,7 @@ const Surveys = () => {
         )
       }
       </Grid>
-    </>
+    </div>
   )
 }
 

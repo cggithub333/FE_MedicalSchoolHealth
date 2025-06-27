@@ -8,8 +8,6 @@ import DiseaseBoxList from '../../../components/parent/VaccinationCampaign/Campa
 import InstructChooseChildImg from '../../../assets/images/instruct_choose_child.png';
 import { useEffect, useState } from 'react';
 
-import useHealthCheckHistoryByPupilId from '../../../hooks/parent/useHealthCheckHistoryByPupilId.js';
-
 const VaccinationHistory = () => {
 
   const [storedPupilId, setStoredPupilId] = useState(null);

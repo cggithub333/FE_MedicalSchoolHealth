@@ -36,6 +36,8 @@ import { Base64 } from 'js-base64';
 
 import { stylePupilBtn, styleChildItem } from './parent-dashboard-layout-custom-css.js';
 import Logout from '../../Logout.jsx';
+import { getPayloadResources } from '../../../utils/jwt-utils.js';
+import UserAvatarImage from '../../../assets/images/user_avatar.jpg'
 
 function ToolbarActionsUtility() {
 
@@ -193,11 +195,13 @@ function DashboardLayoutSlots(props) {
   const [ isLogout, setIsLogout ] = React.useState(false);
   const { window } = props;
 
+  const { sub } = getPayloadResources(); // phone number;
+
   const [session, setSession] = React.useState({
     user: {
-      name: 'Bharat Kashyap',
+      name: localStorage.getItem('userFullName') ? localStorage.getItem('userFullName') : "",
       email: 'bharatkashyap@outlook.com',
-      image: 'https://avatars.githubusercontent.com/u/19550456',
+      image: UserAvatarImage,
     },
   });
 
@@ -206,9 +210,9 @@ function DashboardLayoutSlots(props) {
       signIn: () => {
         setSession({
           user: {
-            name: 'Bharat Kashyap',
+            name: localStorage.getItem('userFullName') ? localStorage.getItem('userFullName') : "",
             email: 'bharatkashyap@outlook.com',
-            image: 'https://avatars.githubusercontent.com/u/19550456',
+            image: UserAvatarImage,
           },
         });
       },

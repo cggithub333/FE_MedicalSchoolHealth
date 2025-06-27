@@ -2,9 +2,9 @@ import HealthCheckScheduleForm from '../../../components/schoolnurse/health-chec
 const Schedule = () => {
 
   return (
-    <>
+    <div>
       <HealthCheckScheduleForm />
-    </>
+    </div>
   );
 }
 

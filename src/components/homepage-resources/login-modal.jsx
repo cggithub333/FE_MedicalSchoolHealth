@@ -66,9 +66,9 @@ export default function LoginModal() {
           <Typography variant="body2" color="text.secondary">
             Enter your phone number and password to sign in
             <br/> Admin:        0848025113
-            <br/> Manager:      0848025114
-            <br/> Parent:       0848025115
-            <br/> School Nurse: 0848025116 
+            <br /> Manager:      0848025114
+            <br /> Parent:       0848025146 - PR0001
+            <br /> School Nurse: 0848025115 
             <br/> Password: 12345
           </Typography>
         </DialogTitle>
