@@ -1,8 +1,8 @@
-import Breadcrumb from '../../../components/magic/Breadcrumb/CustomBreadcrumb';
+import Breadcrumb from '@components/magic/Breadcrumb/CustomBreadcrumb';
 import { Grid, CircularProgress } from "@mui/material";
-import CustomTittle from '../../../components/magic/CustomTittle/CustomTitle';
+import CustomTittle from '@components/magic/CustomTittle/CustomTitle';
 
-import LatestVaccinationCampaign from '../../../components/parent/VaccinationCampaign/LatestCampaign/LatestVaccinationCampaign';
+import LatestVaccinationCampaign from '@components/parent/VaccinationCampaign/LatestCampaign/LatestVaccinationCampaign';
 
 const Campaigns = () => {
   

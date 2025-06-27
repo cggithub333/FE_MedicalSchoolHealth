@@ -1,16 +1,12 @@
 import { Grid } from '@mui/material';
 
-import CustomTittle from '../../../components/magic/CustomTittle/CustomTitle';
-import Breadcrumbs from '../../../components/magic/Breadcrumb/CustomBreadcrumb';
+import CustomTittle from '@components/magic/CustomTittle/CustomTitle';
+import Breadcrumbs from '@components/magic/Breadcrumb/CustomBreadcrumb';
 
-import chooseChildImg from '../../../assets/images/instruct_choose_child.png';
-
+import chooseChildImg from  '@assets/images/instruct_choose_child.png';
+import VaccinationSurvey from '@components/parent/VaccinationCampaign/LatestCampaign/VaccinationSurvey';
 
 const Surveys = () => {
-  // Read pupilId and pupilName from localStorage
-  const storedPupilId = window.localStorage.getItem('pupilId');
-  const storedPupilName = window.localStorage.getItem('pupilName');
-
   
   return (
     <div style={{ background: "#e6f8f9", width: "100%", height: "100vh" }}>
@@ -22,6 +18,11 @@ const Surveys = () => {
       <Grid container>
         <Grid item sx={{ marginLeft: "20px", marginTop: "25px" }} size={{ xs: 12 }}>
           <CustomTittle title={"Vaccination Surveys"} />
+        </Grid>
+      </Grid>
+      <Grid container justifyContent={'center'}>
+        <Grid item size={{ xs: 11 }}>
+          <VaccinationSurvey />
         </Grid>
       </Grid>
     </div>
