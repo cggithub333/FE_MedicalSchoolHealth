@@ -8,8 +8,6 @@ import { editVaccinationConsentFormStatus } from "../parent-requests-callback/pa
 
 export const fetchLatestHealthCheckCampaign = async () => {
 
-  console.log("fetchLatestHealthCheckCampaign run");
-
   try {
     
     const response = await fetchResponse(getLatestHealthCheckCampaign);

@@ -15,8 +15,6 @@ const useLatestHealthCheckCampaign = () => {
       try {
         const latestCampaign = await fetchLatestHealthCheckCampaign();
 
-        // console.log("hihi - " + latestCampaign.address);
-        
         setLatestHealthCheckCampaign(latestCampaign);
       
       } catch(error) {
