@@ -5,7 +5,7 @@ import { Button, Dialog, DialogTitle, DialogContent, TextField, Box, Typography,
 import OtpModal from "./otp-modal.jsx"
 
 import { Navigate } from "react-router-dom"
-import useAuth from '../../hooks/auth/useAuth.js';
+import useAuth from '@hooks/auth/useAuth.js';
 
 export default function LoginModal() {
 
