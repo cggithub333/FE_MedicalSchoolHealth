@@ -42,15 +42,15 @@ import {
 import AlertMui from '@mui/material/Alert';
 import InfoIcon from '@mui/icons-material/Info';
 import { useGetAllPupilsApprovedByGrade } from "../../../../../hooks/schoolnurse/vaccination/vaccination/useGetAllPupilsByGrade"
+import { useSaveResultOfVaccinationCampaign } from "../../../../../hooks/schoolnurse/vaccination/vaccination/useSaveResultOfVaccinationCampaign"
 
 const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
     const { pupils: rawPupils = [], isLoading } = useGetAllPupilsApprovedByGrade(campaign.campaignId)
     const [students, setStudents] = useState([])
     const [selectedPupilId, setSelectedPupilId] = useState(null)
-    const [autoSaving, setAutoSaving] = useState(false)
     const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" })
     const [animateRows, setAnimateRows] = useState(false)
-    const [saveTimeout, setSaveTimeout] = useState(null)
+    const { saveResultOfVaccinationCampaign, isSaving } = useSaveResultOfVaccinationCampaign();
 
     // Filter pupils by the specific grade from the shift
     const gradePupils = (Array.isArray(rawPupils) ? rawPupils : []).filter((pupil) => {
@@ -58,32 +58,22 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
         return Number(pupilGrade) === Number(shift.grade)
     })
 
+    // Initialize students directly from gradePupils (no setState in useEffect)
     useEffect(() => {
-        const storageKey = `vaccination_students_campaign_${campaign.campaignId}_grade_${shift.grade}`
-        try {
-            const saved = localStorage.getItem(storageKey)
-            if (saved) {
-                setStudents(JSON.parse(saved))
-                return
-            }
-        } catch (e) { }
-        if (gradePupils && gradePupils.length > 0) {
-            setStudents(
-                gradePupils.map((pupil) => ({
-                    pupilId: pupil.pupilId || pupil.id,
-                    firstName: pupil.firstName,
-                    lastName: pupil.lastName,
-                    Grade: pupil.Grade || pupil.grade,
-                    avatar: pupil.avatar || `/placeholder.svg?height=40&width=40`,
-                    completed: false,
-                    time: "",
-                    notes: "",
-                }))
-            )
-        } else {
-            setStudents([])
-        }
-    }, [gradePupils, campaign.campaignId, shift.grade])
+        setStudents(
+            gradePupils.map((pupil) => ({
+                pupilId: pupil.pupilId || pupil.id,
+                consentFormId: pupil.consentFormId, // Make sure this is present in your data
+                firstName: pupil.firstName,
+                lastName: pupil.lastName,
+                Grade: pupil.Grade || pupil.grade,
+                avatar: pupil.avatar || `/placeholder.svg?height=40&width=40`,
+                completed: false,
+                time: "",
+                notes: "",
+            }))
+        )
+    }, [JSON.stringify(gradePupils)])
 
     useEffect(() => {
         if (students.length > 0) {
@@ -91,31 +81,13 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
         }
     }, [students])
 
-    // Auto-save functionality
-    const autoSave = (updatedStudents) => {
-        if (saveTimeout) {
-            clearTimeout(saveTimeout)
-        }
-        const newTimeout = setTimeout(() => {
-            setAutoSaving(true)
-            const storageKey = `vaccination_students_campaign_${campaign.campaignId}_grade_${shift.grade}`
-            localStorage.setItem(storageKey, JSON.stringify(updatedStudents))
-            setTimeout(() => {
-                setAutoSaving(false)
-                setSnackbar({
-                    open: true,
-                    message: "Changes saved automatically",
-                    severity: "success",
-                })
-            }, 500)
-        }, 1000)
-        setSaveTimeout(newTimeout)
-    }
-
-    const handleCheck = (index) => {
+    // Save status to DB when toggling completed
+    const handleCheck = async (index) => {
         const updated = [...students]
-        updated[index].completed = !updated[index].completed
-        if (updated[index].completed) {
+        const student = updated[index]
+        const newStatus = !student.completed
+        updated[index].completed = newStatus
+        if (newStatus) {
             const now = new Date()
             const hours = String(now.getHours()).padStart(2, "0")
             const minutes = String(now.getMinutes()).padStart(2, "0")
@@ -124,14 +96,25 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
             updated[index].time = ""
         }
         setStudents(updated)
-        autoSave(updated)
+        // Save to DB
+        const consentId = student.consentFormId
+        if (!consentId) {
+            setSnackbar({ open: true, message: "Consent Form ID missing!", severity: "error" })
+            return
+        }
+        const status = newStatus ? "INJECTED" : "NO_SHOW"
+        const success = await saveResultOfVaccinationCampaign(consentId, status)
+        if (success) {
+            setSnackbar({ open: true, message: `Status saved as ${status}.`, severity: "success" })
+        } else {
+            setSnackbar({ open: true, message: "Failed to save status.", severity: "error" })
+        }
     }
 
     const handleNoteChange = (index, newValue) => {
         const updated = [...students]
         updated[index].notes = newValue
         setStudents(updated)
-        autoSave(updated)
     }
 
     const handleMarkAll = () => {
@@ -146,20 +129,9 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
             time: !allCompleted ? timeString : "",
         }))
         setStudents(updated)
-        autoSave(updated)
         setSnackbar({
             open: true,
             message: allCompleted ? "All students unmarked" : "All students marked as completed",
-            severity: "success",
-        })
-    }
-
-    const handleManualSave = () => {
-        const storageKey = `vaccination_students_campaign_${campaign.campaignId}_grade_${shift.grade}`
-        localStorage.setItem(storageKey, JSON.stringify(students))
-        setSnackbar({
-            open: true,
-            message: "Data saved successfully!",
             severity: "success",
         })
     }
@@ -246,17 +218,6 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
                                 <Typography variant="h6" className="progress-title">
                                     Vaccination Progress - Grade {shift.grade}
                                 </Typography>
-                                <Box display="flex" gap={2}>
-                                    {autoSaving && (
-                                        <Chip
-                                            icon={<CircularProgress size={16} />}
-                                            label="Auto-saving..."
-                                            size="small"
-                                            color="info"
-                                            variant="outlined"
-                                        />
-                                    )}
-                                </Box>
                             </Box>
                             <LinearProgress
                                 variant="determinate"
@@ -436,21 +397,6 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
                 <Box className="action-footer">
                     <Button variant="outlined" size="large" startIcon={<ArrowBackIcon />} onClick={onBack} className="footer-button">
                         Back to Schedule
-                    </Button>
-                    <Button
-                        variant="contained"
-                        size="large"
-                        startIcon={<SaveIcon />}
-                        onClick={handleManualSave}
-                        className="footer-button save-button"
-                        sx={{
-                            background: "linear-gradient(135deg, #1976d2, #42a5f5)",
-                            "&:hover": {
-                                background: "linear-gradient(135deg, #1565c0, #1976d2)",
-                            },
-                        }}
-                    >
-                        Save Progress
                     </Button>
                 </Box>
             </Fade>

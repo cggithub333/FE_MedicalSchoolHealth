@@ -38,6 +38,7 @@ import {
     Person,
     Assignment,
 } from "@mui/icons-material"
+import { useSaveResultOfHealthCheckCampaign } from "../../../../../hooks/schoolnurse/healthcheck/schedule/useSaveResultOfHealthCheckCampaign"
 
 // Frontend disease categories - this is the comprehensive list for health checks
 const HEALTH_CHECK_DISEASES = [
@@ -80,6 +81,8 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
         reproductive: false,
         medical: false,
     })
+    const { saveResultOfHealthCheckCampaign, isSaving } = useSaveResultOfHealthCheckCampaign();
+    const [status, setStatus] = useState(null); // "COMPLETED" or "ABSENT"
 
     // Use frontend disease list instead of API data
     const sensitive_disease = HEALTH_CHECK_DISEASES
@@ -103,65 +106,70 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
         }
     })
 
-    // Load saved data
-    useEffect(() => {
-        if (!pupilId) return
-        const savedData = localStorage.getItem(`healthcheck_details_${pupilId}`)
-        if (savedData) {
-            try {
-                const parsed = JSON.parse(savedData)
-                setHealthData(parsed.healthData || {})
-                setNotes(parsed.notes || {})
-                setMeasurements(parsed.measurements || {})
-            } catch (e) {
-                console.error("Error loading saved data:", e)
-            }
-        }
-    }, [pupilId])
-
-    // Auto-save functionality
-    const autoSave = () => {
-        if (!pupilId) return
-        setAutoSaving(true)
-        const dataToSave = {
-            healthData,
-            notes,
-            measurements,
-            lastUpdated: new Date().toISOString(),
-        }
-        localStorage.setItem(`healthcheck_details_${pupilId}`, JSON.stringify(dataToSave))
-        setTimeout(() => {
-            setAutoSaving(false)
-            setSnackbar({
-                open: true,
-                message: "Changes saved automatically",
-                severity: "success",
-            })
-        }, 500)
-    }
-
     // Handle checkbox changes
     const handleHealthCheck = (diseaseId, checked) => {
         setHealthData((prev) => ({ ...prev, [diseaseId]: checked }))
-        setTimeout(autoSave, 1000)
     }
 
     // Handle note changes
     const handleNoteChange = (diseaseId, value) => {
         setNotes((prev) => ({ ...prev, [diseaseId]: value }))
-        setTimeout(autoSave, 1000)
     }
 
     // Handle measurement changes
     const handleMeasurementChange = (diseaseId, value) => {
         setMeasurements((prev) => ({ ...prev, [diseaseId]: value }))
-        setTimeout(autoSave, 1000)
     }
 
     // Handle section expansion
     const handleSectionToggle = (section) => {
         setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }))
     }
+
+    // Map the current form state to the required DB format
+    const getDetailsForDB = () => ({
+        healthId: 0,
+        height: measurements[1] || '',
+        weight: measurements[2] || '',
+        rightEyeVision: measurements[4] || '',
+        leftEyeVision: measurements[5] || '',
+        bloodPressure: notes[18] || '',
+        heartRate: measurements[14] || '',
+        dentalCheck: notes[8] || '',
+        earCondition: notes[6] || '',
+        noseCondition: notes[7] || '',
+        throatCondition: notes[7] || '',
+        skinAndMucosa: notes[11] || '',
+        hearAnuscultaion: notes[16] || '',
+        chestShape: notes[16] || '',
+        lungs: notes[16] || '',
+        digestiveSystem: notes[18] || '',
+        urinarySystem: notes[18] || '',
+        musculoskeletalSystem: notes[18] || '',
+        neurologyAndPsychiatry: notes[18] || '',
+        genitalExamination: notes[19] || '',
+        additionalNotes: notes[20] || '',
+        unusualSigns: notes[21] || '',
+    });
+
+    // Save result to DB using custom hook
+    const handleSave = async (newStatus) => {
+        setStatus(newStatus);
+        const details = getDetailsForDB();
+        const consentId = pupilData?.healthCheckConsentId || pupilData?.consentFormId;
+        if (!consentId) {
+            console.error("Consent ID not found! pupilData:", pupilData);
+            setSnackbar({ open: true, message: "Consent ID not found in pupilData. Please check your data source.", severity: "error" });
+            return;
+        }
+        const payload = { ...details, status: newStatus };
+        const success = await saveResultOfHealthCheckCampaign(consentId, payload);
+        if (success) {
+            setSnackbar({ open: true, message: `Saved as ${newStatus}.`, severity: "success" });
+        } else {
+            setSnackbar({ open: true, message: "Failed to save result.", severity: "error" });
+        }
+    };
 
     // Calculate completion percentage
     const totalChecks = sensitive_disease.length
@@ -170,25 +178,15 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
 
     // Handle form submission
     const handleSubmit = () => {
-        const results = sensitive_disease.map((disease) => ({
-            disease_id: disease.disease_id,
-            name: disease.name,
-            checked: !!healthData[disease.disease_id],
-            notes: notes[disease.disease_id] || "",
-            measurement: measurements[disease.disease_id] || "",
-        }))
-
         setSnackbar({
             open: true,
             message: `Health check completed for student ${pupilData?.firstName} ${pupilData?.lastName}!`,
             severity: "success",
         })
-
-        console.log("Health check results:", {
+        console.log("Health check details (for DB):", {
             pupil_id: pupilId,
             pupilData,
-            results,
-            completionPercentage: completionPercentage.toFixed(1),
+            details: getDetailsForDB(),
         })
     }
 
@@ -438,31 +436,31 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
                     <Button variant="outlined" size="large" startIcon={<ArrowBack />} onClick={onBack} className="footer-button" sx={{ fontWeight: 600, borderRadius: 2, px: 3, py: 1 }}>
                         Back to Students
                     </Button>
-                    <Button
-                        variant="contained"
-                        size="large"
-                        startIcon={<Save />}
-                        onClick={handleSubmit}
-                        className="footer-button save-button"
-                        disabled={completionPercentage < 100}
-                        sx={{
-                            fontWeight: 700,
-                            borderRadius: 2,
-                            px: 4,
-                            py: 1.2,
-                            fontSize: 18,
-                            background: completionPercentage === 100 ? "linear-gradient(135deg, #43a047, #66bb6a)" : undefined,
-                            color: completionPercentage === 100 ? "#fff" : undefined,
-                            boxShadow: completionPercentage === 100 ? 4 : 1,
-                            '&:hover': {
-                                background: completionPercentage === 100 ? "linear-gradient(135deg, #388e3c, #43a047)" : undefined,
-                                boxShadow: 6,
-                            },
-                            transition: 'all 0.2s cubic-bezier(.4,2,.6,1)',
-                        }}
-                    >
-                        {completionPercentage === 100 ? "Complete Assessment" : `${completionPercentage.toFixed(1)}% Complete`}
-                    </Button>
+                    <Box sx={{ display: 'flex', gap: 2 }}>
+                        <Button
+                            variant="contained"
+                            size="large"
+                            color="success"
+                            startIcon={<Save />}
+                            onClick={() => handleSave("COMPLETED")}
+                            className="footer-button save-button"
+                            disabled={isSaving}
+                            sx={{ fontWeight: 700, borderRadius: 2, px: 4, py: 1.2, fontSize: 18 }}
+                        >
+                            Complete
+                        </Button>
+                        <Button
+                            variant="contained"
+                            size="large"
+                            color="warning"
+                            onClick={() => handleSave("ABSENT")}
+                            className="footer-button save-button"
+                            disabled={isSaving}
+                            sx={{ fontWeight: 700, borderRadius: 2, px: 4, py: 1.2, fontSize: 18 }}
+                        >
+                            Absent
+                        </Button>
+                    </Box>
                 </Box>
             </Fade>
 

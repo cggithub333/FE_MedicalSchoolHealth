@@ -47,7 +47,6 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
     const { pupils: rawPupils = [], isLoading } = usePupilsByGrade(grade)
     const [students, setStudents] = useState([])
     const [selectedPupilId, setSelectedPupilId] = useState(null)
-    const [autoSaving, setAutoSaving] = useState(false)
     const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" })
     const [animateRows, setAnimateRows] = useState(false)
     const initializedRef = useRef(false)
@@ -56,9 +55,6 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
     useEffect(() => {
         initializedRef.current = false
     }, [grade])
-
-    // Auto-save delay
-    const [saveTimeout, setSaveTimeout] = useState(null)
 
     // Transform pupils data to match expected format
     const transformPupilsData = (pupilsData) => {
@@ -96,18 +92,6 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
     const pupils = transformPupilsData(rawPupils)
 
     useEffect(() => {
-        const sharedKey = `healthcheck_students_grade_${grade}`
-        const saved = localStorage.getItem(sharedKey)
-        if (saved) {
-            try {
-                const parsed = JSON.parse(saved)
-                if (Array.isArray(parsed) && parsed.length > 0) {
-                    setStudents(parsed)
-                    initializedRef.current = true
-                    return
-                }
-            } catch (e) { }
-        }
         // Only initialize if not already initialized for this pupils set and students do not match pupils
         const pupilsIds = (pupils || []).map(p => p.pupilId).join(',')
         const studentsIds = (students || []).map(s => s.pupilId).join(',')
@@ -138,29 +122,6 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
         }
     }, [students])
 
-    // Auto-save functionality
-    const autoSave = (updatedStudents) => {
-        if (saveTimeout) {
-            clearTimeout(saveTimeout)
-        }
-
-        const newTimeout = setTimeout(() => {
-            setAutoSaving(true)
-            const sharedKey = `healthcheck_students_grade_${grade}`
-            localStorage.setItem(sharedKey, JSON.stringify(updatedStudents))
-            setTimeout(() => {
-                setAutoSaving(false)
-                setSnackbar({
-                    open: true,
-                    message: "Changes saved automatically",
-                    severity: "success",
-                })
-            }, 500)
-        }, 1000) // Auto-save after 1 second of inactivity
-
-        setSaveTimeout(newTimeout)
-    }
-
     const handleCheck = (index) => {
         const updated = [...students]
         updated[index].completed = !updated[index].completed
@@ -173,14 +134,12 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
             updated[index].time = ""
         }
         setStudents(updated)
-        autoSave(updated)
     }
 
     const handleNoteChange = (index, newValue) => {
         const updated = [...students]
         updated[index].notes = newValue
         setStudents(updated)
-        autoSave(updated)
     }
 
     const handleMarkAll = () => {
@@ -197,20 +156,9 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
         }))
 
         setStudents(updated)
-        autoSave(updated)
         setSnackbar({
             open: true,
             message: allCompleted ? "All students unmarked" : "All students marked as completed",
-            severity: "success",
-        })
-    }
-
-    const handleManualSave = () => {
-        const sharedKey = `healthcheck_students_grade_${grade}`
-        localStorage.setItem(sharedKey, JSON.stringify(students))
-        setSnackbar({
-            open: true,
-            message: "Data saved successfully!",
             severity: "success",
         })
     }
@@ -309,17 +257,6 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
                                 <Typography variant="h6" className="progress-title">
                                     Completion Progress
                                 </Typography>
-                                <Box display="flex" gap={2}>
-                                    {autoSaving && (
-                                        <Chip
-                                            icon={<CircularProgress size={16} />}
-                                            label="Auto-saving..."
-                                            size="small"
-                                            color="info"
-                                            variant="outlined"
-                                        />
-                                    )}
-                                </Box>
                             </Box>
                             <LinearProgress
                                 variant="determinate"
@@ -508,21 +445,6 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
                 <Box className="action-footer">
                     <Button variant="outlined" size="large" startIcon={<ArrowBack />} onClick={onBack} className="footer-button">
                         Back to Schedule
-                    </Button>
-                    <Button
-                        variant="contained"
-                        size="large"
-                        startIcon={<Save />}
-                        onClick={handleManualSave}
-                        className="footer-button save-button"
-                        sx={{
-                            background: "linear-gradient(135deg, #1976d2, #42a5f5)",
-                            "&:hover": {
-                                background: "linear-gradient(135deg, #1565c0, #1976d2)",
-                            },
-                        }}
-                    >
-                        Save Progress
                     </Button>
                 </Box>
             </Fade>
