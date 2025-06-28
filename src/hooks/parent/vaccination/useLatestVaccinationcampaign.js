@@ -13,6 +13,10 @@ const useLatestVaccinationCampaign = () => {
     setError(null);
     try {
       const campaign = await getNewestVaccinationCampaignAction();
+
+      //debug:
+      console.log("Fetched Latest Vaccination Campaign Data:", campaign);
+
       setLatestCampaign(campaign);
     } catch (err) {
       setError(err);

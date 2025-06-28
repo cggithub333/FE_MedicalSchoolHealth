@@ -46,6 +46,20 @@ function ToolbarActionsUtility() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
+  // if pupils is defined, store first pupil's information in localStorage:
+  React.useEffect(() => {
+    if (pupils && pupils.length > 0) {
+      const firstPupil = pupils[0];
+      if (!window.localStorage.getItem("pupilId")) {
+        window.localStorage.setItem("pupilId", firstPupil.pupilId);
+        window.localStorage.setItem("pupilName", `${firstPupil.lastName} ${firstPupil.firstName}`);
+        window.localStorage.setItem("pupilGender", `${firstPupil.gender}`);
+        const encodedStudentInfor = Base64.encode(JSON.stringify(firstPupil));
+        window.localStorage.setItem("pupilInfor", encodedStudentInfor);
+      }
+    }
+  }, [pupils]);
+
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -132,7 +146,7 @@ function ToolbarActionsUtility() {
         PaperProps={{ style: { minWidth: 200 } }}
       >
         {isLoading ? (
-          <MenuItem disabled>... loading ...</MenuItem>
+          <MenuItem disabled>loading..</MenuItem>
         ) : (
           (pupils || []).map((child) => {
 

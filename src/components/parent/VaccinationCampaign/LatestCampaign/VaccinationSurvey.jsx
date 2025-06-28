@@ -33,6 +33,7 @@ import {
   Close,
 } from "@mui/icons-material"
 
+import useLatestVaccinationCampaign from "@hooks/parent/vaccination/useLatestVaccinationcampaign"
 import useAllVaccinationSurveys from "@hooks/parent/vaccination/useAllVaccinationSurveys"
 import useUpdateVaccineSurveyStatus from "@hooks/parent/vaccination/useUpdateVaccineSurveyStatus"
 
@@ -89,7 +90,11 @@ const getStatusChip = (status) => {
 
 const VaccinationSurvey = () => {
   const { vaccinationSurveys, loading, error, refetch } = useAllVaccinationSurveys();
-  const { updateStatus, updateLoading, updateError, responseData } = useUpdateVaccineSurveyStatus();
+  const { updateStatus, loading: updateLoading, error: updateError, responseData } = useUpdateVaccineSurveyStatus();
+  const { latestCampaign, loading: campaignLoading, error: campaignError } = useLatestVaccinationCampaign();
+
+  //debug:
+  // console.log("Vaccination Survey.jsx => Latest Campaign:", latestCampaign);
   
   const [selectedForm, setSelectedForm] = useState(null)
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -423,16 +428,29 @@ const VaccinationSurvey = () => {
                 </Typography>
               </Alert>
 
-              <FormControlLabel
-                control={<Checkbox checked={isConfirmed} onChange={(e) => setIsConfirmed(e.target.checked)} />}
-                label={
-                  <Typography variant="body2">
-                    I confirm that I have read and understood the vaccination information and I am making an informed
-                    decision for my child.
-                  </Typography>
-                }
-                sx={{ mb: 2 }}
-              />
+              {/* Confirmation Checkbox */}
+              {
+                latestCampaign != null && (
+                  <FormControlLabel
+                    control={<Checkbox checked={isConfirmed} onChange={(e) => setIsConfirmed(e.target.checked)} />}
+                    label={
+                      <Typography variant="body2">
+                        I confirm that I have read and understood the vaccination information and I am making an informed
+                        decision for my child.
+                      </Typography>
+                    }
+                    sx={{ mb: 2 }}
+                  />
+                )
+              }
+              {
+                latestCampaign == null && (
+                  <Alert severity="info" sx={{ mb: 3 }}>
+                    <Typography variant="body2">
+                      The vaccination campaign is in progress or completed already.
+                    </Typography>
+                  </Alert>
+              )}
             </Box>
           )}
         </DialogContent>

@@ -4,25 +4,25 @@ import { updateSurveyStatusAction } from '@api/parent/parent-requests-action/vac
 import { useState, useEffect, useCallback } from 'react';
 
 const useUpdateVaccineSurveyStatus = (consentFormId, status) => {
-  const [updateLoading, setUpdateLoading] = useState(false);
-  const [updateError, setUpdateError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [responseData, setResponseData] = useState(null);
 
   // Define the updateStatus function using useCallback to memoize it
   // This function will be called to update the vaccine survey status
   const updateStatus = useCallback(async (fncConsentFormId, fncStatus) => {
 
-    setUpdateLoading(true);
-    setUpdateError(null);
+    setLoading(true);
+    setError(null);
 
     try {
       const result = await updateSurveyStatusAction(fncConsentFormId, fncStatus);
       setResponseData(result);
     } catch (err) {
-      setUpdateError(err);
+      setError(err);
       console.error("Error updating vaccine survey status:", err);
     } finally {
-      setUpdateLoading(false);
+      setLoading(false);
     }
   }, []);
 
@@ -36,8 +36,8 @@ const useUpdateVaccineSurveyStatus = (consentFormId, status) => {
 
   return { 
     updateStatus,
-    updateLoading, 
-    updateError, 
+    loading, 
+    error, 
     responseData 
   };
 }

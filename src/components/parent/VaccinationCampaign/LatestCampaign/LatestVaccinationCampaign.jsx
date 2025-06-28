@@ -41,10 +41,10 @@ const LatestVaccinationCampaign = () => {1
   const { latestCampaign, loading, error, refetch } = useLatestVaccinationCampaign();
 
   // debug:
-  // console.log("Fetching Latest Vaccination Campaign Data...\n", JSON.stringify(latestCampaign));
+  console.log("Fetching Latest Vaccination Campaign Data...\n", JSON.stringify(latestCampaign));
 
-  //debug:
-  // console.log("Latest Vaccination Campaign Data:", latestCampaign);
+  // debug:
+  console.log("Latest Vaccination Campaign Data:", latestCampaign);
 
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
@@ -115,9 +115,9 @@ const LatestVaccinationCampaign = () => {1
         <Alert
           severity="error"
           icon={<Warning />}
-          action={<Chip label="Thử lại" onClick={refetch} icon={<Refresh />} variant="outlined" size="small" />}
+          action={          <Chip label="Try again" onClick={refetch} icon={<Refresh />} variant="outlined" size="small" />}
         >
-          Có lỗi xảy ra khi tải thông tin chiến dịch tiêm chủng: {error}
+          An error occurred while loading vaccination campaign information: {error}
         </Alert>
       </Container>
     )
@@ -130,9 +130,9 @@ const LatestVaccinationCampaign = () => {1
           <CardContent sx={{ textAlign: "center", py: 4 }}>
             <Vaccines sx={{ fontSize: 48, color: "text.secondary", mb: 2 }} />
             <Typography variant="h6" fontWeight="bold" sx={{ mb: 1 }}>
-              Không có chiến dịch tiêm chủng
+              No Vaccination Campaign Available
             </Typography>
-            <Typography color="text.secondary">Hiện tại không có chiến dịch tiêm chủng nào được công bố</Typography>
+            <Typography color="text.secondary">Currently, there are no vaccination campaigns published</Typography>
           </CardContent>
         </Card>
       </Container>
@@ -161,7 +161,7 @@ const LatestVaccinationCampaign = () => {1
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <LocalHospital color="primary" />
               <Typography variant="h6" fontWeight="bold">
-                Chiến dịch #{campaign.campaignId}
+                Campaign #{campaign.campaignId}
               </Typography>
             </Box>
             <Box sx={{ display: "flex", gap: 1 }}>
@@ -204,13 +204,13 @@ const LatestVaccinationCampaign = () => {1
                   </Box>
                   <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
                     <Chip
-                      label={`${campaign.disease.doseQuantity} liều`}
+                      label={`${campaign.disease.doseQuantity} doses`}
                       size="medium"
                       color="primary"
                       variant="outlined"
                     />
                     {campaign.disease.isInjectedVaccine && (
-                      <Chip label="Tiêm chủng" size="medium" color="success" variant="outlined" />
+                      <Chip label="Injectable Vaccine" size="medium" color="success" variant="outlined" />
                     )}
                   </Box>
                 </Box>

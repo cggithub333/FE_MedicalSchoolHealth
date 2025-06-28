@@ -99,23 +99,22 @@ export default function HealthCampaignPage() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ minHeight: "100vh", width: "100%",bgcolor: "grey.50", borderRadius: '15px', overflow: "hidden", boxShadow: 5 }}>
+      <Box sx={{ minHeight: "100vh", width: "100%",bgcolor: "grey.50", borderRadius: '6px', overflow: "hidden", boxShadow: 5 }}>
         {/* Hero Section */}
         <Box
           sx={{
             color: "white",
             py: 6,
-            background: "#65aee7",
           }}
         >
           <Container maxWidth="lg">
             <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 3 }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                <Avatar sx={{ bgcolor: "white", color: "primary.main", width: 56, height: 56 }}>
+                <Avatar sx={{ bgcolor: "#e6f8f9", color: "primary.main", width: 56, height: 56, boxShadow: 2 }}>
                   <LocalHospital fontSize="large" />
                 </Avatar>
                 <Box>
-                  <Typography variant="h3" fontWeight="bold" sx={{ mb: 1 }}>
+                  <Typography variant="h4" fontWeight="bold" sx={{ mb: 1, color: "#65aee7" }}>
                     {campaignData.title}
                   </Typography>
                   {/* <Typography variant="h6" sx={{ opacity: 0.9 }}>
@@ -126,33 +125,34 @@ export default function HealthCampaignPage() {
               <Chip
                 label={(campaignData.statusHealthCampaign)}
                 color={getStatusColor(campaignData.statusHealthCampaign)}
-                variant="filled"
+                variant="outlined"
                 sx={{
                   fontWeight: "bold",
                   fontSize: "1rem",
-                  py: 2,
+                  py: 0,
                   px: 3,
                   bgcolor: "white",
                   color: "primary.main",
+                  boxShadow: 2,
                 }}
               />
             </Box>
-            <Typography variant="h5" sx={{ opacity: 0.9, maxWidth: 600 }} fontStyle={"italic"}>
+            <Typography variant="h5" sx={{ opacity: 0.9, width: "100%", fontSize: "18px", color: "#000", fontStyle: "italic" }}>
               Description: {campaignData.description}
             </Typography>
           </Container>
         </Box>
 
         {/* Main Content */}
-        <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Container maxWidth="lg" sx={{ py: 2 }}>
           {/* Location Section */}
-          <Paper elevation={3} sx={{ p: 4, mb: 4, borderRadius: 3, ...hoverPaper }}>
+          <Paper elevation={3} sx={{ p: 2, mb: 2,borderRadius: "7px", ...hoverPaper }}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 3, mb: 2 }}>
               <Avatar sx={{ bgcolor: "primary.main", width: 48, height: 48 }}>
                 <LocationOn />
               </Avatar>
               <Box>
-                <Typography variant="h5" fontWeight="bold" color="text.primary">
+                <Typography variant="h5" fontWeight="bold" color="#707070">
                   Examination Location
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
@@ -163,7 +163,7 @@ export default function HealthCampaignPage() {
             <Box
               sx={{
                 bgcolor: "primary.50",
-                p: 3,
+                p: 1,
                 borderRadius: 2,
                 borderColor: "primary.200",
               }}
@@ -175,9 +175,9 @@ export default function HealthCampaignPage() {
           </Paper>
 
           {/* Schedule Section */}
-          <Paper elevation={3} sx={{ p: 4, mb: 4, borderRadius: 3, ...hoverPaper }}>
-            <Typography variant="h5" fontWeight="bold" sx={{ mb: 3, display: "flex", alignItems: "center", gap: 1 }}>
-              <CalendarToday color="primary"/>
+          <Paper elevation={3} sx={{ p: 2, mb: 2, borderRadius: "7px", ...hoverPaper }}>
+            <Typography variant="h5" fontWeight="bold" sx={{ mb: 3, display: "flex", alignItems: "center", gap: 1, color: `#707070` }}>
+              <CalendarToday/>
               Campaign Schedule
             </Typography>
 
@@ -263,29 +263,29 @@ export default function HealthCampaignPage() {
 
             {/* Examination Period Summary */}
             <Box sx={{ mt: 4 }}>
-              <Paper
-                elevation={2}
-                sx={{
-                  p: 3,
-                  bgcolor: "primary.main",
-                  color: "white",
+              <Alert severity="info" sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
                   textAlign: "center",
+                  p: 1,
+                  bgcolor: "primary.50",
                   borderRadius: 2,
-                }}
-              >
+                  borderColor: "primary.200",  
+              }}>
                 <Typography variant="h6" fontWeight="bold" sx={{ mb: 1 }}>
                   Health Check Period
                 </Typography>
-                <Typography variant="h4" fontWeight="bold">
+                <Typography variant="h5" fontWeight="bold">
                   {startDate.date} - {endDate.date}
                 </Typography>
-              </Paper>
+              </Alert>
             </Box>
           </Paper>
 
           {/* Action Buttons Section */}
-          <Paper elevation={3} sx={{ p: 4, mb: 4, borderRadius: 3, ...hoverPaper }}>
-            <Typography variant="h5" fontWeight="bold" sx={{ mb: 3 }}>
+          <Paper elevation={3} sx={{ p: 2, mb: 4, borderRadius: "7px", ...hoverPaper }}>
+            <Typography variant="h5" fontWeight="bold" sx={{ mb: 3, color: "#707070" }}>
               Quick Actions
             </Typography>
             <Grid container spacing={3}>
@@ -297,7 +297,7 @@ export default function HealthCampaignPage() {
                     size="large"
                     startIcon={<CalendarMonth />}
                     sx={{
-                      py: 2,
+                      py: 1,
                       fontSize: "1.1rem",
                       fontWeight: "bold",
                       borderRadius: 2,
@@ -321,7 +321,7 @@ export default function HealthCampaignPage() {
                     size="large"
                     startIcon={<Summarize />}
                     sx={{
-                      py: 2,
+                      py: 1,
                       fontSize: "1.1rem",
                       fontWeight: "bold",
                       borderRadius: 2,
@@ -345,10 +345,11 @@ export default function HealthCampaignPage() {
           <Paper elevation={1} sx={{ p: 3, borderRadius: 2, bgcolor: "grey.100" }}>
             <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <Info fontSize="small" color="action" />
-                <Typography variant="body2" color="text.secondary">
-                  Campaign created on: {formatDate(campaignData.createdAt).date}
-                </Typography>
+                <Alert severity="success">
+                  <Typography variant="body2" color="text.secondary">
+                    Campaign created on: {formatDate(campaignData.createdAt).date}
+                  </Typography>
+                </Alert>
               </Box>
               <Typography variant="body2" color="text.secondary">
                 Campaign ID: #{campaignData.campaignId}
