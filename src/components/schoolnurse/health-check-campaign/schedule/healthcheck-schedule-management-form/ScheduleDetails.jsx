@@ -39,6 +39,7 @@ import {
     Assignment,
 } from "@mui/icons-material"
 import { useSaveResultOfHealthCheckCampaign } from "../../../../../hooks/schoolnurse/healthcheck/schedule/useSaveResultOfHealthCheckCampaign"
+import { useNavigate } from "react-router-dom"
 
 // Frontend disease categories - this is the comprehensive list for health checks
 const HEALTH_CHECK_DISEASES = [
@@ -66,6 +67,7 @@ const HEALTH_CHECK_DISEASES = [
 ]
 
 const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
+    const navigate = useNavigate();
     const [healthData, setHealthData] = useState({})
     const [notes, setNotes] = useState({})
     const [measurements, setMeasurements] = useState({})
@@ -207,6 +209,9 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
 
     return (
         <div className="schedule-details-root enhanced-ui">
+            {/* Quick Navigation Bar */}
+
+
             <Fade in={true} timeout={500}>
                 <Card className="details-header modern-card" elevation={2}>
                     <CardContent>

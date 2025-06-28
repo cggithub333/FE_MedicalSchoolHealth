@@ -41,8 +41,10 @@ import {
     Download,
     SelectAll,
 } from "@mui/icons-material"
+import { useNavigate } from "react-router-dom"
 
 const ScheduleInjectedList = ({ shift, onBack }) => {
+    const navigate = useNavigate()
     const grade = Number(shift?.grade ?? shift?.Grade ?? 1)
     const { pupils: rawPupils = [], isLoading } = usePupilsByGrade(grade)
     const [students, setStudents] = useState([])
@@ -93,8 +95,8 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
 
     useEffect(() => {
         // Only initialize if not already initialized for this pupils set and students do not match pupils
-        const pupilsIds = (pupils || []).map(p => p.pupilId).join(',')
-        const studentsIds = (students || []).map(s => s.pupilId).join(',')
+        const pupilsIds = (pupils || []).map((p) => p.pupilId).join(",")
+        const studentsIds = (students || []).map((s) => s.pupilId).join(",")
         if (!initializedRef.current && pupils && pupils.length > 0 && pupilsIds !== studentsIds) {
             setStudents(
                 pupils.map((pupil) => ({
@@ -174,6 +176,8 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
     if (isLoading) {
         return (
             <div className="schedule-list-root loading-container">
+                {/* Quick Navigation Bar */}
+
                 <CircularProgress size={60} sx={{ color: "#1976d2" }} />
                 <Typography variant="h6" sx={{ mt: 2, color: "#666" }}>
                     Loading Grade {grade} students...
@@ -192,6 +196,7 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
         return (
             <Fade in={true} timeout={300}>
                 <div>
+
                     <ScheduleDetails
                         pupilId={selectedPupilId}
                         pupilData={students.find((s) => s.pupilId === selectedPupilId)}
@@ -204,6 +209,8 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
 
     return (
         <div className="schedule-list-root">
+            {/* Quick Navigation Bar */}
+
             <Fade in={true} timeout={500}>
                 <Card className="schedule-list-header" elevation={0}>
                     <CardContent>

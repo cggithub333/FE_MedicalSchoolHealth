@@ -26,6 +26,7 @@ import "./StyleScheduleForm.scss"
 import ScheduleInjectedList from "../healthcheck-schedule-management-details/ScheduleInjectedList"
 import { useNewestCampaignByStatus } from "../../../../../hooks/schoolnurse/healthcheck/schedule/useNewestCampaignByStatus"
 import { fetchPupilsByGrade } from "../../../../../api/schoolnurse/schoolnurse-requests-action/healthcheck/pupils-by-grade-request-action"
+import { useNavigate } from "react-router-dom"
 
 const GRADES = [1, 2, 3, 4, 5]
 
@@ -105,6 +106,7 @@ const HealthCheckScheduleForm = () => {
     const [pupilsByGrade, setPupilsByGrade] = useState({})
     const [pupilsLoading, setPupilsLoading] = useState(true)
     const [animateCards, setAnimateCards] = useState(false)
+    const navigate = useNavigate();
 
     // Find active campaign (IN_PROGRESS)
     const activeCampaign = useMemo(() => {
@@ -189,6 +191,23 @@ const HealthCheckScheduleForm = () => {
     if (loading || pupilsLoading) {
         return (
             <div className="vaccine-schedule-root">
+                {/* Quick Navigation Bar */}
+                <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => navigate("/schoolnurse/health-check-campaign/schedule")}
+                    >
+                        Health Check Schedule
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        color="secondary"
+                        onClick={() => navigate("/schoolnurse/vaccination-campaign/schedule")}
+                    >
+                        Vaccination Schedule
+                    </Button>
+                </Box>
                 <Box sx={{ width: "100%", maxWidth: 1200, mx: "auto" }}>
                     {GRADES.map((grade) => (
                         <Card key={grade} sx={{ mb: 3, borderRadius: 3 }}>
@@ -207,6 +226,23 @@ const HealthCheckScheduleForm = () => {
     if (error || !activeCampaign) {
         return (
             <div className="vaccine-schedule-root">
+                {/* Quick Navigation Bar */}
+                <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => navigate("/schoolnurse/health-check-campaign/schedule")}
+                    >
+                        Health Check Schedule
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        color="secondary"
+                        onClick={() => navigate("/schoolnurse/vaccination-campaign/schedule")}
+                    >
+                        Vaccination Schedule
+                    </Button>
+                </Box>
                 <Paper
                     elevation={3}
                     sx={{
@@ -231,16 +267,20 @@ const HealthCheckScheduleForm = () => {
 
     if (showInjectionList && selectedShift) {
         return (
-            <Fade in={showInjectionList}>
-                <div>
-                    <ScheduleInjectedList shift={selectedShift} campaign={activeCampaign} onBack={handleBackFromStudentList} />
-                </div>
-            </Fade>
+            <>
+                <Fade in={showInjectionList}>
+                    <div>
+                        <ScheduleInjectedList shift={selectedShift} campaign={activeCampaign} onBack={handleBackFromStudentList} />
+                    </div>
+                </Fade>
+            </>
         )
     }
 
     return (
         <div className="vaccine-schedule-root">
+            {/* Quick Navigation Bar */}
+
             <Fade in={!showInjectionList}>
                 <Box sx={{ width: "100%", maxWidth: 1200, mx: "auto" }}>
                     {/* Campaign Header */}

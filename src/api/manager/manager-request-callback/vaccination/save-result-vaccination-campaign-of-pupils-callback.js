@@ -1,7 +1,7 @@
 import request from "../../../request";
 
 // Save result campaign of pupils
-export const saveResultCampaignOfPupils = async (consentFormId, status) => {
+export const saveResultCampaignOfPupils = async ({ consentFormId, status }) => {
     try {
         const response = await request.post(`consent-forms/${consentFormId}/status`, null, {
             params: { status }
