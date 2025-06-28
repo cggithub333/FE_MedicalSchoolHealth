@@ -1,248 +1,365 @@
-import React, { useState } from 'react';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import CircularProgress from '@mui/material/CircularProgress';
-import useNewestCampaign from '../../../../hooks/manager/useNewestCampaignByStatus';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import Button from '@mui/material/Button';
-import HealthCheckCampaignForm from '../new-health-check/health-check-campaign-form/HealthCheckCampaignForm';
-import { updateStatusOfNewestCampaignAction } from '../../../../api/manager/manager-requests-action/newest-campaign-request-action';
+import { useState } from "react"
+import {
+    Box,
+    Card,
+    CardContent,
+    Typography,
+    Button,
+    Fab,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    CircularProgress,
+    Alert,
+    Chip,
+    Paper,
+    Fade,
+} from "@mui/material"
+import AddIcon from "@mui/icons-material/Add"
+import { useNewestCampaign } from "../../../../hooks/manager/healthcheck/create-new-campaign/useNewestCampaignByStatus"
+import { useUpdateCampaignStatus } from "../../../../hooks/manager/healthcheck/create-new-campaign/useUpdateStatusOfNewCampaign"
+import HealthCheckCampaignForm from "./health-check-campaign-form/HealthCheckCampaignForm"
+import "./StyleNewHealthCheckCampaign.scss" // Assuming this file contains the necessary styles
+
 const NewHealthCheckCampaign = () => {
-    const { newestCampaign = [], isLoading } = useNewestCampaign();
-    const [open, setOpen] = useState(false);
-    const [selectedCampaign, setSelectedCampaign] = useState(null);
-    const [showAddForm, setShowAddForm] = useState(false);
-    const [publishStatus, setPublishStatus] = useState(false);
+    const { newestCampaign, isLoading } = useNewestCampaign()
+    const { updateCampaignStatus, isUpdating } = useUpdateCampaignStatus()
+    const [selectedCampaign, setSelectedCampaign] = useState(null)
+    const [dialogOpen, setDialogOpen] = useState(false)
+    const [createFormOpen, setCreateFormOpen] = useState(false)
+    const [activeStep, setActiveStep] = useState(0)
 
-    const filteredNewestCampaigns = Array.isArray(newestCampaign)
-        ? newestCampaign.filter(c => c.status === 'Pending' || c.status === 'Published')
-        : [];
+    // Ensure newestCampaign is always an array
+    const campaigns = Array.isArray(newestCampaign) ? newestCampaign : []
 
-    const handleCardClick = (campaign) => {
-        setSelectedCampaign(campaign);
-        setOpen(true);
-    };
-    const handlePublishButtonClick = () => {
+    // Debug: log all campaign statuses
+    console.log("Campaign statuses:", campaigns.map(c => c.statusHealthCampaign))
 
-        console.log(newestCampaign);
+    // Filter campaigns by status (robust to whitespace/case)
+    const pendingCampaigns = campaigns.filter((c) => (c.statusHealthCampaign || "").trim().toUpperCase() === "PENDING")
+    const publishedCampaigns = campaigns.filter((c) => (c.statusHealthCampaign || "").trim().toUpperCase() === "PUBLISHED")
+    const inProgressCampaigns = campaigns.filter((c) => (c.statusHealthCampaign || "").trim().toUpperCase() === "IN_PROGRESS")
 
+    const steps = [
+        {
+            label: "Pending Campaigns",
+            description: "Select a campaign to publish",
+            campaigns: pendingCampaigns,
+            nextStatus: "PUBLISHED",
+            actionLabel: "Publish Campaign",
+        },
+        {
+            label: "Published Campaigns",
+            description: "Move published campaign to in progress",
+            campaigns: publishedCampaigns,
+            nextStatus: "IN_PROGRESS",
+            actionLabel: "Start Campaign",
+        },
+        {
+            label: "In Progress Campaigns",
+            description: "Currently active campaigns",
+            campaigns: inProgressCampaigns,
+            nextStatus: null,
+            actionLabel: null,
+        },
+    ]
+
+    const handleCampaignClick = (campaign) => {
+        setSelectedCampaign(campaign)
+        setDialogOpen(true)
+    }
+
+    const handleStatusUpdate = async (campaign, newStatus) => {
         try {
-            // Call the publish API or function here
-            if (newestCampaign && newestCampaign[0].status) {
-
-                newestCampaign[0].status === "Pending" ? (updateStatusOfNewestCampaignAction(newestCampaign[0].id, "Published"))
-                    : console.log("No status updated");
-
-                alert(`Campaign with ID ${newestCampaign[0].id} has been published successfully!`);
-                setPublishStatus(true);
-
-                setOpen(false);
-            }
+            await updateCampaignStatus(campaign.campaignId, newStatus)
+            setDialogOpen(false)
+            // Refresh data or update local state
+            window.location.reload()
         } catch (error) {
-            console.error("Error publishing campaign:", error);
+            console.error("Failed to update campaign status:", error)
+            alert("Failed to update campaign status")
         }
+    }
 
+    const formatDate = (dateString) => {
+        return new Date(dateString).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+        })
+    }
 
-    };
-    const handleClose = () => {
-        setOpen(false);
-        setSelectedCampaign(null);
-    };
-    const handleAddFormClose = () => setShowAddForm(false);
+    const cardSx = {
+        minWidth: 320,
+        maxWidth: 340,
+        minHeight: 220,
+        borderRadius: 3,
+        boxShadow: "0 8px 32px rgba(102,126,234,0.10)",
+        background: "linear-gradient(135deg, #e3f2fd 0%, #f8fafc 100%)",
+        transition: "all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+        cursor: "pointer",
+        mb: 2,
+        '&:hover': {
+            boxShadow: "0 16px 40px rgba(102,126,234,0.18)",
+            transform: "translateY(-4px) scale(1.02)",
+        },
+    }
+
+    const fabSx = {
+        position: "fixed",
+        bottom: 32,
+        right: 32,
+        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        color: "white",
+        boxShadow: "0 8px 32px rgba(102,126,234,0.4)",
+        '&:hover': {
+            background: "linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%)",
+            transform: "scale(1.1)",
+        },
+    }
+
+    const bgGradientSx = {
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: -1,
+        background: "linear-gradient(135deg, #667eea 0%, #764ba2 60%, #f7971e 100%)",
+        minHeight: "100vh",
+        width: "100vw",
+    }
+
+    const statusColors = {
+        PENDING: "warning",
+        PUBLISHED: "info",
+        IN_PROGRESS: "primary",
+    }
+    const statusLabels = {
+        PENDING: "Pending",
+        PUBLISHED: "Published",
+        IN_PROGRESS: "In Progress",
+    }
+    const statusDescriptions = {
+        PENDING: "Campaigns waiting to be published.",
+        PUBLISHED: "Campaigns ready to start.",
+        IN_PROGRESS: "Active health check campaigns.",
+    }
+    function getStatusColor(status) {
+        return statusColors[status] || "default";
+    }
+    const statusOrder = ["PENDING", "PUBLISHED", "IN_PROGRESS"];
+
+    function canUpdateToProgress(campaign) {
+        return campaign.statusHealthCampaign === "PUBLISHED" && inProgressCampaigns.length === 0;
+    }
+
+    function canUpdateToPending(campaign) {
+        return campaign.statusHealthCampaign === "PENDING" && publishedCampaigns.length === 0;
+    }
 
     if (isLoading) {
         return (
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="300px">
+            <Box sx={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f8fafc" }}>
                 <CircularProgress />
             </Box>
-        );
-    }
-
-    if (!filteredNewestCampaigns.length || publishStatus) {
-        return (
-            <Box p={3} sx={{ position: 'relative' }}>
-                <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-                    <Typography variant="h4" color="primary.main" fontWeight={700}>
-                        Health Check Campaigns
-                    </Typography>
-                    <Button
-                        variant="contained"
-                        color="success"
-                        onClick={() => setShowAddForm(true)}
-                        sx={{ fontWeight: 700, fontSize: 16, px: 3, py: 1.5 }}
-                    >
-                        + Add New Campaign
-                    </Button>
-                </Box>
-                <Box textAlign="center" mt={4}>
-                    No campaigns found.
-                </Box>
-            </Box>
-        );
+        )
     }
 
     return (
-        <>
-            {!publishStatus && (
-                <Box p={3} sx={{ position: 'relative' }}>
-                    <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-                        <Typography variant="h4" color="primary.main" fontWeight={700}>
-                            Health Check Campaigns
-                        </Typography>
-                        <Button
-                            variant="contained"
-                            color="success"
-                            onClick={() => setShowAddForm(true)}
-                            sx={{ fontWeight: 700, fontSize: 16, px: 3, py: 1.5 }}
-                        >
-                            + Add New Campaign
-                        </Button>
-                    </Box>
-                    <Box
-                        display="flex"
-                        flexWrap="wrap"
-                        gap={3}
-                        justifyContent="center"
-                        className={open || showAddForm ? 'blurred-cards' : ''}
-                        style={
-                            open || showAddForm
-                                ? { filter: 'blur(4px)', pointerEvents: 'none', userSelect: 'none', transition: 'filter 0.3s' }
-                                : {}
-                        }
-                    >
-                        {filteredNewestCampaigns.map((campaign) => (
-                            <Card
-                                key={campaign.id}
-                                className="campaign-card"
-                                onClick={() => campaign.status === 'Pending' && handleCardClick(campaign)}
-                                style={{
-                                    cursor: campaign.status === 'Pending' ? 'pointer' : 'not-allowed',
-                                    width: 360,
-                                    minWidth: 360,
-                                    maxWidth: 360,
-                                    opacity: campaign.status === 'Published' ? 0.6 : 1,
-                                    pointerEvents: campaign.status === 'Pending' ? 'auto' : 'none',
-                                }}
-                            >
-                                <CardContent>
-                                    <Typography variant="h6" color="primary" gutterBottom>
-                                        {campaign.description}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        <strong>Address:</strong> {campaign.address}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        <strong>Start:</strong> {new Date(campaign.startExaminationDate).toLocaleString()}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        <strong>End:</strong> {new Date(campaign.endExaminationDate).toLocaleString()}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        <strong>Deadline:</strong> {new Date(campaign.deadlineDate).toLocaleString()}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        <strong>Status:</strong> {campaign.status}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        <strong>Active:</strong> {campaign.isActive ? 'Yes' : 'No'}
-                                    </Typography>
-                                    <Typography variant="caption" color="text.disabled" display="block" mt={1}>
-                                        Created at: {new Date(campaign.created_at).toLocaleString()}
-                                    </Typography>
-                                </CardContent>
-                            </Card>
+        <Box sx={{ minHeight: "100vh", position: "relative", display: "flex", flexDirection: "column" }}>
+            <Box sx={bgGradientSx}></Box>
+            <Fade in timeout={800}>
+                <Paper elevation={3} sx={{ maxWidth: 1400, mx: "auto", mt: 6, mb: 6, p: 4, borderRadius: 4, boxShadow: "0 12px 48px rgba(102,126,234,0.12)", background: "#fff", position: "relative" }}>
+                    <Typography variant="h4" sx={{ fontWeight: 700, mb: 4, background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                        Health Check Campaign
+                    </Typography>
+                    <Box sx={{ display: "flex", gap: 4, flexWrap: "wrap", justifyContent: "space-between" }}>
+                        {statusOrder.map((status) => (
+                            <Box key={status} sx={{ flex: 1, minWidth: 280, maxWidth: 340, display: "flex", flexDirection: "column" }}>
+                                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1, color: '#764ba2' }}>{statusLabels[status]}</Typography>
+                                <Typography variant="body2" sx={{ mb: 2, color: "text.secondary" }}>{statusDescriptions[status]}</Typography>
+                                <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 2 }}>
+                                    {steps.find((s) => s.label.toUpperCase().includes(statusLabels[status].toUpperCase())).campaigns.length === 0 ? (
+                                        <Alert severity="info" sx={{ borderRadius: 2 }}>
+                                            No campaigns in this stage
+                                        </Alert>
+                                    ) : (
+                                        steps.find((s) => s.label.toUpperCase().includes(statusLabels[status].toUpperCase())).campaigns.map((campaign) => (
+                                            <Card
+                                                key={campaign.campaignId}
+                                                sx={cardSx}
+                                                onClick={() => {
+                                                    setSelectedCampaign(campaign);
+                                                    setDialogOpen(true);
+                                                }}
+                                            >
+                                                <CardContent>
+                                                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
+                                                        <Typography variant="h6" sx={{ fontWeight: 700, background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                                                            {campaign.title}
+                                                        </Typography>
+                                                        <Chip
+                                                            label={statusLabels[campaign.statusHealthCampaign]}
+                                                            color={statusColors[campaign.statusHealthCampaign]}
+                                                            size="small"
+                                                            sx={{ fontWeight: 600 }}
+                                                        />
+                                                    </Box>
+                                                    <Typography variant="body2" sx={{ mb: 0.5 }}><strong>Description:</strong> {campaign.description}</Typography>
+                                                    <Typography variant="body2" sx={{ mb: 0.5 }}><strong>Address:</strong> {campaign.address}</Typography>
+                                                    <Box sx={{ mt: 1 }}>
+                                                        <Typography variant="body2"><strong>Start Date:</strong> {formatDate(campaign.startExaminationDate)}</Typography>
+                                                        <Typography variant="body2"><strong>End Date:</strong> {formatDate(campaign.endExaminationDate)}</Typography>
+                                                        <Typography variant="body2"><strong>Deadline:</strong> {formatDate(campaign.deadlineDate)}</Typography>
+                                                    </Box>
+                                                </CardContent>
+                                            </Card>
+                                        ))
+                                    )}
+                                </Box>
+                            </Box>
                         ))}
                     </Box>
-                    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-                        <DialogTitle>
-                            <Box display="flex" alignItems="center" gap={1}>
-                                <span role="img" aria-label="campaign" style={{ fontSize: 28 }}>📋</span>
-                                <Typography variant="h6" component="span" color="primary.main">
-                                    Campaign Details
-                                </Typography>
-                            </Box>
-                        </DialogTitle>
-                        <DialogContent dividers sx={{ background: "#f8fafc" }}>
-                            {selectedCampaign && (
-                                <Box
-                                    sx={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        gap: 2,
-                                        mt: 1,
-                                        fontSize: 16,
-                                    }}
-                                >
-                                    <Typography variant="h6" color="primary" gutterBottom>
-                                        {selectedCampaign.description}
-                                    </Typography>
-                                    <Box display="flex" alignItems="center" gap={1}>
-                                        <Typography variant="body2" color="text.secondary" sx={{ minWidth: 90 }}>
-                                            <strong>Address:</strong>
-                                        </Typography>
-                                        <Typography variant="body2">{selectedCampaign.address}</Typography>
-                                    </Box>
-                                    <Box display="flex" alignItems="center" gap={1}>
-                                        <Typography variant="body2" color="text.secondary" sx={{ minWidth: 90 }}>
-                                            <strong>Start:</strong>
-                                        </Typography>
-                                        <Typography variant="body2">{new Date(selectedCampaign.startExaminationDate).toLocaleString()}</Typography>
-                                    </Box>
-                                    <Box display="flex" alignItems="center" gap={1}>
-                                        <Typography variant="body2" color="text.secondary" sx={{ minWidth: 90 }}>
-                                            <strong>End:</strong>
-                                        </Typography>
-                                        <Typography variant="body2">{new Date(selectedCampaign.endExaminationDate).toLocaleString()}</Typography>
-                                    </Box>
-                                    <Box display="flex" alignItems="center" gap={1}>
-                                        <Typography variant="body2" color="text.secondary" sx={{ minWidth: 90 }}>
-                                            <strong>Deadline:</strong>
-                                        </Typography>
-                                        <Typography variant="body2">{new Date(selectedCampaign.deadlineDate).toLocaleString()}</Typography>
-                                    </Box>
-                                    <Box display="flex" alignItems="center" gap={1}>
-                                        <Typography variant="body2" color="text.secondary" sx={{ minWidth: 90 }}>
-                                            <strong>Status:</strong>
-                                        </Typography>
-                                        <Typography variant="body2">{selectedCampaign.status}</Typography>
-                                    </Box>
-                                    <Box display="flex" alignItems="center" gap={1}>
-                                        <Typography variant="body2" color="text.secondary" sx={{ minWidth: 90 }}>
-                                            <strong>Active:</strong>
-                                        </Typography>
-                                        <Typography variant="body2">{selectedCampaign.isActive ? 'Yes' : 'No'}</Typography>
-                                    </Box>
-                                    <Typography variant="caption" color="text.disabled" display="block" mt={1}>
-                                        Created at: {new Date(selectedCampaign.created_at).toLocaleString()}
-                                    </Typography>
-                                </Box>
-                            )}
-                        </DialogContent>
-                        <DialogActions sx={{ background: "#f8fafc" }}>
-                            <Button onClick={() => handlePublishButtonClick()} variant="contained" color="primary">
-                                Publish
-                            </Button>
-                            <Button onClick={() => handleDeleteButtonClick()} variant="contained" color="error">
-                                Delete
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
-                    <Dialog open={showAddForm} onClose={handleAddFormClose} maxWidth="sm" fullWidth>
-                        <DialogTitle>Add New Health Check Campaign</DialogTitle>
-                        <DialogContent>
-                            <HealthCheckCampaignForm onSuccess={handleAddFormClose} onCancel={handleAddFormClose} />
-                        </DialogContent>
-                    </Dialog>
-                </Box>
-            )
-            }
-        </>
-    );
-};
+                </Paper>
+            </Fade>
 
-export default NewHealthCheckCampaign;
+            {/* Campaign Details Dialog */}
+            <Dialog
+                open={dialogOpen}
+                onClose={() => setDialogOpen(false)}
+                maxWidth="md"
+                fullWidth
+                PaperProps={{
+                    sx: {
+                        borderRadius: 3,
+                        background: "rgba(255,255,255,0.97)",
+                        backdropFilter: "blur(20px)",
+                        boxShadow: "0 20px 60px rgba(0,0,0,0.18)",
+                    },
+                }}
+            >
+                <DialogTitle>
+                    <Typography variant="h6" sx={{ fontWeight: 700, background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                        Health Check Campaign Details
+                    </Typography>
+                </DialogTitle>
+                <DialogContent>
+                    {selectedCampaign && (
+                        <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 3, py: 2 }}>
+                            <Box>
+                                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Description</Typography>
+                                <Typography variant="body2">{selectedCampaign.description}</Typography>
+                            </Box>
+                            <Box>
+                                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Address</Typography>
+                                <Typography variant="body2">{selectedCampaign.address}</Typography>
+                            </Box>
+                            <Box>
+                                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Status</Typography>
+                                <Chip label={selectedCampaign.statusHealthCampaign} color={getStatusColor(selectedCampaign.statusHealthCampaign)} size="small" />
+                            </Box>
+                            <Box>
+                                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Start Date</Typography>
+                                <Typography variant="body2">{formatDate(selectedCampaign.startExaminationDate)}</Typography>
+                            </Box>
+                            <Box>
+                                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>End Date</Typography>
+                                <Typography variant="body2">{formatDate(selectedCampaign.endExaminationDate)}</Typography>
+                            </Box>
+                            <Box>
+                                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Deadline</Typography>
+                                <Typography variant="body2">{formatDate(selectedCampaign.deadlineDate)}</Typography>
+                            </Box>
+                        </Box>
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setDialogOpen(false)} sx={{ borderRadius: 2, textTransform: "none" }}>Cancel</Button>
+                    {selectedCampaign && (
+                        <>
+                            {canUpdateToProgress(selectedCampaign) && (
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={() => handleStatusUpdate(selectedCampaign, "IN_PROGRESS")}
+                                    disabled={isUpdating}
+                                    sx={{ borderRadius: 2, textTransform: "none" }}
+                                >
+                                    {isUpdating ? <CircularProgress size={20} /> : "Start Campaign"}
+                                </Button>
+                            )}
+                            {canUpdateToPending(selectedCampaign) && (
+                                <Button
+                                    variant="contained"
+                                    color="success"
+                                    onClick={() => handleStatusUpdate(selectedCampaign, "PUBLISHED")}
+                                    disabled={isUpdating}
+                                    sx={{ borderRadius: 2, textTransform: "none" }}
+                                >
+                                    {isUpdating ? <CircularProgress size={20} /> : "Publish Campaign"}
+                                </Button>
+                            )}
+                            {selectedCampaign.statusHealthCampaign === "IN_PROGRESS" && (
+                                <Button
+                                    variant="contained"
+                                    color="success"
+                                    onClick={() => handleStatusUpdate(selectedCampaign, "COMPLETED")}
+                                    disabled={isUpdating}
+                                    sx={{ borderRadius: 2, textTransform: "none" }}
+                                >
+                                    {isUpdating ? <CircularProgress size={20} /> : "Complete Campaign"}
+                                </Button>
+                            )}
+                            {selectedCampaign.statusHealthCampaign === "PUBLISHED" && (
+                                <Alert severity="warning" sx={{ borderRadius: 2, mt: 2 }}>
+                                    Cannot start: There is already a campaign in progress
+                                </Alert>
+                            )}
+                        </>
+                    )}
+                </DialogActions>
+            </Dialog>
+
+            {/* Floating Action Button for Create New Campaign */}
+            <Fab color="primary" aria-label="add" sx={fabSx} onClick={() => setCreateFormOpen(true)}>
+                <AddIcon />
+            </Fab>
+
+            {/* Create Campaign Dialog */}
+            <Dialog
+                open={createFormOpen}
+                onClose={() => setCreateFormOpen(false)}
+                maxWidth="lg"
+                fullWidth
+                PaperProps={{
+                    sx: {
+                        borderRadius: 3,
+                        background: "rgba(255,255,255,0.97)",
+                        backdropFilter: "blur(20px)",
+                        boxShadow: "0 20px 60px rgba(0,0,0,0.18)",
+                    },
+                }}
+            >
+                <DialogTitle sx={{ fontWeight: 700, background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                    Create New Health Check Campaign
+                </DialogTitle>
+                <DialogContent>
+                    <HealthCheckCampaignForm
+                        onSuccess={() => {
+                            setCreateFormOpen(false)
+                            window.location.reload()
+                        }}
+                        onCancel={() => setCreateFormOpen(false)}
+                    />
+                </DialogContent>
+            </Dialog>
+        </Box>
+    )
+}
+
+export default NewHealthCheckCampaign
+

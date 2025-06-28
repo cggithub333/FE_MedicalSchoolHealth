@@ -10,7 +10,8 @@ export const authorizeAction = async (phoneNumber, password) => {
     const callback = () => authorizeCallback(phoneNumber, password);
     const response = await fetchResponse(callback);
 
-    if (response.status === false)  {
+
+    if (response.status === false) {
       console.error("Login failed!");
     }
 
@@ -23,7 +24,7 @@ export const authorizeAction = async (phoneNumber, password) => {
     localStorage.setItem('jwtToken', JWTToken);
     localStorage.setItem('userFullName', userFullName);
   }
-  catch(error) {
+  catch (error) {
     console.log("Login failed!");
     throw error;
   }

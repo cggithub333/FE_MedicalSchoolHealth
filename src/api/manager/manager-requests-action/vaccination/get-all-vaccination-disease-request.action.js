@@ -3,7 +3,7 @@ import { getAllVaccinationDiseases } from "../../manager-request-callback/vaccin
 
 export const fetchAllVaccinationDiseases = async () => {
     try {
-        const response = await fetchResponse(getAllVaccinationDiseases);
+        const response = await fetchResponse(() => getAllVaccinationDiseases());
 
         if (response.status === false)
             throw new Error("Can't fetch all vaccination diseases");

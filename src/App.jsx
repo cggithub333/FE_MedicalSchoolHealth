@@ -21,26 +21,26 @@ function App() {
     return (
         <Router>
             <Routes>
-                <Route path="/homepage" element={<Homepage />}/>
-                <Route element={<RouteProtecter.forAll/>}>
+                <Route path="/homepage" element={<Homepage />} />
+                <Route element={<RouteProtecter.forAll />}>
 
                     <Route path="/admin/*" element={<RouteProtecter.forAdmin>
-                                                        <AdminDashboardRoutes/>
-                                                    </RouteProtecter.forAdmin>} />
-                    
+                        <AdminDashboardRoutes />
+                    </RouteProtecter.forAdmin>} />
+
                     <Route path="/manager/*" element={<RouteProtecter.forManager>
-                                                        <ManagerDashboardRoutes />
-                                                    </RouteProtecter.forManager>} />
+                        <ManagerDashboardRoutes />
+                    </RouteProtecter.forManager>} />
 
                     <Route path="/schoolnurse/*" element={<RouteProtecter.forSchoolNurse>
-                                                            <SchoolNurseDashboardRoutes />
-                                                        </RouteProtecter.forSchoolNurse>} />
+                        <SchoolNurseDashboardRoutes />
+                    </RouteProtecter.forSchoolNurse>} />
 
                     <Route path="/parent/*" element={<RouteProtecter.forParent>
-                                                        <ParentDashboardRoutes />
-                                                    </RouteProtecter.forParent>} />
+                        <ParentDashboardRoutes />
+                    </RouteProtecter.forParent>} />
                 </Route>
-                <Route path="/*" element={<Navigate to={"/homepage"}/>}/>
+                <Route path="/*" element={<Navigate to={"/homepage"} />} />
             </Routes>
         </Router>
     );

@@ -67,7 +67,7 @@ export default function LoginModal() {
 
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle sx={{ textAlign: "center", pb: 1 }}>
-            Welcome back
+          Welcome back
           <Typography variant="body2" color="text.secondary">
             Enter your phone number and password to sign in
             <br/> Admin:        0848025113
@@ -88,9 +88,9 @@ export default function LoginModal() {
               fullWidth
               required
             />
-            <TextField label="Password" type="password" value={password} onKeyDown={(e) => handlePressEnter(e)} 
-                                                                        onChange={(e) => setPassword(e.target.value)} 
-                                                                        placeholder="Enter your password" fullWidth required />
+            <TextField label="Password" type="password" value={password} onKeyDown={(e) => handlePressEnter(e)}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password" fullWidth required />
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <Button variant="contained" size="large" fullWidth onClick={() => handleLoginWithPwd()}>
                 Sign In

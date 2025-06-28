@@ -24,7 +24,7 @@ export default function OtpModal({ open, onClose, phoneNumber }) {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ textAlign: "center", pb: 1 }}>
-          Enter OTP Code
+        Enter OTP Code
         <Typography variant="body2" color="text.secondary">
           We've sent a verification code to {phoneNumber || "your phone number"}
         </Typography>

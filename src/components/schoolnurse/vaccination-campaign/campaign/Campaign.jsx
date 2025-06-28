@@ -1,128 +1,261 @@
-import Box from '@mui/material/Box';
-import CampaignIcon from '@mui/icons-material/Campaign';
-import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import img1 from '../../../../assets/images/1.jpg';
-import img2 from '../../../../assets/images/2.jpg';
-import img3 from '../../../../assets/images/3.jpg';
-import img4 from '../../../../assets/images/4.jpg';
-import img5 from '../../../../assets/images/5.jpg';
-import './Campaign.scss';
-import useNewestCampaignByStatus from '../../../../hooks/schoolnurse/vaccination/useNewestCampaignByStatus';
+import Box from "@mui/material/Box"
+import Button from "@mui/material/Button"
+import Card from "@mui/material/Card"
+import CardContent from "@mui/material/CardContent"
+import IconButton from "@mui/material/IconButton"
+import Skeleton from "@mui/material/Skeleton"
+import Alert from "@mui/material/Alert"
+import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety"
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord"
+import RefreshIcon from "@mui/icons-material/Refresh"
+import { useEffect, useRef, useState } from "react"
+import { useNavigate } from "react-router-dom"
+import "./VaccinationCampaign.scss"
 
-const Campaign = () => {
-    const textRef = useRef();    // Create a ref for the animated text element
-    const animationRef = useRef();    // Create a ref to store the animation frame id for cleanup
-    const navigate = useNavigate();    // React Router hook for navigation
-    const [currentIndex, setCurrentIndex] = useState(0);    // State for the current image index in the carousel
-    const cardRef = useRef();    // Ref for the campaign card (used for scroll reveal)
-    const [isVisible, setIsVisible] = useState(false);    // State to track if the card is visible in the viewport
-    const [fade, setFade] = useState(true);    // State to control the fade animation for image transitions
-    const images = [img1, img2, img3, img4, img5];
-    const { newestCampaign, isLoading } = useNewestCampaignByStatus();
+// Remove these incorrect imports:
+// import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos"
+// import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos"
 
-    // Button labels for each image
-    const buttonLabelsNext = [
-        'Detail', // 1st image
-        'Goals',  // 2nd image
-        'TimeLine', // 3rd image
-        'Cooperation', // 4th image
-        'Cooperation' // 5th image (last)
-    ];
-    const buttonLabelsPrev = [
-        'Previous',
-        'Detail', // 1st image
-        'Goals',  // 2nd image
-        'TimeLine', // 3rd image
-        'Cooperation' // 5th image (last)
-    ];
+// Replace with these correct imports:
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft"
+import ChevronRightIcon from "@mui/icons-material/ChevronRight"
 
-    // Handle click on the card to navigate to the campaign details page
+// Import your images
+import img1 from "../../../../assets/images/1.jpg"
+import img2 from "../../../../assets/images/2.jpg"
+import img3 from "../../../../assets/images/3.jpg"
+import img4 from "../../../../assets/images/4.jpg"
+import img5 from "../../../../assets/images/5.jpg"
+
+// Your fixed custom hook
+import { useNewestCampaignByStatus } from "../../../../hooks/schoolnurse/healthcheck/campaign/useNewestCampaignByStatus"
+
+const HealthCheckCampaign = () => {
+    const textRef = useRef()
+    const navigate = useNavigate()
+    const [currentIndex, setCurrentIndex] = useState(0)
+    const cardRef = useRef()
+    const [isVisible, setIsVisible] = useState(false)
+    const [imageLoaded, setImageLoaded] = useState(false)
+    const [isAutoPlaying, setIsAutoPlaying] = useState(true)
+    const autoPlayRef = useRef()
+
+    const images = [img1, img2, img3, img4, img5]
+    const { newestCampaign, isLoading, error, refetch } = useNewestCampaignByStatus()
+
+    const buttonLabelsNext = ["Detail", "Goals", "Timeline", "Cooperation", "Cooperation"]
+    const buttonLabelsPrev = ["Previous", "Detail", "Goals", "Timeline", "Cooperation"]
+
+    // Enhanced scroll reveal effect
     useEffect(() => {
-        const text = textRef.current;
-        let pos = -100; // Start off-screen left
-        const end = 100; // End off-screen right
-        const speed = 0.15; // Lower is slower, smoother
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                setIsVisible(entry.isIntersecting)
+            },
+            {
+                threshold: 0.2,
+                rootMargin: "50px",
+            },
+        )
+
+        if (cardRef.current) {
+            observer.observe(cardRef.current)
+        }
+
+        return () => observer.disconnect()
+    }, [])
+
+    // Auto-play carousel
+    useEffect(() => {
+        if (isAutoPlaying) {
+            autoPlayRef.current = setInterval(() => {
+                setCurrentIndex((prev) => (prev + 1) % images.length)
+            }, 4000)
+        }
+
+        return () => {
+            if (autoPlayRef.current) {
+                clearInterval(autoPlayRef.current)
+            }
+        }
+    }, [isAutoPlaying, images.length])
+
+    // Reset image loaded state when index changes
+    useEffect(() => {
+        setImageLoaded(false)
+    }, [currentIndex])
+
+    // Enhanced marquee animation
+    useEffect(() => {
+        const text = textRef.current
+        if (!text) return
+
+        let animationId
+        let position = -100
+        const speed = 0.08
+        const endPosition = 100
 
         const animate = () => {
-            pos += speed;
-            text.style.transform = `translateX(${pos}vw)`;
-            text.style.transition = 'transform 0.08s cubic-bezier(.4,0,.2,1)'; // Add smooth transition
-            if (pos < end) {
-                animationRef.current = requestAnimationFrame(animate);
-            } else {
-                // Reset and repeat
-                pos = -100;
-                animationRef.current = requestAnimationFrame(animate);
+            position += speed
+            text.style.transform = `translateX(${position}vw)`
+
+            if (position >= endPosition) {
+                position = -100
             }
-        };
-        animationRef.current = requestAnimationFrame(animate);
-        return () => cancelAnimationFrame(animationRef.current);
-    }, []);
 
-    // Scroll reveal effect
-    useEffect(() => {
-        const observer = new window.IntersectionObserver(
-            ([entry]) => setIsVisible(entry.isIntersecting),
-            { threshold: 0.1 }
-        );
-        if (cardRef.current) observer.observe(cardRef.current);
-        return () => observer.disconnect();
-    }, []);
+            animationId = requestAnimationFrame(animate)
+        }
 
-    // Fade effect on image change
-    useEffect(() => {
-        setFade(false);
-        const timeout = setTimeout(() => setFade(true), 500);
-        return () => clearTimeout(timeout);
-    }, [currentIndex]);
+        animationId = requestAnimationFrame(animate)
+
+        return () => {
+            if (animationId) {
+                cancelAnimationFrame(animationId)
+            }
+        }
+    }, [])
 
     const handleNext = () => {
-        setCurrentIndex((prev) => (prev + 1) % images.length);
-    };
-    const handlePrev = () => {
-        setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
-    };
+        setIsAutoPlaying(false)
+        setCurrentIndex((prev) => (prev + 1) % images.length)
+        setTimeout(() => setIsAutoPlaying(true), 10000)
+    }
 
-    let campaignTitle = 'Vaccination Campaign - Welcome!';
+    const handlePrev = () => {
+        setIsAutoPlaying(false)
+        setCurrentIndex((prev) => (prev - 1 + images.length) % images.length)
+        setTimeout(() => setIsAutoPlaying(true), 10000)
+    }
+
+    const handleDotClick = (index) => {
+        setIsAutoPlaying(false)
+        setCurrentIndex(index)
+        setTimeout(() => setIsAutoPlaying(true), 10000)
+    }
+
+    const handleImageLoad = () => {
+        setImageLoaded(true)
+    }
+
+    const handleRefresh = () => {
+        refetch()
+    }
+
+    // Get campaign title from your data structure
+    let campaignTitle = "Health Check Campaign - Welcome!"
     if (!isLoading && newestCampaign && newestCampaign.length > 0) {
-        if (newestCampaign[0].campaign && newestCampaign[0].campaign.notes) {
-            campaignTitle = newestCampaign[0].campaign.notes;
+        if (newestCampaign[0].description) {
+            campaignTitle = newestCampaign[0].description
         }
     }
 
     return (
-        <Box
-            ref={cardRef}
-            className={`campaign-card${!isVisible ? ' hidden' : ''}`}
-        >
-            <img
-                src={images[currentIndex]}
-                alt={`Health Check ${currentIndex + 1}`}
-                className={`campaign-image${fade ? ' fade' : ' not-fade'}`}
-            />
-            <div
-                ref={textRef}
-                className="campaign-title"
-            >
-                {isLoading ? 'Loading...' : campaignTitle}
-            </div>
-            <Box className="campaign-controls" >
-                {/* Prev button on the left */}
-                <div>
-                    {currentIndex > 0 && (
-                        <button onClick={handlePrev} className="campaign-btn">{buttonLabelsPrev[currentIndex - 1]}</button>
+        <Box className="health-check-campaign-container">
+            <Card ref={cardRef} className={`health-check-campaign-card ${isVisible ? "visible" : "hidden"}`} elevation={8}>
+                <CardContent className="health-check-campaign-content">
+                    {/* Error Alert */}
+                    {error && (
+                        <Alert
+                            severity="error"
+                            className="error-alert"
+                            action={
+                                <IconButton aria-label="refresh" color="inherit" size="small" onClick={handleRefresh}>
+                                    <RefreshIcon />
+                                </IconButton>
+                            }
+                        >
+                            Failed to load campaign data. Click refresh to try again.
+                        </Alert>
                     )}
-                </div>
-                {/* Next/Detail/Goals/Timeline/Cooperation button on the right */}
-                <div>
-                    {currentIndex < images.length - 1 && (
-                        <button onClick={handleNext} className="campaign-btn">{buttonLabelsNext[currentIndex]}</button>
+
+                    {/* Image Container */}
+                    <Box className="image-container">
+                        {images.map((image, index) => (
+                            <Box
+                                key={index}
+                                className={`image-slide ${index === currentIndex ? "active" : ""} ${index < currentIndex ? "prev" : index > currentIndex ? "next" : ""
+                                    }`}
+                            >
+                                <img
+                                    src={image || "/placeholder.svg"}
+                                    alt={`Health Check ${index + 1}`}
+                                    className={`health-check-campaign-image ${imageLoaded ? "loaded" : ""}`}
+                                    onLoad={index === currentIndex ? handleImageLoad : undefined}
+                                />
+                                <Box className="image-overlay" />
+                            </Box>
+                        ))}
+
+                        {/* Loading Skeleton */}
+                        {!imageLoaded && <Skeleton variant="rectangular" className="image-skeleton" animation="wave" />}
+                    </Box>
+
+                    {/* Animated Title */}
+                    <Box className="title-container">
+                        <Box ref={textRef} className="health-check-campaign-title">
+                            <HealthAndSafetyIcon className="title-icon" />
+                            {isLoading ? "Loading health check campaign..." : campaignTitle}
+                        </Box>
+                    </Box>
+
+                    {/* Navigation Controls */}
+                    <Box className="health-check-campaign-controls">
+                        {/* Previous Button */}
+                        <Box className="control-left">
+                            {currentIndex > 0 && (
+                                <Button
+                                    onClick={handlePrev}
+                                    variant="contained"
+                                    className="nav-button prev-button"
+                                    startIcon={<ChevronLeftIcon />}
+                                >
+                                    {buttonLabelsPrev[currentIndex - 1]}
+                                </Button>
+                            )}
+                        </Box>
+
+                        {/* Progress Dots */}
+                        <Box className="progress-dots">
+                            {images.map((_, index) => (
+                                <IconButton
+                                    key={index}
+                                    onClick={() => handleDotClick(index)}
+                                    className={`dot ${index === currentIndex ? "active" : ""}`}
+                                    size="small"
+                                >
+                                    <FiberManualRecordIcon />
+                                </IconButton>
+                            ))}
+                        </Box>
+
+                        {/* Next Button */}
+                        <Box className="control-right">
+                            {currentIndex < images.length - 1 && (
+                                <Button
+                                    onClick={handleNext}
+                                    variant="contained"
+                                    className="nav-button next-button"
+                                    endIcon={<ChevronRightIcon />}
+                                >
+                                    {buttonLabelsNext[currentIndex]}
+                                </Button>
+                            )}
+                        </Box>
+                    </Box>
+
+                    {/* Loading Overlay */}
+                    {isLoading && (
+                        <Box className="loading-overlay">
+                            <Box className="loading-content">
+                                <Box className="loading-spinner" />
+                                <Box className="loading-text">Loading health check campaign...</Box>
+                            </Box>
+                        </Box>
                     )}
-                </div>
-            </Box>
+                </CardContent>
+            </Card>
         </Box>
-    );
+    )
 }
 
-export default Campaign;
+export default HealthCheckCampaign

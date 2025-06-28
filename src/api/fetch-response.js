@@ -10,12 +10,12 @@ const fetchAPI = async (endpoints) => {
       data: response.data,
       status: response.status,
     }
-  
-  } catch(error) {
+
+  } catch (error) {
     if (error.code === "ECONNABORTED") {
-        console.error("Request timed out");
+      console.error("Request timed out");
     } else {
-        console.error("API error:", error.message);
+      console.error("API error:", error.message);
     }
     return {
       error: error.message,
@@ -31,14 +31,14 @@ const fetchResponse = async (syncCallbackRequest) => {
 
     return {
       data: response.data,
-      status: response.status,
+      status: response.status >= 200 && response.status < 300,
     }
-  
-  } catch(error) {
+
+  } catch (error) {
     if (error.code === "ECONNABORTED") {
-        console.error("Request timed out");
+      console.error("Request timed out");
     } else {
-        console.error("API error:", error.message);
+      console.error("API error:", error.message);
     }
     return {
       error: error.message,
