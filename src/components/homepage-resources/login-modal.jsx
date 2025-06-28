@@ -30,6 +30,11 @@ export default function LoginModal() {
   }
 
   const handleLoginWithPwd = async () => {
+
+    // check if localstorage now contains any information from last login, then remove it;
+    localStorage.clear();
+    localStorage.setItem("toolpad-mode", "light");
+    
       
     await loginWithPwd(phoneNumber, password);
 

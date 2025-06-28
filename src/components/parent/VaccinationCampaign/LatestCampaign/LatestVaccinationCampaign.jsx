@@ -40,6 +40,9 @@ const formatDate = (dateString) => {
 const LatestVaccinationCampaign = () => {1
   const { latestCampaign, loading, error, refetch } = useLatestVaccinationCampaign();
 
+  // debug:
+  // console.log("Fetching Latest Vaccination Campaign Data...\n", JSON.stringify(latestCampaign));
+
   //debug:
   // console.log("Latest Vaccination Campaign Data:", latestCampaign);
 

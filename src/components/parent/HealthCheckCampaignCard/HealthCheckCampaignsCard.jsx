@@ -1,18 +1,28 @@
-import { Card, CardContent, CardHeader, Typography, Chip, Box, Grid, Divider, Paper, Avatar, Button } from "@mui/material"
-import { LocalHospital, LocationOn, CalendarToday, Schedule, Warning, Info } from "@mui/icons-material"
+"use client"
+
+import { Typography, Chip, Box, Grid, Paper, Avatar, Button, Container, Alert } from "@mui/material"
+
+import {
+  LocalHospital,
+  LocationOn,
+  CalendarToday,
+  Schedule,
+  Warning,
+  Info,
+  CalendarMonth,
+  Summarize,
+} from "@mui/icons-material"
+
 import { createTheme, ThemeProvider } from "@mui/material/styles"
+import { Link } from "react-router-dom"
 
-import CircularLoading from '../../magic/CircularLoading/CircularLoading';
-import useLatestHealthCheckCampaign from '../../../hooks/parent/useLatestHealthCheckCampaign';
+import useLatestHealthCheckCampaign from "@hooks/parent/useLatestHealthCheckCampaign"
 
-import ScheduleIcon from '@mui/icons-material/CalendarMonth';
-import SurveyIcon from '@mui/icons-material/Summarize';
-import { Link } from "react-router-dom";
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#1976d2",
+      main: "#65aee7",
     },
     secondary: {
       main: "#f50057",
@@ -20,251 +30,341 @@ const theme = createTheme({
   },
 })
 
-export default function HealthCampaignCard() {
+const getStatusColor = (status) => {
+  switch (status) {
+    case "PENDING":
+      return "warning"
+    case "ACTIVE":
+      return "success"
+    case "COMPLETED":
+      return "info"
+    case "PUBLISHED":
+      return "primary"
+    default:
+      return "default"
+  }
+}
 
-  const { latestHealthCheckCampaign , isLoading } = useLatestHealthCheckCampaign();
+
+const formatDate = (dateString) => {
+  if (dateString == null) {
+    return { date: "", time: "" }
+  }
+  const [datePart, timePart] = dateString.split(" ")
+  const [day, month, year] = datePart.split("-")
+  return {
+    date: `${day}/${month}/${year}`,
+    time: timePart || "",
+  }
+}
+
+const SkeletonLoadingComp = () => (
+  <Container maxWidth="lg" sx={{ py: 4 }}>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+      <Box sx={{ height: 60, bgcolor: "grey.200", borderRadius: 1 }} />
+      <Box sx={{ height: 120, bgcolor: "grey.200", borderRadius: 1 }} />
+      <Box sx={{ height: 200, bgcolor: "grey.200", borderRadius: 1 }} />
+    </Box>
+  </Container>
+)
+
+export default function HealthCampaignPage() {
+
+  const { latestHealthCheckCampaign, isLoading, error, refetch } = useLatestHealthCheckCampaign();
 
   const campaignData = latestHealthCheckCampaign;
-  if (campaignData == null || campaignData.length == 0) {
-    return <>
-      <Grid container justifyContent={'center'} sx={{ width: "100%"}}>
-        <Typography>
-          There is no on-going campaign.
-        </Typography>
-      </Grid>
-    </>
+
+  if (isLoading) {
+    return SkeletonLoadingComp();
   }
 
-  const formatDate = (dateString) => {
-    console.log("dateString: " + dateString);
-
-    if (dateString == null)
-    {
-      return "";
-    }
-    const [datePart, timePart] = dateString.split(" ")
-    const [day, month, year] = datePart.split("-")
-    return {
-      date: `${day}/${month}/${year}`,
-      time: timePart || "",
-    }
-  }
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "PENDING":
-        return "warning"
-      case "ACTIVE":
-        return "success"
-      case "COMPLETED":
-        return "info"
-      default:
-        return "default"
-    }
-  }
-
-  const getStatusText = (status) => {
-    switch (status) {
-      case "PENDING":
-        return "Đang chờ"
-      case "ACTIVE":
-        return "Đang diễn ra"
-      case "COMPLETED":
-        return "Hoàn thành"
-      default:
-        return status
-    }
+  if (campaignData == null || Object.keys(campaignData).length === 0) {
+    return (
+      <ThemeProvider theme={theme}>
+        <Container maxWidth="lg" sx={{ py: 4 }}>
+          <Alert severity="info" icon={<Info />}>
+            <Typography variant="h6" fontWeight="bold">
+              No Ongoing Campaign
+            </Typography>
+            <Typography>There is no ongoing health check campaign at the moment.</Typography>
+          </Alert>
+        </Container>
+      </ThemeProvider>
+    )
   }
 
   const startDate = formatDate(campaignData.startExaminationDate)
   const endDate = formatDate(campaignData.endExaminationDate)
   const deadline = formatDate(campaignData.deadlineDate)
 
-  if (isLoading) {
-    return <>
-      Loading newest health check campaign <CircularLoading />
-    </>
-  }
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ maxWidth: 800, width: "100%",  mx: "auto", p: 2 }}>
-        <Card
-          elevation={8}
+      <Box sx={{ minHeight: "100vh", width: "100%",bgcolor: "grey.50", borderRadius: '15px', overflow: "hidden", boxShadow: 5 }}>
+        {/* Hero Section */}
+        <Box
           sx={{
-            background: "linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)",
-            borderRadius: 3,
-            overflow: "visible",
-            position: "relative",
+            color: "white",
+            py: 6,
+            background: "#65aee7",
           }}
         >
-          {/* Header Section */}
-          <CardHeader
-            avatar={
-              <Avatar sx={{ bgcolor: "primary.main" }}>
-                <LocalHospital />
-              </Avatar>
-            }
-            action={
-              <Chip
-                label={getStatusText(campaignData.statusHealthCampaign)}
-                color={getStatusColor(campaignData.statusHealthCampaign)}
-                variant="filled"
-                sx={{ fontWeight: "bold" }}
-              />
-            }
-            title={
-              <Typography variant="h5" component="h2" fontWeight="bold" color="text.primary">
-                {campaignData.title}
-              </Typography>
-            }
-            subheader={
-              <Box sx={{ mt: 1 }}>
-                <Typography variant="body1" color="text.secondary" sx={{ mt: 1 }}>
-                  {campaignData.description}
-                </Typography>
-              </Box>
-            }
-            sx={{ pb: 2 }}
-          />
-
-          <CardContent sx={{ pt: 0 }}>
-            {/* Location Section */}
-            <Paper
-              elevation={2}
-              sx={{
-                p: 2,
-                mb: 3,
-                bgcolor: "white",
-                borderRadius: 2,
-                border: "1px solid",
-                borderColor: "grey.200",
-              }}
-            >
+          <Container maxWidth="lg">
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 3 }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                <Avatar sx={{ bgcolor: "grey.100", color: "grey.600" }}>
-                  <LocationOn />
+                <Avatar sx={{ bgcolor: "white", color: "primary.main", width: 56, height: 56 }}>
+                  <LocalHospital fontSize="large" />
                 </Avatar>
                 <Box>
-                  <Typography variant="subtitle1" fontWeight="bold" color="text.primary">
-                    {campaignData.address}
+                  <Typography variant="h3" fontWeight="bold" sx={{ mb: 1 }}>
+                    {campaignData.title}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Địa điểm khám
-                  </Typography>
+                  {/* <Typography variant="h6" sx={{ opacity: 0.9 }}>
+                    Campaign ID: #{campaignData.campaignId}
+                  </Typography> */}
                 </Box>
               </Box>
-            </Paper>
+              <Chip
+                label={(campaignData.statusHealthCampaign)}
+                color={getStatusColor(campaignData.statusHealthCampaign)}
+                variant="filled"
+                sx={{
+                  fontWeight: "bold",
+                  fontSize: "1rem",
+                  py: 2,
+                  px: 3,
+                  bgcolor: "white",
+                  color: "primary.main",
+                }}
+              />
+            </Box>
+            <Typography variant="h5" sx={{ opacity: 0.9, maxWidth: 600 }} fontStyle={"italic"}>
+              Description: {campaignData.description}
+            </Typography>
+          </Container>
+        </Box>
 
-            <Divider sx={{ my: 3 }} />
+        {/* Main Content */}
+        <Container maxWidth="lg" sx={{ py: 4 }}>
+          {/* Location Section */}
+          <Paper elevation={3} sx={{ p: 4, mb: 4, borderRadius: 3, ...hoverPaper }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 3, mb: 2 }}>
+              <Avatar sx={{ bgcolor: "primary.main", width: 48, height: 48 }}>
+                <LocationOn />
+              </Avatar>
+              <Box>
+                <Typography variant="h5" fontWeight="bold" color="text.primary">
+                  Examination Location
+                </Typography>
+                <Typography variant="body1" color="text.secondary">
+                  Where the health check will take place
+                </Typography>
+              </Box>
+            </Box>
+            <Box
+              sx={{
+                bgcolor: "primary.50",
+                p: 3,
+                borderRadius: 2,
+                borderColor: "primary.200",
+              }}
+            >
+              <Typography variant="h6" fontWeight="bold" color="primary.main">
+                Location: {campaignData.address}
+              </Typography>
+            </Box>
+          </Paper>
 
-            {/* Date Information Grid */}
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                  {/* Start Date */}
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                    <Avatar sx={{ bgcolor: "success.light", color: "success.contrastText", width: 40, height: 40 }}>
-                      <CalendarToday fontSize="small" />
-                    </Avatar>
-                    <Box>
-                      <Typography variant="subtitle2" fontWeight="bold" color="text.primary">
-                        Bắt đầu khám
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {startDate.date}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {startDate.time}
-                      </Typography>
-                    </Box>
-                  </Box>
+          {/* Schedule Section */}
+          <Paper elevation={3} sx={{ p: 4, mb: 4, borderRadius: 3, ...hoverPaper }}>
+            <Typography variant="h5" fontWeight="bold" sx={{ mb: 3, display: "flex", alignItems: "center", gap: 1 }}>
+              <CalendarToday color="primary"/>
+              Campaign Schedule
+            </Typography>
 
-                  {/* End Date */}
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                    <Avatar sx={{ bgcolor: "error.light", color: "error.contrastText", width: 40, height: 40 }}>
-                      <Schedule fontSize="small" />
-                    </Avatar>
-                    <Box>
-                      <Typography variant="subtitle2" fontWeight="bold" color="text.primary">
-                        Kết thúc khám
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {endDate.date}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {endDate.time}
-                      </Typography>
-                    </Box>
-                  </Box>
+            <Grid container spacing={4}>
+              {/* Registration Deadline */}
+              <Grid item size={{xs: 12, md: 4}}>
+                <Box
+                  sx={{
+                    textAlign: "center",
+                    p: 3,
+                    bgcolor: "warning.50",
+                    borderRadius: 2,
+                    borderColor: "warning.200",
+                  }}
+                >
+                  <Avatar sx={{ bgcolor: "warning.main", mx: "auto", mb: 2, width: 56, height: 56 }}>
+                    <Warning fontSize="large" />
+                  </Avatar>
+                  <Typography variant="h6" fontWeight="bold" color="warning.main" sx={{ mb: 1 }}>
+                    Registration Deadline
+                  </Typography>
+                  <Typography variant="h5" fontWeight="bold" color="text.primary">
+                    {deadline.date}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                    Last day to register
+                  </Typography>
                 </Box>
               </Grid>
 
-              <Grid item xs={12} md={6}>
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                  {/* Deadline */}
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                    <Avatar sx={{ bgcolor: "warning.light", color: "warning.contrastText", width: 40, height: 40 }}>
-                      <Warning fontSize="small" />
-                    </Avatar>
-                    <Box>
-                      <Typography variant="subtitle2" fontWeight="bold" color="text.primary">
-                        Hạn đăng ký
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {deadline.date}
-                      </Typography>
-                    </Box>
-                  </Box>
+              {/* Examination Start */}
+              <Grid item size={{ xs: 12, md: 4 }}>
+                <Box
+                  sx={{
+                    textAlign: "center",
+                    p: 3,
+                    bgcolor: "success.50",
+                    borderRadius: 2,
+                    borderColor: "success.200",
+                  }}
+                >
+                  <Avatar sx={{ bgcolor: "success.main", mx: "auto", mb: 2, width: 56, height: 56 }}>
+                    <CalendarToday fontSize="large" />
+                  </Avatar>
+                  <Typography variant="h6" fontWeight="bold" color="success.main" sx={{ mb: 1 }}>
+                    Examination Starts
+                  </Typography>
+                  <Typography variant="h5" fontWeight="bold" color="text.primary">
+                    {startDate.date}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                    {startDate.time}
+                  </Typography>
+                </Box>
+              </Grid>
 
-                  {/* Examination Period Highlight */}
-                  <Paper
-                    elevation={1}
-                    sx={{
-                      p: 2,
-                      bgcolor: "primary.light",
-                      color: "primary.contrastText",
-                      borderRadius: 2,
-                    }}
-                  >
-                    <Typography variant="caption" fontWeight="bold" sx={{ display: "block", mb: 0.5 }}>
-                      Thời gian khám
-                    </Typography>
-                    <Typography variant="body2" fontWeight="medium">
-                      {startDate.date} - {endDate.date}
-                    </Typography>
-                  </Paper>
+              {/* Examination End */}
+              <Grid item size={{ xs: 12, md: 4 }}>
+                <Box
+                  sx={{
+                    textAlign: "center",
+                    p: 3,
+                    bgcolor: "error.50",
+                    borderRadius: 2,
+                    borderColor: "error.200",
+                  }}
+                >
+                  <Avatar sx={{ bgcolor: "error.main", mx: "auto", mb: 2, width: 56, height: 56 }}>
+                    <Schedule fontSize="large" />
+                  </Avatar>
+                  <Typography variant="h6" fontWeight="bold" color="error.main" sx={{ mb: 1 }}>
+                    Examination Ends
+                  </Typography>
+                  <Typography variant="h5" fontWeight="bold" color="text.primary">
+                    {endDate.date}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                    {endDate.time}
+                  </Typography>
                 </Box>
               </Grid>
             </Grid>
 
-            <Divider sx={{ my: 3 }} />
-
-            {/* Footer Information */}
-            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                <Info fontSize="small" color="action" />
-                <Typography variant="caption" color="text.secondary">
-                  Tạo ngày: {formatDate(campaignData.createdAt).date}
+            {/* Examination Period Summary */}
+            <Box sx={{ mt: 4 }}>
+              <Paper
+                elevation={2}
+                sx={{
+                  p: 3,
+                  bgcolor: "primary.main",
+                  color: "white",
+                  textAlign: "center",
+                  borderRadius: 2,
+                }}
+              >
+                <Typography variant="h6" fontWeight="bold" sx={{ mb: 1 }}>
+                  Health Check Period
                 </Typography>
-              </div>
-              <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
-                <Link to={"../schedule"}>
-                  <Button type="button" sx={{ "&:hover": { background: "#d9c631" } }}>
-                    <ScheduleIcon />
-                    <span style={{ marginLeft: "10px", fontSize: "17px" }}>Schedule</span>
-                  </Button>
-                </Link>
-                <Link to={"../surveys"}>
-                  <Button type="button" sx={{ "&:hover": { background: "#d9c631" } }}>
-                    <SurveyIcon />
-                    <span style={{ marginLeft: "10px", fontSize: "17px" }}>Survey</span>
-                  </Button>
-                </Link>
-              </div>
+                <Typography variant="h4" fontWeight="bold">
+                  {startDate.date} - {endDate.date}
+                </Typography>
+              </Paper>
             </Box>
-          </CardContent>
-        </Card>
+          </Paper>
+
+          {/* Action Buttons Section */}
+          <Paper elevation={3} sx={{ p: 4, mb: 4, borderRadius: 3, ...hoverPaper }}>
+            <Typography variant="h5" fontWeight="bold" sx={{ mb: 3 }}>
+              Quick Actions
+            </Typography>
+            <Grid container spacing={3}>
+              <Grid item size={{ xs: 12, md: 6 }}>
+                <Link to="../schedule" style={{ textDecoration: "none" }}>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    size="large"
+                    startIcon={<CalendarMonth />}
+                    sx={{
+                      py: 2,
+                      fontSize: "1.1rem",
+                      fontWeight: "bold",
+                      borderRadius: 2,
+                      color: "white",
+                      "&:hover": {
+                        bgcolor: "primary.dark",
+                        transform: "translateY(-2px)",
+                      },
+                      transition: "all 0.3s ease",
+                    }}
+                  >
+                    View Schedule
+                  </Button>
+                </Link>
+              </Grid>
+              <Grid item size={{ xs: 12, md: 6 }}>
+                <Link to="../surveys" style={{ textDecoration: "none" }}>
+                  <Button
+                    fullWidth
+                    variant="outlined"
+                    size="large"
+                    startIcon={<Summarize />}
+                    sx={{
+                      py: 2,
+                      fontSize: "1.1rem",
+                      fontWeight: "bold",
+                      borderRadius: 2,
+                      borderWidth: 2,
+                      "&:hover": {
+                        borderWidth: 2,
+                        bgcolor: "primary.50",
+                        transform: "translateY(-2px)",
+                      },
+                      transition: "all 0.3s ease",
+                    }}
+                  >
+                    Take Survey
+                  </Button>
+                </Link>
+              </Grid>
+            </Grid>
+          </Paper>
+
+          {/* Campaign Information Footer */}
+          <Paper elevation={1} sx={{ p: 3, borderRadius: 2, bgcolor: "grey.100" }}>
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Info fontSize="small" color="action" />
+                <Typography variant="body2" color="text.secondary">
+                  Campaign created on: {formatDate(campaignData.createdAt).date}
+                </Typography>
+              </Box>
+              <Typography variant="body2" color="text.secondary">
+                Campaign ID: #{campaignData.campaignId}
+              </Typography>
+            </Box>
+          </Paper>
+        </Container>
       </Box>
     </ThemeProvider>
   )
+}
+
+const hoverPaper = {
+  "&:hover": {
+    boxShadow: 6,
+    transform: "scale(1.03)",
+  },
+  transition: "all 0.8s ease",
 }
