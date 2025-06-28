@@ -193,7 +193,7 @@ const VaccinationScheduleForm = () => {
         return (
             <div className="vaccine-schedule-root">
                 {/* Quick Navigation Bar */}
-                <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
+                {/* <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
                     <Button
                         variant="outlined"
                         color="secondary"
@@ -208,7 +208,7 @@ const VaccinationScheduleForm = () => {
                     >
                         Vaccination Schedule
                     </Button>
-                </Box>
+                </Box> */}
                 <Box sx={{ width: "100%", maxWidth: 1200, mx: "auto" }}>
                     {GRADES.map((grade) => (
                         <Card key={grade} sx={{ mb: 3, borderRadius: 3 }}>
@@ -228,7 +228,7 @@ const VaccinationScheduleForm = () => {
         return (
             <div className="vaccine-schedule-root">
                 {/* Quick Navigation Bar */}
-                <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
+                {/* <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
                     <Button
                         variant="outlined"
                         color="secondary"
@@ -243,7 +243,7 @@ const VaccinationScheduleForm = () => {
                     >
                         Vaccination Schedule
                     </Button>
-                </Box>
+                </Box> */}
                 <Paper
                     elevation={3}
                     sx={{

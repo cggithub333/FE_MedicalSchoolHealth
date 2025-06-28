@@ -158,7 +158,8 @@ const NewHealthCheckCampaign = () => {
     }
 
     function canUpdateToPending(campaign) {
-        return campaign.statusHealthCampaign === "PENDING" && publishedCampaigns.length === 0;
+
+        return campaign.statusHealthCampaign === "PENDING" && publishedCampaigns.length === 0 && inProgressCampaigns.length === 0;
     }
 
     if (isLoading) {
