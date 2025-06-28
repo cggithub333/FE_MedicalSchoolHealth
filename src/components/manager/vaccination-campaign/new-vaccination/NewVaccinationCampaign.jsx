@@ -21,7 +21,7 @@ import { useNewestCampaignByStatus } from "../../../../hooks/manager/vaccination
 import { useUpdateNewCampaign } from "../../../../hooks/manager/vaccination/create-new-campaign/useUpdateNewCampaign"
 import { useDeleteCampaign } from "../../../../hooks/manager/vaccination/create-new-campaign/useDeleteCampaign"
 import VaccineCampaignForm from "./vaccination-campaign-form/VaccineCampaignForm"
-
+import { usePublishVaccinationCampaign } from "../../../../hooks/manager/vaccination/create-new-campaign/usePublishVaccinationCampaign"
 const cardSx = {
     minWidth: 320,
     maxWidth: 340,
@@ -78,6 +78,7 @@ const NewVaccinationCampaign = () => {
     const { allCampaigns, isLoading } = useNewestCampaignByStatus()
     const { updateNewCampaign, isLoading: isUpdating } = useUpdateNewCampaign()
     const { deleteCampaign, isLoading: isDeleting } = useDeleteCampaign()
+    const { publishCampaign, isPublishing } = usePublishVaccinationCampaign();
     const [selectedCampaign, setSelectedCampaign] = useState(null)
     const [dialogOpen, setDialogOpen] = useState(false)
     const [createFormOpen, setCreateFormOpen] = useState(false)
@@ -135,6 +136,17 @@ const NewVaccinationCampaign = () => {
             }
         }
     }
+
+    const handlePublish = async (campaign) => {
+        try {
+            await publishCampaign(campaign.campaignId);
+            setDialogOpen(false);
+            window.location.reload();
+        } catch (error) {
+            console.error("Failed to publish campaign:", error);
+            alert("Failed to publish campaign");
+        }
+    };
 
     const formatDate = (dateString) => {
         // Handle different date formats from API
@@ -306,11 +318,11 @@ const NewVaccinationCampaign = () => {
                                     <Button
                                         variant="contained"
                                         color="success"
-                                        onClick={() => handleStatusUpdate(selectedCampaign, "PUBLISHED")}
-                                        disabled={isUpdating}
+                                        onClick={() => handlePublish(selectedCampaign)}
+                                        disabled={isPublishing}
                                         sx={{ borderRadius: 2, textTransform: "none" }}
                                     >
-                                        {isUpdating ? <CircularProgress size={20} /> : "Publish Campaign"}
+                                        {isPublishing ? <CircularProgress size={20} /> : "Publish Campaign"}
                                     </Button>
                                 </>
                             )}
