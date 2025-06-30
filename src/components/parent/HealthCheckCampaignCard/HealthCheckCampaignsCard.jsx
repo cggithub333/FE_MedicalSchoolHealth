@@ -72,6 +72,9 @@ export default function HealthCampaignPage() {
 
   const { latestHealthCheckCampaign, isLoading, error, refetch } = useLatestHealthCheckCampaign();
 
+  // debug:
+  console.log("Latest Health Check Campaign Data:\n", JSON.stringify(latestHealthCheckCampaign, null, 2));
+
   const campaignData = latestHealthCheckCampaign;
 
   if (isLoading) {

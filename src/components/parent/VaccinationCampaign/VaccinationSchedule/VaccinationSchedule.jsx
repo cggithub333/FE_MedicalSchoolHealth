@@ -27,7 +27,7 @@ import {
   Description
 } from '@mui/icons-material'
 
-export default function CampaignScheduleContent() {
+export default function VaccinationSchedule() {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
@@ -41,151 +41,103 @@ export default function CampaignScheduleContent() {
     setModalOpen(true);
   };
 
-  // ...existing events array...
+  // pupil infor:
+  const pupil = {
+    pupilId: "PP0006",
+    lastName: "Hoàng",
+    firstName: "Em",
+    birthDate: "12-01-2018",
+    gender: "M",
+    gradeId: 1,
+    startYear: 2024,
+    gradeLevel: "GRADE_1",
+    gradeName: "Lớp 1D"
+  };
+
+  // Real campaign data
+  const latestCampaign = {
+    campaign: {
+      campaignId: 4,
+      disease: {
+        disease_id: 1,
+        name: "Measles ",
+        description: "Infectious disease with rash and high fever",
+        isInjectedVaccine: true,
+        doseQuantity: 1
+      },
+      vaccine: {
+        vaccineId: 1,
+        name: "Vaccine MMR",
+        manufacturer: "PharmaCorp",
+        recommendedAge: "12–15 tháng",
+        description: null
+      },
+      notes: "Please confirm the form before the deadline form for making sure the best for your child's health.",
+      startDate: "2025-07-02",
+      endDate: "2025-07-05",
+      campaignStatus: "PUBLISHED",
+      status: "Pending"
+    }
+  };
+
+  const latestHealthCheckCampaign = {
+    campaignId: 2,
+    address: "123ABC School",
+    title: "Health check campaign Winter 2025",
+    description: "A winter health screening initiative aimed at ensuring the physical well-being of all students. The campaign includes general check-ups, dental and vision assessments, and promotes awareness of healthy habits for a strong academic year.",
+    startExaminationDate: "2025-06-21T04:54:57.263",
+    endExaminationDate: "2025-06-21T04:54:57.263",
+    createdAt: "2025-06-28",
+    statusHealthCampaign: "PUBLISHED"
+  };
+
+  // Generate events from real campaign data only
   const events = [
-    // MMR Vaccination Campaign - Morning Session
+    // Vaccination Campaign Event
     {
-      id: 'mmr-morning',
-      title: 'MMR Vaccination - Morning',
-      start: '2025-07-01T08:00:00',
-      end: '2025-07-01T12:00:00',
-      description: 'Measles, Mumps, Rubella vaccination for Grades 1-3',
+      id: `vaccination-${latestCampaign.campaign.campaignId}`,
+      title: `${latestCampaign.campaign.vaccine.name} Campaign`,
+      start: latestCampaign.campaign.startDate,
+      end: latestCampaign.campaign.endDate,
+      description: `${latestCampaign.campaign.disease.description}. ${latestCampaign.campaign.notes}`,
       color: '#ff6b6b',
-      textColor: '#fff',
-      extendedProps: {
-        campaign: 'MMR Vaccination Campaign',
-        targetGroup: 'Grades 1-3',
-        vaccine: 'MMR',
-        location: 'School Health Center - Room A'
-      }
-    },
-    // MMR Vaccination Campaign - Afternoon Session
-    {
-      id: 'mmr-afternoon',
-      title: 'MMR Vaccination - Afternoon',
-      start: '2025-07-01T13:00:00',
-      end: '2025-07-01T17:00:00',
-      description: 'Measles, Mumps, Rubella vaccination for Grades 4-6',
-      color: '#ff6b6b',
-      textColor: '#fff',
-      extendedProps: {
-        campaign: 'MMR Vaccination Campaign',
-        targetGroup: 'Grades 4-6',
-        vaccine: 'MMR',
-        location: 'School Health Center - Room A'
-      }
-    },
-    // DTP Vaccination Campaign
-    {
-      id: 'dtp-fullday',
-      title: 'DTP Vaccination - Full Day',
-      start: '2025-07-03T09:00:00',
-      end: '2025-07-03T15:00:00',
-      description: 'Diphtheria, Tetanus, Pertussis booster for all grades',
-      color: '#4ecdc4',
-      textColor: '#fff',
-      extendedProps: {
-        campaign: 'DTP Vaccination Campaign',
-        targetGroup: 'All Grades',
-        vaccine: 'DTP',
-        location: 'School Health Center - Room B'
-      }
-    },
-    // Hepatitis B - First Dose
-    {
-      id: 'hepb-first',
-      title: 'Hepatitis B - First Dose',
-      start: '2025-07-08T08:30:00',
-      end: '2025-07-08T11:30:00',
-      description: 'First dose Hepatitis B for new students',
-      color: '#ffd93d',
-      textColor: '#333',
-      extendedProps: {
-        campaign: 'Hepatitis B Vaccination',
-        targetGroup: 'New Students',
-        vaccine: 'Hepatitis B',
-        location: 'School Health Center - Room C'
-      }
-    },
-    // Hepatitis B - Second Dose
-    {
-      id: 'hepb-second',
-      title: 'Hepatitis B - Second Dose',
-      start: '2025-07-15T14:00:00',
-      end: '2025-07-15T16:00:00',
-      description: 'Follow-up dose for previous recipients',
-      color: '#ffd93d',
-      textColor: '#333',
-      extendedProps: {
-        campaign: 'Hepatitis B Vaccination',
-        targetGroup: 'Follow-up Students',
-        vaccine: 'Hepatitis B',
-        location: 'School Health Center - Room C'
-      }
-    },
-    // Polio Vaccination
-    {
-      id: 'polio-drive',
-      title: 'Polio Vaccination Drive',
-      start: '2025-07-10T10:00:00',
-      end: '2025-07-10T14:00:00',
-      description: 'Oral Polio Vaccine for all eligible students',
-      color: '#74b9ff',
-      textColor: '#fff',
-      extendedProps: {
-        campaign: 'Polio Vaccination Campaign',
-        targetGroup: 'All Eligible Students',
-        vaccine: 'OPV (Oral Polio Vaccine)',
-        location: 'School Gymnasium'
-      }
-    },
-    // Health Checkup - Group A
-    {
-      id: 'health-check-a',
-      title: 'Health Checkup - Group A',
-      start: '2025-07-05T08:00:00',
-      end: '2025-07-05T12:00:00',
-      description: 'Annual health screening for Grades 1-3',
-      color: '#a29bfe',
-      textColor: '#fff',
-      extendedProps: {
-        campaign: 'Annual Health Checkup',
-        targetGroup: 'Grades 1-3',
-        vaccine: 'N/A',
-        location: 'School Medical Room'
-      }
-    },
-    // Health Checkup - Group B
-    {
-      id: 'health-check-b',
-      title: 'Health Checkup - Group B',
-      start: '2025-07-05T13:00:00',
-      end: '2025-07-05T17:00:00',
-      description: 'Annual health screening for Grades 4-6',
-      color: '#a29bfe',
-      textColor: '#fff',
-      extendedProps: {
-        campaign: 'Annual Health Checkup',
-        targetGroup: 'Grades 4-6',
-        vaccine: 'N/A',
-        location: 'School Medical Room'
-      }
-    },
-    // Multi-day Health Campaign
-    {
-      id: 'health-week',
-      title: 'School Health Week',
-      start: '2025-07-20',
-      end: '2025-07-25',
-      description: 'Comprehensive health awareness and vaccination week',
-      color: '#fd79a8',
       textColor: '#fff',
       allDay: true,
       extendedProps: {
-        campaign: 'Health Awareness Week',
+        type: 'vaccination',
+        campaign: `${latestCampaign.campaign.disease.name} Vaccination Campaign`,
         targetGroup: 'All Students',
-        vaccine: 'Various',
-        location: 'Entire School Campus'
+        vaccine: latestCampaign.campaign.vaccine.name,
+        manufacturer: latestCampaign.campaign.vaccine.manufacturer,
+        recommendedAge: latestCampaign.campaign.vaccine.recommendedAge,
+        location: '123ABC School - Health Center',
+        disease: latestCampaign.campaign.disease.name,
+        doseQuantity: latestCampaign.campaign.disease.doseQuantity,
+        isInjected: latestCampaign.campaign.disease.isInjectedVaccine,
+        status: latestCampaign.campaign.status,
+        campaignStatus: latestCampaign.campaign.campaignStatus,
+        notes: latestCampaign.campaign.notes
+      }
+    },
+    // Health Check Campaign Event
+    {
+      id: `healthcheck-${latestHealthCheckCampaign.campaignId}`,
+      title: latestHealthCheckCampaign.title,
+      start: latestHealthCheckCampaign.startExaminationDate.split('T')[0],
+      end: latestHealthCheckCampaign.endExaminationDate.split('T')[0],
+      description: latestHealthCheckCampaign.description,
+      color: '#a29bfe',
+      textColor: '#fff',
+      allDay: true,
+      extendedProps: {
+        type: 'healthcheck',
+        campaign: latestHealthCheckCampaign.title,
+        targetGroup: 'All Students',
+        vaccine: 'N/A',
+        location: latestHealthCheckCampaign.address,
+        status: latestHealthCheckCampaign.statusHealthCampaign,
+        createdAt: latestHealthCheckCampaign.createdAt,
+        notes: 'Comprehensive health screening for all students'
       }
     }
   ];
@@ -246,7 +198,7 @@ export default function CampaignScheduleContent() {
                 {/* Key Information Grid */}
                 <Grid container spacing={3}>
                   {/* Date & Time */}
-                  <Grid item xs={12} md={6}>
+                  <Grid item size={{ xs: 12, md: 6}}>
                     <Paper sx={{ p: 2, height: '100%', bgcolor: 'info.50' }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                         <Schedule color="info" />
@@ -279,7 +231,7 @@ export default function CampaignScheduleContent() {
                   </Grid>
 
                   {/* Target Group */}
-                  <Grid item xs={12} md={6}>
+                  <Grid item size={{ xs: 12, md: 6}}>
                     <Paper sx={{ p: 2, height: '100%', bgcolor: 'success.50' }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                         <Group color="success" />
@@ -293,26 +245,51 @@ export default function CampaignScheduleContent() {
                         variant="filled"
                         sx={{ mt: 1 }}
                       />
+                      {(selectedEvent.extendedProps.status || selectedEvent.extendedProps.campaignStatus) && (
+                        <Box sx={{ mt: 1 }}>
+                          <Chip 
+                            label={`Status: ${selectedEvent.extendedProps.campaignStatus || selectedEvent.extendedProps.status}`} 
+                            color={(selectedEvent.extendedProps.campaignStatus || selectedEvent.extendedProps.status) === 'PUBLISHED' ? 'success' : 'warning'} 
+                            variant="outlined"
+                            size="small"
+                          />
+                        </Box>
+                      )}
                     </Paper>
                   </Grid>
 
                   {/* Vaccine Information */}
-                  <Grid item xs={12} md={6}>
+                  <Grid item size={{ xs: 12, md: 6}}>
                     <Paper sx={{ p: 2, height: '100%', bgcolor: 'warning.50' }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                         <Vaccines color="warning" />
                         <Typography variant="subtitle1" fontWeight="bold" color="warning.main">
-                          Vaccine Type
+                          {selectedEvent.extendedProps.type === 'healthcheck' ? 'Health Check' : 'Vaccine Information'}
                         </Typography>
                       </Box>
                       <Typography variant="h6" fontWeight="bold" sx={{ mt: 1 }}>
                         {selectedEvent.extendedProps.vaccine}
                       </Typography>
+                      {selectedEvent.extendedProps.manufacturer && (
+                        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                          <strong>Manufacturer:</strong> {selectedEvent.extendedProps.manufacturer}
+                        </Typography>
+                      )}
+                      {selectedEvent.extendedProps.recommendedAge && (
+                        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                          <strong>Recommended Age:</strong> {selectedEvent.extendedProps.recommendedAge}
+                        </Typography>
+                      )}
+                      {selectedEvent.extendedProps.doseQuantity && (
+                        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                          <strong>Dose Quantity:</strong> {selectedEvent.extendedProps.doseQuantity}
+                        </Typography>
+                      )}
                     </Paper>
                   </Grid>
 
                   {/* Location */}
-                  <Grid item xs={12} md={6}>
+                  <Grid item size={{ xs: 12, md: 6}}>
                     <Paper sx={{ p: 2, height: '100%', bgcolor: 'error.50' }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                         <LocationOn color="error" />
@@ -323,6 +300,16 @@ export default function CampaignScheduleContent() {
                       <Typography variant="body1" sx={{ mt: 1 }}>
                         {selectedEvent.extendedProps.location}
                       </Typography>
+                      {selectedEvent.extendedProps.disease && (
+                        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                          <strong>Disease:</strong> {selectedEvent.extendedProps.disease}
+                        </Typography>
+                      )}
+                      {selectedEvent.extendedProps.isInjected !== undefined && (
+                        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                          <strong>Administration:</strong> {selectedEvent.extendedProps.isInjected ? 'Injection' : 'Oral'}
+                        </Typography>
+                      )}
                     </Paper>
                   </Grid>
                 </Grid>
@@ -347,15 +334,37 @@ export default function CampaignScheduleContent() {
                   <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                     <strong>Important Notes:</strong>
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    • Please bring your child's vaccination record
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    • Arrive 15 minutes before the scheduled time
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    • Consent forms must be submitted in advance
-                  </Typography>
+                  {selectedEvent.extendedProps.type === 'vaccination' && (
+                    <>
+                      <Typography variant="body2" color="text.secondary">
+                        • Please bring your child's vaccination record
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        • Arrive 15 minutes before the scheduled time
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        • Contact the school for any questions
+                      </Typography>
+                    </>
+                  )}
+                  {selectedEvent.extendedProps.type === 'healthcheck' && (
+                    <>
+                      <Typography variant="body2" color="text.secondary">
+                        • Bring any medical records or previous health reports
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        • Ensure your child has had breakfast before the examination
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        • Contact the school for any questions
+                      </Typography>
+                    </>
+                  )}
+                  {selectedEvent.extendedProps.notes && (
+                    <Typography variant="body2" color="primary.main" sx={{ mt: 1, fontStyle: 'italic' }}>
+                      • {selectedEvent.extendedProps.notes}
+                    </Typography>
+                  )}
                 </Box>
               </Box>
             </DialogContent>

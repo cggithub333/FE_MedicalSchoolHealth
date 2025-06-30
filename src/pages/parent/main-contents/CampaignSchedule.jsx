@@ -3,6 +3,8 @@ import { Grid } from '@mui/material';
 import Breadcrumb from '../../../components/magic/Breadcrumb/CustomBreadcrumb';
 import CustomTittle from '../../../components/magic/CustomTittle/CustomTitle';
 import CampaignScheduleContent from '@components/parent/MainContent/CampaignScheduleContent';
+import { Link } from 'react-router-dom';
+import DocumentIcon from '@mui/icons-material/MenuBook';
 
 const CampaignSchedule = () => {
 
@@ -16,6 +18,18 @@ const CampaignSchedule = () => {
       <Grid container>
         <Grid item sx={{ marginLeft: "20px", marginTop: "25px" }} size={{ xs: 6 }}>
           <CustomTittle title={"Campaign Schedule"} />
+          <ul width={"50px"} backgroundColor={'red'}>
+              <li style={{  fontSize: "19px", 
+                            padding: "20px",
+                            paddingBottom: "0px",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "10px",
+              }}>
+              <DocumentIcon /><span>Read schedule documents: </span>
+              <Link to={'./documents'}>Click here!</Link>
+              </li>
+          </ul>
         </Grid>
       </Grid>
       <Grid container backgroundColor={"#e6f8f9"} justifyContent={"center"} mt={'50px'} pb={'100px'}>
