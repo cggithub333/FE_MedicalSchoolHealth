@@ -1,13 +1,13 @@
-import { Grid } from '@mui/material';
+import { Alert, Grid } from '@mui/material';
 
 import Breadcrumb from '../../../components/magic/Breadcrumb/CustomBreadcrumb';
 import CustomTittle from '../../../components/magic/CustomTittle/CustomTitle';
 import CampaignScheduleContent from '@components/parent/MainContent/CampaignScheduleContent';
 import { Link } from 'react-router-dom';
-import DocumentIcon from '@mui/icons-material/MenuBook';
 
 import { Base64 } from 'js-base64';
 import ChooseChildImage from '@assets/images/instruct_choose_child.png';
+import { FaChildReaching as ChildIcon } from "react-icons/fa6";
 
 const CampaignSchedule = () => {
 
@@ -25,21 +25,18 @@ const CampaignSchedule = () => {
       <Grid container>
         <Grid item sx={{ marginLeft: "20px", marginTop: "25px" }} size={{ xs: 6 }}>
           <CustomTittle title={"Campaign Schedule"} />
-          <ul width={"50px"}>
-              <li style={{  fontSize: "19px", 
-                            padding: "20px",
-                            paddingBottom: "0px",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "10px",
-              }}>
-              <DocumentIcon /><span>Read schedule documents: </span>
-              <Link to={'./documents'}>Click here!</Link>
-              </li>
-          </ul>
         </Grid>
       </Grid>
       <Grid container backgroundColor={"#e6f8f9"} justifyContent={"center"} mt={'50px'} pb={'100px'}>
+        <Grid item size={{ xs: 10 }}>
+          <Alert severity="success" sx={styleAlertInfor}>
+            <span>Notes: You can change schedule for other child by lick on</span>
+            {" "}
+            <ChildIcon />
+            {" "}
+            <span>icon near the search bar.</span>
+          </Alert>
+        </Grid>
         <Grid item size={{ xs: 10 }} sx={styleScheduleWrapper}>
           {
             (pupilObj == null || pupilObj.pupilId == null) && (
@@ -51,7 +48,9 @@ const CampaignSchedule = () => {
           }
           {
             pupilObj != null && pupilObj.pupilId != null && (
-              <CampaignScheduleContent pupil={pupilObj} />
+              <>
+                <CampaignScheduleContent pupil={pupilObj} />
+              </>
             )
           }
         </Grid>
@@ -66,6 +65,13 @@ const styleScheduleWrapper = {
   padding: '20px',
   boxShadow: "0px 3px 3px 3px rgba(0, 0, 0, 0.1)",
   marginBottom: '30px',
+}
+
+const styleAlertInfor = {
+  display: 'flex', alignItems: 'center',
+  justifyContent: 'center', marginBottom: '20px',
+  borderRadius: '10px', fontSize: '16px',
+  boxShadow: "0px 2px 2px 2px rgba(0, 0, 0, 0.1)"
 }
 
 const breadcrumbPairs = [
