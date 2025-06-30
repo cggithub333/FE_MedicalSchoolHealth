@@ -10,7 +10,7 @@ export const getNewestVaccinationCampaignAction = async () => {
     const response = await fetchResponse(callback);
 
     //debug:
-    console.log("Newest Vaccination Campaign Response:", response);
+    // console.log("Newest Vaccination Campaign Response:", response);
 
     const newestCampaign = await response?.data?.newest_vaccination_campaign[0];
 

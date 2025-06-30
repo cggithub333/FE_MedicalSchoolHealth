@@ -99,7 +99,7 @@ export default function HealthCampaignPage() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ minHeight: "100vh", width: "100%",bgcolor: "grey.50", borderRadius: '6px', overflow: "hidden", boxShadow: 5 }}>
+      <Box sx={{ minHeight: "100vh", width: "100%",bgcolor: "#fff", borderRadius: '6px', overflow: "hidden", boxShadow: 5 }}>
         {/* Hero Section */}
         <Box
           sx={{
@@ -148,7 +148,7 @@ export default function HealthCampaignPage() {
           {/* Location Section */}
           <Paper elevation={3} sx={{ p: 2, mb: 2,borderRadius: "7px", ...hoverPaper }}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 3, mb: 2 }}>
-              <Avatar sx={{ bgcolor: "primary.main", width: 48, height: 48 }}>
+              <Avatar sx={{ bgcolor: "#fff", width: 48, height: 48 }}>
                 <LocationOn />
               </Avatar>
               <Box>
@@ -162,7 +162,7 @@ export default function HealthCampaignPage() {
             </Box>
             <Box
               sx={{
-                bgcolor: "primary.50",
+                bgcolor: "#fff",
                 p: 1,
                 borderRadius: 2,
                 borderColor: "primary.200",
@@ -214,7 +214,7 @@ export default function HealthCampaignPage() {
                   sx={{
                     textAlign: "center",
                     p: 3,
-                    bgcolor: "success.50",
+                    bgcolor: "white",
                     borderRadius: 2,
                     borderColor: "success.200",
                   }}
@@ -269,7 +269,7 @@ export default function HealthCampaignPage() {
                   alignItems: "center",
                   textAlign: "center",
                   p: 1,
-                  bgcolor: "primary.50",
+                  bgcolor: "#fff",
                   borderRadius: 2,
                   borderColor: "primary.200",  
               }}>
@@ -328,7 +328,7 @@ export default function HealthCampaignPage() {
                       borderWidth: 2,
                       "&:hover": {
                         borderWidth: 2,
-                        bgcolor: "primary.50",
+                        bgcolor: "#fff",
                         transform: "translateY(-2px)",
                       },
                       transition: "all 0.3s ease",
