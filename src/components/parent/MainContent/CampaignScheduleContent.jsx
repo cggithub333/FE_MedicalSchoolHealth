@@ -337,8 +337,8 @@ export default function CampaignScheduleContent() {
                   </Box>
                   <Typography variant="body1" sx={{ lineHeight: 1.6 }}>
                     {selectedEvent.extendedProps.description || 
-                     selectedEvent._def?.extendedProps?.description || 
-                     selectedEvent.title}
+                      selectedEvent._def?.extendedProps?.description || 
+                      selectedEvent.title}
                   </Typography>
                 </Paper>
 
