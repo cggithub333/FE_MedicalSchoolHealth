@@ -6,7 +6,14 @@ import CampaignScheduleContent from '@components/parent/MainContent/CampaignSche
 import { Link } from 'react-router-dom';
 import DocumentIcon from '@mui/icons-material/MenuBook';
 
+import { Base64 } from 'js-base64';
+import ChooseChildImage from '@assets/images/instruct_choose_child.png';
+
 const CampaignSchedule = () => {
+
+  // get pupilInfor from localStorage:
+  const decodedPupilInfo = Base64.decode(localStorage.getItem('pupilInfor'));
+  const pupilObj = JSON.parse(decodedPupilInfo);
 
   return (
     <div style={{ background: "#e6f8f9", height: "100vh", paddingTop: "20px", paddingBottom: "50px" }}>
@@ -18,7 +25,7 @@ const CampaignSchedule = () => {
       <Grid container>
         <Grid item sx={{ marginLeft: "20px", marginTop: "25px" }} size={{ xs: 6 }}>
           <CustomTittle title={"Campaign Schedule"} />
-          <ul width={"50px"} backgroundColor={'red'}>
+          <ul width={"50px"}>
               <li style={{  fontSize: "19px", 
                             padding: "20px",
                             paddingBottom: "0px",
@@ -34,7 +41,19 @@ const CampaignSchedule = () => {
       </Grid>
       <Grid container backgroundColor={"#e6f8f9"} justifyContent={"center"} mt={'50px'} pb={'100px'}>
         <Grid item size={{ xs: 10 }} sx={styleScheduleWrapper}>
-          <CampaignScheduleContent />
+          {
+            (pupilObj == null || pupilObj.pupilId == null) && (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                <img src={ChooseChildImage} alt="Choose Child" style={{ width: '100%', height:'100%' }} />
+                <h3 style={{ textAlign: 'center' }}>Please choose a child to view their campaign schedule.</h3>
+              </div>
+            )
+          }
+          {
+            pupilObj != null && pupilObj.pupilId != null && (
+              <CampaignScheduleContent pupil={pupilObj} />
+            )
+          }
         </Grid>
       </Grid>
     </div>

@@ -29,9 +29,17 @@ import {
   LocalHospital
 } from '@mui/icons-material'
 
-export default function CampaignScheduleContent() {
+import useAllVaccinationSurveys from '@hooks/parent/vaccination/useAllVaccinationSurveys'
+import useLatestVaccinationCampaign from '@hooks/parent/vaccination/useLatestVaccinationcampaign'
+import useLatestHealthCheckCampaign from '@hooks/parent/useLatestHealthCheckCampaign'
+
+export default function CampaignScheduleContent({ pupil }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
+
+  const {latestCampaign, loading: loadingVaccination, error: errorVaccination, refetch: refetchVaccination} = useLatestVaccinationCampaign();
+  const { vaccinationSurveys, loading: loadingSurveys, error: errorSurveys, refetch: refetchSurveys} = useAllVaccinationSurveys();
+  const { latestHealthCheckCampaign, loading: loadingHealthCheck, error: errorHealthCheck, refetch: refetchHealthCheck } = useLatestHealthCheckCampaign();
 
   const handleCloseModal = () => {
     setModalOpen(false);
@@ -42,92 +50,6 @@ export default function CampaignScheduleContent() {
     setSelectedEvent(info.event);
     setModalOpen(true);
   };
-
-  // Real data from your API
-  const latestCampaign = {
-    campaign: {
-      campaignId: 4,
-      disease: {
-        disease_id: 1,
-        name: "Measles ",
-        description: "Infectious disease with rash and high fever",
-        isInjectedVaccine: true,
-        doseQuantity: 1
-      },
-      vaccine: {
-        vaccineId: 1,
-        name: "Vaccine MMR",
-        manufacturer: "PharmaCorp",
-        recommendedAge: "12–15 tháng",
-        description: null
-      },
-      notes: "Please confirm the form before the deadline form for making sure the best for your child's health.",
-      startDate: "2025-07-02",
-      endDate: "2025-07-05",
-      campaignStatus: "PUBLISHED",
-      status: "Pending"
-    }
-  };
-
-  const latestHealthCheckCampaign = {
-    campaignId: 2,
-    address: "123ABC School",
-    title: "Health check campaign Winter 2025",
-    description: "A winter health screening initiative aimed at ensuring the physical well-being of all students. The campaign includes general check-ups, dental and vision assessments, and promotes awareness of healthy habits for a strong academic year.",
-    startExaminationDate: "2025-06-21T04:54:57.263",
-    endExaminationDate: "2025-06-21T04:54:57.263",
-    createdAt: "2025-06-28",
-    statusHealthCampaign: "PUBLISHED"
-  };
-
-  const pupil = {
-    pupilId: "PP0006",
-    lastName: "Hoàng",
-    firstName: "Em",
-    birthDate: "12-01-2018",
-    gender: "M",
-    gradeId: 1,
-    startYear: 2024,
-    gradeLevel: "GRADE_1",
-    gradeName: "Lớp 1D"
-  };
-
-  const vaccinationSurveys = [
-    {
-      consentFormId: 26,
-      respondedAt: "2025-06-30T13:38:16.438398",
-      status: "APPROVED",
-      formDeadline: "2025-07-01T23:59:59.999999999",
-      campaignId: 4,
-      campaignName: "Vaccination End Winter 2025",
-      diseaseId: 1,
-      diseaseName: "Measles ",
-      doseNumber: 1,
-      currDoseNumber: 0,
-      vaccineId: 1,
-      vaccineName: "Vaccine MMR",
-      pupilId: "PP0006",
-      pupilName: "Em",
-      gradeLevel: "GRADE_1"
-    },
-    {
-      consentFormId: 27,
-      respondedAt: null,
-      status: "REJECTED",
-      formDeadline: "2025-07-01T23:59:59.999999999",
-      campaignId: 4,
-      campaignName: "Vaccination End Winter 2025",
-      diseaseId: 1,
-      diseaseName: "Measles ",
-      doseNumber: 1,
-      currDoseNumber: 0,
-      vaccineId: 1,
-      vaccineName: "Vaccine MMR",
-      pupilId: "PP0007",
-      pupilName: "Lan",
-      gradeLevel: "GRADE_4"
-    }
-  ];
 
   // Helper function to calculate vaccination date based on grade
   const getVaccinationDateForGrade = (startDate, gradeId) => {
@@ -144,14 +66,34 @@ export default function CampaignScheduleContent() {
   };
 
   // Check if current pupil has vaccination survey
-  const hasPupilVaccinationSurvey = vaccinationSurveys.some(survey => survey.pupilId === pupil.pupilId);
-  const pupilVaccinationSurvey = vaccinationSurveys.find(survey => survey.pupilId === pupil.pupilId);
+  const hasPupilVaccinationSurvey = vaccinationSurveys?.some(survey => survey.pupilId === pupil?.pupilId) || false;
+  const pupilVaccinationSurvey = vaccinationSurveys?.find(survey => survey.pupilId === pupil?.pupilId);
+
+  // Early return if essential data is missing
+  if (!pupil) {
+    return <Typography>No pupil data available</Typography>;
+  }
+
+  // Show loading state
+  if (loadingVaccination || loadingSurveys || loadingHealthCheck) {
+    return (
+      // skeleton loading state, a light gray box is shown:
+      <Box sx={{ padding: 2, bgcolor: 'grey.200', borderRadius: 1 }}>
+        <Typography>Loading campaign data...</Typography>
+      </Box>
+    );
+  }
+
+  // Show error state
+  if (errorVaccination || errorSurveys || errorHealthCheck) {
+    return <Typography color="error">Error loading campaign data</Typography>;
+  }
 
   const generateEvents = () => {
     const events = [];
 
     // Add Health Check Campaign Events (always available for all pupils) - 2 sessions per day
-    if (latestHealthCheckCampaign) {
+    if (latestHealthCheckCampaign && latestHealthCheckCampaign.startExaminationDate) {
       const healthCheckDate = getHealthCheckDateForGrade(
         latestHealthCheckCampaign.startExaminationDate.split('T')[0], 
         pupil.gradeId
@@ -163,16 +105,16 @@ export default function CampaignScheduleContent() {
         title: `Health Check (Morning) - ${pupil.gradeName}`,
         start: `${healthCheckDate}T08:00:00`,
         end: `${healthCheckDate}T11:30:00`,
-        description: latestHealthCheckCampaign.description,
+        description: latestHealthCheckCampaign.description || 'Health check examination',
         color: '#a29bfe',
         textColor: '#fff',
         extendedProps: {
           type: 'HEALTH_CHECK',
           session: 'MORNING',
-          campaign: latestHealthCheckCampaign.title,
+          campaign: latestHealthCheckCampaign.title || 'Health Check Campaign',
           campaignId: latestHealthCheckCampaign.campaignId,
           targetGroup: pupil.gradeName,
-          location: latestHealthCheckCampaign.address,
+          location: latestHealthCheckCampaign.address || 'School Health Center',
           pupilId: pupil.pupilId,
           pupilName: `${pupil.firstName} ${pupil.lastName}`,
           status: latestHealthCheckCampaign.statusHealthCampaign,
@@ -187,16 +129,16 @@ export default function CampaignScheduleContent() {
         title: `Health Check (Afternoon) - ${pupil.gradeName}`,
         start: `${healthCheckDate}T13:00:00`,
         end: `${healthCheckDate}T16:30:00`,
-        description: latestHealthCheckCampaign.description,
+        description: latestHealthCheckCampaign.description || 'Health check examination',
         color: '#74b9ff',
         textColor: '#fff',
         extendedProps: {
           type: 'HEALTH_CHECK',
           session: 'AFTERNOON',
-          campaign: latestHealthCheckCampaign.title,
+          campaign: latestHealthCheckCampaign.title || 'Health Check Campaign',
           campaignId: latestHealthCheckCampaign.campaignId,
           targetGroup: pupil.gradeName,
-          location: latestHealthCheckCampaign.address,
+          location: latestHealthCheckCampaign.address || 'School Health Center',
           pupilId: pupil.pupilId,
           pupilName: `${pupil.firstName} ${pupil.lastName}`,
           status: latestHealthCheckCampaign.statusHealthCampaign,
@@ -207,7 +149,7 @@ export default function CampaignScheduleContent() {
     }
 
     // Add Vaccination Campaign Events (only if pupil has vaccination survey) - 2 sessions per day
-    if (latestCampaign && hasPupilVaccinationSurvey) {
+    if (latestCampaign && latestCampaign.campaign && latestCampaign.campaign.startDate && hasPupilVaccinationSurvey) {
       const vaccinationDate = getVaccinationDateForGrade(
         latestCampaign.campaign.startDate, 
         pupil.gradeId
@@ -216,10 +158,10 @@ export default function CampaignScheduleContent() {
       // Morning Session: 8:00 AM - 11:30 AM
       events.push({
         id: `vaccination-morning-${pupil.gradeId}`,
-        title: `${latestCampaign.campaign.vaccine.name} (Morning) - ${pupil.gradeName}`,
+        title: `${latestCampaign.campaign.vaccine?.name || 'Vaccination'} (Morning) - ${pupil.gradeName}`,
         start: `${vaccinationDate}T08:00:00`,
         end: `${vaccinationDate}T11:30:00`,
-        description: `Vaccination for ${latestCampaign.campaign.disease.name.trim()} - ${latestCampaign.campaign.disease.description}`,
+        description: `Vaccination for ${latestCampaign.campaign.disease?.name?.trim() || 'Disease'} - ${latestCampaign.campaign.disease?.description || 'No description available'}`,
         color: '#ff6b6b',
         textColor: '#fff',
         extendedProps: {
@@ -228,18 +170,18 @@ export default function CampaignScheduleContent() {
           campaign: pupilVaccinationSurvey?.campaignName || 'Vaccination Campaign',
           campaignId: latestCampaign.campaign.campaignId,
           targetGroup: pupil.gradeName,
-          vaccine: latestCampaign.campaign.vaccine.name,
-          disease: latestCampaign.campaign.disease.name.trim(),
-          manufacturer: latestCampaign.campaign.vaccine.manufacturer,
+          vaccine: latestCampaign.campaign.vaccine?.name || 'Unknown Vaccine',
+          disease: latestCampaign.campaign.disease?.name?.trim() || 'Unknown Disease',
+          manufacturer: latestCampaign.campaign.vaccine?.manufacturer || 'Unknown Manufacturer',
           location: 'School Health Center',
           pupilId: pupil.pupilId,
           pupilName: `${pupil.firstName} ${pupil.lastName}`,
           status: pupilVaccinationSurvey?.status || 'PENDING',
           campaignStatus: latestCampaign.campaign.campaignStatus,
           notes: latestCampaign.campaign.notes,
-          doseQuantity: latestCampaign.campaign.disease.doseQuantity,
-          isInjected: latestCampaign.campaign.disease.isInjectedVaccine,
-          recommendedAge: latestCampaign.campaign.vaccine.recommendedAge,
+          doseQuantity: latestCampaign.campaign.disease?.doseQuantity || 1,
+          isInjected: latestCampaign.campaign.disease?.isInjectedVaccine || true,
+          recommendedAge: latestCampaign.campaign.vaccine?.recommendedAge || 'Not specified',
           gradeId: pupil.gradeId,
           formDeadline: pupilVaccinationSurvey?.formDeadline,
           sessionTime: '8:00 AM - 11:30 AM'
@@ -249,10 +191,10 @@ export default function CampaignScheduleContent() {
       // Afternoon Session: 1:00 PM - 4:30 PM
       events.push({
         id: `vaccination-afternoon-${pupil.gradeId}`,
-        title: `${latestCampaign.campaign.vaccine.name} (Afternoon) - ${pupil.gradeName}`,
+        title: `${latestCampaign.campaign.vaccine?.name || 'Vaccination'} (Afternoon) - ${pupil.gradeName}`,
         start: `${vaccinationDate}T13:00:00`,
         end: `${vaccinationDate}T16:30:00`,
-        description: `Vaccination for ${latestCampaign.campaign.disease.name.trim()} - ${latestCampaign.campaign.disease.description}`,
+        description: `Vaccination for ${latestCampaign.campaign.disease?.name?.trim() || 'Disease'} - ${latestCampaign.campaign.disease?.description || 'No description available'}`,
         color: '#fd79a8',
         textColor: '#fff',
         extendedProps: {
@@ -261,18 +203,18 @@ export default function CampaignScheduleContent() {
           campaign: pupilVaccinationSurvey?.campaignName || 'Vaccination Campaign',
           campaignId: latestCampaign.campaign.campaignId,
           targetGroup: pupil.gradeName,
-          vaccine: latestCampaign.campaign.vaccine.name,
-          disease: latestCampaign.campaign.disease.name.trim(),
-          manufacturer: latestCampaign.campaign.vaccine.manufacturer,
+          vaccine: latestCampaign.campaign.vaccine?.name || 'Unknown Vaccine',
+          disease: latestCampaign.campaign.disease?.name?.trim() || 'Unknown Disease',
+          manufacturer: latestCampaign.campaign.vaccine?.manufacturer || 'Unknown Manufacturer',
           location: 'School Health Center',
           pupilId: pupil.pupilId,
           pupilName: `${pupil.firstName} ${pupil.lastName}`,
           status: pupilVaccinationSurvey?.status || 'PENDING',
           campaignStatus: latestCampaign.campaign.campaignStatus,
           notes: latestCampaign.campaign.notes,
-          doseQuantity: latestCampaign.campaign.disease.doseQuantity,
-          isInjected: latestCampaign.campaign.disease.isInjectedVaccine,
-          recommendedAge: latestCampaign.campaign.vaccine.recommendedAge,
+          doseQuantity: latestCampaign.campaign.disease?.doseQuantity || 1,
+          isInjected: latestCampaign.campaign.disease?.isInjectedVaccine || true,
+          recommendedAge: latestCampaign.campaign.vaccine?.recommendedAge || 'Not specified',
           gradeId: pupil.gradeId,
           formDeadline: pupilVaccinationSurvey?.formDeadline,
           sessionTime: '1:00 PM - 4:30 PM'
@@ -403,7 +345,7 @@ export default function CampaignScheduleContent() {
                     <Grid item xs={12} md={6}>
                       <Typography variant="body2" color="text.secondary">Birth Date</Typography>
                       <Typography variant="body1" fontWeight="bold">
-                        {pupil.birthDate}
+                        {pupil?.birthDate || 'Not available'}
                       </Typography>
                     </Grid>
                   </Grid>
