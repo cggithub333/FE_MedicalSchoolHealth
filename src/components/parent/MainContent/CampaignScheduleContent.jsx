@@ -27,7 +27,7 @@ import {
   Description
 } from '@mui/icons-material'
 
-export default function VaccinationSchedule() {
+export default function CampaignScheduleContent() {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
 

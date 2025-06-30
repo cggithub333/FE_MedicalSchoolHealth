@@ -21,7 +21,6 @@ const ParentDashboardRoutes = () => {
           <Route path={"campaigns"} element={<ParentComponentPagePackages.CampaignsVaccination />} />
           <Route path={"vaccination-history"} element={<ParentComponentPagePackages.VaccinationHistory />} />
           <Route path={"surveys"} element={<ParentComponentPagePackages.SurveysVaccination />} />
-          <Route path={"schedule"} element={<ParentComponentPagePackages.ScheduleVaccination />} />
         </Route>
 
         {/* health-check-campaign */}
@@ -29,8 +28,11 @@ const ParentDashboardRoutes = () => {
           <Route path={"campaigns"} element={<ParentComponentPagePackages.CampaignsHealthCheck />} />
           <Route path={"health-check-history"} element={<ParentComponentPagePackages.HealthCheckHistory />} />
           <Route path={"surveys"} element={<ParentComponentPagePackages.SurveysHealthCheck />} />
-          <Route path={"schedule"} element={<ParentComponentPagePackages.ScheduleHealthCheck />} />
         </Route>
+
+        {/* campaign schedule */}
+        <Route path={"campaign-schedule"} element={<ParentComponentPagePackages.CampaignSchedule/>} />
+      
       </Route>
     </Routes>
   );
