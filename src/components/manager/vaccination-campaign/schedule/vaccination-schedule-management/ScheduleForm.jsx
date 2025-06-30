@@ -1,5 +1,5 @@
-//health check-schedule-management/ScheduleForm.jsx
-import { useState, useMemo, useEffect } from "react"
+// vaccination schedule management form component
+import { useState, useMemo } from "react"
 import {
     Card,
     CardContent,
@@ -14,22 +14,25 @@ import {
     Skeleton,
     Grow,
 } from "@mui/material"
+import { useNavigate } from "react-router-dom"
+
 import {
+    Vaccines as VaccinesIcon,
     Schedule as ScheduleIcon,
-    Group as GroupIcon,
+    Groups as GroupsIcon,
     CheckCircle as CheckCircleIcon,
     Warning as WarningIcon,
     Error as ErrorIcon,
     Visibility as VisibilityIcon,
 } from "@mui/icons-material"
 import "./StyleScheduleForm.scss"
-import ScheduleInjectedList from "../healthcheck-schedule-management-details/ScheduleInjectedList"
-import { useNewestCampaignByStatus } from "../../../../../hooks/schoolnurse/healthcheck/schedule/useNewestCampaignByStatus"
-import { fetchPupilsByGrade } from "../../../../../api/schoolnurse/schoolnurse-requests-action/healthcheck/pupils-by-grade-request-action"
-import { useNavigate } from "react-router-dom"
+import ScheduleInjectedList from "../vaccination-schedule-management-details/ScheduleInjectedList"
+import { useNewestVaccinationCampaign } from "../../../../../hooks/schoolnurse/vaccination/vaccination/useNewestCampaignByStatus"
+import { useGetAllPupilsApprovedByGrade } from "../../../../../hooks/schoolnurse/vaccination/vaccination/useGetAllPupilsByGrade"
 
 const GRADES = [1, 2, 3, 4, 5]
 
+// Status configuration with enhanced styling
 const statusConfig = {
     Available: {
         color: "#4caf50",
@@ -37,6 +40,7 @@ const statusConfig = {
         icon: CheckCircleIcon,
         label: "Available",
     },
+
     NONE: {
         color: "#f44336",
         bgColor: "#ffebee",
@@ -47,7 +51,7 @@ const statusConfig = {
 
 // Helper to get saved shift data for a specific campaign and grade, always synced with current pupils
 function getShiftSavedData(campaignId, grade, currentPupils) {
-    const storageKey = `healthcheck_students_campaign_${campaignId}_grade_${grade}`
+    const storageKey = `vaccination_students_campaign_${campaignId}_grade_${grade}`
     let savedData = null
     try {
         savedData = JSON.parse(localStorage.getItem(storageKey) || "null")
@@ -74,9 +78,11 @@ function getShiftSavedData(campaignId, grade, currentPupils) {
 
 // Helper to calculate schedule dates based on campaign
 function calculateScheduleDates(campaign) {
-    if (!campaign?.startExaminationDate) return []
-    const startDate = new Date(campaign.startExaminationDate)
+    if (!campaign?.startDate) return []
+
+    const startDate = new Date(campaign.startDate.split("-").reverse().join("-"))
     const dates = []
+
     for (let i = 0; i < 5; i++) {
         const date = new Date(startDate)
         date.setDate(startDate.getDate() + i)
@@ -89,115 +95,110 @@ function calculateScheduleDates(campaign) {
             }),
         })
     }
+
     return dates
 }
 
-const HealthCheckScheduleForm = () => {
-    const { newestCampaign, loading, error } = useNewestCampaignByStatus()
+const VaccinationScheduleForm = () => {
+    const navigate = useNavigate();
+    const { newestVaccinationCampaign, isLoading, error } = useNewestVaccinationCampaign()
+    console.log('newestVaccinationCampaign:', newestVaccinationCampaign)
     const [showInjectionList, setShowInjectionList] = useState(false)
     const [selectedShift, setSelectedShift] = useState(null)
     const [refresh, setRefresh] = useState(0)
-    const [pupilsByGrade, setPupilsByGrade] = useState({})
-    const [pupilsLoading, setPupilsLoading] = useState(true)
-    const [animateCards, setAnimateCards] = useState(false)
-    const navigate = useNavigate();
 
-    // Find active campaign (IN_PROGRESS)
+    // Filter campaign by IN_PROGRESS status
     const activeCampaign = useMemo(() => {
-        if (!newestCampaign || !Array.isArray(newestCampaign)) return null
-        return newestCampaign.find((c) => String(c.statusHealthCampaign).trim().toUpperCase() === "IN_PROGRESS")
-    }, [newestCampaign])
+        if (!newestVaccinationCampaign || !Array.isArray(newestVaccinationCampaign)) return null
+        // Make status check case-insensitive and trim spaces
+        return newestVaccinationCampaign.find((campaign) => String(campaign.status).trim().toUpperCase() === "IN_PROGRESS")
+    }, [newestVaccinationCampaign])
 
-    // Fetch all grades' pupils in parallel using API
-    useEffect(() => {
-        let isMounted = true
-        async function fetchAllPupils() {
-            setPupilsLoading(true)
-            const results = {}
-            await Promise.all(
-                GRADES.map(async (grade) => {
-                    try {
-                        const pupils = await fetchPupilsByGrade(grade)
-                        results[grade] = Array.isArray(pupils) ? pupils : []
-                    } catch {
-                        results[grade] = []
-                    }
-                })
-            )
-            if (isMounted) setPupilsByGrade(results)
-            setPupilsLoading(false)
-        }
-        if (activeCampaign) fetchAllPupils()
-        else setPupilsLoading(false)
-        return () => { isMounted = false }
-    }, [activeCampaign, refresh])
+    // Get pupils by campaign ID for capacity calculation
+    const { pupils: allPupils, isLoading: pupilsLoading } = useGetAllPupilsApprovedByGrade(
+        activeCampaign?.campaignId || 0,
+    )
 
     const scheduleDates = useMemo(() => {
         return activeCampaign ? calculateScheduleDates(activeCampaign) : []
     }, [activeCampaign])
 
+    // Group pupils by grade for capacity calculation
+    const pupilsByGrade = useMemo(() => {
+        if (!allPupils || !Array.isArray(allPupils)) return {}
+
+        return allPupils.reduce((acc, pupil) => {
+            const grade = pupil.Grade || pupil.grade || pupil.gradeLevel
+            if (!acc[grade]) acc[grade] = []
+            acc[grade].push(pupil)
+            return acc
+        }, {})
+    }, [allPupils])
+
     // Handle navigation to student list
     const handleViewStudents = (grade) => {
         if (!activeCampaign) return
+
         const gradePupils = pupilsByGrade[grade] || []
         const savedData = getShiftSavedData(activeCampaign.campaignId, grade, gradePupils)
         const scheduleDate = scheduleDates[grade - 1]
+
         const shift = {
             id: `${activeCampaign.campaignId}-${grade}-morning`,
             name: `Grade ${grade} - Morning`,
             time: "08:00 - 11:00",
             grade: grade,
             campaignId: activeCampaign.campaignId,
-            students: savedData, // merged with saved data
-            allPupils: gradePupils, // raw pupils array for consistent count
+            students: savedData,
             totalPupils: gradePupils.length,
             scheduleDate: scheduleDate?.date || `Day ${grade}`,
         }
+
+        console.log("Navigating to grade:", grade)
+        console.log("Shift data:", shift)
+        console.log("Available pupils for grade:", gradePupils.length)
+
         setSelectedShift(shift)
         setShowInjectionList(true)
     }
 
     // Handle back navigation from student list
     const handleBackFromStudentList = () => {
+        console.log("Returning from student list")
         setShowInjectionList(false)
         setSelectedShift(null)
-        setRefresh((r) => r + 1)
+        setRefresh((r) => r + 1) // Force refresh to update progress
     }
 
     // Calculate progress for each grade
     const getGradeProgress = (grade) => {
         if (!activeCampaign) return { filled: 0, total: 0, progress: 0 }
+
         const gradePupils = pupilsByGrade[grade] || []
         const savedData = getShiftSavedData(activeCampaign.campaignId, grade, gradePupils)
         let filled = savedData.filter((student) => student.completed).length
         const total = gradePupils.length
-        if (total === 0) filled = 0
+        if (total === 0) filled = 0 // Force filled to 0 if no students in grade
         const progress = total === 0 ? 0 : (filled / total) * 100
+
         return { filled, total, progress }
     }
 
-    // Animate cards after data loads
-    useEffect(() => {
-        if (newestCampaign && !loading) {
-            setTimeout(() => setAnimateCards(true), 100)
-        }
-    }, [newestCampaign, loading])
-
-    if (loading || pupilsLoading) {
+    if (isLoading || pupilsLoading) {
         return (
             <div className="vaccine-schedule-root">
                 {/* Quick Navigation Bar */}
                 {/* <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
                     <Button
-                        variant="contained"
-                        color="primary"
+                        variant="outlined"
+                        color="secondary"
                         onClick={() => navigate("/schoolnurse/health-check-campaign/schedule")}
                     >
                         Health Check Schedule
                     </Button>
                     <Button
-                        variant="outlined"
-                        color="secondary"
+                        variant="contained"
+                        color="primary"
                         onClick={() => navigate("/schoolnurse/vaccination-campaign/schedule")}
                     >
                         Vaccination Schedule
@@ -224,15 +225,15 @@ const HealthCheckScheduleForm = () => {
                 {/* Quick Navigation Bar */}
                 {/* <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
                     <Button
-                        variant="contained"
-                        color="primary"
+                        variant="outlined"
+                        color="secondary"
                         onClick={() => navigate("/schoolnurse/health-check-campaign/schedule")}
                     >
                         Health Check Schedule
                     </Button>
                     <Button
-                        variant="outlined"
-                        color="secondary"
+                        variant="contained"
+                        color="primary"
                         onClick={() => navigate("/schoolnurse/vaccination-campaign/schedule")}
                     >
                         Vaccination Schedule
@@ -253,7 +254,7 @@ const HealthCheckScheduleForm = () => {
                         {error ? "Error Loading Campaign" : "No Active Campaign"}
                     </Typography>
                     <Typography variant="body1" color="text.secondary">
-                        {error ? "Please try again later." : "There is no health check campaign in progress."}
+                        {error ? "Please try again later." : "There is no vaccination campaign in progress."}
                     </Typography>
                 </Paper>
             </div>
@@ -263,12 +264,40 @@ const HealthCheckScheduleForm = () => {
     if (showInjectionList && selectedShift) {
         return (
             <>
+
                 <Fade in={showInjectionList}>
                     <div>
                         <ScheduleInjectedList shift={selectedShift} campaign={activeCampaign} onBack={handleBackFromStudentList} />
                     </div>
                 </Fade>
             </>
+        )
+    }
+
+    console.log("Active campaign:", activeCampaign)
+    console.log("All pupils:", allPupils?.length || 0)
+    console.log("Pupils by grade:", pupilsByGrade)
+
+    if ((!activeCampaign) && Array.isArray(newestVaccinationCampaign) && newestVaccinationCampaign.length > 0) {
+        // Fallback: show all campaigns for debugging
+        return (
+            <div className="vaccine-schedule-root">
+                <Paper elevation={3} sx={{ p: 4, textAlign: "center", borderRadius: 3, maxWidth: 600, mx: "auto" }}>
+                    <Typography variant="h5" gutterBottom>
+                        No campaign with status IN_PROGRESS found
+                    </Typography>
+                    <Typography variant="body1" color="text.secondary">
+                        Available campaigns:
+                    </Typography>
+                    <ul style={{ textAlign: 'left' }}>
+                        {newestVaccinationCampaign.map((c) => (
+                            <li key={c.campaignId}>
+                                <b>{c.titleCampaign}</b> (status: {c.status})
+                            </li>
+                        ))}
+                    </ul>
+                </Paper>
+            </div>
         )
     }
 
@@ -290,158 +319,124 @@ const HealthCheckScheduleForm = () => {
                         }}
                     >
                         <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                            <ScheduleIcon sx={{ fontSize: 40, mr: 2 }} />
+                            <VaccinesIcon sx={{ fontSize: 40, mr: 2 }} />
                             <Box>
                                 <Typography variant="h4" fontWeight="bold">
-                                    {activeCampaign.title}
+                                    {activeCampaign.titleCampaign}
                                 </Typography>
                                 <Typography variant="subtitle1" sx={{ opacity: 0.9 }}>
-                                    {activeCampaign.description}
+                                    {activeCampaign.vaccineName} • {activeCampaign.diseaseName}
                                 </Typography>
                             </Box>
                         </Box>
                         <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
                             <Chip
                                 icon={<ScheduleIcon />}
-                                label={`${activeCampaign.startExaminationDate} - ${activeCampaign.endExaminationDate}`}
+                                label={`${activeCampaign.startDate} - ${activeCampaign.endDate}`}
                                 sx={{ bgcolor: "rgba(255,255,255,0.2)", color: "white" }}
                             />
-                            <Chip label={activeCampaign.statusHealthCampaign} color="success" sx={{ fontWeight: "bold" }} />
+                            <Chip label={activeCampaign.status} color="success" sx={{ fontWeight: "bold" }} />
                         </Box>
                     </Paper>
+
                     {/* Grade Cards */}
                     <Box sx={{ display: "flex", justifyContent: "center" }}>
                         <Grid container spacing={3} justifyContent="center">
                             {GRADES.map((grade, index) => {
+                                // Adapted from health check design
                                 const gradePupils = pupilsByGrade[grade] || []
                                 const scheduleDate = scheduleDates[index]
                                 const { filled, total, progress } = getGradeProgress(grade)
+
+                                // Determine status based on progress
                                 let status = "Available"
                                 if (total === 0) {
                                     status = "NONE"
                                 }
                                 const config = statusConfig[status]
                                 const StatusIcon = config.icon
+
                                 return (
-                                    <Grow in={true} timeout={300 + index * 100} key={grade}>
-                                        <Grid
-                                            item
-                                            xs={12}
-                                            md={6}
-                                            lg={4}
-                                            sx={{ display: 'flex', justifyContent: 'center' }}
-                                        >
-                                            <Card
-                                                sx={{
-                                                    minWidth: 300,
-                                                    maxWidth: 300,
-                                                    minHeight: 220,
-                                                    borderRadius: 4,
-                                                    mb: 2,
-                                                    cursor: 'pointer',
-                                                    boxShadow: '0 8px 32px rgba(102,126,234,0.10)',
-                                                    background: 'linear-gradient(135deg, #e3f2fd 0%, #f8fafc 100%)',
-                                                    transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                                                    border: '2px solid #bdbdbd',
-                                                    '&:hover': {
-                                                        transform: 'translateY(-4px) scale(1.02)',
-                                                        boxShadow: '0 16px 40px rgba(102,126,234,0.18)',
-                                                        border: '2px solid #667eea',
-                                                    },
-                                                }}
-                                            >
+                                    <Grow in timeout={300 + index * 100} key={grade}>
+                                        <Grid item xs={12} md={6} lg={4} sx={{ display: 'flex', justifyContent: 'center' }}>
+                                            <Card sx={{ minWidth: 300, maxWidth: 300, minHeight: 220, borderRadius: 4, boxShadow: "0 8px 32px rgba(102,126,234,0.10)", background: "linear-gradient(135deg, #e3f2fd 0%, #f8fafc 100%)", transition: "all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)", cursor: "pointer", mb: 2, border: '2px solid #bdbdbd', '&:hover': { boxShadow: "0 16px 40px rgba(102,126,234,0.18)", transform: "translateY(-4px) scale(1.02)", border: '2px solid #667eea' } }}>
+
                                                 <CardContent>
-                                                    {/* Title and Status */}
-                                                    <Box
-                                                        sx={{
-                                                            display: 'flex',
-                                                            justifyContent: 'space-between',
-                                                            alignItems: 'center',
-                                                            mb: 1,
-                                                        }}
-                                                    >
+                                                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
                                                         <Typography
                                                             variant="h6"
                                                             sx={{
                                                                 fontWeight: 700,
-                                                                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                                                                backgroundClip: 'text',
-                                                                WebkitBackgroundClip: 'text',
-                                                                WebkitTextFillColor: 'transparent',
+                                                                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                                                                backgroundClip: "text",
+                                                                WebkitBackgroundClip: "text",
+                                                                WebkitTextFillColor: "transparent",
                                                             }}
                                                         >
-                                                            Grade {grade} Health Check
+                                                            Grade {grade} Vaccination
                                                         </Typography>
-
                                                         <Chip
-                                                            icon={
-                                                                StatusIcon ? (
-                                                                    <StatusIcon sx={{ color: config?.color }} />
-                                                                ) : null
-                                                            }
-                                                            label={config?.label || status}
+                                                            icon={StatusIcon ? <StatusIcon sx={{ color: config.color }} /> : null}
+                                                            label={config ? config.label : status}
                                                             sx={{
                                                                 fontWeight: 600,
-                                                                bgcolor: config?.bgColor,
-                                                                color: config?.color,
+                                                                bgcolor: config ? config.bgColor : undefined,
+                                                                color: config ? config.color : undefined,
                                                                 px: 1.5,
-                                                                fontSize: '1rem',
+                                                                fontSize: "1rem",
                                                             }}
                                                         />
                                                     </Box>
-
-                                                    {/* Info Fields */}
                                                     <Typography variant="body2" sx={{ mb: 0.5 }}>
                                                         <strong>Date:</strong> {scheduleDate?.date || `Day ${grade}`}
                                                     </Typography>
                                                     <Typography variant="body2" sx={{ mb: 0.5 }}>
                                                         <strong>Students:</strong> {gradePupils.length}
-                                                        {filled > 0 && (
-                                                            <span style={{ marginLeft: 8, color: '#4caf50', fontWeight: 600 }}>
-                                                                ({filled} checked)
-                                                            </span>
-                                                        )}
                                                     </Typography>
-                                                    <Typography variant="body2" sx={{ mt: 1 }}>
-                                                        <strong>Time:</strong> 08:00 - 11:00
-                                                    </Typography>
+                                                    <Box sx={{ mt: 1 }}>
+                                                        <Typography variant="body2">
+                                                            <strong>Time:</strong> 08:00 - 11:00
+                                                        </Typography>
 
-                                                    {/* Button */}
-                                                    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+                                                    </Box>
+                                                    <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
                                                         <Button
+
                                                             variant="contained"
                                                             color="primary"
                                                             size="small"
                                                             onClick={() => handleViewStudents(grade)}
                                                             sx={{
                                                                 borderRadius: 2,
+                                                                textTransform: "none",
                                                                 fontWeight: 600,
-                                                                textTransform: 'none',
-                                                                boxShadow: '0 2px 8px rgba(102,126,234,0.10)',
-                                                                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                                                boxShadow: "0 2px 8px rgba(102,126,234,0.10)",
+                                                                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
                                                                 '&:hover': {
-                                                                    background: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
+                                                                    background: "linear-gradient(135deg, #764ba2 0%, #667eea 100%)",
                                                                 },
                                                             }}
                                                             startIcon={<VisibilityIcon sx={{ fontSize: 18 }} />}
                                                         >
-                                                            View Students
+                                                            View Details
                                                         </Button>
                                                     </Box>
                                                 </CardContent>
                                             </Card>
                                         </Grid>
                                     </Grow>
-                                );
-
+                                )
                             })}
-
                         </Grid>
                     </Box>
+
+
+
                 </Box>
             </Fade>
         </div>
     )
 }
 
-export default HealthCheckScheduleForm
+export default VaccinationScheduleForm
+

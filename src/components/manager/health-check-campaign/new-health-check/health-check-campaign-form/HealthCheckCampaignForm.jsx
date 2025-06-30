@@ -106,11 +106,11 @@ const HealthCheckCampaignForm = ({ onSuccess, onCancel }) => {
                 endExaminationDate: formatDateForAPI(formData.endExaminationDate),
             }
 
-            console.log("Submitting campaign data:", campaignData)
+            // console.log("Submitting campaign data:", campaignData)
 
-            const response = await createNewCampaign(campaignData)
+            // const response = await createNewCampaign(campaignData)
 
-            console.log("Campaign created successfully:", response)
+            // console.log("Campaign created successfully:", response)
 
             // Reset form
             setFormData({
@@ -209,7 +209,7 @@ const HealthCheckCampaignForm = ({ onSuccess, onCancel }) => {
                             <Grid item xs={12} sm={4}>
                                 <TextField
                                     fullWidth
-                                    label="Registration Deadline"
+                                    label="Deadline"
                                     type="date"
                                     value={formData.deadlineDate}
                                     onChange={(e) => handleInputChange("deadlineDate", e.target.value)}

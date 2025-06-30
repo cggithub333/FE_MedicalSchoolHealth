@@ -5,7 +5,6 @@ export const createNewCampaignAction = async (campaignData) => {
     try {
         const response = await fetchResponse(() => createNewCampaign(campaignData))
 
-        console.log("Response from createNewCampaign:", response)
 
         if (response.status === false) throw new Error("Can't create new campaign")
 

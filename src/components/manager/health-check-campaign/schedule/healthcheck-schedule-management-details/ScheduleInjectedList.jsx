@@ -216,7 +216,7 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
                     <CardContent>
                         <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2}>
                             <Box display="flex" alignItems="center" gap={2}>
-                                {/* <IconButton
+                                <IconButton
                                     onClick={onBack}
                                     className="back-button"
                                     sx={{
@@ -229,7 +229,7 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
                                     }}
                                 >
                                     <ArrowBack />
-                                </IconButton> */}
+                                </IconButton>
                                 <Box>
                                     <Typography variant="h4" className="header-title">
                                         Grade {grade} Health Check
@@ -385,21 +385,7 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
                                                     size="small"
                                                 />
                                             </TableCell>
-                                            {/* <TableCell align="center">
-                                                {student.completed ? (
-                                                    <Chip
-                                                        icon={<CheckCircle />}
-                                                        label={student.time}
-                                                        color="success"
-                                                        variant="outlined"
-                                                        size="small"
-                                                    />
-                                                ) : (
-                                                    <Typography variant="body2" color="text.secondary">
-                                                        —
-                                                    </Typography>
-                                                )}
-                                            </TableCell> */}
+
                                             <TableCell>
                                                 <TextField
                                                     variant="outlined"

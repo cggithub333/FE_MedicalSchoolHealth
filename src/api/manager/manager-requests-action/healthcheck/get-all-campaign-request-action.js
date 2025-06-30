@@ -6,7 +6,6 @@ export const fetchAllCampaigns = async () => {
     try {
         const response = await fetchResponse(() => getAllCampaigns());
 
-        console.log("Response from getAllCampaigns:", response);
 
         if (response.status === false)
             throw new Error("Can't fetch all campaigns");

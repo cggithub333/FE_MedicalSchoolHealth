@@ -23,7 +23,7 @@ import HealthCheckCampaignForm from "./health-check-campaign-form/HealthCheckCam
 import "./StyleNewHealthCheckCampaign.scss" // Assuming this file contains the necessary styles
 
 const NewHealthCheckCampaign = () => {
-    const { newestCampaign, isLoading } = useNewestCampaign()
+    const { newestCampaign, isLoading, refetch } = useNewestCampaign()
     const { updateCampaignStatus, isUpdating } = useUpdateCampaignStatus()
     const [selectedCampaign, setSelectedCampaign] = useState(null)
     const [dialogOpen, setDialogOpen] = useState(false)
@@ -74,8 +74,7 @@ const NewHealthCheckCampaign = () => {
         try {
             await updateCampaignStatus(campaign.campaignId, newStatus)
             setDialogOpen(false)
-            // Refresh data or update local state
-            window.location.reload()
+            refetch()
         } catch (error) {
             console.error("Failed to update campaign status:", error)
             alert("Failed to update campaign status")
@@ -158,7 +157,11 @@ const NewHealthCheckCampaign = () => {
     }
 
     function canUpdateToPending(campaign) {
-        return campaign.statusHealthCampaign === "PENDING" && publishedCampaigns.length === 0;
+        return (
+            campaign.statusHealthCampaign === "PENDING" &&
+            publishedCampaigns.length === 0 &&
+            inProgressCampaigns.length === 0
+        );
     }
 
     if (isLoading) {
@@ -313,11 +316,6 @@ const NewHealthCheckCampaign = () => {
                                 >
                                     {isUpdating ? <CircularProgress size={20} /> : "Complete Campaign"}
                                 </Button>
-                            )}
-                            {selectedCampaign.statusHealthCampaign === "PUBLISHED" && (
-                                <Alert severity="warning" sx={{ borderRadius: 2, mt: 2 }}>
-                                    Cannot start: There is already a campaign in progress
-                                </Alert>
                             )}
                         </>
                     )}

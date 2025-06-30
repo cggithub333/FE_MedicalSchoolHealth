@@ -56,6 +56,7 @@ import RoomIcon from "@mui/icons-material/Room"
 import NotesIcon from "@mui/icons-material/Notes"
 import { useAllCampaign } from "../../../../hooks/manager/healthcheck/campaign/useAllCampaignByStatus"
 import { styleCampaign } from "./StyleCampaign";
+import HealthCheckScheduleForm from "../campaign/schedule/healthcheck-schedule-management/ScheduleForm";
 
 const statusConfig = {
     PENDING: {
@@ -114,16 +115,30 @@ const LoadingSkeleton = () => (
 const HealthCampaignManager = () => {
     const { allCampaigns, isLoading, error, refetch } = useAllCampaign()
     const [selectedTab, setSelectedTab] = useState(0)
-    const [searchTerm, setSearchTerm] = useState("")
+    const [selectedYear, setSelectedYear] = useState('ALL')
     const [openDialog, setOpenDialog] = useState(false)
     const [dialogMode, setDialogMode] = useState("view")
     const [selectedCampaign, setSelectedCampaign] = useState(null)
     const [anchorEl, setAnchorEl] = useState(null)
     const [menuCampaignId, setMenuCampaignId] = useState(null)
+    const [showScheduleForm, setShowScheduleForm] = useState(false)
 
     const statusTabs = ["ALL", "PENDING", "PUBLISHED", "IN_PROGRESS", "COMPLETED"]
 
-    // Filter campaigns by status and search term
+    // Compute available years from campaigns (by deadlineDate)
+    const availableYears = useMemo(() => {
+        const campaigns = allCampaigns || [];
+        const years = campaigns
+            .map(c => {
+                if (!c.deadlineDate) return null;
+                const d = new Date(c.deadlineDate);
+                return isNaN(d) ? null : d.getFullYear();
+            })
+            .filter(y => y !== null && !isNaN(y));
+        return ['ALL', ...Array.from(new Set(years)).sort((a, b) => b - a)];
+    }, [allCampaigns])
+
+    // Filter campaigns by status and year (by deadlineDate)
     const filteredCampaigns = useMemo(() => {
         let filtered = allCampaigns || []
 
@@ -133,18 +148,18 @@ const HealthCampaignManager = () => {
             filtered = filtered.filter((campaign) => campaign.statusHealthCampaign === status)
         }
 
-        // Filter by search term
-        if (searchTerm) {
-            filtered = filtered.filter(
-                (campaign) =>
-                    campaign.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    campaign.address?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    campaign.description?.toLowerCase().includes(searchTerm.toLowerCase()),
-            )
+        // Filter by year
+        if (selectedYear !== 'ALL') {
+            filtered = filtered.filter((campaign) => {
+                if (!campaign.deadlineDate) return false;
+                const d = new Date(campaign.deadlineDate);
+                if (isNaN(d)) return false;
+                return d.getFullYear() === Number(selectedYear);
+            })
         }
 
         return filtered
-    }, [allCampaigns, selectedTab, searchTerm])
+    }, [allCampaigns, selectedTab, selectedYear])
 
     // Count campaigns by status
     const statusCounts = useMemo(() => {
@@ -171,10 +186,9 @@ const HealthCampaignManager = () => {
     }
 
     const handleViewCampaign = (campaign) => {
-        setSelectedCampaign(campaign)
-        setDialogMode("view")
-        setOpenDialog(true)
-        handleMenuClose()
+        setSelectedCampaign(campaign);
+        setShowScheduleForm(true);
+        handleMenuClose();
     }
 
     const handleEditCampaign = (campaign) => {
@@ -189,15 +203,12 @@ const HealthCampaignManager = () => {
         setSelectedCampaign(null)
     }
 
-    const formatDate = (dateString) => {
+    const formatDate = (dateString, dateOnly = false) => {
         if (!dateString) return "N/A"
-        return new Date(dateString).toLocaleDateString("vi-VN", {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
-        })
+        const options = dateOnly
+            ? { year: "numeric", month: "2-digit", day: "2-digit" }
+            : { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }
+        return new Date(dateString).toLocaleDateString("vi-VN", options)
     }
 
     const getStatusActions = (campaign) => {
@@ -234,6 +245,13 @@ const HealthCampaignManager = () => {
         )
     }
 
+    if (showScheduleForm) {
+        // Pass campaignId instead of the whole campaign object for clarity and to match the refactored ScheduleForm
+        return (
+            <HealthCheckScheduleForm campaignId={selectedCampaign?.campaignId} onBack={() => setShowScheduleForm(false)} />
+        );
+    }
+
     return (
         <div style={styleCampaign.bg}>
             <div style={styleCampaign.bgGradient}></div>
@@ -257,28 +275,22 @@ const HealthCampaignManager = () => {
             </AppBar>
 
             <Container maxWidth="lg" sx={{ py: 4 }}>
-                {/* Search Bar */}
+                {/* Year Filter Dropdown */}
                 <Fade in timeout={800}>
-                    <Paper sx={styleCampaign.searchbar}>
-                        <TextField
-                            fullWidth
-                            placeholder="Search campaigns by title, address, or description..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <SearchIcon color="action" />
-                                    </InputAdornment>
-                                ),
-                            }}
-                            sx={{
-                                "& .MuiOutlinedInput-root": {
-                                    borderRadius: 2,
-                                },
-                            }}
-                        />
-                    </Paper>
+                    <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Typography variant="body1" sx={{ fontWeight: 600 }}>Year:</Typography>
+                        <FormControl size="small" sx={{ minWidth: 120 }}>
+                            <Select
+                                value={selectedYear}
+                                onChange={e => setSelectedYear(e.target.value)}
+                                sx={{ borderRadius: 2 }}
+                            >
+                                {availableYears.map(year => (
+                                    <MenuItem key={year} value={year}>{year === 'ALL' ? 'All Years' : year}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Box>
                 </Fade>
 
                 {/* Status Tabs */}
@@ -354,7 +366,11 @@ const HealthCampaignManager = () => {
                                                     </Typography>
                                                     <IconButton
                                                         size="small"
-                                                        onClick={(e) => handleMenuClick(e, campaign.campaignId)}
+                                                        onClick={(e) =>
+                                                            campaign.statusHealthCampaign === "COMPLETED"
+                                                                ? handleMenuClick(e, campaign.campaignId)
+                                                                : null
+                                                        }
                                                         sx={{
                                                             background: "rgba(255,255,255,0.8)",
                                                             backdropFilter: "blur(10px)",
@@ -363,6 +379,7 @@ const HealthCampaignManager = () => {
                                                                 transform: "scale(1.1)",
                                                             },
                                                             transition: "all 0.3s ease",
+                                                            visibility: campaign.statusHealthCampaign === "COMPLETED" ? "visible" : "hidden",
                                                         }}
                                                     >
                                                         <MoreVertIcon />
@@ -393,9 +410,17 @@ const HealthCampaignManager = () => {
                                                     </Typography>
                                                 </Box>
 
+                                                {/* Date Range Display */}
                                                 <Box sx={styleCampaign.deadline}>
                                                     <CalendarTodayIcon sx={{ fontSize: 18, color: "text.secondary", mr: 1 }} />
                                                     <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
+                                                        {formatDate(campaign.startExaminationDate, true)} - {formatDate(campaign.endExaminationDate, true)}
+                                                    </Typography>
+                                                </Box>
+
+                                                <Box sx={styleCampaign.deadline}>
+                                                    <CalendarTodayIcon sx={{ fontSize: 18, color: "error.main", mr: 1 }} />
+                                                    <Typography variant="body2" color="error.main" sx={{ fontWeight: 500 }}>
                                                         Deadline: {formatDate(campaign.deadlineDate)}
                                                     </Typography>
                                                 </Box>
@@ -419,54 +444,38 @@ const HealthCampaignManager = () => {
                                     No campaigns found
                                 </Typography>
                                 <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-                                    {searchTerm ? "Try adjusting your search terms" : "Create your first campaign to get started"}
+                                    Create your first campaign to get started
                                 </Typography>
-                                {!searchTerm && (
-                                    <Button
-                                        variant="contained"
-                                        size="large"
-                                        onClick={() => {
-                                            setSelectedCampaign(null)
-                                            setDialogMode("create")
-                                            setOpenDialog(true)
-                                        }}
-                                        sx={{
-                                            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                                            borderRadius: 3,
-                                            px: 4,
-                                            py: 1.5,
-                                            textTransform: "none",
-                                            fontSize: "1.1rem",
-                                            fontWeight: 600,
-                                        }}
-                                    >
-                                        Create Your First Campaign
-                                    </Button>
-                                )}
+                                <Button
+                                    variant="contained"
+                                    size="large"
+                                    onClick={() => {
+                                        setSelectedCampaign(null)
+                                        setDialogMode("create")
+                                        setOpenDialog(true)
+                                    }}
+                                    sx={{
+                                        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                                        borderRadius: 3,
+                                        px: 4,
+                                        py: 1.5,
+                                        textTransform: "none",
+                                        fontSize: "1.1rem",
+                                        fontWeight: 600,
+                                    }}
+                                >
+                                    Create Your First Campaign
+                                </Button>
                             </Box>
                         </Fade>
                     )}
                 </Paper>
             </Container>
 
-            {/* Floating Action Button
-            <Fab
-                color="primary"
-                aria-label="add"
-                sx={styleCampaign.fab}
-                onClick={() => {
-                    setSelectedCampaign(null)
-                    setDialogMode("create")
-                    setOpenDialog(true)
-                }}
-            >
-                <AddIcon />
-            </Fab> */}
-
             {/* Action Menu */}
             <Menu
                 anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
+                open={Boolean(anchorEl) && allCampaigns.find((c) => c.campaignId === menuCampaignId)?.statusHealthCampaign === "COMPLETED"}
                 onClose={handleMenuClose}
                 PaperProps={{
                     sx: {
@@ -487,18 +496,6 @@ const HealthCampaignManager = () => {
                     </ListItemIcon>
                     <ListItemText>View Details</ListItemText>
                 </MenuItem>
-
-                <MenuItem
-                    onClick={() => handleEditCampaign(allCampaigns.find((c) => c.campaignId === menuCampaignId))}
-                    sx={{ borderRadius: 1, mx: 1, my: 0.5 }}
-                >
-                    <ListItemIcon>
-                        <EditIcon color="info" />
-                    </ListItemIcon>
-                    <ListItemText>Edit Campaign</ListItemText>
-                </MenuItem>
-
-                <Divider sx={{ my: 1 }} />
                 {menuCampaignId &&
                     getStatusActions(allCampaigns.find((c) => c.campaignId === menuCampaignId)).map((action) => (
                         <MenuItem key={action.status} sx={{ borderRadius: 1, mx: 1, my: 0.5 }}>
@@ -506,14 +503,6 @@ const HealthCampaignManager = () => {
                             <ListItemText>{action.label}</ListItemText>
                         </MenuItem>
                     ))}
-
-                <Divider sx={{ my: 1 }} />
-                <MenuItem onClick={handleMenuClose} sx={{ borderRadius: 1, mx: 1, my: 0.5, color: "error.main" }}>
-                    <ListItemIcon>
-                        <DeleteIcon color="error" />
-                    </ListItemIcon>
-                    <ListItemText>Delete Campaign</ListItemText>
-                </MenuItem>
             </Menu>
 
             {/* Campaign Dialog */}
@@ -569,14 +558,12 @@ const HealthCampaignManager = () => {
                                                 sx={{ ml: 1 }}
                                             />
                                         </Box>
+                                        {/* Date Range Display in Dialog */}
+                                        <Typography>
+                                            {formatDate(selectedCampaign.startExaminationDate, true)} - {formatDate(selectedCampaign.endExaminationDate, true)}
+                                        </Typography>
                                         <Typography>
                                             <strong>Deadline:</strong> {formatDate(selectedCampaign.deadlineDate)}
-                                        </Typography>
-                                        <Typography>
-                                            <strong>Start Date:</strong> {formatDate(selectedCampaign.startExaminationDate)}
-                                        </Typography>
-                                        <Typography>
-                                            <strong>End Date:</strong> {formatDate(selectedCampaign.endExaminationDate)}
                                         </Typography>
                                         <Typography>
                                             <strong>Created:</strong> {formatDate(selectedCampaign.createdAt)}

@@ -75,7 +75,7 @@ function getStatusColor(status) {
 }
 
 const NewVaccinationCampaign = () => {
-    const { allCampaigns, isLoading } = useNewestCampaignByStatus()
+    const { allCampaigns, isLoading, refetch } = useNewestCampaignByStatus()
     const { updateNewCampaign, isLoading: isUpdating } = useUpdateNewCampaign()
     const { deleteCampaign, isLoading: isDeleting } = useDeleteCampaign()
     const { publishCampaign, isPublishing } = usePublishVaccinationCampaign();
@@ -117,7 +117,7 @@ const NewVaccinationCampaign = () => {
             await updateNewCampaign(campaign.campaignId, newStatus)
             setDialogOpen(false)
             // Refresh data
-            window.location.reload()
+            refetch && refetch()
         } catch (error) {
             console.error("Failed to update campaign status:", error)
             alert("Failed to update campaign status")
@@ -130,7 +130,7 @@ const NewVaccinationCampaign = () => {
             if (success) {
                 setDialogOpen(false)
                 setCreateFormOpen(false)
-                window.location.reload()
+                refetch && refetch()
             } else {
                 alert("Failed to delete campaign.")
             }
@@ -141,7 +141,7 @@ const NewVaccinationCampaign = () => {
         try {
             await publishCampaign(campaign.campaignId);
             setDialogOpen(false);
-            window.location.reload();
+            refetch && refetch();
         } catch (error) {
             console.error("Failed to publish campaign:", error);
             alert("Failed to publish campaign");
@@ -394,7 +394,7 @@ const NewVaccinationCampaign = () => {
                     <VaccineCampaignForm
                         onSuccess={() => {
                             setCreateFormOpen(false)
-                            window.location.reload()
+                            refetch && refetch()
                         }}
                         onCancel={() => setCreateFormOpen(false)}
                     />

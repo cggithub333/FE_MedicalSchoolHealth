@@ -116,40 +116,67 @@ const allCampaign = () => {
     const [selectedCampaign, setSelectedCampaign] = useState(null)
     const [anchorEl, setAnchorEl] = useState(null)
     const [menuCampaignId, setMenuCampaignId] = useState(null)
+    const [selectedYear, setSelectedYear] = useState('ALL')
 
     // Use the same statusTabs as health check campaign
     const statusTabs = ["ALL", "PENDING", "PUBLISHED", "IN_PROGRESS", "COMPLETED"]
 
-    // Filter campaigns by status and search term
+    // Compute available years from campaigns (by formDeadline, fallback to endDate/stopDate)
+    const availableYears = useMemo(() => {
+        const campaigns = allCampaigns || [];
+        const years = campaigns
+            .map(c => {
+                // Prefer formDeadline, fallback to endDate, stopDate, startDate
+                const dateStr = c.formDeadline || c.endDate || c.stopDate || c.startDate;
+                if (!dateStr) return null;
+                // Accept both ISO and DD-MM-YYYY
+                let d = new Date(dateStr);
+                if (isNaN(d) && /^\d{2}-\d{2}-\d{4}$/.test(dateStr)) {
+                    const [day, month, year] = dateStr.split("-");
+                    d = new Date(year, month - 1, day);
+                }
+                return isNaN(d) ? null : d.getFullYear();
+            })
+            .filter((y, i, arr) => y !== null && !isNaN(y) && arr.indexOf(y) === i);
+        return ['ALL', ...years.sort((a, b) => b - a)];
+    }, [allCampaigns])
+
+    // Filter campaigns by status and year (by formDeadline, fallback to endDate/stopDate)
     const filteredCampaigns = useMemo(() => {
-        let filtered = allCampaigns || []
+        let filtered = allCampaigns || [];
 
-        // Filter by status
+        // Filter by year (applies to ALL and other tabs)
+        if (selectedYear !== 'ALL') {
+            filtered = filtered.filter((campaign) => {
+                const dateStr = campaign.formDeadline || campaign.endDate || campaign.stopDate || campaign.startDate;
+                if (!dateStr) return false;
+                let d = new Date(dateStr);
+                if (isNaN(d) && /^\d{2}-\d{2}-\d{4}$/.test(dateStr)) {
+                    const [day, month, year] = dateStr.split("-");
+                    d = new Date(year, month - 1, day);
+                }
+                if (isNaN(d)) return false;
+                return d.getFullYear() === Number(selectedYear);
+            });
+        }
+
+        // Filter by status (skip for ALL)
         if (selectedTab > 0) {
-            const status = statusTabs[selectedTab]
-            filtered = filtered.filter((campaign) => campaign.status === status)
+            const status = statusTabs[selectedTab];
+            filtered = filtered.filter((campaign) => (campaign.statusVaccinationCampaign || campaign.status) === status);
         }
 
-        // Filter by search term
-        if (searchTerm) {
-            filtered = filtered.filter(
-                (campaign) =>
-                    campaign.titleCampaign?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    campaign.vaccineName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    campaign.diseaseName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    campaign.notes?.toLowerCase().includes(searchTerm.toLowerCase()),
-            )
-        }
-
-        return filtered
-    }, [allCampaigns, selectedTab, searchTerm])
+        return filtered;
+    }, [allCampaigns, selectedTab, selectedYear])
 
     // Count campaigns by status
     const statusCounts = useMemo(() => {
         const campaigns = allCampaigns || []
         const counts = { ALL: campaigns.length }
         statusTabs.slice(1).forEach((status) => {
-            counts[status] = campaigns.filter((c) => c.status === status).length
+            counts[status] = campaigns.filter((c) =>
+                (c.statusVaccinationCampaign || c.status) === status
+            ).length
         })
         return counts
     }, [allCampaigns])
@@ -201,7 +228,12 @@ const allCampaign = () => {
 
     const getStatusActions = (campaign) => {
         const actions = []
-        const status = campaign.status
+        // Use the correct status field for vaccination campaigns
+        const status = campaign.statusVaccinationCampaign || campaign.status
+
+        // Debug: log status to help diagnose
+        // Remove/comment this after debugging
+        console.log('Status for campaign', campaign.campaignId, ':', status)
 
         if (status === "PENDING") {
             actions.push({ label: "Start Campaign", status: "IN_PROGRESS", icon: <PlayArrowIcon /> })
@@ -211,6 +243,9 @@ const allCampaign = () => {
         }
         if (status === "IN_PROGRESS") {
             actions.push({ label: "Complete", status: "COMPLETED", icon: <CheckCircleIcon /> })
+        }
+        if (status === "COMPLETED") {
+            // Optionally, add a view-only or archive action if needed
         }
 
         return actions
@@ -257,28 +292,22 @@ const allCampaign = () => {
             </AppBar>
 
             <Container maxWidth="lg" sx={{ py: 4 }}>
-                {/* Search Bar */}
+                {/* Year Filter Dropdown */}
                 <Fade in timeout={800}>
-                    <Paper sx={styleCampaign.searchbar}>
-                        <TextField
-                            fullWidth
-                            placeholder="Search campaigns by title, vaccine, disease, or notes..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <SearchIcon color="action" />
-                                    </InputAdornment>
-                                ),
-                            }}
-                            sx={{
-                                "& .MuiOutlinedInput-root": {
-                                    borderRadius: 2,
-                                },
-                            }}
-                        />
-                    </Paper>
+                    <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Typography variant="body1" sx={{ fontWeight: 600 }}>Year:</Typography>
+                        <FormControl size="small" sx={{ minWidth: 120 }}>
+                            <Select
+                                value={selectedYear}
+                                onChange={e => setSelectedYear(e.target.value)}
+                                sx={{ borderRadius: 2 }}
+                            >
+                                {availableYears.map(year => (
+                                    <MenuItem key={year} value={year}>{year === 'ALL' ? 'All Years' : year}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Box>
                 </Fade>
 
                 {/* Status Tabs */}
@@ -424,14 +453,7 @@ const allCampaign = () => {
                                                     </Box>
                                                 )}
 
-                                                <Box sx={styleCampaign.active}>
-                                                    <Chip
-                                                        label={campaign.active ? "Active" : "Inactive"}
-                                                        color={campaign.active ? "success" : "default"}
-                                                        variant="outlined"
-                                                        size="small"
-                                                    />
-                                                </Box>
+
                                             </CardContent>
                                         </Card>
                                     </Zoom>

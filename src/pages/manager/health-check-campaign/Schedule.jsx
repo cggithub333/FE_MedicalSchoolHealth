@@ -1,4 +1,4 @@
-import HealthCheckScheduleForm from '../../../components/schoolnurse/health-check-campaign/schedule/healthcheck-schedule-management/ScheduleForm';
+import HealthCheckScheduleForm from '../../../components/manager/health-check-campaign/schedule/healthcheck-schedule-management/ScheduleForm';
 const Schedule = () => {
 
   return (

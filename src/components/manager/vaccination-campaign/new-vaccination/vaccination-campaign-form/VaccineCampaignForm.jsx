@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Box, TextField } from "@mui/material"
+import { Box, TextField, Alert, AlertTitle } from "@mui/material"
 import { useGetVaccineByDisease } from "../../../../../hooks/manager/vaccination/create-new-campaign/useGetVaccineByDisease"
 import { useCreateNewCampaign } from "../../../../../hooks/manager/vaccination/create-new-campaign/useCreateNewCampaign"
 import "./StyleVaccineCampaignForm.css"
@@ -134,8 +134,6 @@ const VaccineCampaignForm = ({ onSuccess, onCancel }) => {
                 notes: (form.notes && form.notes.trim()) || "", // always send string
             }
 
-            console.log("Submitting vaccination campaign data:", campaignData)
-            alert("Payload to be sent:\n" + JSON.stringify(campaignData, null, 2))
 
             try {
                 const response = await createNewCampaign(campaignData)
@@ -175,9 +173,10 @@ const VaccineCampaignForm = ({ onSuccess, onCancel }) => {
                 <h2 className="vaccine-campaign-title">Vaccination Campaign Form</h2>
 
                 {error && (
-                    <div style={{ color: "red", marginBottom: "16px", textAlign: "center" }}>
-                        Error: {error.message || "Failed to create campaign"}
-                    </div>
+                    <Alert severity="error" sx={{ mb: 2 }}>
+                        <AlertTitle>Error</AlertTitle>
+                        {error.message || "Failed to create campaign"}
+                    </Alert>
                 )}
 
                 <div className="vaccine-section">
@@ -252,6 +251,7 @@ const VaccineCampaignForm = ({ onSuccess, onCancel }) => {
                     <div className="vaccine-section-title">Schedule</div>
                     <div className="vaccine-row">
                         <Box display="flex" gap={2} width="100%" marginTop={2}>
+
                             <TextField
                                 className="vaccine-input"
                                 label="Start Date"
@@ -282,21 +282,7 @@ const VaccineCampaignForm = ({ onSuccess, onCancel }) => {
                                 helperText={validationErrors.endDate}
                                 disabled={isCreating}
                             />
-                            <TextField
-                                className="vaccine-input"
-                                label="Form Deadline"
-                                type="date"
-                                name="formDeadline"
-                                value={form.formDeadline}
-                                onChange={handleChange}
-                                InputLabelProps={{ shrink: true }}
-                                fullWidth
-                                size="small"
-                                required
-                                error={!!validationErrors.formDeadline}
-                                helperText={validationErrors.formDeadline}
-                                disabled={isCreating}
-                            />
+
                         </Box>
                     </div>
                 </div>

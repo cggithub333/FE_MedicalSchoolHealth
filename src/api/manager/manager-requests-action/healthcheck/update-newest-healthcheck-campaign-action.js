@@ -5,8 +5,6 @@ export const updateNewestCampaignStatusAction = async (campaignId, status) => {
     try {
         const response = await fetchResponse(() => updateCampaignStatus(campaignId, status))
 
-        console.log("Response from updateNewestCampaignStatusAction:", response)
-
         if (response.status === false) {
             throw new Error("Can't update campaign status")
         }

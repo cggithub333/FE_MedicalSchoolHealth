@@ -38,7 +38,7 @@ import {
     Person,
     Assignment,
 } from "@mui/icons-material"
-import { useSaveResultOfHealthCheckCampaign } from "../../../../../hooks/schoolnurse/healthcheck/schedule/useSaveResultOfHealthCheckCampaign"
+import { useSaveResultOfHealthCheckCampaign } from "../../../../../../hooks/schoolnurse/healthcheck/schedule/useSaveResultOfHealthCheckCampaign"
 import { useNavigate } from "react-router-dom"
 
 // Frontend disease categories - this is the comprehensive list for health checks
@@ -217,7 +217,7 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
                     <CardContent>
                         <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
                             <Box display="flex" alignItems="center" gap={2}>
-                                {/* <IconButton
+                                <IconButton
                                     onClick={onBack}
                                     className="back-button"
                                     sx={{
@@ -235,7 +235,7 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
                                     }}
                                 >
                                     <ArrowBack />
-                                </IconButton> */}
+                                </IconButton>
                                 <Box>
                                     <Typography variant="h4" className="header-title" sx={{ fontWeight: 700, letterSpacing: 1 }}>
                                         Health Check Assessment
@@ -422,21 +422,7 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
                     <Button variant="outlined" size="large" startIcon={<ArrowBack />} onClick={onBack} className="footer-button" sx={{ fontWeight: 600, borderRadius: 2, px: 3, py: 1 }}>
                         Back to Students
                     </Button>
-                    <Box sx={{ display: 'flex', gap: 2 }}>
-                        <Button
-                            variant="contained"
-                            size="large"
-                            color="success"
-                            startIcon={<Save />}
-                            onClick={() => handleSave("COMPLETED")}
-                            className="footer-button save-button"
-                            disabled={isSaving}
-                            sx={{ fontWeight: 700, borderRadius: 2, px: 4, py: 1.2, fontSize: 18 }}
-                        >
-                            Complete
-                        </Button>
 
-                    </Box>
                 </Box>
             </Fade>
 

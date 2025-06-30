@@ -24,9 +24,8 @@ import {
 } from "@mui/icons-material"
 import "./StyleScheduleForm.scss"
 import ScheduleInjectedList from "../healthcheck-schedule-management-details/ScheduleInjectedList"
-import { useNewestCampaignByStatus } from "../../../../../hooks/schoolnurse/healthcheck/schedule/useNewestCampaignByStatus"
-import { fetchPupilsByGrade } from "../../../../../api/schoolnurse/schoolnurse-requests-action/healthcheck/pupils-by-grade-request-action"
 import { useNavigate } from "react-router-dom"
+import { useGetDetailsOfCampaignByID } from "../../../../../../hooks/manager/healthcheck/campaign/useGetDetaisOfCampaignByID"
 
 const GRADES = [1, 2, 3, 4, 5]
 
@@ -92,44 +91,39 @@ function calculateScheduleDates(campaign) {
     return dates
 }
 
-const HealthCheckScheduleForm = () => {
-    const { newestCampaign, loading, error } = useNewestCampaignByStatus()
+// Accept campaignId as prop, fetch campaign details using custom hook
+const HealthCheckScheduleForm = ({ campaignId, onBack }) => {
+    // Use the hook
+    const { campaignDetails, isLoading, error, refetch } = useGetDetailsOfCampaignByID(campaignId)
     const [showInjectionList, setShowInjectionList] = useState(false)
     const [selectedShift, setSelectedShift] = useState(null)
     const [refresh, setRefresh] = useState(0)
     const [pupilsByGrade, setPupilsByGrade] = useState({})
-    const [pupilsLoading, setPupilsLoading] = useState(true)
     const [animateCards, setAnimateCards] = useState(false)
     const navigate = useNavigate();
 
-    // Find active campaign (IN_PROGRESS)
-    const activeCampaign = useMemo(() => {
-        if (!newestCampaign || !Array.isArray(newestCampaign)) return null
-        return newestCampaign.find((c) => String(c.statusHealthCampaign).trim().toUpperCase() === "IN_PROGRESS")
-    }, [newestCampaign])
+    // Use campaignDetails.data if present (API returns {data, status})
+    const activeCampaign = campaignDetails?.data || campaignDetails
 
-    // Fetch all grades' pupils in parallel using API
+    // Group pupils by gradeName (e.g., "Grade 1", "Grade 2") from consentForms in campaign
     useEffect(() => {
-        let isMounted = true
-        async function fetchAllPupils() {
-            setPupilsLoading(true)
-            const results = {}
-            await Promise.all(
-                GRADES.map(async (grade) => {
-                    try {
-                        const pupils = await fetchPupilsByGrade(grade)
-                        results[grade] = Array.isArray(pupils) ? pupils : []
-                    } catch {
-                        results[grade] = []
-                    }
-                })
-            )
-            if (isMounted) setPupilsByGrade(results)
-            setPupilsLoading(false)
+        if (!activeCampaign || !activeCampaign.consentForms) {
+            setPupilsByGrade({})
+            return
         }
-        if (activeCampaign) fetchAllPupils()
-        else setPupilsLoading(false)
-        return () => { isMounted = false }
+        const grouped = {}
+        for (const form of activeCampaign.consentForms) {
+            const gradeName = form.pupilRes?.gradeName || "Unknown"
+            if (!grouped[gradeName]) grouped[gradeName] = []
+            grouped[gradeName].push({
+                ...form.pupilRes,
+                consentFormId: form.consentFormId,
+                healthCheckHistoryRes: form.healthCheckHistoryRes,
+                disease: form.disease,
+                active: form.active,
+            })
+        }
+        setPupilsByGrade(grouped)
     }, [activeCampaign, refresh])
 
     const scheduleDates = useMemo(() => {
@@ -137,21 +131,23 @@ const HealthCheckScheduleForm = () => {
     }, [activeCampaign])
 
     // Handle navigation to student list
-    const handleViewStudents = (grade) => {
+    const handleViewStudents = (gradeName) => {
         if (!activeCampaign) return
-        const gradePupils = pupilsByGrade[grade] || []
-        const savedData = getShiftSavedData(activeCampaign.campaignId, grade, gradePupils)
-        const scheduleDate = scheduleDates[grade - 1]
+        const gradePupils = pupilsByGrade[gradeName] || []
+        const savedData = getShiftSavedData(activeCampaign.campaignId, gradeName, gradePupils)
+        // Use index for schedule date
+        const gradeIndex = Object.keys(pupilsByGrade).indexOf(gradeName)
+        const scheduleDate = scheduleDates[gradeIndex]
         const shift = {
-            id: `${activeCampaign.campaignId}-${grade}-morning`,
-            name: `Grade ${grade} - Morning`,
+            id: `${activeCampaign.campaignId}-${gradeName}-morning`,
+            name: `${gradeName} - Morning`,
             time: "08:00 - 11:00",
-            grade: grade,
+            grade: gradeName,
             campaignId: activeCampaign.campaignId,
             students: savedData, // merged with saved data
             allPupils: gradePupils, // raw pupils array for consistent count
             totalPupils: gradePupils.length,
-            scheduleDate: scheduleDate?.date || `Day ${grade}`,
+            scheduleDate: scheduleDate?.date || `Day ${gradeName}`,
         }
         setSelectedShift(shift)
         setShowInjectionList(true)
@@ -165,10 +161,10 @@ const HealthCheckScheduleForm = () => {
     }
 
     // Calculate progress for each grade
-    const getGradeProgress = (grade) => {
+    const getGradeProgress = (gradeName) => {
         if (!activeCampaign) return { filled: 0, total: 0, progress: 0 }
-        const gradePupils = pupilsByGrade[grade] || []
-        const savedData = getShiftSavedData(activeCampaign.campaignId, grade, gradePupils)
+        const gradePupils = pupilsByGrade[gradeName] || []
+        const savedData = getShiftSavedData(activeCampaign.campaignId, gradeName, gradePupils)
         let filled = savedData.filter((student) => student.completed).length
         const total = gradePupils.length
         if (total === 0) filled = 0
@@ -178,31 +174,21 @@ const HealthCheckScheduleForm = () => {
 
     // Animate cards after data loads
     useEffect(() => {
-        if (newestCampaign && !loading) {
+        if (activeCampaign && !isLoading) {
             setTimeout(() => setAnimateCards(true), 100)
         }
-    }, [newestCampaign, loading])
+    }, [activeCampaign, isLoading])
 
-    if (loading || pupilsLoading) {
+    // Show all grades, even if there are no pupils for that grade
+    // Build a list of all grade names from pupilsByGrade and GRADES
+    const allGradeNames = Array.from(new Set([
+        ...Object.keys(pupilsByGrade),
+        ...GRADES.map((g) => `Grade ${g}`)
+    ]))
+
+    if (isLoading) {
         return (
             <div className="vaccine-schedule-root">
-                {/* Quick Navigation Bar */}
-                {/* <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => navigate("/schoolnurse/health-check-campaign/schedule")}
-                    >
-                        Health Check Schedule
-                    </Button>
-                    <Button
-                        variant="outlined"
-                        color="secondary"
-                        onClick={() => navigate("/schoolnurse/vaccination-campaign/schedule")}
-                    >
-                        Vaccination Schedule
-                    </Button>
-                </Box> */}
                 <Box sx={{ width: "100%", maxWidth: 1200, mx: "auto" }}>
                     {GRADES.map((grade) => (
                         <Card key={grade} sx={{ mb: 3, borderRadius: 3 }}>
@@ -218,26 +204,9 @@ const HealthCheckScheduleForm = () => {
         )
     }
 
-    if (error || !activeCampaign) {
+    if (!activeCampaign) {
         return (
             <div className="vaccine-schedule-root">
-                {/* Quick Navigation Bar */}
-                {/* <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => navigate("/schoolnurse/health-check-campaign/schedule")}
-                    >
-                        Health Check Schedule
-                    </Button>
-                    <Button
-                        variant="outlined"
-                        color="secondary"
-                        onClick={() => navigate("/schoolnurse/vaccination-campaign/schedule")}
-                    >
-                        Vaccination Schedule
-                    </Button>
-                </Box> */}
                 <Paper
                     elevation={3}
                     sx={{
@@ -250,11 +219,14 @@ const HealthCheckScheduleForm = () => {
                 >
                     <ErrorIcon sx={{ fontSize: 64, color: "error.main", mb: 2 }} />
                     <Typography variant="h5" gutterBottom>
-                        {error ? "Error Loading Campaign" : "No Active Campaign"}
+                        No Campaign Data
                     </Typography>
                     <Typography variant="body1" color="text.secondary">
-                        {error ? "Please try again later." : "There is no health check campaign in progress."}
+                        No health check campaign data found.
                     </Typography>
+                    {onBack && (
+                        <Button variant="contained" sx={{ mt: 2 }} onClick={onBack}>Back</Button>
+                    )}
                 </Paper>
             </div>
         )
@@ -274,8 +246,6 @@ const HealthCheckScheduleForm = () => {
 
     return (
         <div className="vaccine-schedule-root">
-            {/* Quick Navigation Bar */}
-
             <Fade in={!showInjectionList}>
                 <Box sx={{ width: "100%", maxWidth: 1200, mx: "auto" }}>
                     {/* Campaign Header */}
@@ -308,22 +278,22 @@ const HealthCheckScheduleForm = () => {
                             />
                             <Chip label={activeCampaign.statusHealthCampaign} color="success" sx={{ fontWeight: "bold" }} />
                         </Box>
+                        {onBack && (
+                            <Button variant="outlined" sx={{ mt: 2, color: 'white', borderColor: 'white' }} onClick={onBack}>Back</Button>
+                        )}
                     </Paper>
                     {/* Grade Cards */}
                     <Box sx={{ display: "flex", justifyContent: "center" }}>
                         <Grid container spacing={3} justifyContent="center">
-                            {GRADES.map((grade, index) => {
-                                const gradePupils = pupilsByGrade[grade] || []
-                                const scheduleDate = scheduleDates[index]
-                                const { filled, total, progress } = getGradeProgress(grade)
-                                let status = "Available"
-                                if (total === 0) {
-                                    status = "NONE"
-                                }
-                                const config = statusConfig[status]
-                                const StatusIcon = config.icon
+                            {allGradeNames.map((gradeName, index) => {
+                                const gradePupils = pupilsByGrade[gradeName] || [];
+                                const scheduleDate = scheduleDates[index];
+                                const { filled, total, progress } = getGradeProgress(gradeName);
+                                let status = gradePupils.length === 0 ? "NONE" : "Available";
+                                const config = statusConfig[status];
+                                const StatusIcon = config.icon;
                                 return (
-                                    <Grow in={true} timeout={300 + index * 100} key={grade}>
+                                    <Grow in={true} timeout={300 + index * 100} key={gradeName}>
                                         <Grid
                                             item
                                             xs={12}
@@ -370,7 +340,7 @@ const HealthCheckScheduleForm = () => {
                                                                 WebkitTextFillColor: 'transparent',
                                                             }}
                                                         >
-                                                            Grade {grade} Health Check
+                                                            {gradeName} Health Check
                                                         </Typography>
 
                                                         <Chip
@@ -392,7 +362,7 @@ const HealthCheckScheduleForm = () => {
 
                                                     {/* Info Fields */}
                                                     <Typography variant="body2" sx={{ mb: 0.5 }}>
-                                                        <strong>Date:</strong> {scheduleDate?.date || `Day ${grade}`}
+                                                        <strong>Date:</strong> {scheduleDate?.date || `Day ${gradeName}`}
                                                     </Typography>
                                                     <Typography variant="body2" sx={{ mb: 0.5 }}>
                                                         <strong>Students:</strong> {gradePupils.length}
@@ -412,7 +382,7 @@ const HealthCheckScheduleForm = () => {
                                                             variant="contained"
                                                             color="primary"
                                                             size="small"
-                                                            onClick={() => handleViewStudents(grade)}
+                                                            onClick={() => handleViewStudents(gradeName)}
                                                             sx={{
                                                                 borderRadius: 2,
                                                                 fontWeight: 600,
@@ -425,7 +395,7 @@ const HealthCheckScheduleForm = () => {
                                                             }}
                                                             startIcon={<VisibilityIcon sx={{ fontSize: 18 }} />}
                                                         >
-                                                            View Students
+                                                            View Details
                                                         </Button>
                                                     </Box>
                                                 </CardContent>
@@ -433,9 +403,7 @@ const HealthCheckScheduleForm = () => {
                                         </Grid>
                                     </Grow>
                                 );
-
                             })}
-
                         </Grid>
                     </Box>
                 </Box>
