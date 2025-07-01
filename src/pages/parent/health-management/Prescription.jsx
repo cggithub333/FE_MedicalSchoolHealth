@@ -4,8 +4,14 @@ import Breadcrumb from '@components/magic/Breadcrumb/CustomBreadcrumb';
 import CustomTittle from '@components/magic/CustomTittle/CustomTitle';
 
 import PrescriptionSearching from "@components/parent/HealthManagement/PrescriptionSearching";
+import { Base64 } from "js-base64";
+import InstructChooseChild from '@assets/images/instruct_choose_child.png';
 
 const Prescription = () => {
+
+  const decodedPupilInfor = Base64.decode(localStorage.getItem("pupilInfor"));
+  const pupilObj = JSON.parse(decodedPupilInfor);
+
   return (
     <div style={{ background: "#E6F8F9", height: "100vh", paddingBottom: "50px", paddingTop: "10px" }}>
           <Grid container>
@@ -20,7 +26,20 @@ const Prescription = () => {
           </Grid>   
           <Grid container justifyContent={'center'} sx={{ marginTop: "20px", backgroundColor: "#E6F8F9", pb: "50px"}}>
             <Grid item size={{ xs: 10 }}>
-              <PrescriptionSearching />
+              {
+                pupilObj == null || pupilObj.pupilId == null && (
+                  <>
+                    <img src={InstructChooseChild} alt='choose child instruction image' style={{ width: "100%", height: "100%"}} />
+                  </>
+                )
+              }
+              {
+                pupilObj && pupilObj.pupilId && (
+                  <>
+                    <PrescriptionSearching pupil={pupilObj}/>
+                  </>
+                )
+              }
             </Grid>
           </Grid>
     </div>

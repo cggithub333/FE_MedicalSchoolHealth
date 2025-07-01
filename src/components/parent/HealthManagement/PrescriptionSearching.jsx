@@ -47,6 +47,8 @@ import {
   Fullscreen,
 } from "@mui/icons-material"
 
+import { FaChildReaching as ChildIcon } from "react-icons/fa6";
+
 // Mock hook - replace with your actual hook
 const useSendMedicationByPupil = (pupilId) => {
   const [sendMedicationByPupil, setSendMedicationByPupil] = useState([])
@@ -210,18 +212,7 @@ const useSendMedicationByPupil = (pupilId) => {
   return { sendMedicationByPupil, loading, error, refetch }
 }
 
-const PrescriptionSearching = () => {
-  const pupil = {
-    pupilId: "PP0006",
-    lastName: "Hoàng",
-    firstName: "Em",
-    birthDate: "12-01-2018",
-    gender: "M",
-    gradeId: 1,
-    startYear: 2024,
-    gradeLevel: "GRADE_1",
-    gradeName: "Lớp 1D",
-  }
+const PrescriptionSearching = ({pupil}) => {
 
   const { sendMedicationByPupil, loading, error, refetch } = useSendMedicationByPupil(pupil.pupilId)
 
@@ -404,6 +395,15 @@ const PrescriptionSearching = () => {
             <Chip label={pupil.gradeName} color="primary" variant="outlined" />
           </Grid>
         </Grid>
+        <Paper>
+          <Alert severity="info" sx={{ marginTop: "20px", fontSize: "16px"}}>
+            <span>Notes: You can change schedule for other child by lick on</span>
+              {" "}
+              <ChildIcon />
+              {" "}
+            <span>icon near the search bar.</span>
+          </Alert>
+        </Paper>
       </Paper>
 
       {/* Search and Filter Section */}
