@@ -29,6 +29,8 @@ import {
 } from "@mui/material"
 import { LocalPharmacy, Person, CalendarToday, Note, Add, Delete, AttachFile, Send, MedicationLiquid as MedicationIcon, CloudUpload, Image as ImageIcon } from "@mui/icons-material"
 
+import { toast, Bounce } from 'react-toastify';
+
 import usePupils from "@hooks/parent/usePupils"
 import useUploadImage from "@hooks/magic-hooks/useUploadImage"
 
@@ -72,7 +74,7 @@ const PrescriptionSendingForm = () => {
   // Validation errors
   const [errors, setErrors] = useState({})
 
-  const scheduleOptions = ["After breakfast: 9h00-9h30", "After lunch: 11h30-12h00", "Before lunch: 10h30-11h00"]
+  const scheduleOptions = ["After breakfast: 9h00-9h30", "Before lunch: 10h30-11h00", "After lunch: 11h30-12h00"]
 
   const getCurrentDate = () => {
     const today = new Date()
@@ -197,14 +199,13 @@ const PrescriptionSendingForm = () => {
       }
 
       console.log("Form data prepared:", formData);
-      alert("Prescription data to be sent: " + JSON.stringify(formData, null, 2))
 
       // Now, send the form data to the server:
       console.log("Sending data to server...");
       await sendMedication(formData);
       
       console.log("Prescription sent successfully!");
-      alert("Prescription sent successfully!");
+      showSuccessToast("Prescription sent successfully! You can exit the form for seeing the new prescription!");
       
       // Reset form after successful submission
       setSelectedPupilId("");
@@ -222,7 +223,7 @@ const PrescriptionSendingForm = () => {
     
     } catch (error) {
       console.error("Error sending prescription:", error);
-      alert("Failed to send prescription: " + error.message);
+      showErrorToast("Ohh! Something's wrong. We failed to send your prescription. Try again later.");
     } finally {
       setSubmitting(false);
     }
@@ -646,6 +647,46 @@ const PrescriptionSendingForm = () => {
       </Card>
     </Container>
   )
+}
+
+const showSuccessToast = (message) => {
+  toast.success(`${message}!`, {
+    style: {
+      minWidth: '400px',
+      maxWidth: '600px',
+      background: '#1e2b34',      // Darker greenish background
+      color: '#e0ffe0',           // Light green text
+      border: '1px solid #00adb5' // Teal border
+    },
+    position: "top-right",
+    autoClose: 2999,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    theme: "light",
+    transition: Bounce,
+  });
+}
+
+const showErrorToast = (message) => {
+  toast.error(`${message}`, {
+    style: {
+      minWidth: '400px',
+      maxWidth: '600px',
+      background: '#3a0f0f',       // Dark red background
+      color: '#ffdada',            // Light red/pinkish text
+      border: '1px solid #ff4c4c', // Red border
+    },
+    position: "top-right",
+    autoClose: 2999,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    theme: "light",
+    transition: Bounce,
+  });
 }
 
 export default PrescriptionSendingForm

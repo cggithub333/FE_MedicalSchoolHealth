@@ -11,6 +11,10 @@ import ParentDashboardRoutes from "./components/parent/Dashboard/ParentDashboard
 import Homepage from './components/homepage-resources/Homepage';
 
 
+// toastify config:
+import { ToastContainer, Bounce } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { getPayloadResources } from './utils/jwt-utils';
 import { isContained } from './utils/string-utils';
 
@@ -19,30 +23,45 @@ function App() {
     const RouteProtecter = protecter();
 
     return (
-        <Router>
-            <Routes>
-                <Route path="/homepage" element={<Homepage />} />
-                <Route element={<RouteProtecter.forAll />}>
+        <>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+                transition={Bounce}
+            />
+            <Router>
+                <Routes>
+                    <Route path="/homepage" element={<Homepage />} />
+                    <Route element={<RouteProtecter.forAll />}>
 
-                    <Route path="/admin/*" element={<RouteProtecter.forAdmin>
-                        <AdminDashboardRoutes />
-                    </RouteProtecter.forAdmin>} />
+                        <Route path="/admin/*" element={<RouteProtecter.forAdmin>
+                            <AdminDashboardRoutes />
+                        </RouteProtecter.forAdmin>} />
 
-                    <Route path="/manager/*" element={<RouteProtecter.forManager>
-                        <ManagerDashboardRoutes />
-                    </RouteProtecter.forManager>} />
+                        <Route path="/manager/*" element={<RouteProtecter.forManager>
+                            <ManagerDashboardRoutes />
+                        </RouteProtecter.forManager>} />
 
-                    <Route path="/schoolnurse/*" element={<RouteProtecter.forSchoolNurse>
-                        <SchoolNurseDashboardRoutes />
-                    </RouteProtecter.forSchoolNurse>} />
+                        <Route path="/schoolnurse/*" element={<RouteProtecter.forSchoolNurse>
+                            <SchoolNurseDashboardRoutes />
+                        </RouteProtecter.forSchoolNurse>} />
 
-                    <Route path="/parent/*" element={<RouteProtecter.forParent>
-                        <ParentDashboardRoutes />
-                    </RouteProtecter.forParent>} />
-                </Route>
-                <Route path="/*" element={<Navigate to={"/homepage"} />} />
-            </Routes>
-        </Router>
+                        <Route path="/parent/*" element={<RouteProtecter.forParent>
+                            <ParentDashboardRoutes />
+                        </RouteProtecter.forParent>} />
+                    </Route>
+                    <Route path="/*" element={<Navigate to={"/homepage"} />} />
+                </Routes>
+            </Router>
+        </>
     );
 }
 
