@@ -4,6 +4,9 @@ import Breadcrumb from '@components/magic/Breadcrumb/CustomBreadcrumb';
 import CustomTittle from '@components/magic/CustomTittle/CustomTitle';
 import PrescriptionSendingForm from "@components/parent/HealthManagement/PrescriptionSendingForm";
 
+import { ImExit as ExitIcon } from "react-icons/im";
+import FloatingNavigateButton from "@components/magic/FloatingNavigateButton/FloatingNavigateButton";
+
 const NewPrescription = () => {
   return (
     <div style={{ background: "#E6F8F9", height: "100vh", paddingBottom: "50px", paddingTop: "10px" }}>
@@ -22,6 +25,11 @@ const NewPrescription = () => {
           <PrescriptionSendingForm />
         </Grid>
       </Grid>
+      <FloatingNavigateButton
+        navigateLink="./../../prescription"
+        iconForAvatar={ExitIcon}
+        backgroundColor="#FF6B6B"
+        textContent="Exit Form"/>
     </div>
   );
 };

@@ -74,7 +74,7 @@ const useUploadImage = () => {
         console.log('Upload successful:', result);
         
         // Show success notification
-        alert(`Image uploaded successfully!\nURL: ${result.downloadURL || result.url || 'No URL available'}`);
+        // alert(`Image uploaded successfully!\nURL: ${result.downloadURL || result.url || 'No URL available'}`);
       },
       // Error callback
       (error) => {

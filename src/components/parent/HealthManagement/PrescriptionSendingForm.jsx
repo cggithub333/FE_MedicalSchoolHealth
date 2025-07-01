@@ -32,9 +32,12 @@ import { LocalPharmacy, Person, CalendarToday, Note, Add, Delete, AttachFile, Se
 import usePupils from "@hooks/parent/usePupils"
 import useUploadImage from "@hooks/magic-hooks/useUploadImage"
 
+import useSendMedication from '@hooks/parent/send-medication/useSendMedication'
+
 const PrescriptionSendingForm = () => {
 
   const { pupils, isLoading } = usePupils();
+  const { sendMedication } = useSendMedication();
   const {
     selectedFile,
     preview,
@@ -161,7 +164,7 @@ const PrescriptionSendingForm = () => {
       if (selectedFile && !imageUrl) {
         // Image upload logic: Upload the image and wait for completion
         await new Promise((resolve, reject) => {
-          handleUpload();
+          handleUpload(); // upload the image to firebase
           
           // Image upload logic: Wait for upload to complete by checking the uploading state
           const checkUpload = setInterval(() => {
@@ -193,7 +196,8 @@ const PrescriptionSendingForm = () => {
       }
 
       console.log("Prescription data to be sent:", JSON.stringify(formData, null, 2))
-      // Here you would typically send the data to your server
+      // Now, send the form data to the server:
+      await sendMedication(formData);
       
       // Show success message
       alert("Prescription sent successfully!");

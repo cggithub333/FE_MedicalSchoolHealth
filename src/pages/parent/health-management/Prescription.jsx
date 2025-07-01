@@ -4,11 +4,12 @@ import Breadcrumb from '@components/magic/Breadcrumb/CustomBreadcrumb';
 import CustomTittle from '@components/magic/CustomTittle/CustomTitle';
 
 import PrescriptionSearching from "@components/parent/HealthManagement/PrescriptionSearching";
-import LinkToPrescriptionForm from "@components/parent/HealthManagement/LinkToPrescriptionForm";
+import FloatingNavigateButton from "@components/magic/FloatingNavigateButton/FloatingNavigateButton";
 
 import { Base64 } from "js-base64";
 import InstructChooseChild from '@assets/images/instruct_choose_child.png';
 
+import { AddBox } from "@mui/icons-material";
 
 const Prescription = () => {
 
@@ -47,9 +48,11 @@ const Prescription = () => {
               }
             </Grid>
           </Grid>
-          <Box sx={{ position: "fixed", bottom: "20px", right: "30px"}}>
-            <LinkToPrescriptionForm />
-          </Box>
+          <FloatingNavigateButton 
+              iconForAvatar={AddBox}
+              navigateLink={'./new-prescription'}
+              backgroundColor={"yellowgreen"} 
+              textContent="New"/>
     </div>
   )
 }
