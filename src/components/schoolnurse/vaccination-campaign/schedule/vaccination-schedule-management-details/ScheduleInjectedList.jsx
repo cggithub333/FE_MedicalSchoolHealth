@@ -56,7 +56,7 @@ import { useGetAllConsentFormByStatus } from "../../../../../hooks/schoolnurse/v
 
 const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
     const injectedResult = useGetAllConsentFormByStatus(campaign.campaignId, "INJECTED");
-    const noShowResult = useGetAllConsentFormByStatus(campaign.campaignId, "NO_SHOW");
+    const noShowResult = useGetAllConsentFormByStatus(campaign.campaignId, "ABSENT");
     const notYetResult = useGetAllConsentFormByStatus(campaign.campaignId, "");
     const allResult = useGetAllConsentFormByStatus(campaign.campaignId, "");
 
@@ -110,20 +110,20 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
         return pupilGrade === grade;
     });
 
-    // Calculate NOT_YET students (those who are not INJECTED or NO_SHOW)
+    // Calculate NOT_YET students (those who are not INJECTED or ABSENT)
     const injectedIds = new Set(injectedByGrade.map(p => p.pupilId));
     const noShowIds = new Set(noShowByGrade.map(p => p.pupilId));
     const notYetByGrade = pupilsByGrade.filter(p => !injectedIds.has(p.pupilId) && !noShowIds.has(p.pupilId));
 
     const statusCounts = {
         INJECTED: injectedByGrade.length,
-        NO_SHOW: noShowByGrade.length,
+        ABSENT: noShowByGrade.length,
         NOT_YET: notYetByGrade.length,
     };
 
     const statusTabs = [
         { key: "INJECTED", label: "Injected" },
-        { key: "NO_SHOW", label: "No Show" },
+        { key: "ABSENT", label: "Absent" },
         { key: "NOT_YET", label: "Not Yet" },
     ]
 
@@ -184,14 +184,14 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
         if (index >= students.length) return;
 
         const student = students[index];
-        const newStatus = !student.completed ? 'INJECTED' : 'NO_SHOW';
+        const newStatus = !student.completed ? 'INJECTED' : 'ABSENT';
         setConfirmDialog({
             open: true,
             idx: index,
             status: newStatus,
             label: newStatus === 'INJECTED'
                 ? `mark ${student.firstName} ${student.lastName} as INJECTED`
-                : `mark ${student.firstName} ${student.lastName} as NO_SHOW`,
+                : `mark ${student.firstName} ${student.lastName} as ABSENT`,
             notes: student.notes || ''
         });
     };
@@ -203,8 +203,8 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
         setConfirmDialog({
             open: true,
             idx,
-            status: 'NO_SHOW',
-            label: `mark ${student.firstName} ${student.lastName} as NO_SHOW`,
+            status: 'ABSENT',
+            label: `mark ${student.firstName} ${student.lastName} as ABSENT`,
             notes: student.notes || ''
         });
     };
@@ -309,7 +309,7 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
     }
 
     return (
-        <div className="schedule-list-root">
+        <div>
             <Fade in={true} timeout={500}>
                 <Card className="schedule-list-header" elevation={0}>
                     <CardContent>

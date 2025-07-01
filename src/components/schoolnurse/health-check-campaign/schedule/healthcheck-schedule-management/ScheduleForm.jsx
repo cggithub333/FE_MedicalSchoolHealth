@@ -273,7 +273,7 @@ const HealthCheckScheduleForm = () => {
     }
 
     return (
-        <div className="vaccine-schedule-root">
+        <div>
             {/* Quick Navigation Bar */}
 
             <Fade in={!showInjectionList}>

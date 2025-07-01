@@ -2,12 +2,13 @@
 
 .vaccine-schedule-root {
   font-family: 'Roboto', Arial, Helvetica, sans-serif;
-  background: #f8faff;
-  padding: 32px 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 60%, #f7971e 100%);
+  padding: 0px 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
+
 }
 
 .vaccine-schedule-card {
@@ -75,21 +76,6 @@
   margin-bottom: 0;
 }
 
-.quick-schedule-btn {
-  position: absolute;
-  top: 0;
-  right: 0;
-  background: #1de9b6;
-  color: #fff;
-  font-weight: 700;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 28px;
-  font-size: 1.08rem;
-  cursor: pointer;
-  transition: background 0.2s;
-  box-shadow: 0 2px 8px 0 rgba(30, 136, 229, 0.08);
-}
 
 .quick-schedule-btn:hover {
   background: #00bfae;
