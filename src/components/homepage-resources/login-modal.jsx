@@ -68,14 +68,14 @@ export default function LoginModal() {
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle sx={{ textAlign: "center", pb: 1 }}>
           Welcome back
-          <Typography variant="body2" color="text.secondary">
+          {/* <Typography variant="body2" color="text.secondary">
             Enter your phone number and password to sign in
             <br/> Admin:        0848025113
             <br /> Manager:      0848025114
-            <br /> Parent:       0848025146 - PR0001
+            <br /> Parent:       0848025116
             <br /> School Nurse: 0848025115 
             <br/> Password: 12345
-          </Typography>
+          </Typography> */}
         </DialogTitle>
         <DialogContent sx={{ px: 3, pb: 3 }}>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 3, mt: 2 }}>

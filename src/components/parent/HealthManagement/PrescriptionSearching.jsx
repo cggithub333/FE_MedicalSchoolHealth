@@ -1,0 +1,761 @@
+"use client"
+
+import { useState, useEffect, useMemo } from "react"
+import {
+  Container,
+  Typography,
+  Card,
+  CardContent,
+  Box,
+  Grid,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Chip,
+  Avatar,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Paper,
+  Alert,
+  Skeleton,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  IconButton,
+} from "@mui/material"
+import {
+  Search,
+  LocalPharmacy,
+  CalendarToday,
+  Note,
+  Close,
+  FilterList,
+  Assignment,
+  Schedule,
+  CheckCircle,
+  Cancel,
+  Pending,
+  ZoomIn,
+  Fullscreen,
+} from "@mui/icons-material"
+
+// Mock hook - replace with your actual hook
+const useSendMedicationByPupil = (pupilId) => {
+  const [sendMedicationByPupil, setSendMedicationByPupil] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  const refetch = () => {
+    setLoading(true)
+    setTimeout(() => {
+      setSendMedicationByPupil([
+        {
+          pupilId: "PP0006",
+          sendMedicationId: 12,
+          diseaseName: "Common cold with cough",
+          requestDate: "2025-07-01",
+          startDate: "2025-07-01",
+          endDate: "2025-07-04",
+          senderName: "Anh Quoc",
+          prescriptionImage: "https://anh.24h.com.vn/upload/4-2014/images/2014-10-24/1414124020-toa-thuoc.jpg",
+          note: "My child has a mild cough and sore throat. Please help him take the medicine on time.",
+          confirmDate: null,
+          status: "Pending",
+          medicationList: [
+            {
+              medicationListId: 1,
+              medicationName: "Dextromethorphan",
+              unitMedicationAndUsage: "1 capsule taken by mouth to suppress dry cough",
+              medication_schedule: "After breakfast: 9h00-9h30",
+            },
+            {
+              medicationListId: 2,
+              medicationName: "Guaifenesin",
+              unitMedicationAndUsage: "1 tablet taken to loosen mucus and ease chest congestion",
+              medication_schedule: "After lunch: 11h30-12h00",
+            },
+            {
+              medicationListId: 3,
+              medicationName: "Strepsils lozenges",
+              unitMedicationAndUsage: "1 lozenge dissolved slowly in mouth to soothe throat",
+              medication_schedule: "Before lunch: 10h30-11h00",
+            },
+          ],
+        },
+        {
+          pupilId: "PP0006",
+          sendMedicationId: 33,
+          diseaseName: "Allergic cough",
+          requestDate: "2025-06-28",
+          startDate: "2025-06-29",
+          endDate: "2025-07-01",
+          senderName: "Anh Quoc",
+          prescriptionImage: "https://anh.24h.com.vn/upload/4-2014/images/2014-10-24/1414124020-toa-thuoc.jpg",
+          note: "Child has persistent dry cough due to allergy. Needs antihistamine and cough suppressant.",
+          confirmDate: null,
+          status: "REJECTED",
+          medicationList: [
+            {
+              medicationListId: 1,
+              medicationName: "Diphenhydramine",
+              unitMedicationAndUsage: "1 tablet to relieve allergy symptoms causing cough",
+              medication_schedule: "After breakfast: 9h00-9h30",
+            },
+            {
+              medicationListId: 2,
+              medicationName: "Dextromethorphan",
+              unitMedicationAndUsage: "1 capsule to suppress dry cough",
+              medication_schedule: "After lunch: 11h30-12h00",
+            },
+          ],
+        },
+        {
+          pupilId: "PP0006",
+          sendMedicationId: 23,
+          diseaseName: "Mild cold and throat irritation",
+          requestDate: "2025-07-01",
+          startDate: "2025-07-01",
+          endDate: "2025-07-03",
+          senderName: "Anh Quoc",
+          prescriptionImage: "https://anh.24h.com.vn/upload/4-2014/images/2014-10-24/1414124020-toa-thuoc.jpg",
+          note: "Child has slight cold symptoms, no fever. Needs throat lozenges and warm fluids.",
+          confirmDate: "2025-07-01",
+          status: "APPROVED",
+          medicationList: [
+            {
+              medicationListId: 1,
+              medicationName: "Strepsils lozenges",
+              unitMedicationAndUsage: "1 lozenge every morning to relieve sore throat",
+              medication_schedule: "After breakfast: 9h00-9h30",
+            },
+            {
+              medicationListId: 2,
+              medicationName: "Paracetamol",
+              unitMedicationAndUsage: "1 tablet if child experiences mild discomfort",
+              medication_schedule: "Before lunch: 10h30-11h00",
+            },
+          ],
+        },
+        {
+          pupilId: "PP0006",
+          sendMedicationId: 13,
+          diseaseName: "Wet cough with mucus",
+          requestDate: "2025-06-24",
+          startDate: "2025-06-24",
+          endDate: "2025-06-27",
+          senderName: "Anh Quoc",
+          prescriptionImage: "https://anh.24h.com.vn/upload/4-2014/images/2014-10-24/1414124020-toa-thuoc.jpg",
+          note: "The child had mucus-heavy cough. Please help administer expectorant medicine.",
+          confirmDate: "2025-06-24",
+          status: "COMPLETED",
+          medicationList: [
+            {
+              medicationListId: 1,
+              medicationName: "Guaifenesin syrup",
+              unitMedicationAndUsage: "5ml to help loosen mucus",
+              medication_schedule: "After breakfast: 9h00-9h30",
+            },
+            {
+              medicationListId: 2,
+              medicationName: "Saline nasal spray",
+              unitMedicationAndUsage: "1 spray per nostril to clear airway",
+              medication_schedule: "Before lunch: 10h30-11h00",
+            },
+          ],
+        },
+        {
+          pupilId: "PP0006",
+          sendMedicationId: 28,
+          diseaseName: "Common cold with dry throat",
+          requestDate: "2025-06-20",
+          startDate: "2025-06-21",
+          endDate: "2025-06-24",
+          senderName: "Anh Quoc",
+          prescriptionImage: "https://anh.24h.com.vn/upload/4-2014/images/2014-10-24/1414124020-toa-thuoc.jpg",
+          note: "Just mild cold, no fever. Took honey-based syrup for throat relief.",
+          confirmDate: "2025-06-21",
+          status: "COMPLETED",
+          medicationList: [
+            {
+              medicationListId: 1,
+              medicationName: "Honey syrup",
+              unitMedicationAndUsage: "5ml to soothe dry throat and suppress cough",
+              medication_schedule: "After breakfast: 9h00-9h30",
+            },
+            {
+              medicationListId: 2,
+              medicationName: "Dextromethorphan",
+              unitMedicationAndUsage: "1 capsule in the morning to reduce cough reflex",
+              medication_schedule: "After lunch: 11h30-12h00",
+            },
+          ],
+        },
+      ])
+      setLoading(false)
+    }, 1000)
+  }
+
+  useEffect(() => {
+    refetch()
+  }, [pupilId])
+
+  return { sendMedicationByPupil, loading, error, refetch }
+}
+
+const PrescriptionSearching = () => {
+  const pupil = {
+    pupilId: "PP0006",
+    lastName: "Hoàng",
+    firstName: "Em",
+    birthDate: "12-01-2018",
+    gender: "M",
+    gradeId: 1,
+    startYear: 2024,
+    gradeLevel: "GRADE_1",
+    gradeName: "Lớp 1D",
+  }
+
+  const { sendMedicationByPupil, loading, error, refetch } = useSendMedicationByPupil(pupil.pupilId)
+
+  // Search and filter states
+  const [searchYear, setSearchYear] = useState("")
+  const [selectedStatus, setSelectedStatus] = useState("ALL")
+  const [selectedRecord, setSelectedRecord] = useState(null)
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [imageDialogOpen, setImageDialogOpen] = useState(false)
+  const [selectedImage, setSelectedImage] = useState("")
+
+  // Filter records based on search criteria
+  const filteredRecords = useMemo(() => {
+    return sendMedicationByPupil.filter((record) => {
+      const matchesYear = searchYear === "" || record.requestDate.includes(searchYear)
+      const matchesStatus = selectedStatus === "ALL" || record.status === selectedStatus
+      return matchesYear && matchesStatus
+    })
+  }, [sendMedicationByPupil, searchYear, selectedStatus])
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    })
+  }
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Pending":
+        return "warning"
+      case "APPROVED":
+        return "success"
+      case "REJECTED":
+        return "error"
+      case "COMPLETED":
+        return "info"
+      default:
+        return "default"
+    }
+  }
+
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case "Pending":
+        return <Pending />
+      case "APPROVED":
+        return <CheckCircle />
+      case "REJECTED":
+        return <Cancel />
+      case "COMPLETED":
+        return <CheckCircle />
+      default:
+        return <Assignment />
+    }
+  }
+
+  const handleCardClick = (record) => {
+    setSelectedRecord(record)
+    setDialogOpen(true)
+  }
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false)
+    setSelectedRecord(null)
+  }
+
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl)
+    setImageDialogOpen(true)
+  }
+
+  const handleCloseImageDialog = () => {
+    setImageDialogOpen(false)
+    setSelectedImage("")
+  }
+
+  const clearFilters = () => {
+    setSearchYear("")
+    setSelectedStatus("ALL")
+  }
+
+  const renderLoadingSkeleton = () => (
+    <Container maxWidth="lg" sx={{ py: 3 }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 3 }}>
+        <Skeleton variant="circular" width={32} height={32} />
+        <Skeleton variant="text" width={300} height={40} />
+      </Box>
+
+      <Paper sx={{ p: 3, mb: 3 }}>
+        <Grid container spacing={2}>
+          {[1, 2, 3].map((index) => (
+            <Grid item size={{ xs: 12, md: 4 }} key={index}>
+              <Skeleton variant="rectangular" height={56} />
+            </Grid>
+          ))}
+        </Grid>
+      </Paper>
+
+      <Grid container spacing={3}>
+        {[1, 2, 3].map((index) => (
+          <Grid item size={{ xs: 12, md: 6, lg: 4 }} key={index}>
+            <Card>
+              <CardContent>
+                <Skeleton variant="text" width="60%" height={32} />
+                <Skeleton variant="text" width="80%" height={24} />
+                <Skeleton variant="rectangular" height={60} sx={{ mt: 2 }} />
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    </Container>
+  )
+
+  if (loading) {
+    return renderLoadingSkeleton()
+  }
+
+  if (error) {
+    return (
+      <Container maxWidth="lg" sx={{ py: 3 }}>
+        <Alert severity="error">Error loading prescription data: {error}</Alert>
+      </Container>
+    )
+  }
+
+  return (
+    <Container maxWidth="lg" sx={{ py: 3 }}>
+      {/* Header */}
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 4 }}>
+        <Avatar sx={{ bgcolor: "primary.main", width: 48, height: 48 }}>
+          <LocalPharmacy />
+        </Avatar>
+        <Box>
+          <Typography variant="h4" fontWeight="bold">
+            Prescription Searching
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            Search and manage medication prescriptions
+          </Typography>
+        </Box>
+      </Box>
+
+      {/* Pupil Information */}
+      <Paper sx={{ p: 3, mb: 3, bgcolor: "primary.50" }}>
+        <Typography variant="h6" fontWeight="bold" sx={{ mb: 2, color: "primary.main" }}>
+          Student Information
+        </Typography>
+        <Grid container spacing={2}>
+          <Grid item size={{ xs: 12, md: 3 }}>
+            <Typography variant="body2" color="text.secondary">
+              Student ID
+            </Typography>
+            <Typography variant="body1" fontWeight="bold">
+              {pupil.pupilId}
+            </Typography>
+          </Grid>
+          <Grid item size={{ xs: 12, md: 3 }}>
+            <Typography variant="body2" color="text.secondary">
+              Full Name
+            </Typography>
+            <Typography variant="body1" fontWeight="bold">
+              {pupil.lastName} {pupil.firstName}
+            </Typography>
+          </Grid>
+          <Grid item size={{ xs: 12, md: 3 }}>
+            <Typography variant="body2" color="text.secondary">
+              Birth Date
+            </Typography>
+            <Typography variant="body1" fontWeight="bold">
+              {pupil.birthDate}
+            </Typography>
+          </Grid>
+          <Grid item size={{ xs: 12, md: 3 }}>
+            <Typography variant="body2" color="text.secondary">
+              Class
+            </Typography>
+            <Chip label={pupil.gradeName} color="primary" variant="outlined" />
+          </Grid>
+        </Grid>
+      </Paper>
+
+      {/* Search and Filter Section */}
+      <Paper sx={{ p: 3, mb: 3 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+          <FilterList color="primary" />
+          <Typography variant="h6" fontWeight="bold">
+            Search and Filter
+          </Typography>
+        </Box>
+
+        <Grid container spacing={2} alignItems="end">
+          <Grid item size={{ xs: 12, md: 3 }}>
+            <TextField
+              fullWidth
+              label="Search by Year"
+              value={searchYear}
+              onChange={(e) => setSearchYear(e.target.value)}
+              placeholder="2025, 2024..."
+              InputProps={{
+                startAdornment: <Search color="action" sx={{ mr: 1 }} />,
+              }}
+            />
+          </Grid>
+
+          <Grid item size={{ xs: 12, md: 3 }}>
+            <FormControl fullWidth>
+              <InputLabel>Status</InputLabel>
+              <Select value={selectedStatus} label="Status" onChange={(e) => setSelectedStatus(e.target.value)}>
+                <MenuItem value="ALL">All Status</MenuItem>
+                <MenuItem value="Pending">Pending</MenuItem>
+                <MenuItem value="APPROVED">Approved</MenuItem>
+                <MenuItem value="REJECTED">Rejected</MenuItem>
+                <MenuItem value="COMPLETED">Completed</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+
+          <Grid item size={{ xs: 12, md: 3}}>
+            <Button fullWidth sx={{ padding: "12px 10px", fontSize: "16px"}} variant="outlined" onClick={clearFilters}>
+              Clear Filters
+            </Button>
+          </Grid>
+
+          <Grid item size={{ xs: 12, md: 3 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ textAlign: "center", mb: 2.5 }}>
+              {filteredRecords.length} results found
+            </Typography>
+          </Grid>
+        </Grid>
+      </Paper>
+
+      {/* Status Summary */}
+      <Grid container spacing={2} sx={{ mb: 3 }}>
+        {["Pending", "APPROVED", "REJECTED", "COMPLETED"].map((status) => {
+          const count = sendMedicationByPupil.filter((record) => record.status === status).length
+          return (
+            <Grid item size={{ xs: 6, md: 3 }} key={status}>
+              <Paper sx={{ p: 2, textAlign: "center", bgcolor: `${getStatusColor(status)}.50` }}>
+                <Typography variant="h4" fontWeight="bold" color={`${getStatusColor(status)}.main`}>
+                  {count}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {status}
+                </Typography>
+              </Paper>
+            </Grid>
+          )
+        })}
+      </Grid>
+
+      {/* Prescription Records */}
+      {filteredRecords.length === 0 ? (
+        <Card>
+          <CardContent sx={{ textAlign: "center", py: 6 }}>
+            <LocalPharmacy sx={{ fontSize: 64, color: "text.secondary", mb: 2 }} />
+            <Typography variant="h5" fontWeight="bold" sx={{ mb: 1 }}>
+              No Results Found
+            </Typography>
+            <Typography color="text.secondary">No prescription records match your search criteria</Typography>
+          </CardContent>
+        </Card>
+      ) : (
+        <Grid container spacing={3}>
+          {filteredRecords.map((record) => (
+            <Grid item size={{ xs: 12, md: 6, lg: 4 }} key={record.sendMedicationId}>
+              <Card
+                sx={{
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                  position: "relative",
+                  height: 280, // Fixed height for uniform cards
+                  display: "flex",
+                  flexDirection: "column",
+                  "&:hover": {
+                    transform: "translateY(-4px)",
+                    boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
+                  },
+                }}
+                onClick={() => handleCardClick(record)}
+              >
+                {/* Sender Name Chip in top right */}
+                <Box sx={{ position: "absolute", top: 12, right: 12, zIndex: 1 }}>
+                  <Chip
+                    label={record.senderName}
+                    color="primary"
+                    size="small"
+                    variant="filled"
+                    sx={{ fontWeight: "bold", maxWidth: 120 }}
+                  />
+                </Box>
+
+                <CardContent sx={{ pt: 5, flex: 1, display: "flex", flexDirection: "column" }}>
+                  {/* Disease Name */}
+                  <Typography
+                    variant="h6"
+                    fontWeight="bold"
+                    color="primary.main"
+                    sx={{
+                      mb: 2,
+                      pr: 8,
+                      minHeight: 48,
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {record.diseaseName}
+                  </Typography>
+
+                  {/* Request Date */}
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                    <CalendarToday fontSize="small" color="action" />
+                    <Typography variant="body2" color="text.secondary">
+                      Request:
+                    </Typography>
+                    <Typography variant="body2" fontWeight="bold">
+                      {formatDate(record.requestDate)}
+                    </Typography>
+                  </Box>
+
+                  {/* End Date */}
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+                    <Schedule fontSize="small" color="action" />
+                    <Typography variant="body2" color="text.secondary">
+                      End:
+                    </Typography>
+                    <Typography variant="body2" fontWeight="bold">
+                      {formatDate(record.endDate)}
+                    </Typography>
+                  </Box>
+
+                  {/* Bottom section */}
+                  <Box sx={{ mt: "auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <Chip
+                      label={record.status}
+                      color={getStatusColor(record.status)}
+                      icon={getStatusIcon(record.status)}
+                      variant="filled"
+                      size="small"
+                    />
+                    <Typography variant="body2" color="text.secondary">
+                      {record.medicationList.length} medication(s)
+                    </Typography>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      )}
+
+      {/* Detail Modal - Smaller Size */}
+      <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="md" fullWidth>
+        <DialogTitle sx={{ pb: 1 }}>
+          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <LocalPharmacy color="primary" />
+              <Typography variant="h6" fontWeight="bold">
+                Prescription Details
+              </Typography>
+            </Box>
+            <IconButton onClick={handleCloseDialog} size="small">
+              <Close />
+            </IconButton>
+          </Box>
+        </DialogTitle>
+
+        <DialogContent sx={{ py: 2 }}>
+          {selectedRecord && (
+            <Box>
+              {/* Basic Information */}
+              <Paper sx={{ p: 2, mb: 2, bgcolor: "primary.50" }}>
+                <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1, color: "primary.main" }}>
+                  Basic Information
+                </Typography>
+                <Grid container spacing={1}>
+                  <Grid item size={{ xs: 6 }}>
+                    <Typography variant="body2" color="text.secondary">
+                      Disease
+                    </Typography>
+                    <Typography variant="body1" fontWeight="bold">
+                      {selectedRecord.diseaseName}
+                    </Typography>
+                  </Grid>
+                  <Grid item size={{ xs: 6 }}>
+                    <Typography variant="body2" color="text.secondary">
+                      Status
+                    </Typography>
+                    <Chip
+                      label={selectedRecord.status}
+                      color={getStatusColor(selectedRecord.status)}
+                      size="small"
+                      variant="filled"
+                    />
+                  </Grid>
+                </Grid>
+              </Paper>
+
+              {/* Prescription Image */}
+              <Paper sx={{ p: 2, mb: 2, bgcolor: "success.50" }}>
+                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 1 }}>
+                  <Typography variant="subtitle1" fontWeight="bold" color="success.main">
+                    Prescription Image
+                  </Typography>
+                  <IconButton
+                    size="small"
+                    onClick={() => handleImageClick(selectedRecord.prescriptionImage)}
+                    sx={{ color: "success.main" }}
+                  >
+                    <ZoomIn />
+                  </IconButton>
+                </Box>
+                <Box sx={{ textAlign: "center" }}>
+                  <img
+                    src={selectedRecord.prescriptionImage || "/placeholder.svg"}
+                    alt="Prescription"
+                    style={{
+                      maxWidth: "100%",
+                      maxHeight: "150px",
+                      borderRadius: "4px",
+                      border: "1px solid #e0e0e0",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => handleImageClick(selectedRecord.prescriptionImage)}
+                  />
+                </Box>
+              </Paper>
+
+              {/* Medication List */}
+              <Paper sx={{ p: 2, mb: 2, bgcolor: "warning.50" }}>
+                <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1, color: "warning.main" }}>
+                  Medications ({selectedRecord.medicationList.length})
+                </Typography>
+                <TableContainer component={Paper} elevation={0} sx={{ maxHeight: 200 }}>
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>
+                          <Typography variant="body2" fontWeight="bold">
+                            Medication
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="body2" fontWeight="bold">
+                            Schedule
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {selectedRecord.medicationList.map((medication) => (
+                        <TableRow key={medication.medicationListId}>
+                          <TableCell>
+                            <Typography variant="body2" fontWeight="bold">
+                              {medication.medicationName}
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary">
+                              {medication.unitMedicationAndUsage}
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography variant="body2" color="primary.main" fontWeight="bold">
+                              {medication.medication_schedule}
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Paper>
+
+              {/* Notes */}
+              <Paper sx={{ p: 2, bgcolor: "grey.50" }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                  <Note color="action" fontSize="small" />
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    Notes
+                  </Typography>
+                </Box>
+                <Typography variant="body2" sx={{ lineHeight: 1.5 }}>
+                  {selectedRecord.note}
+                </Typography>
+              </Paper>
+            </Box>
+          )}
+        </DialogContent>
+
+        <DialogActions sx={{ px: 3, py: 2 }}>
+          <Button onClick={handleCloseDialog} variant="contained" size="small">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Image Viewer Modal */}
+      <Dialog open={imageDialogOpen} onClose={handleCloseImageDialog} maxWidth="md" fullWidth>
+        <DialogTitle sx={{ pb: 1 }}>
+          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Fullscreen color="primary" />
+              <Typography variant="h6" fontWeight="bold">
+                Prescription Image
+              </Typography>
+            </Box>
+            <IconButton onClick={handleCloseImageDialog} size="small">
+              <Close />
+            </IconButton>
+          </Box>
+        </DialogTitle>
+        <DialogContent sx={{ textAlign: "center", p: 2 }}>
+          <img
+            src={selectedImage || "/placeholder.svg"}
+            alt="Prescription Full Size"
+            style={{
+              maxWidth: "100%",
+              maxHeight: "70vh",
+              borderRadius: "8px",
+              border: "2px solid #e0e0e0",
+            }}
+          />
+        </DialogContent>
+        <DialogActions sx={{ px: 3, py: 2 }}>
+          <Button onClick={handleCloseImageDialog} variant="contained" size="small">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Container>
+  )
+}
+
+export default PrescriptionSearching
