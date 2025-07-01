@@ -1,11 +1,14 @@
-import { Grid } from "@mui/material";
+import { Grid, Box } from "@mui/material";
 
 import Breadcrumb from '@components/magic/Breadcrumb/CustomBreadcrumb';
 import CustomTittle from '@components/magic/CustomTittle/CustomTitle';
 
 import PrescriptionSearching from "@components/parent/HealthManagement/PrescriptionSearching";
+import LinkToPrescriptionForm from "@components/parent/HealthManagement/LinkToPrescriptionForm";
+
 import { Base64 } from "js-base64";
 import InstructChooseChild from '@assets/images/instruct_choose_child.png';
+
 
 const Prescription = () => {
 
@@ -15,7 +18,7 @@ const Prescription = () => {
   const userFullName = localStorage.getItem("userFullName");
 
   return (
-    <div style={{ background: "#E6F8F9", height: "100vh", paddingBottom: "50px", paddingTop: "10px" }}>
+    <div style={{ background: "#E6F8F9", height: "100vh", paddingBottom: "50px", paddingTop: "10px", position: "relative" }}>
           <Grid container>
             <Grid item size={{ xs: 6 }}>
               <Breadcrumb breadcrumbPairs={breadcrumbPairs} />
@@ -44,6 +47,9 @@ const Prescription = () => {
               }
             </Grid>
           </Grid>
+          <Box sx={{ position: "fixed", bottom: "20px", right: "30px"}}>
+            <LinkToPrescriptionForm />
+          </Box>
     </div>
   )
 }

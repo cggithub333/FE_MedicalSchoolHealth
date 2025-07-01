@@ -39,7 +39,8 @@ const ManagerDashboardRoutes = () => {
                 {/* integration */}
                 <Route path="integration" element={<ManagerComponentPagePackages.Integration />} />
 
-
+                {/* fallback */}
+                <Route path="*" element={<Navigate to="/manager/dashboard" replace />} />
             </Route>
         </Routes>
     )

@@ -25,7 +25,8 @@ const SchoolNurseDashboardRoutes = () => {
                 <Route path="prescription" element={<SchoolNurseComponentPagePackages.Prescription />} />
                 {/* Add more routes as needed */}
 
-                <Route path="*" element={<Navigate to="dashboard" />} /> {/* Redirect to dashboard for any unknown routes */}
+                {/* fallback */}
+                <Route path="*" element={<Navigate to="/schoolnurse/dashboard" replace />} />
             </Route>
         </Routes>
     );

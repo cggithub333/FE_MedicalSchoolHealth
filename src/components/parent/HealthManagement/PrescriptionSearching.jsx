@@ -47,6 +47,7 @@ import {
   Fullscreen,
 } from "@mui/icons-material"
 
+
 import { FaChildReaching as ChildIcon } from "react-icons/fa6";
 import usePrescriptionByPupil from "@hooks/parent/send-medication/usePrescriptionByPupil";
 
@@ -185,17 +186,19 @@ const PrescriptionSearching = ({ pupil, userFullName }) => {
   return (
     <Container maxWidth="lg" sx={{ py: 3 }}>
       {/* Header */}
-      <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 4 }}>
-        <Avatar sx={{ bgcolor: "primary.main", width: 48, height: 48 }}>
-          <LocalPharmacy />
-        </Avatar>
-        <Box>
-          <Typography variant="h4" fontWeight="bold">
-            Prescription Searching
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            Search and manage medication prescriptions
-          </Typography>
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 2, mb: 4 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <Avatar sx={{ bgcolor: "primary.main", width: 48, height: 48 }}>
+            <LocalPharmacy />
+          </Avatar>
+          <Box>
+            <Typography variant="h4" fontWeight="bold">
+              Prescription Searching
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              Search and manage medication prescriptions
+            </Typography>
+          </Box>
         </Box>
       </Box>
 
