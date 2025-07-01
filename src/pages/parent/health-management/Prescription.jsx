@@ -12,6 +12,8 @@ const Prescription = () => {
   const decodedPupilInfor = Base64.decode(localStorage.getItem("pupilInfor"));
   const pupilObj = JSON.parse(decodedPupilInfor);
 
+  const userFullName = localStorage.getItem("userFullName");
+
   return (
     <div style={{ background: "#E6F8F9", height: "100vh", paddingBottom: "50px", paddingTop: "10px" }}>
           <Grid container>
@@ -36,7 +38,7 @@ const Prescription = () => {
               {
                 pupilObj && pupilObj.pupilId && (
                   <>
-                    <PrescriptionSearching pupil={pupilObj}/>
+                    <PrescriptionSearching pupil={pupilObj} userFullName={userFullName}/>
                   </>
                 )
               }

@@ -48,173 +48,14 @@ import {
 } from "@mui/icons-material"
 
 import { FaChildReaching as ChildIcon } from "react-icons/fa6";
+import usePrescriptionByPupil from "@hooks/parent/send-medication/usePrescriptionByPupil";
 
-// Mock hook - replace with your actual hook
-const useSendMedicationByPupil = (pupilId) => {
-  const [sendMedicationByPupil, setSendMedicationByPupil] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+const PrescriptionSearching = ({ pupil, userFullName }) => {
 
-  const refetch = () => {
-    setLoading(true)
-    setTimeout(() => {
-      setSendMedicationByPupil([
-        {
-          pupilId: "PP0006",
-          sendMedicationId: 12,
-          diseaseName: "Common cold with cough",
-          requestDate: "2025-07-01",
-          startDate: "2025-07-01",
-          endDate: "2025-07-04",
-          senderName: "Anh Quoc",
-          prescriptionImage: "https://anh.24h.com.vn/upload/4-2014/images/2014-10-24/1414124020-toa-thuoc.jpg",
-          note: "My child has a mild cough and sore throat. Please help him take the medicine on time.",
-          confirmDate: null,
-          status: "Pending",
-          medicationList: [
-            {
-              medicationListId: 1,
-              medicationName: "Dextromethorphan",
-              unitMedicationAndUsage: "1 capsule taken by mouth to suppress dry cough",
-              medication_schedule: "After breakfast: 9h00-9h30",
-            },
-            {
-              medicationListId: 2,
-              medicationName: "Guaifenesin",
-              unitMedicationAndUsage: "1 tablet taken to loosen mucus and ease chest congestion",
-              medication_schedule: "After lunch: 11h30-12h00",
-            },
-            {
-              medicationListId: 3,
-              medicationName: "Strepsils lozenges",
-              unitMedicationAndUsage: "1 lozenge dissolved slowly in mouth to soothe throat",
-              medication_schedule: "Before lunch: 10h30-11h00",
-            },
-          ],
-        },
-        {
-          pupilId: "PP0006",
-          sendMedicationId: 33,
-          diseaseName: "Allergic cough",
-          requestDate: "2025-06-28",
-          startDate: "2025-06-29",
-          endDate: "2025-07-01",
-          senderName: "Anh Quoc",
-          prescriptionImage: "https://anh.24h.com.vn/upload/4-2014/images/2014-10-24/1414124020-toa-thuoc.jpg",
-          note: "Child has persistent dry cough due to allergy. Needs antihistamine and cough suppressant.",
-          confirmDate: null,
-          status: "REJECTED",
-          medicationList: [
-            {
-              medicationListId: 1,
-              medicationName: "Diphenhydramine",
-              unitMedicationAndUsage: "1 tablet to relieve allergy symptoms causing cough",
-              medication_schedule: "After breakfast: 9h00-9h30",
-            },
-            {
-              medicationListId: 2,
-              medicationName: "Dextromethorphan",
-              unitMedicationAndUsage: "1 capsule to suppress dry cough",
-              medication_schedule: "After lunch: 11h30-12h00",
-            },
-          ],
-        },
-        {
-          pupilId: "PP0006",
-          sendMedicationId: 23,
-          diseaseName: "Mild cold and throat irritation",
-          requestDate: "2025-07-01",
-          startDate: "2025-07-01",
-          endDate: "2025-07-03",
-          senderName: "Anh Quoc",
-          prescriptionImage: "https://anh.24h.com.vn/upload/4-2014/images/2014-10-24/1414124020-toa-thuoc.jpg",
-          note: "Child has slight cold symptoms, no fever. Needs throat lozenges and warm fluids.",
-          confirmDate: "2025-07-01",
-          status: "APPROVED",
-          medicationList: [
-            {
-              medicationListId: 1,
-              medicationName: "Strepsils lozenges",
-              unitMedicationAndUsage: "1 lozenge every morning to relieve sore throat",
-              medication_schedule: "After breakfast: 9h00-9h30",
-            },
-            {
-              medicationListId: 2,
-              medicationName: "Paracetamol",
-              unitMedicationAndUsage: "1 tablet if child experiences mild discomfort",
-              medication_schedule: "Before lunch: 10h30-11h00",
-            },
-          ],
-        },
-        {
-          pupilId: "PP0006",
-          sendMedicationId: 13,
-          diseaseName: "Wet cough with mucus",
-          requestDate: "2025-06-24",
-          startDate: "2025-06-24",
-          endDate: "2025-06-27",
-          senderName: "Anh Quoc",
-          prescriptionImage: "https://anh.24h.com.vn/upload/4-2014/images/2014-10-24/1414124020-toa-thuoc.jpg",
-          note: "The child had mucus-heavy cough. Please help administer expectorant medicine.",
-          confirmDate: "2025-06-24",
-          status: "COMPLETED",
-          medicationList: [
-            {
-              medicationListId: 1,
-              medicationName: "Guaifenesin syrup",
-              unitMedicationAndUsage: "5ml to help loosen mucus",
-              medication_schedule: "After breakfast: 9h00-9h30",
-            },
-            {
-              medicationListId: 2,
-              medicationName: "Saline nasal spray",
-              unitMedicationAndUsage: "1 spray per nostril to clear airway",
-              medication_schedule: "Before lunch: 10h30-11h00",
-            },
-          ],
-        },
-        {
-          pupilId: "PP0006",
-          sendMedicationId: 28,
-          diseaseName: "Common cold with dry throat",
-          requestDate: "2025-06-20",
-          startDate: "2025-06-21",
-          endDate: "2025-06-24",
-          senderName: "Anh Quoc",
-          prescriptionImage: "https://anh.24h.com.vn/upload/4-2014/images/2014-10-24/1414124020-toa-thuoc.jpg",
-          note: "Just mild cold, no fever. Took honey-based syrup for throat relief.",
-          confirmDate: "2025-06-21",
-          status: "COMPLETED",
-          medicationList: [
-            {
-              medicationListId: 1,
-              medicationName: "Honey syrup",
-              unitMedicationAndUsage: "5ml to soothe dry throat and suppress cough",
-              medication_schedule: "After breakfast: 9h00-9h30",
-            },
-            {
-              medicationListId: 2,
-              medicationName: "Dextromethorphan",
-              unitMedicationAndUsage: "1 capsule in the morning to reduce cough reflex",
-              medication_schedule: "After lunch: 11h30-12h00",
-            },
-          ],
-        },
-      ])
-      setLoading(false)
-    }, 1000)
-  }
+  const { prescriptionArr, loading, error, refetch } = usePrescriptionByPupil(pupil.pupilId)
 
-  useEffect(() => {
-    refetch()
-  }, [pupilId])
-
-  return { sendMedicationByPupil, loading, error, refetch }
-}
-
-const PrescriptionSearching = ({pupil}) => {
-
-  const { sendMedicationByPupil, loading, error, refetch } = useSendMedicationByPupil(pupil.pupilId)
+  // debug:
+  console.log('PrescriptionSearching - prescriptionArr:\n', JSON.stringify(prescriptionArr))
 
   // Search and filter states
   const [searchYear, setSearchYear] = useState("")
@@ -226,12 +67,12 @@ const PrescriptionSearching = ({pupil}) => {
 
   // Filter records based on search criteria
   const filteredRecords = useMemo(() => {
-    return sendMedicationByPupil.filter((record) => {
-      const matchesYear = searchYear === "" || record.requestDate.includes(searchYear)
+    return prescriptionArr.filter((record) => {
+      const matchesYear = searchYear === "" || record.requestedDate.includes(searchYear)
       const matchesStatus = selectedStatus === "ALL" || record.status === selectedStatus
       return matchesYear && matchesStatus
     })
-  }, [sendMedicationByPupil, searchYear, selectedStatus])
+  }, [prescriptionArr, searchYear, selectedStatus])
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -243,7 +84,7 @@ const PrescriptionSearching = ({pupil}) => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "Pending":
+      case "PENDING":
         return "warning"
       case "APPROVED":
         return "success"
@@ -258,7 +99,7 @@ const PrescriptionSearching = ({pupil}) => {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case "Pending":
+      case "PENDING":
         return <Pending />
       case "APPROVED":
         return <CheckCircle />
@@ -434,7 +275,7 @@ const PrescriptionSearching = ({pupil}) => {
               <InputLabel>Status</InputLabel>
               <Select value={selectedStatus} label="Status" onChange={(e) => setSelectedStatus(e.target.value)}>
                 <MenuItem value="ALL">All Status</MenuItem>
-                <MenuItem value="Pending">Pending</MenuItem>
+                <MenuItem value="PENDING">Pending</MenuItem>
                 <MenuItem value="APPROVED">Approved</MenuItem>
                 <MenuItem value="REJECTED">Rejected</MenuItem>
                 <MenuItem value="COMPLETED">Completed</MenuItem>
@@ -458,8 +299,8 @@ const PrescriptionSearching = ({pupil}) => {
 
       {/* Status Summary */}
       <Grid container spacing={2} sx={{ mb: 3 }}>
-        {["Pending", "APPROVED", "REJECTED", "COMPLETED"].map((status) => {
-          const count = sendMedicationByPupil.filter((record) => record.status === status).length
+        {["PENDING", "APPROVED", "REJECTED", "COMPLETED"].map((status) => {
+          const count = prescriptionArr.filter((record) => record.status === status).length
           return (
             <Grid item size={{ xs: 6, md: 3 }} key={status}>
               <Paper sx={{ p: 2, textAlign: "center", bgcolor: `${getStatusColor(status)}.50` }}>
@@ -508,7 +349,7 @@ const PrescriptionSearching = ({pupil}) => {
                 {/* Sender Name Chip in top right */}
                 <Box sx={{ position: "absolute", top: 12, right: 12, zIndex: 1 }}>
                   <Chip
-                    label={record.senderName}
+                    label={userFullName || "Parent"}
                     color="primary"
                     size="small"
                     variant="filled"
@@ -567,7 +408,7 @@ const PrescriptionSearching = ({pupil}) => {
                       size="small"
                     />
                     <Typography variant="body2" color="text.secondary">
-                      {record.medicationList.length} medication(s)
+                      {record.medicationItems.length} medication(s)
                     </Typography>
                   </Box>
                 </CardContent>
@@ -657,7 +498,7 @@ const PrescriptionSearching = ({pupil}) => {
               {/* Medication List */}
               <Paper sx={{ p: 2, mb: 2, bgcolor: "warning.50" }}>
                 <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1, color: "warning.main" }}>
-                  Medications ({selectedRecord.medicationList.length})
+                  Medications ({selectedRecord.medicationItems.length})
                 </Typography>
                 <TableContainer component={Paper} elevation={0} sx={{ maxHeight: 200 }}>
                   <Table size="small">
@@ -676,19 +517,16 @@ const PrescriptionSearching = ({pupil}) => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {selectedRecord.medicationList.map((medication) => (
-                        <TableRow key={medication.medicationListId}>
+                      {selectedRecord.medicationItems.map((medication) => (
+                        <TableRow key={medication.medicationItemsId}>
                           <TableCell>
                             <Typography variant="body2" fontWeight="bold">
                               {medication.medicationName}
                             </Typography>
-                            <Typography variant="caption" color="text.secondary">
-                              {medication.unitMedicationAndUsage}
-                            </Typography>
                           </TableCell>
                           <TableCell>
                             <Typography variant="body2" color="primary.main" fontWeight="bold">
-                              {medication.medication_schedule}
+                              {medication.medicationSchedule}
                             </Typography>
                           </TableCell>
                         </TableRow>
@@ -696,6 +534,28 @@ const PrescriptionSearching = ({pupil}) => {
                     </TableBody>
                   </Table>
                 </TableContainer>
+              </Paper>
+ 
+              {/* Usage and Unit */}
+              <Paper sx={{ p: 2, mb: 2, bgcolor: "warning.50" }}>
+                <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1, color: "warning.main" }}>
+                  Usages & Unit ({selectedRecord.medicationItems.length})
+                </Typography>
+
+                {selectedRecord.medicationItems.map((medication) => {
+
+                  const usage = medication.unitAndUsage || "No usage information available."
+
+                  return (
+                    <Box key={medication.medicationItemsId}>
+                      <Typography fontSize={'15px'} variant="caption" color="text.primary">
+                        <b>+ {medication.medicationName} : </b>
+                        <span>{usage}</span>
+                      </Typography>
+                    </Box>
+                  )
+                })
+                }
               </Paper>
 
               {/* Notes */}
