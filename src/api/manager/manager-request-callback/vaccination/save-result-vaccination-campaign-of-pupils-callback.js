@@ -1,14 +1,14 @@
 import request from "../../../request";
 
-// Save result campaign of pupils
-export const saveResultCampaignOfPupils = async ({ consentFormId, status }) => {
+export const saveResultVaccinationCampaignOfPupils = async ({ consentFormId, status, notes }) => {
     try {
-        const response = await request.post(`consent-forms/${consentFormId}/status`, null, {
-            params: { status }
-        });
-        return response.data; // Return the data from the response
+        const response = await request.patch(
+            `consent-forms/${consentFormId}/status`,
+            { status, notes } // Send as request body, not params
+        );
+        return response.data;
     } catch (error) {
-        console.error("Error in saveResultCampaignOfPupils:", error);
-        throw error; // Rethrow the error for handling in the calling function
+        console.error("Error in saveResultVaccinationCampaignOfPupils:", error);
+        throw error;
     }
-}
+};
