@@ -162,22 +162,23 @@ const PrescriptionSendingForm = () => {
 
       // Image upload logic: If user selected an image but hasn't uploaded it yet, upload it first
       if (selectedFile && !imageUrl) {
-        // Image upload logic: Upload the image and wait for completion
-        await new Promise((resolve, reject) => {
-          handleUpload(); // upload the image to firebase
+        console.log("Starting image upload...");
+        
+        // Image upload logic: Upload the image and get the URL directly
+        try {
+          await handleUpload(); // This should handle the upload and set imageUrl
           
-          // Image upload logic: Wait for upload to complete by checking the uploading state
-          const checkUpload = setInterval(() => {
-            if (!uploading && imageUrl) {
-              finalImageUrl = imageUrl;
-              clearInterval(checkUpload);
-              resolve();
-            } else if (!uploading && uploadError) {
-              clearInterval(checkUpload);
-              reject(new Error(uploadError));
-            }
-          }, 100);
-        });
+          // Wait a bit for the imageUrl state to update
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+          // Use the imageUrl from the hook after upload
+          finalImageUrl = imageUrl;
+          
+          console.log("Image uploaded successfully:", finalImageUrl);
+        } catch (uploadError) {
+          console.error("Image upload failed:", uploadError);
+          throw new Error("Failed to upload image: " + uploadError.message);
+        }
       }
 
       // Image upload logic: Create form data with either uploaded image URL or fallback
@@ -195,16 +196,33 @@ const PrescriptionSendingForm = () => {
         })),
       }
 
-      console.log("Prescription data to be sent:", JSON.stringify(formData, null, 2))
+      console.log("Form data prepared:", formData);
+      alert("Prescription data to be sent: " + JSON.stringify(formData, null, 2))
+
       // Now, send the form data to the server:
+      console.log("Sending data to server...");
       await sendMedication(formData);
       
-      // Show success message
+      console.log("Prescription sent successfully!");
       alert("Prescription sent successfully!");
       
+      // Reset form after successful submission
+      setSelectedPupilId("");
+      setDiseaseName("");
+      setStartDate("");
+      setEndDate("");
+      setNote("");
+      setIsConfirmed(false);
+      setMedicationItems([{
+        medicationName: "",
+        unitAndUsage: "",
+        medicationSchedule: "",
+      }]);
+      handleReset(); // Reset image upload
+    
     } catch (error) {
       console.error("Error sending prescription:", error);
-      alert("Failed to send prescription. Please try again.");
+      alert("Failed to send prescription: " + error.message);
     } finally {
       setSubmitting(false);
     }
