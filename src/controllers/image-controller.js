@@ -1,6 +1,6 @@
 
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { storage } from '@config/firebaseConfig';
+import { storage } from '@config/firebase-config';
 
 // Upload image to Firebase Storage
 export const uploadImageToFirebaseStorage = (file, onProgress, onComplete, onError) => {

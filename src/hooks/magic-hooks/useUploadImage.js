@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { uploadImageToFirebaseStorage } from '@controllers/ImageController';
+import { uploadImageToFirebaseStorage } from '@controllers/image-controller';
 
 const useUploadImage = () => {
   const [selectedFile, setSelectedFile] = useState(null);

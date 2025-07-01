@@ -24,14 +24,31 @@ import {
   Divider,
   Alert,
   IconButton,
+  LinearProgress,
+  CircularProgress,
 } from "@mui/material"
-import { LocalPharmacy, Person, CalendarToday, Note, Add, Delete, AttachFile, Send, MedicationLiquid as MedicationIcon } from "@mui/icons-material"
+import { LocalPharmacy, Person, CalendarToday, Note, Add, Delete, AttachFile, Send, MedicationLiquid as MedicationIcon, CloudUpload, Image as ImageIcon } from "@mui/icons-material"
 
 import usePupils from "@hooks/parent/usePupils"
+import useUploadImage from "@hooks/magic-hooks/useUploadImage"
 
 const PrescriptionSendingForm = () => {
 
   const { pupils, isLoading } = usePupils();
+  const {
+    selectedFile,
+    preview,
+    uploading,
+    uploadProgress,
+    imageUrl,
+    error: uploadError,
+    fileInputRef,
+    handleFileSelect,
+    handleDrop,
+    handleDragOver,
+    handleUpload,
+    handleReset
+  } = useUploadImage();
 
   // Form state
   const [selectedPupilId, setSelectedPupilId] = useState("")
@@ -39,8 +56,8 @@ const PrescriptionSendingForm = () => {
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
   const [note, setNote] = useState("")
-  const [prescriptionImage, setPrescriptionImage] = useState(null)
   const [isConfirmed, setIsConfirmed] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
   const [medicationItems, setMedicationItems] = useState([
     {
       medicationName: "",
@@ -124,33 +141,69 @@ const PrescriptionSendingForm = () => {
     setMedicationItems(newItems)
   }
 
+  // Image upload logic: Handle file selection from file input dialog
   const handleImageAttach = () => {
-    // Empty function as requested - logic to be added later
-    console.log("Image attach functionality to be implemented")
+    fileInputRef.current?.click();
   }
 
-  const handleSendPrescription = () => {
+  // Image upload logic: Enhanced form submission with automatic image upload
+  const handleSendPrescription = async () => {
     if (!validateForm()) {
       return
     }
 
-    const formData = {
-      pupilId: selectedPupilId,
-      diseaseName: diseaseName.trim(),
-      startDate,
-      endDate,
-      prescriptionImage:
-        prescriptionImage || "https://anh.24h.com.vn/upload/4-2014/images/2014-10-24/1414124020-toa-thuoc.jpg",
-      note: note.trim(),
-      medicationItems: medicationItems.map((item) => ({
-        medicationName: item.medicationName.trim(),
-        unitAndUsage: item.unitAndUsage.trim(),
-        medicationSchedule: item.medicationSchedule,
-      })),
-    }
+    setSubmitting(true);
 
-    console.log("Prescription data to be sent:", JSON.stringify(formData, null, 2))
-    // Here you would typically send the data to your server
+    try {
+      let finalImageUrl = imageUrl;
+
+      // Image upload logic: If user selected an image but hasn't uploaded it yet, upload it first
+      if (selectedFile && !imageUrl) {
+        // Image upload logic: Upload the image and wait for completion
+        await new Promise((resolve, reject) => {
+          handleUpload();
+          
+          // Image upload logic: Wait for upload to complete by checking the uploading state
+          const checkUpload = setInterval(() => {
+            if (!uploading && imageUrl) {
+              finalImageUrl = imageUrl;
+              clearInterval(checkUpload);
+              resolve();
+            } else if (!uploading && uploadError) {
+              clearInterval(checkUpload);
+              reject(new Error(uploadError));
+            }
+          }, 100);
+        });
+      }
+
+      // Image upload logic: Create form data with either uploaded image URL or fallback
+      const formData = {
+        pupilId: selectedPupilId,
+        diseaseName: diseaseName.trim(),
+        startDate,
+        endDate,
+        prescriptionImage: finalImageUrl || "https://anh.24h.com.vn/upload/4-2014/images/2014-10-24/1414124020-toa-thuoc.jpg",
+        note: note.trim(),
+        medicationItems: medicationItems.map((item) => ({
+          medicationName: item.medicationName.trim(),
+          unitAndUsage: item.unitAndUsage.trim(),
+          medicationSchedule: item.medicationSchedule,
+        })),
+      }
+
+      console.log("Prescription data to be sent:", JSON.stringify(formData, null, 2))
+      // Here you would typically send the data to your server
+      
+      // Show success message
+      alert("Prescription sent successfully!");
+      
+    } catch (error) {
+      console.error("Error sending prescription:", error);
+      alert("Failed to send prescription. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   const selectedPupil = pupils.find((pupil) => pupil.pupilId === selectedPupilId)
@@ -396,11 +449,137 @@ const PrescriptionSendingForm = () => {
                 Prescription Image
               </Typography>
             </Box>
-            <Button variant="outlined" startIcon={<AttachFile />} onClick={handleImageAttach} color="success">
+
+            {/* Image upload logic: Traditional button for file attachment */}
+            {/* <Button 
+              variant="outlined" 
+              startIcon={<AttachFile />} 
+              onClick={handleImageAttach} 
+              color="success"
+              sx={{ mb: 2 }}
+            >
               Attach Prescription Image
-            </Button>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-              Please attach a clear photo of the prescription from your doctor
+            </Button> */}
+
+            {/* Image upload logic: Hidden file input */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileSelect}
+              accept="image/*"
+              style={{ display: 'none' }}
+            />
+
+            {/* Image upload logic: Drag and drop upload area */}
+            <Box
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              sx={{
+                border: '2px dashed',
+                borderColor: selectedFile ? 'success.main' : 'grey.300',
+                borderRadius: 2,
+                p: 3,
+                textAlign: 'center',
+                cursor: 'pointer',
+                bgcolor: selectedFile ? 'success.50' : 'grey.50',
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  borderColor: 'success.main',
+                  bgcolor: 'success.50'
+                }
+              }}
+              onClick={handleImageAttach}
+            >
+              {preview ? (
+                <Box>
+                  {/* Image upload logic: Show preview of selected image */}
+                  <img
+                    src={preview}
+                    alt="Preview"
+                    style={{
+                      maxWidth: '200px',
+                      maxHeight: '200px',
+                      objectFit: 'contain',
+                      borderRadius: '8px'
+                    }}
+                  />
+                  <Typography variant="body2" sx={{ mt: 1 }}>
+                    {selectedFile?.name}
+                  </Typography>
+                  {/* Image upload logic: Button to remove selected image */}
+                  <Button
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleReset();
+                    }}
+                    sx={{ mt: 1 }}
+                  >
+                    Remove
+                  </Button>
+                </Box>
+              ) : (
+                <Box>
+                  {/* Image upload logic: Default drag and drop UI */}
+                  <CloudUpload sx={{ fontSize: 48, color: 'grey.500', mb: 1 }} />
+                  <Typography variant="h6" gutterBottom>
+                    Drop image here or click to browse
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Supports: JPG, PNG, GIF (Max 10MB)
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+
+            {/* Image upload logic: Show upload progress when uploading */}
+            {uploading && (
+              <Box sx={{ mt: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                  <CircularProgress size={20} />
+                  <Typography variant="body2">Uploading... {uploadProgress}%</Typography>
+                </Box>
+                <LinearProgress variant="determinate" value={uploadProgress} />
+              </Box>
+            )}
+
+            {/* Image upload logic: Show success message when upload completes */}
+            {imageUrl && (
+              <Alert severity="success" sx={{ mt: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <ImageIcon />
+                  <Typography variant="body2">
+                    Image uploaded successfully! Ready to submit.
+                  </Typography>
+                </Box>
+              </Alert>
+            )}
+
+            {/* Image upload logic: Show error message if upload fails */}
+            {uploadError && (
+              <Alert severity="error" sx={{ mt: 2 }}>
+                Upload Error: {uploadError}
+              </Alert>
+            )}
+
+            {/* Image upload logic: Manual upload button for immediate upload */}
+            {/* {selectedFile && !imageUrl && !uploading && (
+              <Box sx={{ mt: 2 }}>
+                <Button
+                  variant="contained"
+                  color="success"
+                  startIcon={<CloudUpload />}
+                  onClick={handleUpload}
+                  fullWidth
+                >
+                  Upload Image Now
+                </Button>
+              </Box>
+            )} */}
+
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+              Please attach a clear photo of the prescription from your doctor. 
+              The image will be uploaded automatically when you submit the form.
             </Typography>
           </Paper>
 
@@ -421,9 +600,9 @@ const PrescriptionSendingForm = () => {
             <Button
               variant="contained"
               size="large"
-              startIcon={<Send />}
+              startIcon={submitting ? <CircularProgress size={20} color="inherit" /> : <Send />}
               onClick={handleSendPrescription}
-              disabled={!isConfirmed}
+              disabled={!isConfirmed || submitting || uploading}
               sx={{
                 px: 4,
                 py: 1.5,
@@ -431,13 +610,14 @@ const PrescriptionSendingForm = () => {
                 fontWeight: "bold",
               }}
             >
-              Send Prescription
+              {submitting ? "Sending..." : uploading ? "Uploading..." : "Send Prescription"}
             </Button>
           </Box>
 
-          {!isConfirmed && (
+          {(!isConfirmed || uploading) && (
             <Alert severity="warning" sx={{ mt: 2 }}>
-              Please confirm that you have read and agreed to the terms before sending the prescription.
+              {!isConfirmed && "Please confirm that you have read and agreed to the terms before sending the prescription."}
+              {uploading && "Please wait for image upload to complete before submitting."}
             </Alert>
           )}
         </CardContent>
