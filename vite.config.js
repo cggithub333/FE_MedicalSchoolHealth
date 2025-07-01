@@ -13,10 +13,11 @@ export default defineConfig({
       '@assets': path.resolve(__dirname, 'src/assets'),
       '@context': path.resolve(__dirname, 'src/context'),
       '@api': path.resolve(__dirname, 'src/api'),
+      '@config': path.resolve(__dirname, 'src/config'),
+      '@controllers': path.resolve(__dirname, 'src/controllers'),
       // '@services': path.resolve(__dirname, 'src/services'),
       // '@constants': path.resolve(__dirname, 'src/constants'),
       // '@styles': path.resolve(__dirname, 'src/styles'),
-      // '@config': path.resolve(__dirname, 'src/config'),
     },
   },
 });
