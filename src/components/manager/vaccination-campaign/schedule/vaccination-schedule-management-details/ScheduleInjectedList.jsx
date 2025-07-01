@@ -25,10 +25,6 @@ import {
     Typography,
     Box,
     Divider,
-    Tabs,
-    Tab,
-    Badge,
-    Slide,
 } from "@mui/material"
 import {
     ArrowBack as ArrowBackIcon,
@@ -45,236 +41,99 @@ import {
 } from "@mui/icons-material"
 import AlertMui from '@mui/material/Alert';
 import InfoIcon from '@mui/icons-material/Info';
-import { useSaveResultOfVaccinationCampaign } from "../../../../../../hooks/schoolnurse/vaccination/vaccination/useSaveResultOfVaccinationCampaign"
-import ScheduleDetails from "../healthcheck-schedule-management-form/ScheduleDetails.jsx"
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogActions from '@mui/material/DialogActions';
-import { useGetAllConsentFormByStatus } from "../../../../../../hooks/schoolnurse/vaccination/vaccination/useGetAllConsentFormByStatus";
+import { useGetAllPupilsApprovedByGrade } from "../../../../../hooks/schoolnurse/vaccination/vaccination/useGetAllPupilsByGrade"
+import { useSaveResultOfVaccinationCampaign } from "../../../../../hooks/schoolnurse/vaccination/vaccination/useSaveResultOfVaccinationCampaign"
 
 const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
-    const injectedResult = useGetAllConsentFormByStatus(campaign.campaignId, "INJECTED");
-    const noShowResult = useGetAllConsentFormByStatus(campaign.campaignId, "NO_SHOW");
-    const notYetResult = useGetAllConsentFormByStatus(campaign.campaignId, "");
-    const allResult = useGetAllConsentFormByStatus(campaign.campaignId, "");
-
-    const isLoading = injectedResult.isLoading || noShowResult.isLoading || allResult.isLoading;
-
-    const [selectedPupil, setSelectedPupil] = useState(null)
+    const { pupils: rawPupils = [], isLoading } = useGetAllPupilsApprovedByGrade(campaign.campaignId)
+    const [students, setStudents] = useState([])
+    const [selectedPupilId, setSelectedPupilId] = useState(null)
     const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" })
     const [animateRows, setAnimateRows] = useState(false)
-    const [savingIndex, setSavingIndex] = useState(null)
-    const [confirmDialog, setConfirmDialog] = useState({ open: false, idx: null, status: null, label: '', notes: '' });
     const { saveResultOfVaccinationCampaign, isSaving } = useSaveResultOfVaccinationCampaign();
-    const [selectedTab, setSelectedTab] = useState(0);
-    // Add missing students state
-    const [students, setStudents] = useState([]);
 
-    // Trigger animations when data loads
+    // Filter pupils by the specific grade from the shift
+    const gradePupils = (Array.isArray(rawPupils) ? rawPupils : []).filter((pupil) => {
+        const pupilGrade = pupil.Grade || pupil.grade || pupil.gradeLevel
+        return Number(pupilGrade) === Number(shift.grade)
+    })
+
+    // Initialize students directly from gradePupils (no setState in useEffect)
     useEffect(() => {
-        if (!isLoading) {
-            setAnimateRows(true);
+        setStudents(
+            gradePupils.map((pupil) => ({
+                pupilId: pupil.pupilId || pupil.id,
+                consentFormId: pupil.consentFormId, // Make sure this is present in your data
+                firstName: pupil.firstName,
+                lastName: pupil.lastName,
+                Grade: pupil.Grade || pupil.grade,
+                avatar: pupil.avatar || `/placeholder.svg?height=40&width=40`,
+                completed: false,
+                time: "",
+                notes: "",
+            }))
+        )
+    }, [JSON.stringify(gradePupils)])
+
+    useEffect(() => {
+        if (students.length > 0) {
+            setTimeout(() => setAnimateRows(true), 200)
         }
-    }, [isLoading]);
+    }, [students])
 
-    const grade = Number(shift.grade);
-
-    // Helper function to extract grade number from various formats
-    const extractGradeNumber = (gradeValue) => {
-        if (!gradeValue) return 0;
-        if (typeof gradeValue === 'number') return gradeValue;
-        if (typeof gradeValue === 'string') {
-            if (gradeValue.startsWith('GRADE_')) {
-                return Number(gradeValue.replace('GRADE_', ''));
-            }
-            const num = Number(gradeValue);
-            return isNaN(num) ? 0 : num;
+    // Save status to DB when toggling completed
+    const handleCheck = async (index) => {
+        const updated = [...students]
+        const student = updated[index]
+        const newStatus = !student.completed
+        updated[index].completed = newStatus
+        if (newStatus) {
+            const now = new Date()
+            const hours = String(now.getHours()).padStart(2, "0")
+            const minutes = String(now.getMinutes()).padStart(2, "0")
+            updated[index].time = `${hours}:${minutes}`
+        } else {
+            updated[index].time = ""
         }
-        return 0;
-    };
-
-    const pupilsByGrade = (allResult.consentForms || []).filter(p => {
-        const pupilGrade = extractGradeNumber(p.gradeLevel || p.grade || p.Grade);
-        return pupilGrade === grade;
-    });
-
-    const injectedByGrade = (injectedResult.consentForms || []).filter(p => {
-        const pupilGrade = extractGradeNumber(p.gradeLevel || p.grade || p.Grade);
-        return pupilGrade === grade;
-    });
-
-    const noShowByGrade = (noShowResult.consentForms || []).filter(p => {
-        const pupilGrade = extractGradeNumber(p.gradeLevel || p.grade || p.Grade);
-        return pupilGrade === grade;
-    });
-
-    // Calculate NOT_YET students (those who are not INJECTED or NO_SHOW)
-    const injectedIds = new Set(injectedByGrade.map(p => p.pupilId));
-    const noShowIds = new Set(noShowByGrade.map(p => p.pupilId));
-    const notYetByGrade = pupilsByGrade.filter(p => !injectedIds.has(p.pupilId) && !noShowIds.has(p.pupilId));
-
-    const statusCounts = {
-        INJECTED: injectedByGrade.length,
-        NO_SHOW: noShowByGrade.length,
-        NOT_YET: notYetByGrade.length,
-    };
-
-    const statusTabs = [
-        { key: "INJECTED", label: "Injected" },
-        { key: "NO_SHOW", label: "No Show" },
-    ]
-
-    const normalize = (p) => {
-        // Parse name from pupilName field (API response shows "Le Van" format)
-        let firstName = '';
-        let lastName = '';
-
-        if (p.firstName && p.lastName) {
-            firstName = p.firstName;
-            lastName = p.lastName;
-        } else if (p.pupilName) {
-            // Based on API response: "pupilName": "Le Van"
-            // Assuming format is "LastName FirstName" or "FirstName LastName"
-            const parts = p.pupilName.trim().split(' ');
-            if (parts.length >= 2) {
-                // Assuming "Le Van" means "Le" is last name, "Van" is first name
-                lastName = parts[0];
-                firstName = parts.slice(1).join(' ');
-            } else {
-                firstName = parts[0] || '';
-            }
+        setStudents(updated)
+        // Save to DB
+        const consentId = student.consentFormId
+        if (!consentId) {
+            setSnackbar({ open: true, message: "Consent Form ID missing!", severity: "error" })
+            return
         }
-
-        const gradeNumber = extractGradeNumber(p.gradeLevel || p.grade || p.Grade);
-
-        return {
-            pupilId: p.pupilId,
-            consentFormId: p.consentFormId,
-            firstName: firstName,
-            lastName: lastName,
-            Grade: gradeNumber,
-            avatar: p.avatar || `/placeholder.svg?height=40&width=40`,
-            completed: p.status === 'INJECTED',
-            time: p.respondedAt ? (new Date(p.respondedAt)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '',
-            notes: p.notes || '',
-            status: p.status || '',
+        const status = newStatus ? "INJECTED" : "NO_SHOW"
+        const success = await saveResultOfVaccinationCampaign(consentId, status)
+        if (success) {
+            setSnackbar({ open: true, message: `Status saved as ${status}.`, severity: "success" })
+        } else {
+            setSnackbar({ open: true, message: "Failed to save status.", severity: "error" })
         }
     }
 
-    let filteredStudents = [];
-    if (selectedTab === 0) filteredStudents = injectedByGrade.map(normalize);
-    else if (selectedTab === 1) filteredStudents = noShowByGrade.map(normalize);
-
-    // Update students state when filteredStudents changes
-    useEffect(() => {
-        setStudents(filteredStudents);
-    }, [selectedTab, injectedResult.consentForms, noShowResult.consentForms, allResult.consentForms]);
-
-    // Progress calculation
-    const total = pupilsByGrade.length;
-    const injectedCount = injectedByGrade.length;
-    const progressPercentage = total > 0 ? (injectedCount / total) * 100 : 0;
-    const remaining = total - injectedCount;
-
-    const handleCheck = (index) => {
-        if (index >= students.length) return;
-
-        const student = students[index];
-        const newStatus = !student.completed ? 'INJECTED' : 'NO_SHOW';
-        setConfirmDialog({
-            open: true,
-            idx: index,
-            status: newStatus,
-            label: newStatus === 'INJECTED'
-                ? `mark ${student.firstName} ${student.lastName} as INJECTED`
-                : `mark ${student.firstName} ${student.lastName} as NO_SHOW`,
-            notes: student.notes || ''
-        });
-    };
-
-    const handleAbsent = (idx) => {
-        if (idx >= students.length) return;
-
-        const student = students[idx];
-        setConfirmDialog({
-            open: true,
-            idx,
-            status: 'NO_SHOW',
-            label: `mark ${student.firstName} ${student.lastName} as NO_SHOW`,
-            notes: student.notes || ''
-        });
-    };
-
-    const handleConfirmSave = async () => {
-        const { idx, status, notes } = confirmDialog;
-        setSavingIndex(idx);
-        setConfirmDialog({ ...confirmDialog, open: false });
-
-        if (idx >= students.length) {
-            setSavingIndex(null);
-            return;
-        }
-
-        const student = students[idx];
-        const consentFormId = student.consentFormId;
-
-        if (!consentFormId) {
-            setSnackbar({ open: true, message: "Consent Form ID missing!", severity: "error" });
-            setSavingIndex(null);
-            return;
-        }
-
-        try {
-            const success = await saveResultOfVaccinationCampaign(consentFormId, status, notes);
-
-            if (success) {
-                // Update local state optimistically
-                const updated = [...students];
-                if (status === 'INJECTED') {
-                    updated[idx].completed = true;
-                    const now = new Date();
-                    const hours = String(now.getHours()).padStart(2, "0");
-                    const minutes = String(now.getMinutes()).padStart(2, "0");
-                    updated[idx].time = `${hours}:${minutes}`;
-                } else {
-                    updated[idx].completed = false;
-                    updated[idx].time = '';
-                }
-                updated[idx].status = status;
-                setStudents(updated);
-
-                setSnackbar({
-                    open: true,
-                    message: `Status saved as ${status} for ${student.firstName} ${student.lastName}.`,
-                    severity: "success"
-                });
-
-                // Refresh data from API to ensure consistency
-                setTimeout(() => {
-                    // The useEffect hooks will automatically refetch data
-                    injectedResult.refetch?.();
-                    noShowResult.refetch?.();
-                    allResult.refetch?.();
-                }, 500);
-            } else {
-                setSnackbar({ open: true, message: "Failed to save status.", severity: "error" });
-            }
-        } catch (error) {
-            console.error("Error saving vaccination result:", error);
-            setSnackbar({ open: true, message: "Error saving status.", severity: "error" });
-        } finally {
-            setSavingIndex(null);
-        }
-    };
-
     const handleNoteChange = (index, newValue) => {
-        if (index >= students.length) return;
+        const updated = [...students]
+        updated[index].notes = newValue
+        setStudents(updated)
+    }
 
-        const updated = [...students];
-        updated[index].notes = newValue;
-        setStudents(updated);
+    const handleMarkAll = () => {
+        const allCompleted = students.every((s) => s.completed)
+        const now = new Date()
+        const hours = String(now.getHours()).padStart(2, "0")
+        const minutes = String(now.getMinutes()).padStart(2, "0")
+        const timeString = `${hours}:${minutes}`
+        const updated = students.map((student) => ({
+            ...student,
+            completed: !allCompleted,
+            time: !allCompleted ? timeString : "",
+        }))
+        setStudents(updated)
+        setSnackbar({
+            open: true,
+            message: allCompleted ? "All students unmarked" : "All students marked as completed",
+            severity: "success",
+        })
     }
 
     const handleExport = () => {
@@ -296,15 +155,15 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
         )
     }
 
-    if (selectedPupil) {
-        return (
-            <ScheduleDetails
-                pupilId={selectedPupil.pupilId}
-                pupilData={selectedPupil}
-                onBack={() => setSelectedPupil(null)}
-            />
-        )
-    }
+    // Progress calculation based on gradePupils (always up-to-date)
+    const total = gradePupils.length
+    const completedCount = gradePupils.filter((pupil) => {
+        const pupilId = pupil.pupilId || pupil.id
+        const student = students.find((s) => s.pupilId === pupilId)
+        return student && student.completed
+    }).length
+    const remaining = total - completedCount
+    const progressPercentage = total > 0 ? (completedCount / total) * 100 : 0
 
     return (
         <div className="schedule-list-root">
@@ -344,6 +203,9 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
                                 </Box>
                             </Box>
                             <Box display="flex" gap={1}>
+                                <Button variant="outlined" startIcon={<SelectAllIcon />} onClick={handleMarkAll} className="action-button">
+                                    {students.every((s) => s.completed) ? "Unmark All" : "Mark All"}
+                                </Button>
                                 <Button variant="outlined" startIcon={<DownloadIcon />} onClick={handleExport} className="action-button">
                                     Export
                                 </Button>
@@ -374,7 +236,7 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
                             <Box display="flex" justifyContent="space-between" mt={1}>
                                 <Chip
                                     icon={<CheckCircleIcon />}
-                                    label={`${injectedCount} Completed`}
+                                    label={`${completedCount} Completed`}
                                     color="success"
                                     variant="outlined"
                                     size="small"
@@ -391,33 +253,6 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
                                 </Typography>
                             </Box>
                         </Box>
-                        <Divider sx={{ my: 2 }} />
-                        {/* Status Tabs UI */}
-                        <Slide direction="down" in timeout={600}>
-                            <Paper sx={{ mb: 2, borderRadius: 2, boxShadow: 1, background: '#f8fafc' }}>
-                                <Tabs
-                                    value={selectedTab}
-                                    onChange={(_, v) => setSelectedTab(v)}
-                                    variant="scrollable"
-                                    scrollButtons="auto"
-                                    sx={{
-                                        '& .MuiTab-root': { fontWeight: 600, textTransform: 'none', fontSize: '1rem' },
-                                        '& .Mui-selected': { background: 'linear-gradient(135deg, #43a047, #66bb6a)', color: 'white', borderRadius: '8px 8px 0 0' },
-                                    }}
-                                >
-                                    {statusTabs.map((tab, idx) => (
-                                        <Tab
-                                            key={tab.key}
-                                            label={
-                                                <Badge badgeContent={statusCounts[tab.key]} color="primary">
-                                                    {tab.label}
-                                                </Badge>
-                                            }
-                                        />
-                                    ))}
-                                </Tabs>
-                            </Paper>
-                        </Slide>
                     </CardContent>
                 </Card>
             </Fade>
@@ -434,10 +269,8 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
                                     <TableCell className="table-header" align="center">
                                         Grade
                                     </TableCell>
-                                    <TableCell className="table-header" align="center">
-                                        Time Completed
-                                    </TableCell>
-                                    {/* <TableCell className="table-header">Notes</TableCell> */}
+
+                                    <TableCell className="table-header">Notes</TableCell>
                                     <TableCell className="table-header" align="center">
                                         Actions
                                     </TableCell>
@@ -458,8 +291,7 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
                                             <TableCell align="center">
                                                 <Checkbox
                                                     checked={student.completed}
-                                                    // Always disabled since NOT_YET tab is removed
-                                                    disabled
+                                                    onChange={() => handleCheck(idx)}
                                                     color="success"
                                                     icon={<CheckCircleOutlineIcon />}
                                                     checkedIcon={<CheckCircleIcon />}
@@ -475,15 +307,15 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
                                                 <Box display="flex" alignItems="center" gap={2}>
                                                     <Avatar
                                                         src={student.avatar}
-                                                        alt={`${student.lastName} ${student.firstName}`}
+                                                        alt={`${student.firstName} ${student.lastName}`}
                                                         sx={{ width: 48, height: 48, border: "2px solid #e3f2fd" }}
                                                     >
-                                                        {student.lastName?.[0]}
                                                         {student.firstName?.[0]}
+                                                        {student.lastName?.[0]}
                                                     </Avatar>
                                                     <Box>
                                                         <Typography variant="subtitle1" fontWeight={600} className="student-name">
-                                                            {student.firstName} {student.lastName}
+                                                            {student.lastName} {student.firstName}
                                                         </Typography>
                                                         <Typography variant="body2" color="text.secondary" className="student-id">
                                                             ID: {student.pupilId}
@@ -499,24 +331,8 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
                                                     size="small"
                                                 />
                                             </TableCell>
-                                            <TableCell align="center">
-                                                {savingIndex === idx ? (
-                                                    <Typography variant="body2" color="primary">Saving...</Typography>
-                                                ) : student.completed ? (
-                                                    <Chip
-                                                        icon={<CheckCircleIcon />}
-                                                        label={student.time}
-                                                        color="success"
-                                                        variant="outlined"
-                                                        size="small"
-                                                    />
-                                                ) : (
-                                                    <Typography variant="body2" color="text.secondary">
-                                                        —
-                                                    </Typography>
-                                                )}
-                                            </TableCell>
-                                            {/* <TableCell>
+
+                                            <TableCell>
                                                 <TextField
                                                     variant="outlined"
                                                     size="small"
@@ -534,13 +350,13 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
                                                         },
                                                     }}
                                                 />
-                                            </TableCell> */}
+                                            </TableCell>
                                             <TableCell align="center">
                                                 <Button
                                                     variant="contained"
                                                     size="small"
                                                     startIcon={<VisibilityIcon />}
-                                                    onClick={() => setSelectedPupil(student)}
+                                                    onClick={() => alert(`Show details for ${student.lastName} ${student.firstName}`)}
                                                     className="details-button"
                                                     sx={{
                                                         background: "linear-gradient(135deg, #43a047, #66bb6a)",
@@ -552,7 +368,6 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
                                                 >
                                                     Details
                                                 </Button>
-                                                {/* Removed Absent button for NOT_YET tab */}
                                             </TableCell>
                                         </TableRow>
                                     </Grow>
@@ -579,18 +394,6 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
                     {snackbar.message}
                 </AlertMui>
             </Snackbar>
-            <Dialog open={confirmDialog.open} onClose={() => setConfirmDialog({ ...confirmDialog, open: false })}>
-                <DialogTitle>Confirm Save</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        Are you sure you want to {confirmDialog.label}?
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setConfirmDialog({ ...confirmDialog, open: false })} color="inherit">Cancel</Button>
-                    <Button onClick={handleConfirmSave} color="primary" variant="contained">Confirm</Button>
-                </DialogActions>
-            </Dialog>
         </div>
     )
 }
