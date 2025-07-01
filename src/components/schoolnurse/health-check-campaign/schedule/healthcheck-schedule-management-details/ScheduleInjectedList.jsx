@@ -316,8 +316,9 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
                                     <TableCell className="table-header" align="center">
                                         Grade
                                     </TableCell>
-
-                                    <TableCell className="table-header">Notes</TableCell>
+                                    <TableCell className="table-header" align="center">
+                                        Time Completed
+                                    </TableCell>
                                     <TableCell className="table-header" align="center">
                                         Actions
                                     </TableCell>
@@ -385,7 +386,7 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
                                                     size="small"
                                                 />
                                             </TableCell>
-                                            {/* <TableCell align="center">
+                                            <TableCell align="center">
                                                 {student.completed ? (
                                                     <Chip
                                                         icon={<CheckCircle />}
@@ -399,26 +400,8 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
                                                         —
                                                     </Typography>
                                                 )}
-                                            </TableCell> */}
-                                            <TableCell>
-                                                <TextField
-                                                    variant="outlined"
-                                                    size="small"
-                                                    value={student.notes}
-                                                    onChange={(e) => handleNoteChange(idx, e.target.value)}
-                                                    placeholder="Add notes..."
-                                                    className="notes-field"
-                                                    fullWidth
-                                                    sx={{
-                                                        "& .MuiOutlinedInput-root": {
-                                                            borderRadius: 2,
-                                                            "&:hover fieldset": {
-                                                                borderColor: "#1976d2",
-                                                            },
-                                                        },
-                                                    }}
-                                                />
                                             </TableCell>
+
                                             <TableCell align="center">
                                                 <Button
                                                     variant="contained"

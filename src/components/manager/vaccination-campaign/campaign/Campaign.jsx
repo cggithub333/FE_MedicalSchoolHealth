@@ -389,21 +389,24 @@ const allCampaign = () => {
                                                     >
                                                         {campaign.titleCampaign}
                                                     </Typography>
-                                                    <IconButton
-                                                        size="small"
-                                                        onClick={(e) => handleMenuClick(e, campaign.campaignId)}
-                                                        sx={{
-                                                            background: "rgba(255,255,255,0.8)",
-                                                            backdropFilter: "blur(10px)",
-                                                            "&:hover": {
-                                                                background: "rgba(255,255,255,0.9)",
-                                                                transform: "scale(1.1)",
-                                                            },
-                                                            transition: "all 0.3s ease",
-                                                        }}
-                                                    >
-                                                        <MoreVertIcon />
-                                                    </IconButton>
+                                                    {/* Only show action menu for COMPLETED campaigns */}
+                                                    {campaign.status === "COMPLETED" && (
+                                                        <IconButton
+                                                            size="small"
+                                                            onClick={(e) => handleMenuClick(e, campaign.campaignId)}
+                                                            sx={{
+                                                                background: "rgba(255,255,255,0.8)",
+                                                                backdropFilter: "blur(10px)",
+                                                                "&:hover": {
+                                                                    background: "rgba(255,255,255,0.9)",
+                                                                    transform: "scale(1.1)",
+                                                                },
+                                                                transition: "all 0.3s ease",
+                                                            }}
+                                                        >
+                                                            <MoreVertIcon />
+                                                        </IconButton>
+                                                    )}
                                                 </Box>
 
                                                 <Chip
@@ -524,36 +527,6 @@ const allCampaign = () => {
                         <VisibilityIcon color="primary" />
                     </ListItemIcon>
                     <ListItemText>View Details</ListItemText>
-                </MenuItem>
-
-                <MenuItem
-                    onClick={() => handleEditCampaign(allCampaigns.find((c) => c.campaignId === menuCampaignId))}
-                    sx={{ borderRadius: 1, mx: 1, my: 0.5 }}
-                >
-                    <ListItemIcon>
-                        <EditIcon color="info" />
-                    </ListItemIcon>
-                    <ListItemText>Edit Campaign</ListItemText>
-                </MenuItem>
-
-                <Divider sx={{ my: 1 }} />
-
-                {/* Status Change Actions */}
-                {menuCampaignId &&
-                    getStatusActions(allCampaigns.find((c) => c.campaignId === menuCampaignId)).map((action) => (
-                        <MenuItem key={action.status} sx={{ borderRadius: 1, mx: 1, my: 0.5 }}>
-                            <ListItemIcon>{action.icon}</ListItemIcon>
-                            <ListItemText>{action.label}</ListItemText>
-                        </MenuItem>
-                    ))}
-
-                <Divider sx={{ my: 1 }} />
-
-                <MenuItem onClick={handleMenuClose} sx={{ borderRadius: 1, mx: 1, my: 0.5, color: "error.main" }}>
-                    <ListItemIcon>
-                        <DeleteIcon color="error" />
-                    </ListItemIcon>
-                    <ListItemText>Delete Campaign</ListItemText>
                 </MenuItem>
             </Menu>
 

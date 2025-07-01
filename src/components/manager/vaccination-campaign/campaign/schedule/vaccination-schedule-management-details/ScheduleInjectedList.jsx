@@ -43,12 +43,11 @@ import AlertMui from '@mui/material/Alert';
 import InfoIcon from '@mui/icons-material/Info';
 import { useGetAllPupilsApprovedByGrade } from "../../../../../hooks/schoolnurse/vaccination/vaccination/useGetAllPupilsByGrade"
 import { useSaveResultOfVaccinationCampaign } from "../../../../../hooks/schoolnurse/vaccination/vaccination/useSaveResultOfVaccinationCampaign"
-import ScheduleDetails from "../healthcheck-schedule-management-form/ScheduleDetails.jsx"
 
 const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
     const { pupils: rawPupils = [], isLoading } = useGetAllPupilsApprovedByGrade(campaign.campaignId)
     const [students, setStudents] = useState([])
-    const [selectedPupil, setSelectedPupil] = useState(null)
+    const [selectedPupilId, setSelectedPupilId] = useState(null)
     const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" })
     const [animateRows, setAnimateRows] = useState(false)
     const { saveResultOfVaccinationCampaign, isSaving } = useSaveResultOfVaccinationCampaign();
@@ -166,16 +165,6 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
     const remaining = total - completedCount
     const progressPercentage = total > 0 ? (completedCount / total) * 100 : 0
 
-    if (selectedPupil) {
-        return (
-            <ScheduleDetails
-                pupilId={selectedPupil.pupilId}
-                pupilData={selectedPupil}
-                onBack={() => setSelectedPupil(null)}
-            />
-        )
-    }
-
     return (
         <div className="schedule-list-root">
             <Fade in={true} timeout={500}>
@@ -280,9 +269,8 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
                                     <TableCell className="table-header" align="center">
                                         Grade
                                     </TableCell>
-                                    <TableCell className="table-header" align="center">
-                                        Time Completed
-                                    </TableCell>
+
+                                    <TableCell className="table-header">Notes</TableCell>
                                     <TableCell className="table-header" align="center">
                                         Actions
                                     </TableCell>
@@ -343,27 +331,32 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
                                                     size="small"
                                                 />
                                             </TableCell>
-                                            <TableCell align="center">
-                                                {student.completed ? (
-                                                    <Chip
-                                                        icon={<CheckCircleIcon />}
-                                                        label={student.time}
-                                                        color="success"
-                                                        variant="outlined"
-                                                        size="small"
-                                                    />
-                                                ) : (
-                                                    <Typography variant="body2" color="text.secondary">
-                                                        —
-                                                    </Typography>
-                                                )}
+
+                                            <TableCell>
+                                                <TextField
+                                                    variant="outlined"
+                                                    size="small"
+                                                    value={student.notes}
+                                                    onChange={(e) => handleNoteChange(idx, e.target.value)}
+                                                    placeholder="Add notes..."
+                                                    className="notes-field"
+                                                    fullWidth
+                                                    sx={{
+                                                        "& .MuiOutlinedInput-root": {
+                                                            borderRadius: 2,
+                                                            "&:hover fieldset": {
+                                                                borderColor: "#1976d2",
+                                                            },
+                                                        },
+                                                    }}
+                                                />
                                             </TableCell>
                                             <TableCell align="center">
                                                 <Button
                                                     variant="contained"
                                                     size="small"
                                                     startIcon={<VisibilityIcon />}
-                                                    onClick={() => setSelectedPupil(student)}
+                                                    onClick={() => alert(`Show details for ${student.lastName} ${student.firstName}`)}
                                                     className="details-button"
                                                     sx={{
                                                         background: "linear-gradient(135deg, #43a047, #66bb6a)",
