@@ -14,6 +14,7 @@ const ParentDashboardRoutes = () => {
         {/* health-management */}
         <Route path={"health-declaration"} element={<ParentComponentPagePackages.HealthDeclaration />} />
         <Route path={"prescription"} element={<ParentComponentPagePackages.Prescription />} />
+        <Route path={"prescription/new-prescription"} element={<ParentComponentPagePackages.NewPrescription />} />
         <Route path={"medical-events"} element={<ParentComponentPagePackages.MedicalEvents />} />
 
         {/* vaccination-campaign */}
