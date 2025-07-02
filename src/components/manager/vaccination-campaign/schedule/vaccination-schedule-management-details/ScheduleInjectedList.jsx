@@ -56,7 +56,7 @@ import { useGetAllConsentFormByStatus } from "../../../../../hooks/schoolnurse/v
 
 const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
     const injectedResult = useGetAllConsentFormByStatus(campaign.campaignId, "INJECTED");
-    const noShowResult = useGetAllConsentFormByStatus(campaign.campaignId, "ABSENT");
+    const noShowResult = useGetAllConsentFormByStatus(campaign.campaignId, "NO_SHOW");
     const notYetResult = useGetAllConsentFormByStatus(campaign.campaignId, "");
     const allResult = useGetAllConsentFormByStatus(campaign.campaignId, "");
 
@@ -110,20 +110,20 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
         return pupilGrade === grade;
     });
 
-    // Calculate NOT_YET students (those who are not INJECTED or ABSENT)
+    // Calculate NOT_YET students (those who are not INJECTED or NO_SHOW)
     const injectedIds = new Set(injectedByGrade.map(p => p.pupilId));
     const noShowIds = new Set(noShowByGrade.map(p => p.pupilId));
     const notYetByGrade = pupilsByGrade.filter(p => !injectedIds.has(p.pupilId) && !noShowIds.has(p.pupilId));
 
     const statusCounts = {
         INJECTED: injectedByGrade.length,
-        ABSENT: noShowByGrade.length,
+        NO_SHOW: noShowByGrade.length,
         NOT_YET: notYetByGrade.length,
     };
 
     const statusTabs = [
         { key: "INJECTED", label: "Injected" },
-        { key: "ABSENT", label: "Absent" },
+        { key: "NO_SHOW", label: "NO_SHOW" },
         { key: "NOT_YET", label: "Not Yet" },
     ]
 
@@ -184,27 +184,27 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
         if (index >= students.length) return;
 
         const student = students[index];
-        const newStatus = !student.completed ? 'INJECTED' : 'ABSENT';
+        const newStatus = !student.completed ? 'INJECTED' : 'NO_SHOW';
         setConfirmDialog({
             open: true,
             idx: index,
             status: newStatus,
             label: newStatus === 'INJECTED'
                 ? `mark ${student.firstName} ${student.lastName} as INJECTED`
-                : `mark ${student.firstName} ${student.lastName} as ABSENT`,
+                : `mark ${student.firstName} ${student.lastName} as NO_SHOW`,
             notes: student.notes || ''
         });
     };
 
-    const handleAbsent = (idx) => {
+    const handleNO_SHOW = (idx) => {
         if (idx >= students.length) return;
 
         const student = students[idx];
         setConfirmDialog({
             open: true,
             idx,
-            status: 'ABSENT',
-            label: `mark ${student.firstName} ${student.lastName} as ABSENT`,
+            status: 'NO_SHOW',
+            label: `mark ${student.firstName} ${student.lastName} as NO_SHOW`,
             notes: student.notes || ''
         });
     };
@@ -309,7 +309,7 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
     }
 
     return (
-        <div className="schedule-list-root">
+        <div>
             <Fade in={true} timeout={500}>
                 <Card className="schedule-list-header" elevation={0}>
                     <CardContent>
@@ -460,7 +460,7 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
                                             <TableCell align="center">
                                                 <Checkbox
                                                     checked={student.completed}
-                                                    // Remove onChange handler so user cannot interact
+                                                    onChange={selectedTab === 2 ? () => handleCheck(idx) : undefined}
                                                     color="success"
                                                     icon={<CheckCircleOutlineIcon />}
                                                     checkedIcon={<CheckCircleIcon />}
@@ -470,7 +470,7 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
                                                             color: "#43a047",
                                                         },
                                                     }}
-                                                    disabled
+                                                    disabled={savingIndex === idx || isSaving || selectedTab !== 2}
                                                 />
                                             </TableCell>
                                             <TableCell>
@@ -554,6 +554,25 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
                                                 >
                                                     Details
                                                 </Button>
+                                                {selectedTab === 2 && (
+                                                    <Button
+                                                        variant="contained"
+                                                        size="small"
+                                                        onClick={() => handleNO_SHOW(idx)}
+                                                        className="details-button"
+                                                        sx={{
+                                                            background: "linear-gradient(135deg,rgb(165, 53, 61),rgb(187, 77, 77))",
+                                                            "&:hover": {
+                                                                background: "linear-gradient(135deg,rgb(168, 69, 69),rgb(142, 54, 54))",
+                                                                transform: "translateY(-1px)",
+                                                            },
+                                                            marginLeft: 3,
+                                                        }}
+                                                        disabled={savingIndex === idx || isSaving}
+                                                    >
+                                                        Absent
+                                                    </Button>
+                                                )}
                                             </TableCell>
                                         </TableRow>
                                     </Grow>

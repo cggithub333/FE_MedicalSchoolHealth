@@ -45,7 +45,7 @@ const statusConfig = {
         color: "#f44336",
         bgColor: "#ffebee",
         icon: ErrorIcon,
-        label: "NONE",
+        label: "DONE",
     },
 }
 
@@ -302,7 +302,7 @@ const VaccinationScheduleForm = () => {
     }
 
     return (
-        <div >
+        <div className="vaccine-schedule-root">
             {/* Quick Navigation Bar */}
 
             <Fade in={!showInjectionList}>
@@ -418,7 +418,7 @@ const VaccinationScheduleForm = () => {
                                                             }}
                                                             startIcon={<VisibilityIcon sx={{ fontSize: 18 }} />}
                                                         >
-                                                            View Details
+                                                            View Students
                                                         </Button>
                                                     </Box>
                                                 </CardContent>

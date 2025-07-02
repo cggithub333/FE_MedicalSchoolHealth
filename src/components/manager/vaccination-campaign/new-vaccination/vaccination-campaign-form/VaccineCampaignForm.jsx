@@ -251,7 +251,21 @@ const VaccineCampaignForm = ({ onSuccess, onCancel }) => {
                     <div className="vaccine-section-title">Schedule</div>
                     <div className="vaccine-row">
                         <Box display="flex" gap={2} width="100%" marginTop={2}>
-
+                            <TextField
+                                className="vaccine-input"
+                                label="Deadline"
+                                type="date"
+                                name="formDeadline"
+                                value={form.formDeadline}
+                                onChange={handleChange}
+                                InputLabelProps={{ shrink: true }}
+                                fullWidth
+                                size="small"
+                                required
+                                error={!!validationErrors.formDeadline}
+                                helperText={validationErrors.formDeadline}
+                                disabled={isCreating}
+                            />
                             <TextField
                                 className="vaccine-input"
                                 label="Start Date"

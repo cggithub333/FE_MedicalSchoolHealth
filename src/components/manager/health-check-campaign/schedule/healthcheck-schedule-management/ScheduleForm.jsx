@@ -41,7 +41,7 @@ const statusConfig = {
         color: "#f44336",
         bgColor: "#ffebee",
         icon: ErrorIcon,
-        label: "NONE",
+        label: "DONE",
     },
 }
 
@@ -425,7 +425,7 @@ const HealthCheckScheduleForm = () => {
                                                             }}
                                                             startIcon={<VisibilityIcon sx={{ fontSize: 18 }} />}
                                                         >
-                                                            View Details
+                                                            View Students
                                                         </Button>
                                                     </Box>
                                                 </CardContent>

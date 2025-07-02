@@ -570,7 +570,7 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
                                                         }}
                                                         disabled={savingIndex === idx || isSaving}
                                                     >
-                                                        NO_SHOW
+                                                        Absent
                                                     </Button>
                                                 )}
                                             </TableCell>
