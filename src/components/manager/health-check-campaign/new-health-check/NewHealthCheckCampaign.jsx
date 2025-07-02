@@ -349,7 +349,7 @@ const NewHealthCheckCampaign = () => {
                     <HealthCheckCampaignForm
                         onSuccess={() => {
                             setCreateFormOpen(false)
-                            window.location.reload()
+                            refetch()
                         }}
                         onCancel={() => setCreateFormOpen(false)}
                     />

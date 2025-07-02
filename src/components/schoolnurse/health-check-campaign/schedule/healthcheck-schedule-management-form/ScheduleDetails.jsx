@@ -191,7 +191,6 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved }) => {
 
     // Handle measurement changes
     const handleMeasurementChange = (diseaseKey, value) => {
-        console.log(`Updating measurement for ${diseaseKey}:`, value)
         setMeasurements((prev) => ({ ...prev, [diseaseKey]: value }))
     }
 
