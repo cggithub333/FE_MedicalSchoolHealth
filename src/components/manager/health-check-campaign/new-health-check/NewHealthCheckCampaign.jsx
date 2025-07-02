@@ -33,8 +33,6 @@ const NewHealthCheckCampaign = () => {
     // Ensure newestCampaign is always an array
     const campaigns = Array.isArray(newestCampaign) ? newestCampaign : []
 
-    // Debug: log all campaign statuses
-    console.log("Campaign statuses:", campaigns.map(c => c.statusHealthCampaign))
 
     // Filter campaigns by status (robust to whitespace/case)
     const pendingCampaigns = campaigns.filter((c) => (c.statusHealthCampaign || "").trim().toUpperCase() === "PENDING")
@@ -76,7 +74,6 @@ const NewHealthCheckCampaign = () => {
             setDialogOpen(false)
             refetch()
         } catch (error) {
-            console.error("Failed to update campaign status:", error)
             alert("Failed to update campaign status")
         }
     }
@@ -349,7 +346,7 @@ const NewHealthCheckCampaign = () => {
                     <HealthCheckCampaignForm
                         onSuccess={() => {
                             setCreateFormOpen(false)
-                            refetch()
+                            window.location.reload()
                         }}
                         onCancel={() => setCreateFormOpen(false)}
                     />

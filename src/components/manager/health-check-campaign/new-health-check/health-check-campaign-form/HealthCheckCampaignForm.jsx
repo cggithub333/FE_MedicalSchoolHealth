@@ -114,13 +114,12 @@ const HealthCheckCampaignForm = ({ onSuccess, onCancel }) => {
             }
         }
 
-        // Check if deadline is before start date
+        // Check if deadline is before or same as start date (allow same day)
         if (formData.deadlineDate && formData.startExaminationDate) {
             const deadlineDate = new Date(formData.deadlineDate)
             const startDate = new Date(formData.startExaminationDate)
-
-            if (deadlineDate >= startDate) {
-                errors.deadlineDate = "Deadline must be before examination start date"
+            if (deadlineDate > startDate) {
+                errors.deadlineDate = "Deadline must be before or same as examination start date"
             }
         }
 
@@ -128,16 +127,15 @@ const HealthCheckCampaignForm = ({ onSuccess, onCancel }) => {
         return Object.keys(errors).length === 0
     }
 
-    // Update formatDateForAPI to output 'YYYY-MM-DDTHH:mm:ss' (no milliseconds, no Z)
+    // Update formatDateForAPI to output UTC ISO string with 'Z' for date-times
     const formatDateForAPI = (dateString, withTime = false) => {
         if (!dateString) return "";
         const date = new Date(dateString);
         if (withTime) {
-            // YYYY-MM-DDTHH:mm:ss
-            const pad = n => n.toString().padStart(2, '0');
-            return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+            // Use UTC ISO string (YYYY-MM-DDTHH:mm:ss.sssZ)
+            return date.toISOString();
         }
-        // Only date
+        // Only date (YYYY-MM-DD)
         return dateString;
     }
 
@@ -164,8 +162,8 @@ const HealthCheckCampaignForm = ({ onSuccess, onCancel }) => {
                 endExaminationDate: formatDateForAPI(formData.endExaminationDate, true),
                 diseaseIds,
             }
-            console.log('Submitting campaignData:', campaignData);
-            // await createNewCampaign(campaignData)
+
+            await createNewCampaign(campaignData)
 
             setFormData({
                 title: "",

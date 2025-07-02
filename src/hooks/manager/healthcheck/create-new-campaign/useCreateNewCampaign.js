@@ -10,6 +10,7 @@ const useCreateNewCampaign = () => {
         setError(null)
         try {
             const response = await createNewCampaignAction(campaignData)
+            console.log("New campaign created successfully:", response)
             return response
         } catch (error) {
             console.error("Failed to create new campaign:", error)
