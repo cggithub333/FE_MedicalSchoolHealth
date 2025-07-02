@@ -418,7 +418,7 @@ const VaccinationScheduleForm = () => {
                                                             }}
                                                             startIcon={<VisibilityIcon sx={{ fontSize: 18 }} />}
                                                         >
-                                                            View Students
+                                                            View Details
                                                         </Button>
                                                     </Box>
                                                 </CardContent>
