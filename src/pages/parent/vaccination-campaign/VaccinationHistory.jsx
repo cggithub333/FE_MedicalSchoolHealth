@@ -1,57 +1,51 @@
 
-import Breadcrumb from '../../../components/magic/Breadcrumb/CustomBreadcrumb';
-import CustomTittle from '../../../components/magic/CustomTittle/CustomTitle';
+import Breadcrumb from '@components/magic/Breadcrumb/CustomBreadcrumb';
+import CustomTittle from '@components/magic/CustomTittle/CustomTitle';
 
 import { Grid } from '@mui/material';
-import DiseaseBoxList from '../../../components/parent/VaccinationCampaign/CampaignHistory/DiseaseBoxList';
+import InstructChooseChildImg from '@assets/images/instruct_choose_child.png';
 
-import InstructChooseChildImg from '../../../assets/images/instruct_choose_child.png';
-import { useEffect, useState } from 'react';
-
-import useHealthCheckHistoryByPupilId from '../../../hooks/parent/useHealthCheckHistoryByPupilId.js';
+import { Base64 } from 'js-base64';
+import VaccinationHistoryDisplayer from '@components/parent/VaccinationCampaign/CampaignHistory/VaccinationHistoryDisplayer';
 
 const VaccinationHistory = () => {
 
-  const [storedPupilId, setStoredPupilId] = useState(null);
-  const [storedPupilName, setStoredPupilName] = useState(null);
-
-  useEffect(() => {
-    const storedPupilId = localStorage.getItem('pupilId');
-    const storedPupilName = localStorage.getItem('pupilName');
-    setStoredPupilId(storedPupilId);
-    setStoredPupilName(storedPupilName);
-  }, []);
+  // get pupilInfor from localStorage:
+  const decodedPupilInfor = Base64.decode(localStorage.getItem("pupilInfor"));
+  const pupilObj = JSON.parse(decodedPupilInfor);
 
   return (
     <div style={{ background: "#e6f8f9", height: "100vh", paddingTop: "20px", paddingBottom: "100px" }}>
       <Grid container>
-        <Grid item size={{ xs: 6 }}>
+        <Grid size={{ xs: 6 }}>
           <Breadcrumb breadcrumbPairs={breadcrumbPairs} />
         </Grid>
       </Grid>
       <Grid container>
-        <Grid item sx={{ marginLeft: "20px", marginTop: "25px" }} size={{ xs: 6 }}>
+        <Grid sx={{ marginLeft: "20px", marginTop: "25px" }} size={{ xs: 6 }}>
           <CustomTittle title={"Vaccination History"} />
         </Grid>
       </Grid>
-      {(storedPupilId == null || storedPupilName == null) ?
-        (
-          <div style={styleNotificationMssg}>
-            <div>Choose your child first!</div>
-            <div style={{ width: "80%", height: "auto" }}>
-              <img style={{ width: "100%", height: "100%" }} src={InstructChooseChildImg} alt={"instruction for choosing child"} />
-            </div>
-          </div>
-        )
-        :
-        (<Grid container justifyContent={'center'} sx={{ width: "100%", marginTop: "30px" }}>
-          <Grid size={{ sx: 1 }}></Grid>
-          <Grid size={{ sx: 8 }}>
-            <DiseaseBoxList />
-          </Grid>
-          <Grid size={{ sx: 1 }}></Grid>
-        </Grid>)
-      }
+      <Grid container backgroundColor={"#e6f8f9"} justifyContent={"center"} alignItems={"center"}>
+        {
+          pupilObj != null ? (
+            <Grid size={{ xs: 10 }} sx={{ marginTop: "50px", marginBottom: "50px" }}>
+              <VaccinationHistoryDisplayer pupilObj={pupilObj}/>
+            </Grid>
+          )
+          :
+          (
+            <Grid size={{ xs: 10}} sx={{ marginTop: "50px", marginBottom: "50px"}}>
+                <div style={styleNotificationMssg}>
+                  <img src={InstructChooseChildImg} alt="Choose Child" width={'100%'} height={'100%'} />
+                  <span>
+                    Please select a child to view their vaccination history.
+                  </span>
+                </div>
+            </Grid>
+          )
+        }
+      </Grid>
     </div>
   );
 }

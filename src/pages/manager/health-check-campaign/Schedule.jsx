@@ -2,9 +2,9 @@ import HealthCheckScheduleForm from '../../../components/manager/health-check-ca
 const Schedule = () => {
 
   return (
-    <>
+    <div>
       <HealthCheckScheduleForm />
-    </>
+    </div>
   );
 }
 

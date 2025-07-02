@@ -25,6 +25,8 @@ const AdminDashboardRoutes = () => {
         </Route>
         <Route path="integration" element={<AdminComponentPagePackages.Integration/>}/>
         
+        {/* fallback */}
+        <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
       </Route>
     </Routes>
   )

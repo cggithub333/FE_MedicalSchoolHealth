@@ -80,11 +80,6 @@ const NavbarData = [
         icon: <CampaignsIcon />,
       },
       {
-        segment: 'schedule',
-        title: 'Schedule',
-        icon: <ScheduleIcon />,
-      },
-      {
         segment: 'surveys',
         title: 'Surveys',
         icon: <SurveyIcon />,
@@ -107,11 +102,6 @@ const NavbarData = [
         icon: <CampaignsIcon />,
       },
       {
-        segment: 'schedule',
-        title: 'Schedule',
-        icon: <ScheduleIcon />,
-      },
-      {
         segment: 'surveys',
         title: 'Surveys',
         icon: <SurveyIcon />,
@@ -123,6 +113,11 @@ const NavbarData = [
       },
     ],
   },
+  {
+    segment: 'parent/campaign-schedule',
+    title: 'Campaign Schedule',
+    icon: <ScheduleIcon />
+  }
 ];
 
 export default NavbarData;

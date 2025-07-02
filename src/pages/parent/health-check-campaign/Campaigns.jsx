@@ -5,11 +5,7 @@ import HealthCheckCampaignCard from '../../../components/parent/HealthCheckCampa
 import Breadcrumb from '../../../components/magic/Breadcrumb/CustomBreadcrumb';
 import CustomTittle from '../../../components/magic/CustomTittle/CustomTitle';
 
-import useLatestHealthCheckCampaign from '../../../hooks/parent/useLatestHealthCheckCampaign';
-
 const Campaigns = () => {
-
-  const { latestHealthCheckCampaign, isLoading } = useLatestHealthCheckCampaign();
 
   return (
     <div style={{ background: "#e6f8f9", height: "100vh", paddingTop: "20px", paddingBottom: "50px"}}>
@@ -23,28 +19,11 @@ const Campaigns = () => {
           <CustomTittle title={"Health Check Campaign"}/>
         </Grid>
       </Grid>
-      {
-        latestHealthCheckCampaign ? 
-          (
-            <Grid container justifyContent={'center'} sx={styleCardWrapper}>
-              <Grid item sx={{ xs: 12 }}>
-                <HealthCheckCampaignCard  latestHealthCheckCampaign={latestHealthCheckCampaign}
-                                          isLoading={isLoading}
-                />
-              </Grid>
-            </Grid>
-          )
-          :
-          (
-            <div style={{
-              display: 'flex',
-              justifyContent: 'center',
-              marginTop: "30px",
-              fontSize: "20px",
-              fontStyle: "italic"
-            }}>There is no ongoing health check campaign!</div>
-          )
-      }
+      <Grid container backgroundColor={"#e6f8f9"} justifyContent={"center"} mt={'50px'} pb={'100px'}>
+        <Grid item size={{ xs: 10}}>
+          <HealthCheckCampaignCard />
+        </Grid>
+      </Grid>
     </div>
   )
 }
@@ -59,10 +38,4 @@ const breadcrumbPairs = [
     // link: '/parent/vaccination-campaign/campaigns'
   }
 ]
-
-const styleCardWrapper = {
-  marginTop: "30px",
-  marginBottom: "100px"
-}
-
 export default Campaigns;

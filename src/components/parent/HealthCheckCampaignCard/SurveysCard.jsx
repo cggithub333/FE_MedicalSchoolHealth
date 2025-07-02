@@ -54,7 +54,7 @@ const ExpandMore = styled((props) => {
 
 export default function SurveysCard({ survey }) {
   const [expanded, setExpanded] = React.useState(false);
-  const diseaseList = survey.healthCheckDisease || [];
+  const diseaseList = survey?.healthCheckDisease || [];
   const [checkedStates, setCheckedStates] = React.useState(
     diseaseList.map(disease => ({
       diseaseId: disease.diseaseId,
@@ -167,7 +167,7 @@ export default function SurveysCard({ survey }) {
           <ListItemIcon />
           <span>
             We need your confirmation for an upcomming health check campaign
-            {survey.healthCheckCampaignAddress && <span>at {survey.healthCheckCampaignAddress}</span>}.
+            {survey?.healthCheckCampaignAddress && <span>at {survey?.healthCheckCampaignAddress}</span>}.
           </span>
         </Typography>
         <br />
@@ -180,7 +180,7 @@ export default function SurveysCard({ survey }) {
         <Alert
           sx={styleWarningMsg}
           severity="warning"
-        >Form Deadline: {survey.deadlineDate}</Alert>
+        >Form Deadline: {survey?.deadlineDate}</Alert>
       </CardContent>
       <CardActions disableSpacing>
         {/* <IconButton aria-label="add to favorites">
@@ -224,19 +224,19 @@ export default function SurveysCard({ survey }) {
               <TableBody>
                 <TableRow>
                   <TableCell>Address</TableCell>
-                  <TableCell>{survey.healthCheckCampaignAddress}</TableCell>
+                  <TableCell>{survey?.healthCheckCampaignAddress}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>From date</TableCell>
-                  <TableCell>{formatDateToDDMMYYYY(survey.startExaminationDate)}</TableCell>
+                  <TableCell>{formatDateToDDMMYYYY(survey?.startExaminationDate)}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>To date</TableCell>
-                  <TableCell>{formatDateToDDMMYYYY(survey.endExaminationDate)}</TableCell>
+                  <TableCell>{formatDateToDDMMYYYY(survey?.endExaminationDate)}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>School year</TableCell>
-                  <TableCell>{survey.schoolYear}</TableCell>
+                  <TableCell>{survey?.schoolYear}</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -244,7 +244,7 @@ export default function SurveysCard({ survey }) {
 
           {/* Confirmation infromation */}
           {
-            survey.healthCheckDisease && (
+            survey?.healthCheckDisease && (
               <>
                 <Typography sx={styleTitleDetail}>Disease Confirmation</Typography>
                 <Typography sx={{ display: "flex", gap: "6px", alignItems: "center", marginLeft: "10px", color: "yellow", marginBottom: "15px" }}>

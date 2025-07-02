@@ -4,7 +4,7 @@ import Request from '../../request';
 // health check campaign:
 export const getLatestHealthCheckCampaign = async () => {
 
-  return Request.get('latest_campaign');
+  return Request.get('management/health-check-campaigns/latest');
 }
 
 // send request for changes in Survey's sensitive disease:
@@ -40,11 +40,6 @@ export const getLatestVaccinationCampaign = async () => {
 
 export const editVaccinationConsentFormStatus = async (consentFormId, status) => {
   return Request.patch(`vaccination_survey_by_parentId/${consentFormId}`,
-    { status: status },
-    {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }
+    { status: status }
   );
 }

@@ -7,13 +7,14 @@ import useSurveyByPupilId from '../../../hooks/parent/useSurveyByPupilId';
 import chooseChildImg from '../../../assets/images/instruct_choose_child.png';
 
 import SurveysCard from '../../../components/parent/HealthCheckCampaignCard/SurveysCard';
+import CircularLoading from '../../../components/magic/CircularLoading/CircularLoading';
 
 const Surveys = () => {
 
   const { survey, isLoading, chooseChild } = useSurveyByPupilId();
 
   return (
-    <>
+    <div style={{ background: "#e6f8f9", width: "100%", height: "100vh" }}>
       <Grid container>
         <Grid item size={{ xs: 6 }}>
           <Breadcrumbs breadcrumbPairs={breadcrumbPairs}/>
@@ -35,35 +36,26 @@ const Surveys = () => {
         )
       }
       {
-        (chooseChild && isLoading) && (
-          <div style={styleNotificationMssg}>
-            Loading surveys ...
-          </div>
+        chooseChild && (
+          <>
+            {isLoading && (<div style={styleNotificationMssg}>
+                              <CircularLoading message={"Loading surveys ..."} />
+                          </div>)}
+            {!isLoading && !survey && (
+              <div style={styleNotificationMssg}  >
+                There is no ongoing Survey for health check campaign
+                {(localStorage.getItem('pupilName')) && (
+                  <span>(Pupil: `{localStorage.getItem('pupilName')}`)</span>
+                )}
+              </div>
+            )}
+            {survey && <div style={styleNotificationMssg}>
+                          <SurveysCard survey={survey} />
+                      </div> }
+          </>
         )
       }
-      { 
-        // has survey or not;
-        !survey ? 
-          ( 
-            <div style={styleNotificationMssg}  >
-              There is no ongoing Survey for health check campaign
-              { (localStorage.getItem('pupilName')) && (
-                <span>(Pupil: `{localStorage.getItem('pupilName')}`)</span>
-              )}
-            </div>
-          ) 
-          : 
-          (
-            <div style={styleNotificationMssg}>
-              <SurveysCard survey={survey}/>
-            </div>
-          )
-      }
-
-      <Grid container>
-        
-      </Grid>
-    </>
+    </div>
   )
 }
 

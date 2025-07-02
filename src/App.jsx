@@ -8,43 +8,60 @@ import AdminDashboardRoutes from "./components/admin/Dashboard/AdminDashboardRou
 import ManagerDashboardRoutes from "./components/manager/Dashboard/ManagerDashboardRoutes";
 import SchoolNurseDashboardRoutes from "./components/schoolnurse/Dashboard/SchoolNurseDashboardRoutes";
 import ParentDashboardRoutes from "./components/parent/Dashboard/ParentDashboardRoutes";
-import BuildingImage from './assets/images/building_worker.jpg';
 import Homepage from './components/homepage-resources/Homepage';
 
 
+// toastify config:
+import { ToastContainer, Bounce } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { getPayloadResources } from './utils/jwt-utils';
 import { isContained } from './utils/string-utils';
-
 
 function App() {
 
     const RouteProtecter = protecter();
 
     return (
-        <Router>
-            <Routes>
-                <Route path="/homepage" element={<Homepage />} />
-                <Route element={<RouteProtecter.forAll />}>
+        <>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+                transition={Bounce}
+            />
+            <Router>
+                <Routes>
+                    <Route path="/homepage" element={<Homepage />} />
+                    <Route element={<RouteProtecter.forAll />}>
 
-                    <Route path="/admin/*" element={<RouteProtecter.forAdmin>
-                        <AdminDashboardRoutes />
-                    </RouteProtecter.forAdmin>} />
+                        <Route path="/admin/*" element={<RouteProtecter.forAdmin>
+                            <AdminDashboardRoutes />
+                        </RouteProtecter.forAdmin>} />
 
-                    <Route path="/manager/*" element={<RouteProtecter.forManager>
-                        <ManagerDashboardRoutes />
-                    </RouteProtecter.forManager>} />
+                        <Route path="/manager/*" element={<RouteProtecter.forManager>
+                            <ManagerDashboardRoutes />
+                        </RouteProtecter.forManager>} />
 
-                    <Route path="/schoolnurse/*" element={<RouteProtecter.forSchoolNurse>
-                        <SchoolNurseDashboardRoutes />
-                    </RouteProtecter.forSchoolNurse>} />
+                        <Route path="/schoolnurse/*" element={<RouteProtecter.forSchoolNurse>
+                            <SchoolNurseDashboardRoutes />
+                        </RouteProtecter.forSchoolNurse>} />
 
-                    <Route path="/parent/*" element={<RouteProtecter.forParent>
-                        <ParentDashboardRoutes />
-                    </RouteProtecter.forParent>} />
-                </Route>
-                <Route path="/*" element={<Navigate to={"/homepage"} />} />
-            </Routes>
-        </Router>
+                        <Route path="/parent/*" element={<RouteProtecter.forParent>
+                            <ParentDashboardRoutes />
+                        </RouteProtecter.forParent>} />
+                    </Route>
+                    <Route path="/*" element={<Navigate to={"/homepage"} />} />
+                </Routes>
+            </Router>
+        </>
     );
 }
 
@@ -69,6 +86,13 @@ const protecter = () => {
             return <Navigate to={"/homepage"} replace />;
         }
 
+        // remove localStorage infor in case session's expired and user didn't enter the 'log out' button:
+        if (currentSeconds >= exp) {
+            localStorage.clear();
+            localStorage.setItem('toopad-mode', 'light');
+        }
+
+
         if (role != "ADMIN" || currentSeconds >= exp || !isContained(userId, adminPrefix)) {
             return <Navigate to={"/homepage"} replace />;
         }
@@ -83,6 +107,13 @@ const protecter = () => {
         if (error) {
             return <Navigate to={"/homepage"} replace />;
         }
+
+        // remove localStorage infor in case session's expired and user didn't enter the 'log out' button:
+        if (currentSeconds >= exp) {
+            localStorage.clear();
+            localStorage.setItem('toopad-mode', 'light');
+        }
+
         if (role !== "PARENT" || currentSeconds >= exp || !isContained(userId, parentPrefix)) {
             return <Navigate to={"/homepage"} replace />
         }
@@ -96,6 +127,13 @@ const protecter = () => {
         if (error) {
             return <Navigate to={"/homepage"} replace />;
         }
+
+        // remove localStorage infor in case session's expired and user didn't enter the 'log out' button:
+        if (currentSeconds >= exp) {
+            localStorage.clear();
+            localStorage.setItem('toopad-mode', 'light');
+        }
+
         if (role !== "SCHOOL_NURSE" || currentSeconds >= exp || !isContained(userId, schoolNursePrefix)) {
             return <Navigate to={"/homepage"} replace />
         }
@@ -109,6 +147,13 @@ const protecter = () => {
         if (error) {
             return <Navigate to={"/homepage"} replace />;
         }
+
+        // remove localStorage infor in case session's expired and user didn't enter the 'log out' button:
+        if (currentSeconds >= exp) {
+            localStorage.clear();
+            localStorage.setItem('toopad-mode', 'light');
+        }
+
         if (role !== "MANAGER" || currentSeconds >= exp || !isContained(userId, managerPrefix)) {
             return <Navigate to={"/homepage"} replace />
         }
