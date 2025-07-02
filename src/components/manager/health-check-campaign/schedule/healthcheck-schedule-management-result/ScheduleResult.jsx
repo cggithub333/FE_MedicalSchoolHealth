@@ -40,7 +40,7 @@ import {
     LocalHospital,
     SelfImprovement,
 } from "@mui/icons-material"
-import { useGetDetailsOfCampaignByID } from "../../../../../../hooks/manager/healthcheck/campaign/useGetDetaisOfCampaignByID"
+import { useGetDetailsOfCampaignByID } from "../../../../../hooks/manager/healthcheck/campaign/useGetDetaisOfCampaignByID"
 import { useNavigate } from "react-router-dom"
 
 // Health check fields matching healthCheckHistoryRes keys
@@ -83,7 +83,7 @@ const categoryConfig = {
     medical: { name: "General Examination", icon: MedicalServices, color: "#009688" },
 }
 
-const ScheduleDetails = ({ consentFormId, pupilData, onBack }) => {
+const ScheduleResult = ({ consentFormId, pupilData, onBack }) => {
     const navigate = useNavigate();
     const campaignId = pupilData?.campaignId || pupilData?.campaignID || pupilData?.campaign_id;
     const { campaignDetails, isLoading } = useGetDetailsOfCampaignByID(campaignId);
@@ -330,4 +330,4 @@ const ScheduleDetails = ({ consentFormId, pupilData, onBack }) => {
     )
 }
 
-export default ScheduleDetails
+export default ScheduleResult

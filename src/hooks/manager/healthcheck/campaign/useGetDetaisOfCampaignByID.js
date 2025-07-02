@@ -7,7 +7,6 @@ export const useGetDetailsOfCampaignByID = (campaignId) => {
     const [error, setError] = useState(null);
 
     const fetchCampaignDetails = async () => {
-        console.log("HOOK: Starting fetch for campaign ID:", campaignId);
 
         if (!campaignId) {
             console.warn("HOOK: No campaign ID provided");
@@ -20,7 +19,6 @@ export const useGetDetailsOfCampaignByID = (campaignId) => {
             setError(null);
 
             const details = await getDetailsOfHealthCheckCampaignAction(campaignId);
-            console.log("HOOK: Campaign details received:", details);
 
             // Check if details is the expected structure
             if (!details) {
@@ -39,7 +37,6 @@ export const useGetDetailsOfCampaignByID = (campaignId) => {
     };
 
     useEffect(() => {
-        console.log("HOOK: useEffect triggered with campaignId:", campaignId);
         if (campaignId) {
             fetchCampaignDetails();
         } else {

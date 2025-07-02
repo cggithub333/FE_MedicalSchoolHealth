@@ -1,24 +1,18 @@
 import { useState, useEffect } from "react"
-import "./StyleScheduleDetails.scss"
 import {
     Card,
     CardContent,
     Typography,
     TextField,
     Button,
-    Checkbox,
-    FormControlLabel,
     Box,
     Chip,
-    IconButton,
     Accordion,
     AccordionSummary,
     AccordionDetails,
     Grid,
-    InputAdornment,
     Snackbar,
     Alert,
-    LinearProgress,
     Fade,
     Grow,
     Paper,
@@ -27,7 +21,6 @@ import {
     ArrowBack,
     ExpandMore,
     Save,
-    CheckCircle,
     Warning,
     Height,
     RemoveRedEye,
@@ -38,36 +31,28 @@ import {
     Person,
     Assignment,
 } from "@mui/icons-material"
-import { useSaveResultOfHealthCheckCampaign } from "../../../../../hooks/schoolnurse/healthcheck/schedule/useSaveResultOfHealthCheckCampaign"
-import { useNavigate } from "react-router-dom"
 
-// Frontend disease categories - this is the comprehensive list for health checks
 const HEALTH_CHECK_DISEASES = [
-    { disease_id: 1, name: "Chiều cao", category: "physical" },
-    { disease_id: 2, name: "Cân nặng", category: "physical" },
-    { disease_id: 3, name: "BMI", category: "physical" },
-    { disease_id: 4, name: "Thị lực mắt phải", category: "vision" },
-    { disease_id: 5, name: "Thị lực mắt trái", category: "vision" },
-    { disease_id: 6, name: "Nghe", category: "hearing" },
-    { disease_id: 7, name: "Tai mũi họng", category: "hearing" },
-    { disease_id: 8, name: "Răng sâu", category: "dental" },
-    { disease_id: 9, name: "Viêm lợi", category: "dental" },
-    { disease_id: 10, name: "Vệ sinh răng miệng", category: "dental" },
-    { disease_id: 11, name: "Bệnh ngoài da", category: "skin" },
-    { disease_id: 12, name: "Nhiễm trùng", category: "skin" },
-    { disease_id: 13, name: "Ghẻ chàm", category: "skin" },
-    { disease_id: 14, name: "Nhịp tim", category: "cardiovascular" },
-    { disease_id: 15, name: "Nhịp thở", category: "cardiovascular" },
-    { disease_id: 16, name: "Âm phổi", category: "cardiovascular" },
-    { disease_id: 17, name: "Bệnh tim bẩm sinh", category: "cardiovascular" },
-    { disease_id: 18, name: "Tiền sử bệnh lý", category: "medical" },
-    { disease_id: 19, name: "Quan sát cơ quan sinh dục ngoài", category: "reproductive" },
-    { disease_id: 20, name: "Vệ sinh cơ quan sinh dục", category: "reproductive" },
-    { disease_id: 21, name: "Dị tật bẩm sinh cơ quan sinh dục", category: "reproductive" },
+    { field: "height", name: "Height", type: "number", category: "physical" },
+    { field: "weight", name: "Weight", type: "number", category: "physical" },
+    { field: "rightEyeVision", name: "Right Eye Vision", type: "string", category: "vision" },
+    { field: "leftEyeVision", name: "Left Eye Vision", type: "string", category: "vision" },
+    { field: "bloodPressure", name: "Blood Pressure", type: "string", category: "cardiovascular" },
+    { field: "heartRate", name: "Heart Rate", type: "number", category: "cardiovascular" },
+    { field: "hearAnuscultaion", name: "Lung Auscultation", type: "string", category: "cardiovascular" },
+    { field: "lungs", name: "Lungs", type: "string", category: "cardiovascular" },
+    { field: "dentalCheck", name: "Dental Check", type: "string", category: "dental" },
+    { field: "earCondition", name: "Ear Condition", type: "string", category: "hearing" },
+    { field: "noseCondition", name: "Nose Condition", type: "string", category: "hearing" },
+    { field: "throatCondition", name: "Throat Condition", type: "string", category: "hearing" },
+    { field: "skinAndMucosa", name: "Skin and Mucosa", type: "string", category: "skin" },
+    { field: "digestiveSystem", name: "Digestive System", type: "string", category: "medical" },
+    { field: "urinarySystem", name: "Urinary System", type: "string", category: "medical" },
+    { field: "musculoskeletalSystem", name: "Musculoskeletal System", type: "string", category: "medical" },
+    { field: "neurologyAndPsychiatry", name: "Neurology and Psychiatry", type: "string", category: "medical" },
 ]
 
-const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
-    const navigate = useNavigate();
+const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved }) => {
     const [healthData, setHealthData] = useState({})
     const [notes, setNotes] = useState({})
     const [measurements, setMeasurements] = useState({})
@@ -83,12 +68,10 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
         reproductive: false,
         medical: false,
     })
-    const { saveResultOfHealthCheckCampaign, isSaving } = useSaveResultOfHealthCheckCampaign();
-    const [status, setStatus] = useState(null); // "COMPLETED" or "ABSENT"
 
-    // Use frontend disease list instead of API data
-    const sensitive_disease = HEALTH_CHECK_DISEASES
+    const [status, setStatus] = useState(null)
 
+    // Initialize disease categories
     const diseaseCategories = {
         physical: { title: "Physical Measurements", icon: <Height />, diseases: [] },
         vision: { title: "Vision & Eye Health", icon: <RemoveRedEye />, diseases: [] },
@@ -96,17 +79,104 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
         dental: { title: "Dental Health", icon: <MedicalServices />, diseases: [] },
         skin: { title: "Skin Conditions", icon: <Person />, diseases: [] },
         cardiovascular: { title: "Cardiovascular", icon: <Favorite />, diseases: [] },
-        reproductive: { title: "Reproductive Health", icon: <Psychology />, diseases: [] },
-        medical: { title: "Medical History", icon: <Assignment />, diseases: [] },
+        medical: { title: "General Examination", icon: <Assignment />, diseases: [] },
+        genital: { title: "Genital Examination", icon: <Psychology />, diseases: [] },
     }
 
     // Group diseases by category
-    sensitive_disease.forEach((disease) => {
+    HEALTH_CHECK_DISEASES.forEach((disease) => {
         const category = disease.category
         if (diseaseCategories[category]) {
             diseaseCategories[category].diseases.push(disease)
         }
     })
+
+    // Add genital diseases from pupilData
+    if (pupilData && Array.isArray(pupilData.disease) && pupilData.disease.length > 0) {
+        diseaseCategories.genital.diseases = pupilData.disease.map((d, idx) => ({
+            disease_id: d.diseaseId || idx + 1000,
+            field: `disease_${d.diseaseId || idx + 1000}`,
+            name: d.name,
+            type: "string",
+            diseaseId: d.diseaseId,
+            description: d.description,
+            category: "genital",
+        }))
+    }
+
+    // Check if this has existing results
+    const hasResult = pupilData?.active && !!pupilData?.healthCheckHistoryRes
+
+    // Initialize form data with existing values
+    useEffect(() => {
+        if (pupilData) {
+            console.log("Initializing form data with pupilData:", pupilData)
+
+            // Initialize measurements for physical category
+            const initialMeasurements = {}
+            const initialNotes = {}
+
+            if (hasResult && pupilData.healthCheckHistoryRes) {
+                // Populate from existing health check results
+                const results = pupilData.healthCheckHistoryRes
+
+                // Physical measurements
+                initialMeasurements.height = results.height || ""
+                initialMeasurements.weight = results.weight || ""
+                initialMeasurements.rightEyeVision = results.rightEyeVision || ""
+                initialMeasurements.leftEyeVision = results.leftEyeVision || ""
+                initialMeasurements.heartRate = results.heartRate || ""
+
+                // Notes for other categories
+                initialNotes.bloodPressure = results.bloodPressure || ""
+                initialNotes.hearAnuscultaion = results.hearAnuscultaion || ""
+                initialNotes.lungs = results.lungs || ""
+                initialNotes.dentalCheck = results.dentalCheck || ""
+                initialNotes.earCondition = results.earCondition || ""
+                initialNotes.noseCondition = results.noseCondition || ""
+                initialNotes.throatCondition = results.throatCondition || ""
+                initialNotes.skinAndMucosa = results.skinAndMucosa || ""
+                initialNotes.digestiveSystem = results.digestiveSystem || ""
+                initialNotes.urinarySystem = results.urinarySystem || ""
+                initialNotes.musculoskeletalSystem = results.musculoskeletalSystem || ""
+                initialNotes.neurologyAndPsychiatry = results.neurologyAndPsychiatry || ""
+                initialNotes.conclusion = results.additionalNotes || ""
+
+                // Handle genital diseases
+                if (Array.isArray(results.diseases)) {
+                    results.diseases.forEach((disease) => {
+                        const fieldKey = `disease_${disease.diseaseId}`
+                        initialNotes[fieldKey] = disease.note || ""
+                    })
+                }
+            } else {
+                // Initialize with empty values for new entries
+                HEALTH_CHECK_DISEASES.forEach((disease) => {
+                    if (disease.category === "physical") {
+                        initialMeasurements[disease.field] = ""
+                    } else {
+                        initialNotes[disease.field] = ""
+                    }
+                })
+
+                // Initialize genital diseases
+                if (Array.isArray(pupilData.disease)) {
+                    pupilData.disease.forEach((d, idx) => {
+                        const fieldKey = `disease_${d.diseaseId || idx + 1000}`
+                        initialNotes[fieldKey] = d.note || ""
+                    })
+                }
+
+                initialNotes.conclusion = ""
+            }
+
+            setMeasurements(initialMeasurements)
+            setNotes(initialNotes)
+
+            console.log("Initialized measurements:", initialMeasurements)
+            console.log("Initialized notes:", initialNotes)
+        }
+    }, [pupilData, hasResult])
 
     // Handle checkbox changes
     const handleHealthCheck = (diseaseId, checked) => {
@@ -114,13 +184,15 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
     }
 
     // Handle note changes
-    const handleNoteChange = (diseaseId, value) => {
-        setNotes((prev) => ({ ...prev, [diseaseId]: value }))
+    const handleNoteChange = (diseaseKey, value) => {
+        console.log(`Updating note for ${diseaseKey}:`, value)
+        setNotes((prev) => ({ ...prev, [diseaseKey]: value }))
     }
 
     // Handle measurement changes
-    const handleMeasurementChange = (diseaseId, value) => {
-        setMeasurements((prev) => ({ ...prev, [diseaseId]: value }))
+    const handleMeasurementChange = (diseaseKey, value) => {
+        console.log(`Updating measurement for ${diseaseKey}:`, value)
+        setMeasurements((prev) => ({ ...prev, [diseaseKey]: value }))
     }
 
     // Handle section expansion
@@ -128,71 +200,119 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
         setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }))
     }
 
-    // Map the current form state to the required DB format
-    const getDetailsForDB = () => ({
-        healthId: 0,
-        height: measurements[1] || '',
-        weight: measurements[2] || '',
-        rightEyeVision: measurements[4] || '',
-        leftEyeVision: measurements[5] || '',
-        bloodPressure: notes[18] || '',
-        heartRate: measurements[14] || '',
-        dentalCheck: notes[8] || '',
-        earCondition: notes[6] || '',
-        noseCondition: notes[7] || '',
-        throatCondition: notes[7] || '',
-        skinAndMucosa: notes[11] || '',
-        hearAnuscultaion: notes[16] || '',
-        chestShape: notes[16] || '',
-        lungs: notes[16] || '',
-        digestiveSystem: notes[18] || '',
-        urinarySystem: notes[18] || '',
-        musculoskeletalSystem: notes[18] || '',
-        neurologyAndPsychiatry: notes[18] || '',
-        genitalExamination: notes[19] || '',
-        additionalNotes: notes[20] || '',
-        unusualSigns: notes[21] || '',
-    });
+    // Get current field value for display
+    const getFieldValue = (disease, categoryKey) => {
+        if (hasResult && pupilData.healthCheckHistoryRes) {
+            // For read-only display, get from healthCheckHistoryRes
+            const results = pupilData.healthCheckHistoryRes
 
-    // Save result to DB using custom hook
-    const handleSave = async (newStatus) => {
-        setStatus(newStatus);
-        const details = getDetailsForDB();
-        const consentId = pupilData?.healthCheckConsentId || pupilData?.consentFormId;
-        if (!consentId) {
-            console.error("Consent ID not found! pupilData:", pupilData);
-            setSnackbar({ open: true, message: "Consent ID not found in pupilData. Please check your data source.", severity: "error" });
-            return;
-        }
-        const payload = { ...details, status: newStatus };
-        const success = await saveResultOfHealthCheckCampaign(consentId, payload);
-        if (success) {
-            setSnackbar({ open: true, message: `Saved as ${newStatus}.`, severity: "success" });
+            if (categoryKey === "physical") {
+                return results[disease.field] || ""
+            } else if (categoryKey === "genital") {
+                const genitalDisease = results.diseases?.find((d) => d.diseaseId === disease.diseaseId)
+                return genitalDisease?.note || ""
+            } else {
+                return results[disease.field] || ""
+            }
         } else {
-            setSnackbar({ open: true, message: "Failed to save result.", severity: "error" });
+            // For editable form, get from state
+            if (categoryKey === "physical") {
+                return measurements[disease.field] || ""
+            } else {
+                return notes[disease.field] || ""
+            }
         }
-    };
-
-    // Calculate completion percentage
-    const totalChecks = sensitive_disease.length
-    const completedChecks = Object.values(healthData).filter(Boolean).length
-    const completionPercentage = totalChecks > 0 ? (completedChecks / totalChecks) * 100 : 0
-
-    // Handle form submission
-    const handleSubmit = () => {
-        setSnackbar({
-            open: true,
-            message: `Health check completed for student ${pupilData?.firstName} ${pupilData?.lastName}!`,
-            severity: "success",
-        })
-        console.log("Health check details (for DB):", {
-            pupil_id: pupilId,
-            pupilData,
-            details: getDetailsForDB(),
-        })
     }
 
-    if (!sensitive_disease.length) {
+    // Map the current form state to the required DB format
+    const getDetailsForDB = () => ({
+        height: measurements["height"] || "",
+        weight: measurements["weight"] || "",
+        rightEyeVision: measurements["rightEyeVision"] || "",
+        leftEyeVision: measurements["leftEyeVision"] || "",
+        bloodPressure: notes["bloodPressure"] || "",
+        heartRate: measurements["heartRate"] || "",
+        dentalCheck: notes["dentalCheck"] || "",
+        earCondition: notes["earCondition"] || "",
+        noseCondition: notes["noseCondition"] || "",
+        throatCondition: notes["throatCondition"] || "",
+        skinAndMucosa: notes["skinAndMucosa"] || "",
+        hearAnuscultaion: notes["hearAnuscultaion"] || "",
+        lungs: notes["lungs"] || "",
+        digestiveSystem: notes["digestiveSystem"] || "",
+        urinarySystem: notes["urinarySystem"] || "",
+        musculoskeletalSystem: notes["musculoskeletalSystem"] || "",
+        neurologyAndPsychiatry: notes["neurologyAndPsychiatry"] || "",
+        additionalNotes: notes["conclusion"] || "",
+        diseases: (diseaseCategories.genital.diseases || []).map((d) => ({
+            diseaseId: d.diseaseId,
+            note: notes[d.field] || "",
+        })),
+    })
+
+    // Validate all required fields are not empty
+    const validateFields = () => {
+        for (const categoryKey of Object.keys(diseaseCategories)) {
+            for (const disease of diseaseCategories[categoryKey].diseases) {
+                if (categoryKey === "physical") {
+                    if (!measurements[disease.field]) {
+                        console.log(`Missing measurement for ${disease.field}`)
+                        return false
+                    }
+                } else {
+                    if (!notes[disease.field]) {
+                        console.log(`Missing note for ${disease.field}`)
+                        return false
+                    }
+                }
+            }
+        }
+
+        if (!notes["conclusion"]) {
+            console.log("Missing conclusion")
+            return false
+        }
+
+        return true
+    }
+
+    // Save result to DB
+    const handleSave = async (newStatus) => {
+        if (!validateFields()) {
+            setSnackbar({ open: true, message: "Please fill in all required fields before saving.", severity: "error" })
+            return
+        }
+
+        setStatus(newStatus)
+        const details = getDetailsForDB()
+        const consentId = pupilData?.consentFormId
+
+        if (!consentId) {
+            console.error("Consent ID not found! pupilData:", pupilData)
+            setSnackbar({
+                open: true,
+                message: "Consent ID not found in pupilData. Please check your data source.",
+                severity: "error",
+            })
+            return
+        }
+
+        const payload = { ...details, status: newStatus }
+        console.log("Saving payload:", payload)
+
+        // Replace with your actual save logic
+        // const success = await saveResultOfHealthCheckCampaign(consentId, payload);
+        const success = true // Placeholder
+
+        if (success) {
+            setSnackbar({ open: true, message: `Saved as ${newStatus}.`, severity: "success" })
+            if (typeof onResultSaved === "function") onResultSaved()
+        } else {
+            setSnackbar({ open: true, message: "Failed to save result.", severity: "error" })
+        }
+    }
+
+    if (!HEALTH_CHECK_DISEASES.length && (!pupilData?.disease || pupilData.disease.length === 0)) {
         return (
             <div className="schedule-details-root empty-container">
                 <Warning sx={{ fontSize: 60, color: "#ff9800", mb: 2 }} />
@@ -209,36 +329,15 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
 
     return (
         <div className="schedule-details-root enhanced-ui">
-            {/* Quick Navigation Bar */}
-
-
+            {/* Header */}
             <Fade in={true} timeout={500}>
                 <Card className="details-header modern-card" elevation={2}>
                     <CardContent>
                         <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
                             <Box display="flex" alignItems="center" gap={2}>
-                                <IconButton
-                                    onClick={onBack}
-                                    className="back-button"
-                                    sx={{
-                                        background: "linear-gradient(135deg, #1976d2, #42a5f5)",
-                                        color: "white",
-                                        boxShadow: 2,
-                                        borderRadius: 2,
-                                        p: 1.2,
-                                        transition: "all 0.2s cubic-bezier(.4,2,.6,1)",
-                                        '&:hover': {
-                                            background: "linear-gradient(135deg, #1565c0, #1976d2)",
-                                            transform: "translateY(-2px) scale(1.08)",
-                                            boxShadow: 4,
-                                        },
-                                    }}
-                                >
-                                    <ArrowBack />
-                                </IconButton>
                                 <Box>
                                     <Typography variant="h4" className="header-title" sx={{ fontWeight: 700, letterSpacing: 1 }}>
-                                        Health Check Assessment
+                                        Health Check Campaign
                                     </Typography>
                                     <Box display="flex" alignItems="center" gap={2} mt={1}>
                                         <Chip
@@ -248,40 +347,31 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
                                             variant="filled"
                                             sx={{ fontWeight: 500, fontSize: 16, px: 1.5, py: 0.5, borderRadius: 2 }}
                                         />
-                                        <Chip icon={<Assignment />} label={`ID: ${pupilId}`} color="secondary" variant="filled" sx={{ fontWeight: 500, px: 1.2, borderRadius: 2 }} />
-                                        <Chip label={pupilData?.gradeName || "Grade"} color="info" variant="filled" sx={{ fontWeight: 500, px: 1.2, borderRadius: 2 }} />
+                                        <Chip
+                                            icon={<Assignment />}
+                                            label={`ID: ${pupilId}`}
+                                            color="secondary"
+                                            variant="filled"
+                                            sx={{ fontWeight: 500, px: 1.2, borderRadius: 2 }}
+                                        />
+                                        <Chip
+                                            label={pupilData?.gradeName || "Grade"}
+                                            color="info"
+                                            variant="filled"
+                                            sx={{ fontWeight: 500, px: 1.2, borderRadius: 2 }}
+                                        />
+                                        {hasResult && (
+                                            <Chip
+                                                label="Has Results"
+                                                color="success"
+                                                variant="filled"
+                                                sx={{ fontWeight: 500, px: 1.2, borderRadius: 2 }}
+                                            />
+                                        )}
                                     </Box>
                                 </Box>
                             </Box>
-                            <Box display="flex" alignItems="center" gap={2}>
-                                {autoSaving && (
-                                    <Chip
-                                        icon={<LinearProgress size={16} />}
-                                        label="Auto-saving..."
-                                        size="small"
-                                        color="info"
-                                        variant="outlined"
-                                        sx={{ fontWeight: 500, px: 1.2, borderRadius: 2 }}
-                                    />
-                                )}
-                            </Box>
                         </Box>
-
-                        <LinearProgress
-                            variant="determinate"
-                            value={completionPercentage}
-                            sx={{
-                                height: 10,
-                                borderRadius: 5,
-                                backgroundColor: "#e3f2fd",
-                                boxShadow: 1,
-                                my: 1,
-                                '& .MuiLinearProgress-bar': {
-                                    borderRadius: 5,
-                                    background: "linear-gradient(90deg, #43a047, #66bb6a)",
-                                },
-                            }}
-                        />
                     </CardContent>
                 </Card>
             </Fade>
@@ -300,93 +390,101 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
                                     mb: 2.5,
                                     borderRadius: 3,
                                     boxShadow: expandedSections[categoryKey] ? 4 : 1,
-                                    background: expandedSections[categoryKey] ? "linear-gradient(120deg, #f5fafd 60%, #e3f2fd 100%)" : "#f8fafc",
+                                    background: expandedSections[categoryKey]
+                                        ? "linear-gradient(120deg, #f5fafd 60%, #e3f2fd 100%)"
+                                        : "#f8fafc",
                                     transition: "all 0.25s cubic-bezier(.4,2,.6,1)",
                                     border: expandedSections[categoryKey] ? "2px solid #90caf9" : "1px solid #e3e3e3",
                                 }}
                             >
-                                <AccordionSummary expandIcon={<ExpandMore />} className="section-header modern-accordion-header" sx={{
-                                    minHeight: 64,
-                                    background: expandedSections[categoryKey] ? "#e3f2fd" : "#f5fafd",
-                                    borderRadius: 3,
-                                    boxShadow: expandedSections[categoryKey] ? 2 : 0,
-                                    px: 3,
-                                    py: 1.5,
-                                    '& .MuiAccordionSummary-content': { alignItems: 'center', gap: 2 },
-                                }}>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMore />}
+                                    className="section-header modern-accordion-header"
+                                    sx={{
+                                        minHeight: 64,
+                                        background: expandedSections[categoryKey] ? "#e3f2fd" : "#f5fafd",
+                                        borderRadius: 3,
+                                        boxShadow: expandedSections[categoryKey] ? 2 : 0,
+                                        px: 3,
+                                        py: 1.5,
+                                        "& .MuiAccordionSummary-content": { alignItems: "center", gap: 2 },
+                                    }}
+                                >
                                     <Box display="flex" alignItems="center" gap={2}>
-                                        <Box sx={{ fontSize: 30, color: '#1976d2', mr: 1 }}>{category.icon}</Box>
+                                        <Box sx={{ fontSize: 30, color: "#1976d2", mr: 1 }}>{category.icon}</Box>
                                         <Typography variant="h6" className="section-title" sx={{ fontWeight: 700, letterSpacing: 0.5 }}>
                                             {category.title}
                                         </Typography>
-                                        <Chip
-                                            label={`${category.diseases.filter((d) => healthData[d.disease_id]).length}/${category.diseases.length}`}
-                                            size="small"
-                                            color={category.diseases.filter((d) => healthData[d.disease_id]).length === category.diseases.length ? "success" : "default"}
-                                            variant="filled"
-                                            sx={{ fontWeight: 600, px: 1.2, borderRadius: 2, ml: 1 }}
-                                        />
                                     </Box>
                                 </AccordionSummary>
-                                <AccordionDetails className="section-content modern-accordion-details" sx={{ px: 3, py: 2, background: '#fafdff', borderRadius: 2 }}>
+
+                                <AccordionDetails
+                                    className="section-content modern-accordion-details"
+                                    sx={{ px: 3, py: 2, background: "#fafdff", borderRadius: 2 }}
+                                >
                                     <Grid container spacing={2}>
                                         {category.diseases.map((disease) => (
-                                            <Grid item xs={12} key={disease.disease_id}>
-                                                <Paper className="disease-item modern-disease-item" elevation={0} sx={{
-                                                    p: 1.5,
-                                                    borderRadius: 2,
-                                                    background: '#fff',
-                                                    boxShadow: 1,
-                                                    mb: 1,
-                                                    transition: 'box-shadow 0.2s',
-                                                    '&:hover': { boxShadow: 3, background: '#f5fafd' },
-                                                }}>
+                                            <Grid item xs={12} key={disease.disease_id || disease.field}>
+                                                <Paper
+                                                    className="disease-item modern-disease-item"
+                                                    elevation={0}
+                                                    sx={{
+                                                        p: 1.5,
+                                                        borderRadius: 2,
+                                                        background: "#fff",
+                                                        boxShadow: 1,
+                                                        mb: 1,
+                                                        transition: "box-shadow 0.2s",
+                                                        "&:hover": { boxShadow: 3, background: "#f5fafd" },
+                                                    }}
+                                                >
                                                     <Box display="flex" alignItems="flex-start" gap={1.5}>
                                                         <Box flex={1}>
-                                                            <Typography variant="subtitle2" className="disease-name" sx={{ fontWeight: 600, fontSize: 15, mb: 0.25 }}>
+                                                            <Typography
+                                                                variant="subtitle2"
+                                                                className="disease-name"
+                                                                sx={{ fontWeight: 600, fontSize: 15, mb: 0.25 }}
+                                                            >
                                                                 {disease.name}
                                                             </Typography>
                                                             <Box display="flex" gap={1.5} mt={0.5}>
-                                                                {/* Only show measurement for physical category, no notes for physical */}
-                                                                {categoryKey === 'physical' ? (
+                                                                {categoryKey === "physical" ? (
                                                                     <TextField
                                                                         size="small"
                                                                         label={disease.name}
-                                                                        value={measurements[disease.disease_id] || ""}
-                                                                        onChange={(e) => handleMeasurementChange(disease.disease_id, e.target.value)}
-                                                                        InputProps={{
-                                                                            endAdornment: (
-                                                                                <InputAdornment position="end">
-                                                                                    {disease.name.includes("Chiều cao")
-                                                                                        ? "cm"
-                                                                                        : disease.name.includes("Cân nặng")
-                                                                                            ? "kg"
-                                                                                            : disease.name.includes("BMI")
-                                                                                                ? "kg/m²"
-                                                                                                : disease.name.includes("Nhịp tim")
-                                                                                                    ? "bpm"
-                                                                                                    : disease.name.includes("Nhịp thở")
-                                                                                                        ? "/min"
-                                                                                                        : ""}
-                                                                                </InputAdornment>
-                                                                            ),
+                                                                        value={getFieldValue(disease, categoryKey)}
+                                                                        onChange={(e) =>
+                                                                            !hasResult && handleMeasurementChange(disease.field, e.target.value)
+                                                                        }
+                                                                        InputProps={{ readOnly: hasResult }}
+                                                                        sx={{
+                                                                            minWidth: 90,
+                                                                            maxWidth: 120,
+                                                                            background: hasResult ? "#f5fafd" : "#fff",
+                                                                            borderRadius: 1,
+                                                                            boxShadow: 0,
+                                                                            fontWeight: 500,
+                                                                            fontSize: 13,
                                                                         }}
-                                                                        sx={{ minWidth: 90, maxWidth: 120, background: '#f5fafd', borderRadius: 1, boxShadow: 0, fontWeight: 500, fontSize: 13 }}
                                                                     />
                                                                 ) : (
-                                                                    <>
-                                                                        {/* For non-physical: no measurement, only notes */}
-                                                                        <TextField
-                                                                            size="small"
-                                                                            label="Notes & Observations"
-                                                                            multiline
-                                                                            rows={1}
-                                                                            value={notes[disease.disease_id] || ""}
-                                                                            onChange={(e) => handleNoteChange(disease.disease_id, e.target.value)}
-                                                                            placeholder="Add notes..."
-                                                                            sx={{ flex: 1, background: '#fafdff', borderRadius: 1, fontWeight: 500, fontSize: 13 }}
-                                                                        />
-                                                                    </>
+                                                                    <TextField
+                                                                        size="small"
+                                                                        label="Notes & Observations"
+                                                                        multiline
+                                                                        rows={1}
+                                                                        value={getFieldValue(disease, categoryKey)}
+                                                                        onChange={(e) => !hasResult && handleNoteChange(disease.field, e.target.value)}
+                                                                        placeholder="Add notes..."
+                                                                        InputProps={{ readOnly: hasResult }}
+                                                                        sx={{
+                                                                            flex: 1,
+                                                                            background: hasResult ? "#fafdff" : "#fff",
+                                                                            borderRadius: 1,
+                                                                            fontWeight: 500,
+                                                                            fontSize: 13,
+                                                                        }}
+                                                                    />
                                                                 )}
                                                             </Box>
                                                         </Box>
@@ -400,31 +498,76 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack }) => {
                         </Grow>
                     )
                 })}
+
+                {/* Conclusion Field */}
+                <Box mt={4}>
+                    <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
+                        Conclusion
+                    </Typography>
+                    <TextField
+                        fullWidth
+                        multiline
+                        minRows={2}
+                        maxRows={6}
+                        label="Conclusion"
+                        value={notes["conclusion"] || ""}
+                        onChange={(e) => !hasResult && setNotes((prev) => ({ ...prev, conclusion: e.target.value }))}
+                        placeholder="Enter overall conclusion or summary..."
+                        InputProps={{ readOnly: hasResult }}
+                        sx={{ background: hasResult ? "#fafdff" : "#fff", borderRadius: 2 }}
+                    />
+                </Box>
             </div>
 
-            <Fade in={true} timeout={800}>
-                <Box className="action-footer modern-footer" sx={{
-                    position: 'sticky',
-                    bottom: 0,
-                    zIndex: 10,
-                    background: 'linear-gradient(90deg, #fafdff 80%, #e3f2fd 100%)',
-                    boxShadow: 3,
-                    borderRadius: 3,
-                    py: 2.5,
-                    px: 4,
-                    mt: 4,
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    gap: 3,
-                    transition: 'box-shadow 0.2s',
-                }}>
-                    <Button variant="outlined" size="large" startIcon={<ArrowBack />} onClick={onBack} className="footer-button" sx={{ fontWeight: 600, borderRadius: 2, px: 3, py: 1 }}>
-                        Back to Students
-                    </Button>
+            {/* Action Footer only if not hasResult */}
+            {!hasResult && (
+                <Fade in={true} timeout={800}>
+                    <Box
+                        className="action-footer modern-footer"
+                        sx={{
+                            position: "sticky",
+                            bottom: 0,
+                            zIndex: 10,
+                            background: "linear-gradient(90deg, #fafdff 80%, #e3f2fd 100%)",
+                            boxShadow: 3,
+                            borderRadius: 3,
+                            py: 2.5,
+                            px: 4,
+                            mt: 4,
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            gap: 3,
+                            transition: "box-shadow 0.2s",
+                        }}
+                    >
+                        <Button
+                            variant="outlined"
+                            size="large"
+                            startIcon={<ArrowBack />}
+                            onClick={onBack}
+                            className="footer-button"
+                            sx={{ fontWeight: 600, borderRadius: 2, px: 3, py: 1 }}
+                        >
+                            Back to Students
+                        </Button>
 
-                </Box>
-            </Fade>
+                        {/* <Box sx={{ display: "flex", gap: 2 }}>
+                            <Button
+                                variant="contained"
+                                size="large"
+                                color="success"
+                                startIcon={<Save />}
+                                onClick={() => handleSave("COMPLETED")}
+                                className="footer-button save-button"
+                                sx={{ fontWeight: 700, borderRadius: 2, px: 4, py: 1.2, fontSize: 18 }}
+                            >
+                                Complete
+                            </Button>
+                        </Box> */}
+                    </Box>
+                </Fade>
+            )}
 
             <Snackbar
                 open={snackbar.open}

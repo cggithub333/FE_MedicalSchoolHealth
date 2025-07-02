@@ -146,7 +146,7 @@ const HealthCheckScheduleForm = () => {
             id: `${activeCampaign.campaignId}-${grade}-morning`,
             name: `Grade ${grade} - Morning`,
             time: "08:00 - 11:00",
-            grade: grade,
+            grade: `Grade ${grade}`,
             campaignId: activeCampaign.campaignId,
             students: savedData, // merged with saved data
             allPupils: gradePupils, // raw pupils array for consistent count

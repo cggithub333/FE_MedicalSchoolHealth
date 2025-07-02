@@ -27,6 +27,8 @@ import {
     Typography,
     Box,
     Divider,
+    Tabs,
+    Tab,
 } from "@mui/material"
 import {
     ArrowBack,
@@ -76,6 +78,13 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
     const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" })
     const [animateRows, setAnimateRows] = useState(false)
     const initializedRef = useRef(false)
+    // Add statusTabs and tab state for status management
+    const statusTabs = [
+        { key: "ALL", label: "All" },
+        { key: "COMPLETED", label: "Completed" },
+        { key: "NOT_COMPLETED", label: "Absent" },
+    ]
+    const [selectedTab, setSelectedTab] = useState(0)
 
     // Reset initializedRef when grade changes
     useEffect(() => {
@@ -115,6 +124,14 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
     const total = students.length
     const remaining = total - completedCount
     const progressPercentage = total > 0 ? (completedCount / total) * 100 : 0
+
+    // Filter students by tab
+    let filteredStudents = students
+    if (selectedTab === 1) {
+        filteredStudents = students.filter(s => s.active)
+    } else if (selectedTab === 2) {
+        filteredStudents = students.filter(s => !s.active)
+    }
 
     // Show ScheduleDetails if a consent form is selected
     if (selectedConsentFormId) {
@@ -227,6 +244,21 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
 
             <Fade in={true} timeout={700}>
                 <Card className="students-table-container" elevation={0}>
+                    {/* Status Tabs UI */}
+                    <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
+                        <Tabs
+                            value={selectedTab}
+                            onChange={(_, newValue) => setSelectedTab(newValue)}
+                            aria-label="Status Tabs"
+                            textColor="primary"
+                            indicatorColor="primary"
+                            variant="fullWidth"
+                        >
+                            {statusTabs.map((tab, idx) => (
+                                <Tab key={tab.key} label={tab.label} />
+                            ))}
+                        </Tabs>
+                    </Box>
                     <TableContainer component={Paper} elevation={0}>
                         <Table stickyHeader>
                             <TableHead>
@@ -245,7 +277,7 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {students.map((student, idx) => (
+                                {filteredStudents.map((student, idx) => (
                                     <Grow in={animateRows} timeout={300 + idx * 50} key={student.pupilId}>
                                         <TableRow
                                             className={`student-row ${student.active ? "completed-row" : ""}`}
@@ -287,7 +319,7 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
                                                     </Avatar>
                                                     <Box>
                                                         <Typography variant="subtitle1" fontWeight={600} className="student-name">
-                                                            {student.lastName} {student.firstName}
+                                                            {student.firstName} {student.lastName}
                                                         </Typography>
                                                         <Typography variant="body2" color="text.secondary" className="student-id">
                                                             ID: {student.pupilId}

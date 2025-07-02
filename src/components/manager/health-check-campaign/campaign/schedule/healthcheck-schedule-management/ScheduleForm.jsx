@@ -34,13 +34,13 @@ const statusConfig = {
         color: "#4caf50",
         bgColor: "#e8f5e9",
         icon: CheckCircleIcon,
-        label: "Available",
+        label: "Success",
     },
     NONE: {
-        color: "#f44336",
-        bgColor: "#ffebee",
-        icon: ErrorIcon,
-        label: "NONE",
+        color: "#4caf50",
+        bgColor: "#e8f5e9",
+        icon: CheckCircleIcon,
+        label: "Success",
     },
 }
 

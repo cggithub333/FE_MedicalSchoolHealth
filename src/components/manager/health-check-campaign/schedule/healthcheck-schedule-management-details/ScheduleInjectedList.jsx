@@ -1,7 +1,10 @@
 import { useEffect, useState, useRef } from "react"
 import "./StyleScheduleInjectedList.scss"
-import { usePupilsByGrade } from "../../../../../hooks/schoolnurse/healthcheck/schedule/usePupilsByGrade"
+import { useGetDetailsOfCampaignByID } from "../../../../../hooks/manager/healthcheck/campaign/useGetDetaisOfCampaignByID"
 import ScheduleDetails from "../healthcheck-schedule-management-form/ScheduleDetails"
+import ScheduleResult from "../healthcheck-schedule-management-result/ScheduleResult"
+
+
 import {
     Table,
     TableBody,
@@ -27,6 +30,8 @@ import {
     Typography,
     Box,
     Divider,
+    Tabs,
+    Tab,
 } from "@mui/material"
 import {
     ArrowBack,
@@ -45,77 +50,48 @@ import { useNavigate } from "react-router-dom"
 
 const ScheduleInjectedList = ({ shift, onBack }) => {
     const navigate = useNavigate()
-    const grade = Number(shift?.grade ?? shift?.Grade ?? 1)
-    const { pupils: rawPupils = [], isLoading } = usePupilsByGrade(grade)
-    const [students, setStudents] = useState([])
-    const [selectedPupilId, setSelectedPupilId] = useState(null)
+    // Use campaignId and gradeName from shift
+    const campaignId = shift?.campaignId
+    const gradeName = shift?.grade
+    // Fetch campaign details
+    const { campaignDetails, isLoading, refetch } = useGetDetailsOfCampaignByID(campaignId)
+    // Extract pupils for this grade from consentForms
+    const pupils = (campaignDetails?.data?.consentForms || campaignDetails?.consentForms || [])
+        .filter(form => (form.pupilRes?.gradeName || form.pupilRes?.Grade) === gradeName)
+        .map(form => ({
+            consentFormId: form.consentFormId, // <-- add consentFormId for ScheduleDetails
+            pupilId: form.pupilRes.pupilId,
+            firstName: form.pupilRes.firstName,
+            lastName: form.pupilRes.lastName,
+            birthDate: form.pupilRes.birthDate,
+            gender: form.pupilRes.gender,
+            Grade: form.pupilRes.gradeName,
+            gradeName: form.pupilRes.gradeName,
+            healthCheckConsentId: form.healthCheckConsentId,
+            schoolYear: form.schoolYear,
+            diseases: form.disease || [],
+            avatar: `https://ui-avatars.com/api/?name=${form.pupilRes.firstName}+${form.pupilRes.lastName}&background=1976d2&color=fff`,
+            active: form.active, // <-- add active property from API
+            additionalNotes: form.healthCheckHistoryRes?.additionalNotes || form.additionalNotes || "", // <-- get notes from API
+            campaignId: campaignId, // Ensure campaignId is included for ScheduleDetails
+        }))
+    // Remove all local state for completion, only use API data
+    const students = pupils
+    const [selectedConsentFormId, setSelectedConsentFormId] = useState(null)
     const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" })
     const [animateRows, setAnimateRows] = useState(false)
     const initializedRef = useRef(false)
+    // Add statusTabs and tab state for status management
+    const statusTabs = [
+        { key: "ALL", label: "All" },
+        { key: "COMPLETED", label: "Completed" },
+    ]
+    const [selectedTab, setSelectedTab] = useState(0)
 
     // Reset initializedRef when grade changes
     useEffect(() => {
         initializedRef.current = false
-    }, [grade])
-
-    // Transform pupils data to match expected format
-    const transformPupilsData = (pupilsData) => {
-        if (!Array.isArray(pupilsData)) return []
-
-        // Group by pupilId to avoid duplicates
-        const uniquePupils = {}
-        pupilsData.forEach((item) => {
-            const pupilId = item.pupilRes?.pupilId
-            if (pupilId && !uniquePupils[pupilId]) {
-                uniquePupils[pupilId] = {
-                    pupilId: pupilId,
-                    firstName: item.pupilRes.firstName,
-                    lastName: item.pupilRes.lastName,
-                    birthDate: item.pupilRes.birthDate,
-                    gender: item.pupilRes.gender,
-                    Grade: item.pupilRes.gradeName,
-                    gradeName: item.pupilRes.gradeName,
-                    healthCheckConsentId: item.healthCheckConsentId,
-                    schoolYear: item.schoolYear,
-                    diseases: [],
-                    // Add avatar placeholder
-                    avatar: `https://ui-avatars.com/api/?name=${item.pupilRes.firstName}+${item.pupilRes.lastName}&background=1976d2&color=fff`,
-                }
-            }
-            // Collect all diseases for this pupil
-            if (pupilId && item.disease) {
-                uniquePupils[pupilId].diseases.push(...item.disease)
-            }
-        })
-
-        return Object.values(uniquePupils)
-    }
-
-    const pupils = transformPupilsData(rawPupils)
-
-    useEffect(() => {
-        // Only initialize if not already initialized for this pupils set and students do not match pupils
-        const pupilsIds = (pupils || []).map((p) => p.pupilId).join(",")
-        const studentsIds = (students || []).map((s) => s.pupilId).join(",")
-        if (!initializedRef.current && pupils && pupils.length > 0 && pupilsIds !== studentsIds) {
-            setStudents(
-                pupils.map((pupil) => ({
-                    ...pupil,
-                    completed: false,
-                    time: "",
-                    notes: "",
-                })),
-            )
-            initializedRef.current = true
-        } else if (pupils && pupils.length === 0 && students.length !== 0) {
-            setStudents([])
-            initializedRef.current = true
-        }
-        // Reset flag if pupils changes (by length)
-        return () => {
-            // Do not reset here, only reset on grade change
-        }
-    }, [pupils, grade])
+    }, [gradeName])
 
     // Animate rows after data loads
     useEffect(() => {
@@ -123,47 +99,6 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
             setTimeout(() => setAnimateRows(true), 200)
         }
     }, [students])
-
-    const handleCheck = (index) => {
-        const updated = [...students]
-        updated[index].completed = !updated[index].completed
-        if (updated[index].completed) {
-            const now = new Date()
-            const hours = String(now.getHours()).padStart(2, "0")
-            const minutes = String(now.getMinutes()).padStart(2, "0")
-            updated[index].time = `${hours}:${minutes}`
-        } else {
-            updated[index].time = ""
-        }
-        setStudents(updated)
-    }
-
-    const handleNoteChange = (index, newValue) => {
-        const updated = [...students]
-        updated[index].notes = newValue
-        setStudents(updated)
-    }
-
-    const handleMarkAll = () => {
-        const allCompleted = students.every((s) => s.completed)
-        const now = new Date()
-        const hours = String(now.getHours()).padStart(2, "0")
-        const minutes = String(now.getMinutes()).padStart(2, "0")
-        const timeString = `${hours}:${minutes}`
-
-        const updated = students.map((student) => ({
-            ...student,
-            completed: !allCompleted,
-            time: !allCompleted ? timeString : "",
-        }))
-
-        setStudents(updated)
-        setSnackbar({
-            open: true,
-            message: allCompleted ? "All students unmarked" : "All students marked as completed",
-            severity: "success",
-        })
-    }
 
     const handleExport = () => {
         setSnackbar({
@@ -180,31 +115,60 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
 
                 <CircularProgress size={60} sx={{ color: "#1976d2" }} />
                 <Typography variant="h6" sx={{ mt: 2, color: "#666" }}>
-                    Loading Grade {grade} students...
+                    Loading Grade {gradeName} students...
                 </Typography>
             </div>
         )
     }
 
-    const completedCount = students.filter((s) => s.completed).length
+    // Progress calculation based on active property
+    const completedCount = students.filter((s) => s.active).length
     const total = students.length
     const remaining = total - completedCount
     const progressPercentage = total > 0 ? (completedCount / total) * 100 : 0
 
-    // Show ScheduleDetails if a pupil is selected
-    if (selectedPupilId) {
-        return (
-            <Fade in={true} timeout={300}>
-                <div>
+    // Filter students by tab
+    let filteredStudents = students
+    if (selectedTab === 1) {
+        filteredStudents = students.filter(s => s.active)
+    } else if (selectedTab === 2) {
+        filteredStudents = students.filter(s => !s.active)
+    }
 
-                    <ScheduleDetails
-                        pupilId={selectedPupilId}
-                        pupilData={students.find((s) => s.pupilId === selectedPupilId)}
-                        onBack={() => setSelectedPupilId(null)}
-                    />
-                </div>
-            </Fade>
-        )
+    // Show ScheduleDetails if a consent form is selected
+    if (selectedConsentFormId) {
+        const selectedStudent = students.find((s) => s.consentFormId === selectedConsentFormId)
+        if (selectedStudent?.active) {
+            // If already completed, show result view
+            return (
+                <Fade in={true} timeout={300}>
+                    <div>
+                        <ScheduleResult
+                            consentFormId={selectedConsentFormId}
+                            pupilData={selectedStudent}
+                            onBack={() => setSelectedConsentFormId(null)}
+                        />
+                    </div>
+                </Fade>
+            )
+        } else {
+            // If not completed, show editable details
+            return (
+                <Fade in={true} timeout={300}>
+                    <div>
+                        <ScheduleDetails
+                            consentFormId={selectedConsentFormId}
+                            pupilData={selectedStudent}
+                            onBack={() => setSelectedConsentFormId(null)}
+                            onResultSaved={() => {
+                                refetch();
+                                setSelectedConsentFormId(null);
+                            }}
+                        />
+                    </div>
+                </Fade>
+            )
+        }
     }
 
     return (
@@ -232,7 +196,7 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
                                 </IconButton>
                                 <Box>
                                     <Typography variant="h4" className="header-title">
-                                        Grade {grade} Health Check
+                                        Grade {gradeName} Health Check
                                     </Typography>
                                     <Box display="flex" alignItems="center" gap={2} mt={1}>
                                         <Chip
@@ -247,9 +211,6 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
                                 </Box>
                             </Box>
                             <Box display="flex" gap={1}>
-                                <Button variant="outlined" startIcon={<SelectAll />} onClick={handleMarkAll} className="action-button">
-                                    {students.every((s) => s.completed) ? "Unmark All" : "Mark All"}
-                                </Button>
                                 <Button variant="outlined" startIcon={<Download />} onClick={handleExport} className="action-button">
                                     Export
                                 </Button>
@@ -305,6 +266,21 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
 
             <Fade in={true} timeout={700}>
                 <Card className="students-table-container" elevation={0}>
+                    {/* Status Tabs UI */}
+                    <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
+                        <Tabs
+                            value={selectedTab}
+                            onChange={(_, newValue) => setSelectedTab(newValue)}
+                            aria-label="Status Tabs"
+                            textColor="primary"
+                            indicatorColor="primary"
+                            variant="fullWidth"
+                        >
+                            {statusTabs.map((tab, idx) => (
+                                <Tab key={tab.key} label={tab.label} />
+                            ))}
+                        </Tabs>
+                    </Box>
                     <TableContainer component={Paper} elevation={0}>
                         <Table stickyHeader>
                             <TableHead>
@@ -316,7 +292,6 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
                                     <TableCell className="table-header" align="center">
                                         Grade
                                     </TableCell>
-
                                     <TableCell className="table-header">Notes</TableCell>
                                     <TableCell className="table-header" align="center">
                                         Actions
@@ -324,21 +299,21 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {students.map((student, idx) => (
+                                {filteredStudents.map((student, idx) => (
                                     <Grow in={animateRows} timeout={300 + idx * 50} key={student.pupilId}>
                                         <TableRow
-                                            className={`student-row ${student.completed ? "completed-row" : ""}`}
+                                            className={`student-row ${student.active ? "completed-row" : ""}`}
                                             hover
                                             sx={{
                                                 "&:hover": {
-                                                    backgroundColor: student.completed ? "#e8f5e9" : "#f5f5f5",
+                                                    backgroundColor: student.active ? "#e8f5e9" : "#f5f5f5",
                                                 },
                                             }}
                                         >
                                             <TableCell align="center">
                                                 <Checkbox
-                                                    checked={student.completed}
-                                                    onChange={() => handleCheck(idx)}
+                                                    checked={student.active}
+                                                    disabled={student.active} // Only disable if already active/completed
                                                     color="success"
                                                     icon={<CheckCircleOutline />}
                                                     checkedIcon={<CheckCircle />}
@@ -347,6 +322,16 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
                                                         "&.Mui-checked": {
                                                             color: "#43a047",
                                                         },
+                                                    }}
+                                                    onChange={() => {
+                                                        if (!student.active) {
+                                                            // TODO: Implement logic to failed when dont complete the details first
+                                                            setSnackbar({
+                                                                open: true,
+                                                                message: `Fail to update status ${student.firstName} ${student.lastName}`,
+                                                                severity: "success",
+                                                            })
+                                                        }
                                                     }}
                                                 />
                                             </TableCell>
@@ -366,7 +351,7 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
                                                     </Avatar>
                                                     <Box>
                                                         <Typography variant="subtitle1" fontWeight={600} className="student-name">
-                                                            {student.lastName} {student.firstName}
+                                                            {student.firstName} {student.lastName}
                                                         </Typography>
                                                         <Typography variant="body2" color="text.secondary" className="student-id">
                                                             ID: {student.pupilId}
@@ -379,19 +364,19 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
                                             </TableCell>
                                             <TableCell align="center">
                                                 <Chip
-                                                    label={student.gradeName || `Grade ${grade}`}
+                                                    label={student.gradeName || `Grade ${gradeName}`}
                                                     color="primary"
                                                     variant="outlined"
                                                     size="small"
                                                 />
                                             </TableCell>
-
                                             <TableCell>
+                                                {/* Notes field can be left as is, or made read-only if required */}
                                                 <TextField
                                                     variant="outlined"
                                                     size="small"
-                                                    value={student.notes}
-                                                    onChange={(e) => handleNoteChange(idx, e.target.value)}
+                                                    value={student.additionalNotes || ""}
+                                                    disabled
                                                     placeholder="Add notes..."
                                                     className="notes-field"
                                                     fullWidth
@@ -410,7 +395,7 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
                                                     variant="contained"
                                                     size="small"
                                                     startIcon={<Visibility />}
-                                                    onClick={() => setSelectedPupilId(student.pupilId)}
+                                                    onClick={() => setSelectedConsentFormId(student.consentFormId)}
                                                     className="details-button"
                                                     sx={{
                                                         background: "linear-gradient(135deg, #43a047, #66bb6a)",
