@@ -1,36 +1,13 @@
 import { useState, useEffect } from "react"
+import "./StyleScheduleDetails.scss"
 import {
-    Card,
-    CardContent,
-    Typography,
-    TextField,
-    Button,
-    Box,
-    Chip,
-    Accordion,
-    AccordionSummary,
-    AccordionDetails,
-    Grid,
-    Snackbar,
-    Alert,
-    Fade,
-    Grow,
-    Paper,
+    Card, CardContent, Typography, TextField, Button, Checkbox, FormControlLabel, Box, Chip, IconButton, Accordion, AccordionSummary, AccordionDetails, Grid, InputAdornment, Snackbar, Alert, LinearProgress, Fade, Grow, Paper,
 } from "@mui/material"
 import {
-    ArrowBack,
-    ExpandMore,
-    Save,
-    Warning,
-    Height,
-    RemoveRedEye,
-    Hearing,
-    MedicalServices,
-    Favorite,
-    Psychology,
-    Person,
-    Assignment,
+    ArrowBack, ExpandMore, Save, CheckCircle, Warning, Height, RemoveRedEye, Hearing, MedicalServices, Favorite, Psychology, Person, Assignment,
 } from "@mui/icons-material"
+import { useSaveResultOfHealthCheckCampaign } from "../../../../../hooks/schoolnurse/healthcheck/schedule/useSaveResultOfHealthCheckCampaign"
+import { useNavigate } from "react-router-dom"
 
 const HEALTH_CHECK_DISEASES = [
     { field: "height", name: "Height", type: "number", category: "physical" },
@@ -50,9 +27,11 @@ const HEALTH_CHECK_DISEASES = [
     { field: "urinarySystem", name: "Urinary System", type: "string", category: "medical" },
     { field: "musculoskeletalSystem", name: "Musculoskeletal System", type: "string", category: "medical" },
     { field: "neurologyAndPsychiatry", name: "Neurology and Psychiatry", type: "string", category: "medical" },
-]
+    // Genital health check category will be rendered dynamically from pupilData.disease
+];
 
-const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved }) => {
+const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFormId }) => {
+    const navigate = useNavigate();
     const [healthData, setHealthData] = useState({})
     const [notes, setNotes] = useState({})
     const [measurements, setMeasurements] = useState({})
@@ -68,10 +47,10 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved }) => {
         reproductive: false,
         medical: false,
     })
-
-    const [status, setStatus] = useState(null)
-
-    // Initialize disease categories
+    const { saveResultOfHealthCheckCampaign, isSaving } = useSaveResultOfHealthCheckCampaign();
+    const [status, setStatus] = useState(null); // "COMPLETED" or "ABSENT"
+    // Use frontend disease list instead of API data
+    const sensitive_disease = HEALTH_CHECK_DISEASES
     const diseaseCategories = {
         physical: { title: "Physical Measurements", icon: <Height />, diseases: [] },
         vision: { title: "Vision & Eye Health", icon: <RemoveRedEye />, diseases: [] },
@@ -82,236 +61,131 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved }) => {
         medical: { title: "General Examination", icon: <Assignment />, diseases: [] },
         genital: { title: "Genital Examination", icon: <Psychology />, diseases: [] },
     }
-
-    // Group diseases by category
-    HEALTH_CHECK_DISEASES.forEach((disease) => {
+    sensitive_disease.forEach((disease) => {
         const category = disease.category
         if (diseaseCategories[category]) {
             diseaseCategories[category].diseases.push(disease)
         }
     })
-
-    // Add genital diseases from pupilData
-    if (pupilData && Array.isArray(pupilData.disease) && pupilData.disease.length > 0) {
-        diseaseCategories.genital.diseases = pupilData.disease.map((d, idx) => ({
-            disease_id: d.diseaseId || idx + 1000,
-            field: `disease_${d.diseaseId || idx + 1000}`,
-            name: d.name,
-            type: "string",
-            diseaseId: d.diseaseId,
-            description: d.description,
-            category: "genital",
-        }))
-    }
-
-    // Check if this has existing results
-    const hasResult = pupilData?.active && !!pupilData?.healthCheckHistoryRes
-
-    // Initialize form data with existing values
-    useEffect(() => {
-        if (pupilData) {
-            console.log("Initializing form data with pupilData:", pupilData)
-
-            // Initialize measurements for physical category
-            const initialMeasurements = {}
-            const initialNotes = {}
-
-            if (hasResult && pupilData.healthCheckHistoryRes) {
-                // Populate from existing health check results
-                const results = pupilData.healthCheckHistoryRes
-
-                // Physical measurements
-                initialMeasurements.height = results.height || ""
-                initialMeasurements.weight = results.weight || ""
-                initialMeasurements.rightEyeVision = results.rightEyeVision || ""
-                initialMeasurements.leftEyeVision = results.leftEyeVision || ""
-                initialMeasurements.heartRate = results.heartRate || ""
-
-                // Notes for other categories
-                initialNotes.bloodPressure = results.bloodPressure || ""
-                initialNotes.hearAnuscultaion = results.hearAnuscultaion || ""
-                initialNotes.lungs = results.lungs || ""
-                initialNotes.dentalCheck = results.dentalCheck || ""
-                initialNotes.earCondition = results.earCondition || ""
-                initialNotes.noseCondition = results.noseCondition || ""
-                initialNotes.throatCondition = results.throatCondition || ""
-                initialNotes.skinAndMucosa = results.skinAndMucosa || ""
-                initialNotes.digestiveSystem = results.digestiveSystem || ""
-                initialNotes.urinarySystem = results.urinarySystem || ""
-                initialNotes.musculoskeletalSystem = results.musculoskeletalSystem || ""
-                initialNotes.neurologyAndPsychiatry = results.neurologyAndPsychiatry || ""
-                initialNotes.conclusion = results.additionalNotes || ""
-
-                // Handle genital diseases
-                if (Array.isArray(results.diseases)) {
-                    results.diseases.forEach((disease) => {
-                        const fieldKey = `disease_${disease.diseaseId}`
-                        initialNotes[fieldKey] = disease.note || ""
-                    })
-                }
-            } else {
-                // Initialize with empty values for new entries
-                HEALTH_CHECK_DISEASES.forEach((disease) => {
-                    if (disease.category === "physical") {
-                        initialMeasurements[disease.field] = ""
-                    } else {
-                        initialNotes[disease.field] = ""
-                    }
-                })
-
-                // Initialize genital diseases
-                if (Array.isArray(pupilData.disease)) {
-                    pupilData.disease.forEach((d, idx) => {
-                        const fieldKey = `disease_${d.diseaseId || idx + 1000}`
-                        initialNotes[fieldKey] = d.note || ""
-                    })
-                }
-
-                initialNotes.conclusion = ""
-            }
-
-            setMeasurements(initialMeasurements)
-            setNotes(initialNotes)
-
-            console.log("Initialized measurements:", initialMeasurements)
-            console.log("Initialized notes:", initialNotes)
-        }
-    }, [pupilData, hasResult])
-
-    // Handle checkbox changes
     const handleHealthCheck = (diseaseId, checked) => {
         setHealthData((prev) => ({ ...prev, [diseaseId]: checked }))
     }
-
-    // Handle note changes
     const handleNoteChange = (diseaseKey, value) => {
-        console.log(`Updating note for ${diseaseKey}:`, value)
         setNotes((prev) => ({ ...prev, [diseaseKey]: value }))
     }
-
-    // Handle measurement changes
     const handleMeasurementChange = (diseaseKey, value) => {
         setMeasurements((prev) => ({ ...prev, [diseaseKey]: value }))
     }
-
-    // Handle section expansion
     const handleSectionToggle = (section) => {
         setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }))
     }
-
-    // Get current field value for display
-    const getFieldValue = (disease, categoryKey) => {
-        if (hasResult && pupilData.healthCheckHistoryRes) {
-            // For read-only display, get from healthCheckHistoryRes
-            const results = pupilData.healthCheckHistoryRes
-
-            if (categoryKey === "physical") {
-                return results[disease.field] || ""
-            } else if (categoryKey === "genital") {
-                const genitalDisease = results.diseases?.find((d) => d.diseaseId === disease.diseaseId)
-                return genitalDisease?.note || ""
-            } else {
-                return results[disease.field] || ""
-            }
-        } else {
-            // For editable form, get from state
-            if (categoryKey === "physical") {
-                return measurements[disease.field] || ""
-            } else {
-                return notes[disease.field] || ""
-            }
-        }
-    }
-
-    // Map the current form state to the required DB format
     const getDetailsForDB = () => ({
-        height: measurements["height"] || "",
-        weight: measurements["weight"] || "",
-        rightEyeVision: measurements["rightEyeVision"] || "",
-        leftEyeVision: measurements["leftEyeVision"] || "",
-        bloodPressure: notes["bloodPressure"] || "",
-        heartRate: measurements["heartRate"] || "",
-        dentalCheck: notes["dentalCheck"] || "",
-        earCondition: notes["earCondition"] || "",
-        noseCondition: notes["noseCondition"] || "",
-        throatCondition: notes["throatCondition"] || "",
-        skinAndMucosa: notes["skinAndMucosa"] || "",
-        hearAnuscultaion: notes["hearAnuscultaion"] || "",
-        lungs: notes["lungs"] || "",
-        digestiveSystem: notes["digestiveSystem"] || "",
-        urinarySystem: notes["urinarySystem"] || "",
-        musculoskeletalSystem: notes["musculoskeletalSystem"] || "",
-        neurologyAndPsychiatry: notes["neurologyAndPsychiatry"] || "",
-        additionalNotes: notes["conclusion"] || "",
-        diseases: (diseaseCategories.genital.diseases || []).map((d) => ({
+        height: measurements['height'] || '',
+        weight: measurements['weight'] || '',
+        rightEyeVision: measurements['rightEyeVision'] || '',
+        leftEyeVision: measurements['leftEyeVision'] || '',
+        bloodPressure: notes['bloodPressure'] || '',
+        heartRate: measurements['heartRate'] || '',
+        dentalCheck: notes['dentalCheck'] || '',
+        earCondition: notes['earCondition'] || '',
+        noseCondition: notes['noseCondition'] || '',
+        throatCondition: notes['throatCondition'] || '',
+        skinAndMucosa: notes['skinAndMucosa'] || '',
+        hearAnuscultaion: notes['hearAnuscultaion'] || '',
+        lungs: notes['lungs'] || '',
+        digestiveSystem: notes['digestiveSystem'] || '',
+        urinarySystem: notes['urinarySystem'] || '',
+        musculoskeletalSystem: notes['musculoskeletalSystem'] || '',
+        neurologyAndPsychiatry: notes['neurologyAndPsychiatry'] || '',
+        additionalNotes: notes['conclusion'] || '',
+        diseases: (diseaseCategories.genital.diseases || []).map(d => ({
             diseaseId: d.diseaseId,
-            note: notes[d.field] || "",
+            note: notes[d.field] || ''
         })),
-    })
+    });
+    useEffect(() => {
+        if (pupilData && Array.isArray(pupilData.disease)) {
+            const genitalNotes = {};
+            pupilData.disease.forEach((d, idx) => {
+                const field = `disease_${d.diseaseId || idx + 1000}`;
+                genitalNotes[field] = d.note || "";
+            });
+            setNotes(prev => ({ ...genitalNotes, ...prev }));
+        }
+    }, [pupilData]);
 
-    // Validate all required fields are not empty
     const validateFields = () => {
         for (const categoryKey of Object.keys(diseaseCategories)) {
             for (const disease of diseaseCategories[categoryKey].diseases) {
                 if (categoryKey === "physical") {
-                    if (!measurements[disease.field]) {
-                        console.log(`Missing measurement for ${disease.field}`)
-                        return false
-                    }
+                    if (!measurements[disease.field]) return false;
                 } else {
-                    if (!notes[disease.field]) {
-                        console.log(`Missing note for ${disease.field}`)
-                        return false
-                    }
+                    if (!notes[disease.field]) return false;
                 }
             }
         }
-
-        if (!notes["conclusion"]) {
-            console.log("Missing conclusion")
-            return false
-        }
-
-        return true
-    }
-
-    // Save result to DB
+        if (!notes['conclusion']) return false;
+        return true;
+    };
     const handleSave = async (newStatus) => {
         if (!validateFields()) {
-            setSnackbar({ open: true, message: "Please fill in all required fields before saving.", severity: "error" })
-            return
+            setSnackbar({ open: true, message: "Please fill in all required fields before saving.", severity: "error" });
+            return;
         }
-
-        setStatus(newStatus)
-        const details = getDetailsForDB()
-        const consentId = pupilData?.consentFormId
-
+        setStatus(newStatus);
+        const details = getDetailsForDB();
+        // Use consentFormId prop if provided, otherwise fallback to pupilData?.consentFormId
+        const consentId = consentFormId || (pupilData && pupilData.consentFormId);
+        // Debug log for consentId
+        console.debug("[ScheduleDetails] Using consentId for save:", consentId);
         if (!consentId) {
-            console.error("Consent ID not found! pupilData:", pupilData)
-            setSnackbar({
-                open: true,
-                message: "Consent ID not found in pupilData. Please check your data source.",
-                severity: "error",
-            })
-            return
+            console.error("Consent ID not found! pupilData:", pupilData);
+            setSnackbar({ open: true, message: "Consent ID not found in pupilData or props. Please check your data source.", severity: "error" });
+            return;
         }
-
-        const payload = { ...details, status: newStatus }
-        console.log("Saving payload:", payload)
-
-        // Replace with your actual save logic
-        // const success = await saveResultOfHealthCheckCampaign(consentId, payload);
-        const success = true // Placeholder
-
+        const payload = { ...details, status: newStatus };
+        let success = false;
+        let errorMsg = null;
+        try {
+            success = await saveResultOfHealthCheckCampaign(consentId, payload);
+        } catch (err) {
+            errorMsg = err?.message || err?.toString() || null;
+        }
         if (success) {
-            setSnackbar({ open: true, message: `Saved as ${newStatus}.`, severity: "success" })
-            if (typeof onResultSaved === "function") onResultSaved()
+            setSnackbar({
+                open: true, message: `Saved as ${newStatus}`, severity: "success"
+            });
+            setTimeout(() => {
+                if (typeof onResultSaved === 'function') onResultSaved();
+            }, 1200);
         } else {
-            setSnackbar({ open: true, message: "Failed to save result.", severity: "error" })
+            setSnackbar({ open: true, message: errorMsg ? `Failed to save: ${errorMsg}` : "Failed to save result.", severity: "error" });
         }
+    };
+    const handleSubmit = () => {
+        setSnackbar({
+            open: true,
+            message: 'Health check completed for student ' + (pupilData && pupilData.firstName ? pupilData.firstName : '') + ' ' + (pupilData && pupilData.lastName ? pupilData.lastName : '') + '!',
+            severity: "success",
+        })
+        console.log("Health check details (for DB):", {
+            pupil_id: pupilId,
+            pupilData,
+            details: getDetailsForDB(),
+        })
     }
-
-    if (!HEALTH_CHECK_DISEASES.length && (!pupilData?.disease || pupilData.disease.length === 0)) {
+    if (pupilData && Array.isArray(pupilData.disease) && pupilData.disease.length > 0) {
+        diseaseCategories.genital.diseases = pupilData.disease.map((d, idx) => ({
+            disease_id: d.diseaseId || idx + 1000,
+            field: 'disease_' + (d.diseaseId ? d.diseaseId : (idx + 1000)),
+            name: d.name,
+            type: "string",
+            diseaseId: d.diseaseId,
+            description: d.description,
+            category: "genital"
+        }));
+    }
+    if (!sensitive_disease.length) {
         return (
             <div className="schedule-details-root empty-container">
                 <Warning sx={{ fontSize: 60, color: "#ff9800", mb: 2 }} />
@@ -325,10 +199,9 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved }) => {
             </div>
         )
     }
-
     return (
         <div className="schedule-details-root enhanced-ui">
-            {/* Header */}
+            {/* Quick Navigation Bar */}
             <Fade in={true} timeout={500}>
                 <Card className="details-header modern-card" elevation={2}>
                     <CardContent>
@@ -341,44 +214,50 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved }) => {
                                     <Box display="flex" alignItems="center" gap={2} mt={1}>
                                         <Chip
                                             icon={<Person />}
-                                            label={`${pupilData?.firstName} ${pupilData?.lastName}`}
+                                            label={(pupilData && pupilData.firstName ? pupilData.firstName : '') + ' ' + (pupilData && pupilData.lastName ? pupilData.lastName : '')}
                                             color="primary"
                                             variant="filled"
                                             sx={{ fontWeight: 500, fontSize: 16, px: 1.5, py: 0.5, borderRadius: 2 }}
                                         />
-                                        <Chip
-                                            icon={<Assignment />}
-                                            label={`ID: ${pupilId}`}
-                                            color="secondary"
-                                            variant="filled"
-                                            sx={{ fontWeight: 500, px: 1.2, borderRadius: 2 }}
-                                        />
-                                        <Chip
-                                            label={pupilData?.gradeName || "Grade"}
-                                            color="info"
-                                            variant="filled"
-                                            sx={{ fontWeight: 500, px: 1.2, borderRadius: 2 }}
-                                        />
-                                        {hasResult && (
-                                            <Chip
-                                                label="Has Results"
-                                                color="success"
-                                                variant="filled"
-                                                sx={{ fontWeight: 500, px: 1.2, borderRadius: 2 }}
-                                            />
-                                        )}
+                                        <Chip icon={<Assignment />} label={"ID: " + (pupilData?.pupilId || pupilId || 'N/A')} color="secondary" variant="filled" sx={{ fontWeight: 500, px: 1.2, borderRadius: 2 }} />
+                                        <Chip label={(pupilData && pupilData.gradeName) ? pupilData.gradeName : "Grade"} color="info" variant="filled" sx={{ fontWeight: 500, px: 1.2, borderRadius: 2 }} />
                                     </Box>
                                 </Box>
                             </Box>
+                            <Box display="flex" alignItems="center" gap={2}>
+                                {autoSaving && (
+                                    <Chip
+                                        icon={<LinearProgress size={16} />}
+                                        label="Auto-saving..."
+                                        size="small"
+                                        color="info"
+                                        variant="outlined"
+                                        sx={{ fontWeight: 500, px: 1.2, borderRadius: 2 }}
+                                    />
+                                )}
+                            </Box>
                         </Box>
+                        <LinearProgress
+                            variant="determinate"
+                            value={100}
+                            sx={{
+                                height: 10,
+                                borderRadius: 5,
+                                backgroundColor: "#e3f2fd",
+                                boxShadow: 1,
+                                my: 1,
+                                '& .MuiLinearProgress-bar': {
+                                    borderRadius: 5,
+                                    background: "linear-gradient(90deg, #43a047, #66bb6a)",
+                                },
+                            }}
+                        />
                     </CardContent>
                 </Card>
             </Fade>
-
             <div className="health-check-sections modern-section-list">
                 {Object.entries(diseaseCategories).map(([categoryKey, category], index) => {
-                    if (category.diseases.length === 0) return null
-
+                    if (category.diseases.length === 0) return null;
                     return (
                         <Grow in={true} timeout={300 + index * 100} key={categoryKey}>
                             <Accordion
@@ -389,82 +268,53 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved }) => {
                                     mb: 2.5,
                                     borderRadius: 3,
                                     boxShadow: expandedSections[categoryKey] ? 4 : 1,
-                                    background: expandedSections[categoryKey]
-                                        ? "linear-gradient(120deg, #f5fafd 60%, #e3f2fd 100%)"
-                                        : "#f8fafc",
+                                    background: expandedSections[categoryKey] ? "linear-gradient(120deg, #f5fafd 60%, #e3f2fd 100%)" : "#f8fafc",
                                     transition: "all 0.25s cubic-bezier(.4,2,.6,1)",
                                     border: expandedSections[categoryKey] ? "2px solid #90caf9" : "1px solid #e3e3e3",
                                 }}
                             >
-                                <AccordionSummary
-                                    expandIcon={<ExpandMore />}
-                                    className="section-header modern-accordion-header"
-                                    sx={{
-                                        minHeight: 64,
-                                        background: expandedSections[categoryKey] ? "#e3f2fd" : "#f5fafd",
-                                        borderRadius: 3,
-                                        boxShadow: expandedSections[categoryKey] ? 2 : 0,
-                                        px: 3,
-                                        py: 1.5,
-                                        "& .MuiAccordionSummary-content": { alignItems: "center", gap: 2 },
-                                    }}
-                                >
+                                <AccordionSummary expandIcon={<ExpandMore />} className="section-header modern-accordion-header" sx={{
+                                    minHeight: 64,
+                                    background: expandedSections[categoryKey] ? "#e3f2fd" : "#f5fafd",
+                                    borderRadius: 3,
+                                    boxShadow: expandedSections[categoryKey] ? 2 : 0,
+                                    px: 3,
+                                    py: 1.5,
+                                    '& .MuiAccordionSummary-content': { alignItems: 'center', gap: 2 },
+                                }}>
                                     <Box display="flex" alignItems="center" gap={2}>
-                                        <Box sx={{ fontSize: 30, color: "#1976d2", mr: 1 }}>{category.icon}</Box>
+                                        <Box sx={{ fontSize: 30, color: '#1976d2', mr: 1 }}>{category.icon}</Box>
                                         <Typography variant="h6" className="section-title" sx={{ fontWeight: 700, letterSpacing: 0.5 }}>
                                             {category.title}
                                         </Typography>
                                     </Box>
                                 </AccordionSummary>
-
-                                <AccordionDetails
-                                    className="section-content modern-accordion-details"
-                                    sx={{ px: 3, py: 2, background: "#fafdff", borderRadius: 2 }}
-                                >
+                                <AccordionDetails className="section-content modern-accordion-details" sx={{ px: 3, py: 2, background: '#fafdff', borderRadius: 2 }}>
                                     <Grid container spacing={2}>
                                         {category.diseases.map((disease) => (
                                             <Grid item xs={12} key={disease.disease_id || disease.field}>
-                                                <Paper
-                                                    className="disease-item modern-disease-item"
-                                                    elevation={0}
-                                                    sx={{
-                                                        p: 1.5,
-                                                        borderRadius: 2,
-                                                        background: "#fff",
-                                                        boxShadow: 1,
-                                                        mb: 1,
-                                                        transition: "box-shadow 0.2s",
-                                                        "&:hover": { boxShadow: 3, background: "#f5fafd" },
-                                                    }}
-                                                >
+                                                <Paper className="disease-item modern-disease-item" elevation={0} sx={{
+                                                    p: 1.5,
+                                                    borderRadius: 2,
+                                                    background: '#fff',
+                                                    boxShadow: 1,
+                                                    mb: 1,
+                                                    transition: 'box-shadow 0.2s',
+                                                    '&:hover': { boxShadow: 3, background: '#f5fafd' },
+                                                }}>
                                                     <Box display="flex" alignItems="flex-start" gap={1.5}>
                                                         <Box flex={1}>
-                                                            <Typography
-                                                                variant="subtitle2"
-                                                                className="disease-name"
-                                                                sx={{ fontWeight: 600, fontSize: 15, mb: 0.25 }}
-                                                            >
+                                                            <Typography variant="subtitle2" className="disease-name" sx={{ fontWeight: 600, fontSize: 15, mb: 0.25 }}>
                                                                 {disease.name}
                                                             </Typography>
                                                             <Box display="flex" gap={1.5} mt={0.5}>
-                                                                {categoryKey === "physical" ? (
+                                                                {categoryKey === 'physical' ? (
                                                                     <TextField
                                                                         size="small"
                                                                         label={disease.name}
-                                                                        value={getFieldValue(disease, categoryKey)}
-                                                                        onChange={(e) =>
-                                                                            !hasResult && handleMeasurementChange(disease.field, e.target.value)
-                                                                        }
-                                                                        InputProps={{ readOnly: hasResult }}
-                                                                        sx={{
-                                                                            minWidth: 90,
-                                                                            maxWidth: 120,
-                                                                            background: hasResult ? "#f5fafd" : "#fff",
-                                                                            borderRadius: 1,
-                                                                            boxShadow: 0,
-                                                                            fontWeight: 500,
-                                                                            fontSize: 13,
-                                                                        }}
+                                                                        value={measurements[disease.field] || ""}
+                                                                        onChange={(e) => handleMeasurementChange(disease.field, e.target.value)}
+                                                                        sx={{ minWidth: 90, maxWidth: 120, background: '#f5fafd', borderRadius: 1, boxShadow: 0, fontWeight: 500, fontSize: 13 }}
                                                                     />
                                                                 ) : (
                                                                     <TextField
@@ -472,17 +322,10 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved }) => {
                                                                         label="Notes & Observations"
                                                                         multiline
                                                                         rows={1}
-                                                                        value={getFieldValue(disease, categoryKey)}
-                                                                        onChange={(e) => !hasResult && handleNoteChange(disease.field, e.target.value)}
+                                                                        value={notes[disease.field || disease.disease_id] || ""}
+                                                                        onChange={(e) => handleNoteChange(disease.field || disease.disease_id, e.target.value)}
                                                                         placeholder="Add notes..."
-                                                                        InputProps={{ readOnly: hasResult }}
-                                                                        sx={{
-                                                                            flex: 1,
-                                                                            background: hasResult ? "#fafdff" : "#fff",
-                                                                            borderRadius: 1,
-                                                                            fontWeight: 500,
-                                                                            fontSize: 13,
-                                                                        }}
+                                                                        sx={{ flex: 1, background: '#fafdff', borderRadius: 1, fontWeight: 500, fontSize: 13 }}
                                                                     />
                                                                 )}
                                                             </Box>
@@ -495,9 +338,8 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved }) => {
                                 </AccordionDetails>
                             </Accordion>
                         </Grow>
-                    )
+                    );
                 })}
-
                 {/* Conclusion Field */}
                 <Box mt={4}>
                     <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
@@ -509,65 +351,50 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved }) => {
                         minRows={2}
                         maxRows={6}
                         label="Conclusion"
-                        value={notes["conclusion"] || ""}
-                        onChange={(e) => !hasResult && setNotes((prev) => ({ ...prev, conclusion: e.target.value }))}
+                        value={notes['conclusion'] || ''}
+                        onChange={e => setNotes(prev => ({ ...prev, conclusion: e.target.value }))}
                         placeholder="Enter overall conclusion or summary..."
-                        InputProps={{ readOnly: hasResult }}
-                        sx={{ background: hasResult ? "#fafdff" : "#fff", borderRadius: 2 }}
+                        sx={{ background: '#fafdff', borderRadius: 2 }}
                     />
                 </Box>
             </div>
-
             {/* Action Footer only if not hasResult */}
-            {!hasResult && (
-                <Fade in={true} timeout={800}>
-                    <Box
-                        className="action-footer modern-footer"
-                        sx={{
-                            position: "sticky",
-                            bottom: 0,
-                            zIndex: 10,
-                            background: "linear-gradient(90deg, #fafdff 80%, #e3f2fd 100%)",
-                            boxShadow: 3,
-                            borderRadius: 3,
-                            py: 2.5,
-                            px: 4,
-                            mt: 4,
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            gap: 3,
-                            transition: "box-shadow 0.2s",
-                        }}
-                    >
+            <Fade in={true} timeout={800}>
+                <Box className="action-footer modern-footer" sx={{
+                    position: 'sticky',
+                    bottom: 0,
+                    zIndex: 10,
+                    background: 'linear-gradient(90deg, #fafdff 80%, #e3f2fd 100%)',
+                    boxShadow: 3,
+                    borderRadius: 3,
+                    py: 2.5,
+                    px: 4,
+                    mt: 4,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    gap: 3,
+                    transition: 'box-shadow 0.2s',
+                }}>
+                    <Button variant="outlined" size="large" startIcon={<ArrowBack />} onClick={onBack} className="footer-button" sx={{ fontWeight: 600, borderRadius: 2, px: 3, py: 1 }}>
+                        Back to Students
+                    </Button>
+                    <Box sx={{ display: 'flex', gap: 2 }}>
                         <Button
-                            variant="outlined"
+                            variant="contained"
                             size="large"
-                            startIcon={<ArrowBack />}
-                            onClick={onBack}
-                            className="footer-button"
-                            sx={{ fontWeight: 600, borderRadius: 2, px: 3, py: 1 }}
+                            color="success"
+                            startIcon={<Save />}
+                            onClick={() => handleSave("COMPLETED")}
+                            className="footer-button save-button"
+                            disabled={isSaving}
+                            sx={{ fontWeight: 700, borderRadius: 2, px: 4, py: 1.2, fontSize: 18 }}
                         >
-                            Back to Students
+                            Complete
                         </Button>
-
-                        <Box sx={{ display: "flex", gap: 2 }}>
-                            <Button
-                                variant="contained"
-                                size="large"
-                                color="success"
-                                startIcon={<Save />}
-                                onClick={() => handleSave("COMPLETED")}
-                                className="footer-button save-button"
-                                sx={{ fontWeight: 700, borderRadius: 2, px: 4, py: 1.2, fontSize: 18 }}
-                            >
-                                Complete
-                            </Button>
-                        </Box>
                     </Box>
-                </Fade>
-            )}
-
+                </Box>
+            </Fade>
             <Snackbar
                 open={snackbar.open}
                 autoHideDuration={3000}
@@ -581,5 +408,5 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved }) => {
         </div>
     )
 }
-
 export default ScheduleDetails
+

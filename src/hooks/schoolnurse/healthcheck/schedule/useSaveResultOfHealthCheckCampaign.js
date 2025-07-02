@@ -9,6 +9,7 @@ export function useSaveResultOfHealthCheckCampaign() {
         setIsSaving(true);
         setError(null);
         try {
+            console.log("Saving health check campaign results for consent ID:", consentId, "with pupils data:", pupils);
             await saveResultCampaignOfPupilsAction(consentId, pupils);
             setIsSaving(false);
             return true;

@@ -41,7 +41,7 @@ const statusConfig = {
         color: "#f44336",
         bgColor: "#ffebee",
         icon: ErrorIcon,
-        label: "NONE",
+        label: "DONE",
     },
 }
 
