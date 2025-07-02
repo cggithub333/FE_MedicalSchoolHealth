@@ -7,22 +7,82 @@ import OtpModal from "./otp-modal.jsx"
 import { Navigate } from "react-router-dom"
 import useAuth from '@hooks/auth/useAuth.js';
 
+import { showSuccessToast, showErrorToast } from "@utils/toast-utils.js"
+
 export default function LoginModal() {
 
   const [open, setOpen] = useState(false)
   const [otpOpen, setOtpOpen] = useState(false)
   const [phoneNumber, setPhoneNumber] = useState("")
   const [password, setPassword] = useState("");
+  const [phoneError, setPhoneError] = useState("")
+  const [passwordError, setPasswordError] = useState("")
 
-  const { loginWithPwd, success, error, isLoading, role } = useAuth();
+  const { loginWithPwd, success, error: loginError, isLoading, role } = useAuth();
+
+  // Validate phone number (10 digits starting with 0)
+  const validatePhoneNumber = (phone) => {
+    const phoneRegex = /^0\d{9}$/;
+    return phoneRegex.test(phone);
+  };
+
+  // Validate form fields
+  const validateForm = () => {
+    let isValid = true;
+    
+    // Reset errors
+    setPhoneError("");
+    setPasswordError("");
+    
+    // Validate phone number
+    if (!phoneNumber.trim()) {
+      setPhoneError("Phone number is required");
+      isValid = false;
+    } else if (!validatePhoneNumber(phoneNumber.trim())) {
+      setPhoneError("Phone number must be 10 digits starting with 0");
+      isValid = false;
+    }
+    
+    // Validate password
+    if (!password.trim()) {
+      setPasswordError("Password is required");
+      isValid = false;
+    }
+    
+    return isValid;
+  };
+
+  // Handle phone number input change
+  const handlePhoneNumberChange = (e) => {
+    const value = e.target.value;
+    // Only allow digits and limit to 10 characters
+    const digitsOnly = value.replace(/\D/g, '').slice(0, 10);
+    setPhoneNumber(digitsOnly);
+    
+    // Clear error when user starts typing
+    if (phoneError) {
+      setPhoneError("");
+    }
+  };
+
+  // Handle password input change
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    
+    // Clear error when user starts typing
+    if (passwordError) {
+      setPasswordError("");
+    }
+  };
 
   const handleLoginWithOtp = () => {
-    if (phoneNumber.trim()) {
-      setOpen(false)
-      setOtpOpen(true)
-    } else {
-      alert("Please enter your phone number first")
+    if (!validatePhoneNumber(phoneNumber.trim())) {
+      setPhoneError("Please enter a valid 10-digit phone number starting with 0");
+      return;
     }
+    
+    setOpen(false)
+    setOtpOpen(true)
 
     // for debug:
     // console.log("OTP button clicked!");
@@ -30,13 +90,31 @@ export default function LoginModal() {
   }
 
   const handleLoginWithPwd = async () => {
+    // Validate form before proceeding
+    if (!validateForm()) {
+      showErrorToast("Invalid input. Please check your phone number and password.");
+      return;
+    }
 
     // check if localstorage now contains any information from last login, then remove it;
     localStorage.clear();
     localStorage.setItem("toolpad-mode", "light");
     
+    try {
+      await loginWithPwd(phoneNumber, password);
       
-    await loginWithPwd(phoneNumber, password);
+      // Check if login was successful by checking localStorage or other indicators
+      const userFullName = localStorage.getItem("userFullName");
+      
+      if (userFullName) {
+        showSuccessToast("Login successfully. Welcome back " + userFullName + "!");
+      } else {
+        showErrorToast("Login failed. Please check your phone number and password.");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      showErrorToast("Login failed. Please check your phone number and password.");
+    }
 
     // for debug:
     // console.log("Login password button clicked!");
@@ -82,20 +160,47 @@ export default function LoginModal() {
             <TextField
               label="Phone Number"
               type="tel"
-              placeholder="ex: 0848025113"
+              placeholder="Enter your phone number (e.g., 0848025113)"
               value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
+              onChange={handlePhoneNumberChange}
+              error={!!phoneError}
+              helperText={phoneError || "Must be 10 digits starting with 0"}
               fullWidth
               required
+              inputProps={{
+                maxLength: 10,
+                pattern: "[0-9]*"
+              }}
             />
-            <TextField label="Password" type="password" value={password} onKeyDown={(e) => handlePressEnter(e)}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password" fullWidth required />
+            <TextField 
+              label="Password" 
+              type="password" 
+              value={password} 
+              onKeyDown={(e) => handlePressEnter(e)}
+              onChange={handlePasswordChange}
+              error={!!passwordError}
+              helperText={passwordError}
+              placeholder="Enter your password" 
+              fullWidth 
+              required 
+            />
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              <Button variant="contained" size="large" fullWidth onClick={() => handleLoginWithPwd()}>
-                Sign In
+              <Button 
+                variant="contained" 
+                size="large" 
+                fullWidth 
+                onClick={() => handleLoginWithPwd()}
+                disabled={isLoading}
+              >
+                {isLoading ? "Signing In..." : "Sign In"}
               </Button>
-              <Button variant="outlined" size="large" fullWidth onClick={handleLoginWithOtp}>
+              <Button 
+                variant="outlined" 
+                size="large" 
+                fullWidth 
+                onClick={handleLoginWithOtp}
+                disabled={isLoading}
+              >
                 Login with OTP
               </Button>
             </Box>
