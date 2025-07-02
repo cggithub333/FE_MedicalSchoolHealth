@@ -11,6 +11,8 @@ import HealthCheckCampaign from './health-check-campaign/HealthCheckCampaign.jsx
 import MedicalEvents from './health-management/MedicalEvents.jsx';
 import Prescription from './health-management/Prescription.jsx';
 
+import PrescriptionRequestPage from './health-management/PrescriptionRequestPage.jsx';
+
 const SchoolNurseComponentPagePackages = {
     DashboardHome,
     Notification,
@@ -20,7 +22,8 @@ const SchoolNurseComponentPagePackages = {
     ScheduleHealthCheck,
     HealthCheckCampaign,
     Prescription,
-    MedicalEvents
+    MedicalEvents,
+    PrescriptionRequestPage
 };
 
 export default SchoolNurseComponentPagePackages;

@@ -3,6 +3,8 @@ import { Grid } from "@mui/material";
 import Breadcrumb from '@components/magic/Breadcrumb/CustomBreadcrumb';
 import CustomTittle from '@components/magic/CustomTittle/CustomTitle';
 
+import TakeMedicationBySession from '@components/schoolnurse/send-medication/TakeMedicationBySession';
+import PrescriptionRequest from '@components/schoolnurse/send-medication/PrescriptionRequest';
 
 const Prescription = () => {
 
@@ -18,9 +20,16 @@ const Prescription = () => {
                     <CustomTittle title={"Prescription Information"} />
                 </Grid>
             </Grid>
-            <Grid container justifyContent={'center'} sx={{ marginTop: "20px", backgroundColor: "#E6F8F9", pb: "50px" }}>
-                <Grid item size={{ xs: 10 }}>
-                    {/* <LatestVaccinationCampaign /> */}
+            <Grid container justifyContent={'center'} sx={{ marginTop: "40px", marginBottom: "40px", backgroundColor: "#E6F8F9", pb: "50px" }}>
+                <Grid item size={{ xs: 11 }}>
+                    <Grid container spacing={2} >
+                        <Grid item size={{ xs: 7 }} backgroundColor="#fff9ea" display={'flex'} justifyContent={'center'} padding="10px">
+                            <TakeMedicationBySession />
+                        </Grid>
+                        <Grid item size={{ xs: 5 }} backgroundColor="#fff9ea" display={'flex'} justifyContent={'center'} padding="10px">
+                            <PrescriptionRequest linkPrescriptionRequestPage={'./prescription-requests'} />
+                        </Grid>
+                    </Grid>
                 </Grid>
             </Grid>
         </div>
