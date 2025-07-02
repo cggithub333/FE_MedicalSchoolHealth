@@ -380,20 +380,7 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
                     <Button variant="outlined" size="large" startIcon={<ArrowBack />} onClick={onBack} className="footer-button" sx={{ fontWeight: 600, borderRadius: 2, px: 3, py: 1 }}>
                         Back to Students
                     </Button>
-                    <Box sx={{ display: 'flex', gap: 2 }}>
-                        <Button
-                            variant="contained"
-                            size="large"
-                            color="success"
-                            startIcon={<Save />}
-                            onClick={() => handleSave("COMPLETED")}
-                            className="footer-button save-button"
-                            disabled={isSaving}
-                            sx={{ fontWeight: 700, borderRadius: 2, px: 4, py: 1.2, fontSize: 18 }}
-                        >
-                            Complete
-                        </Button>
-                    </Box>
+
                 </Box>
             </Fade>
             <Snackbar

@@ -3,8 +3,6 @@ import "./StyleScheduleInjectedList.scss"
 import { useGetDetailsOfCampaignByID } from "../../../../../hooks/manager/healthcheck/campaign/useGetDetaisOfCampaignByID"
 import ScheduleDetails from "../healthcheck-schedule-management-form/ScheduleDetails"
 import ScheduleResult from "../healthcheck-schedule-management-result/ScheduleResult"
-
-
 import {
     Table,
     TableBody,
@@ -313,7 +311,7 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
                                             <TableCell align="center">
                                                 <Checkbox
                                                     checked={student.active}
-                                                    disabled={student.active} // Only disable if already active/completed
+                                                    disabled // Always disabled, user cannot change status
                                                     color="success"
                                                     icon={<CheckCircleOutline />}
                                                     checkedIcon={<CheckCircle />}
@@ -322,16 +320,6 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
                                                         "&.Mui-checked": {
                                                             color: "#43a047",
                                                         },
-                                                    }}
-                                                    onChange={() => {
-                                                        if (!student.active) {
-                                                            // TODO: Implement logic to failed when dont complete the details first
-                                                            setSnackbar({
-                                                                open: true,
-                                                                message: `Fail to update status ${student.firstName} ${student.lastName}`,
-                                                                severity: "success",
-                                                            })
-                                                        }
                                                     }}
                                                 />
                                             </TableCell>
