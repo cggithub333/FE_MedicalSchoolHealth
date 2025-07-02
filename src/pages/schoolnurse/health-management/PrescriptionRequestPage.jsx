@@ -5,6 +5,7 @@ import { Grid } from '@mui/material';
 
 import { ImExit as ExitIcon } from "react-icons/im";
 import FloatingNavigateButton from '@components/magic/FloatingNavigateButton/FloatingNavigateButton';
+import PrescriptionRequestPageContent from '@components/schoolnurse/send-medication/PrescriptionRequestPageContent';
 
 const PrescriptionRequestPage = () => {
   return (
@@ -20,8 +21,8 @@ const PrescriptionRequestPage = () => {
         </Grid>
       </Grid>
       <Grid container justifyContent={'center'} sx={{ marginTop: "20px", backgroundColor: "#E6F8F9", pb: "50px" }}>
-        <Grid item size={{ xs: 10 }}>
-          {/* <LatestVaccinationCampaign /> */}
+        <Grid item size={{ xs: 11 }}>
+          <PrescriptionRequestPageContent/>
           <FloatingNavigateButton
                   navigateLink="./../../prescription"
                   iconForAvatar={ExitIcon}
