@@ -15,7 +15,7 @@ const HEALTH_CHECK_DISEASES = [
     { field: "rightEyeVision", name: "Right Eye Vision", type: "string", category: "vision" },
     { field: "leftEyeVision", name: "Left Eye Vision", type: "string", category: "vision" },
     { field: "bloodPressure", name: "Blood Pressure", type: "string", category: "cardiovascular" },
-    { field: "heartRate", name: "Heart Rate", type: "number", category: "cardiovascular" },
+    { field: "heartRate", name: "Heart Rate", type: "number", category: "physical" },
     { field: "hearAnuscultaion", name: "Lung Auscultation", type: "string", category: "cardiovascular" },
     { field: "lungs", name: "Lungs", type: "string", category: "cardiovascular" },
     { field: "dentalCheck", name: "Dental Check", type: "string", category: "dental" },
@@ -82,8 +82,8 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
     const getDetailsForDB = () => ({
         height: measurements['height'] || '',
         weight: measurements['weight'] || '',
-        rightEyeVision: measurements['rightEyeVision'] || '',
-        leftEyeVision: measurements['leftEyeVision'] || '',
+        rightEyeVision: notes['rightEyeVision'] || '',
+        leftEyeVision: notes['leftEyeVision'] || '',
         bloodPressure: notes['bloodPressure'] || '',
         heartRate: measurements['heartRate'] || '',
         dentalCheck: notes['dentalCheck'] || '',
@@ -117,14 +117,15 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
     const validateFields = () => {
         for (const categoryKey of Object.keys(diseaseCategories)) {
             for (const disease of diseaseCategories[categoryKey].diseases) {
+                // Only 'physical' fields use measurements, all others use notes
                 if (categoryKey === "physical") {
-                    if (!measurements[disease.field]) return false;
+                    if (measurements[disease.field] === undefined || measurements[disease.field] === "") return false;
                 } else {
-                    if (!notes[disease.field]) return false;
+                    if (notes[disease.field] === undefined || notes[disease.field] === "") return false;
                 }
             }
         }
-        if (!notes['conclusion']) return false;
+        if (notes['conclusion'] === undefined || notes['conclusion'] === "") return false;
         return true;
     };
     const handleSave = async (newStatus) => {
