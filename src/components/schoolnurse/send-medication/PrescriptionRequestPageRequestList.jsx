@@ -23,7 +23,8 @@ import {
   TableHead,
   TableRow,
   IconButton,
-  Skeleton
+  Skeleton,
+  Pagination
 } from "@mui/material"
 import {
   LocalPharmacy,
@@ -68,6 +69,9 @@ const PrescriptionRequestPageRequestList = () => {
   const [selectedRequest, setSelectedRequest] = useState(null)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [imageOpen, setImageOpen] = useState(false)
+
+  const REQUESTS_PER_PAGE = 2;
+  const [currentPage, setCurrentPage] = useState(1)
 
   const { updateStatus, error: updateError, success: updateSuccess } = useUpdatePrescriptionStatus()
   const { pendingMedicationRequests, loading, error, refetch } = useAllPendingPrescriptions()
@@ -205,85 +209,109 @@ const PrescriptionRequestPageRequestList = () => {
       </Box>
 
       {/* Request Cards Grid */}
-      <Grid container spacing={3}>
-        {pendingMedicationRequests.map((request) => (
-          <Grid item size={{ xs: 12}} key={request.sendMedicationId}>
-            <Card
-              sx={{
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-                height: "100%",
-                "&:hover": {
-                  transform: "translateY(-4px)",
-                  boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
-                },
-              }}
-              onClick={() => handleCardClick(request)}
-            >
-              <CardContent sx={{ p: 3 }}>
-                {/* Header with Status */}
-                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <Person color="primary" />
-                    <Typography variant="h6" fontWeight="bold">
-                      {request.pupilId}
-                    </Typography>
-                  </Box>
-                  <Chip label={request.status} color={getStatusColor(request.status)} size="small" variant="filled" />
-                </Box>
+      <Grid container spacing={3} marginTop={2}>
+        {pendingMedicationRequests.map((request, idx) => {
 
-                {/* Disease Name */}
-                <Typography variant="h6" fontWeight="bold" color="text.primary" sx={{ mb: 2 }}>
-                  {request.diseaseName}
-                </Typography>
+          const startIdx = (currentPage - 1) * REQUESTS_PER_PAGE;
+          const endIdx = startIdx + REQUESTS_PER_PAGE;
 
-                {/* Dates Information */}
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 1, mb: 2 }}>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <CalendarToday fontSize="small" color="action" />
-                    <Typography variant="body2" color="text.secondary">
-                      Requested:
-                    </Typography>
-                    <Typography variant="body2" fontWeight="bold">
-                      {formatDate(request.requestedDate).date}
-                    </Typography>
-                  </Box>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <Schedule fontSize="small" color="success" />
-                    <Typography variant="body2" color="text.secondary">
-                      Treatment:
-                    </Typography>
-                    <Typography variant="body2" fontWeight="bold" color="success.main">
-                      {formatSimpleDate(request.startDate)} - {formatSimpleDate(request.endDate)}
-                    </Typography>
-                  </Box>
-                </Box>
+          if (idx < startIdx || idx >= endIdx) { // out of current page range
+            return null; // Skip rendering this card
+          }
 
-                {/* Medication Count */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    bgcolor: "grey.100",
-                    p: 1.5,
-                    borderRadius: 1,
-                  }}
-                >
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <Medication color="primary" fontSize="small" />
-                    <Typography variant="body2" fontWeight="bold">
-                      {request.medicationItems.length} Medications
-                    </Typography>
+          return (
+            <Grid item size={{ xs: 12 }} key={request.sendMedicationId}>
+              <Card
+                sx={{
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                  height: "100%",
+                  "&:hover": {
+                    transform: "translateY(-4px)",
+                    boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
+                  },
+                }}
+                onClick={() => handleCardClick(request)}
+              >
+                <CardContent sx={{ p: 3 }}>
+                  {/* Header with Status */}
+                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <Person color="primary" />
+                      <Typography variant="h6" fontWeight="bold">
+                        {request.pupilId}
+                      </Typography>
+                    </Box>
+                    <Chip label={request.status} color={getStatusColor(request.status)} size="small" variant="filled" />
                   </Box>
-                  <Typography variant="body2" color="primary.main" fontWeight="bold">
-                    Click to Review
+
+                  {/* Disease Name */}
+                  <Typography variant="h6" fontWeight="bold" color="text.primary" sx={{ mb: 2 }}>
+                    {request.diseaseName}
                   </Typography>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
+
+                  {/* Dates Information */}
+                  <Box sx={{ display: "flex", flexDirection: "column", gap: 1, mb: 2 }}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <CalendarToday fontSize="small" color="action" />
+                      <Typography variant="body2" color="text.secondary">
+                        Requested:
+                      </Typography>
+                      <Typography variant="body2" fontWeight="bold">
+                        {formatDate(request.requestedDate).date}
+                      </Typography>
+                    </Box>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <Schedule fontSize="small" color="success" />
+                      <Typography variant="body2" color="text.secondary">
+                        Treatment:
+                      </Typography>
+                      <Typography variant="body2" fontWeight="bold" color="success.main">
+                        {formatSimpleDate(request.startDate)} - {formatSimpleDate(request.endDate)}
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  {/* Medication Count */}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      bgcolor: "grey.100",
+                      p: 1.5,
+                      borderRadius: 1,
+                    }}
+                  >
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <Medication color="primary" fontSize="small" />
+                      <Typography variant="body2" fontWeight="bold">
+                        {request.medicationItems.length} Medications
+                      </Typography>
+                    </Box>
+                    <Typography variant="body2" color="primary.main" fontWeight="bold">
+                      Click to Review
+                    </Typography>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+          )
+        })}
+        <Grid item size={{xs: 12}} sx={{ display: "flex", justifyContent: "center", mt: 3}}>
+        {
+          pendingMedicationRequests != null && (pendingMedicationRequests || []) && (
+              <Pagination count={Math.ceil(pendingMedicationRequests.length / REQUESTS_PER_PAGE)} 
+                          variant="outlined" 
+                          color="primary" 
+                          onChange={(event, page) => {
+                            // debug:
+                            // console.log("Page changed to:", page);
+                            setCurrentPage(page);
+                          }}/>
+          )
+        }
+        </Grid>
       </Grid>
 
       {/* Detail Modal */}
