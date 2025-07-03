@@ -25,10 +25,10 @@ const SearchPupilInformationById = () => {
   const { pupilInfo, isLoading: pupilLoading, error, refetch } = useSearchPupilInforByPupilId(searchValue);
 
   //debug:
-  console.log("Search Value:", searchValue);
-  console.log("Pupil Info:", pupilInfo);
-  console.log("Pupil Loading:", pupilLoading);
-  console.log("Error:", error);
+  // console.log("Search Value:", searchValue);
+  // console.log("Pupil Info:", pupilInfo);
+  // console.log("Pupil Loading:", pupilLoading);
+  // console.log("Error:", error);
 
   // Debounced search effect
   useEffect(() => {

@@ -70,7 +70,7 @@ const PrescriptionRequestPageRequestList = () => {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [imageOpen, setImageOpen] = useState(false)
 
-  const REQUESTS_PER_PAGE = 2;
+  const REQUESTS_PER_PAGE = 3;
   const [currentPage, setCurrentPage] = useState(1)
 
   const { updateStatus, error: updateError, success: updateSuccess } = useUpdatePrescriptionStatus()
