@@ -50,13 +50,24 @@ import {
 
 import { FaChildReaching as ChildIcon } from "react-icons/fa6";
 import usePrescriptionByPupil from "@hooks/parent/send-medication/usePrescriptionByPupil";
+import useDeleteSendMedicationById from "@hooks/parent/send-medication/useDeleteSendMedicationById";
+
+import { showWarningToast, showErrorToast, showSuccessToast } from "@utils/toast-utils";
 
 const PrescriptionSearching = ({ pupil, userFullName }) => {
 
   const { prescriptionArr, loading, error, refetch } = usePrescriptionByPupil(pupil.pupilId)
+  const { responseData, loading: loadingDelete, error: errorDelete, deleteSendMedicationWithId } = useDeleteSendMedicationById();
+  
+
+  // reload prescription data when a prescription is deleted
+  // This is to ensure that the prescription list is updated after deletion
+  useEffect(() => {
+    refetch(pupil.pupilId);
+  }, [responseData, errorDelete])
 
   // debug:
-  console.log('PrescriptionSearching - prescriptionArr:\n', JSON.stringify(prescriptionArr))
+  // console.log('PrescriptionSearching - prescriptionArr:\n', JSON.stringify(prescriptionArr))
 
   // Search and filter states
   const [searchYear, setSearchYear] = useState("")
@@ -71,7 +82,7 @@ const PrescriptionSearching = ({ pupil, userFullName }) => {
     return prescriptionArr.filter((record) => {
 
       // debug:
-      console.log('PrescriptionSearching - record:\n', JSON.stringify(record))
+      // console.log('PrescriptionSearching - record:\n', JSON.stringify(record))
 
       const matchesYear = searchYear === "" || record.requestedDate.includes(searchYear)
       const matchesStatus = selectedStatus === "ALL" || record.status === selectedStatus
@@ -120,6 +131,28 @@ const PrescriptionSearching = ({ pupil, userFullName }) => {
   const handleCardClick = (record) => {
     setSelectedRecord(record)
     setDialogOpen(true)
+  }
+
+  const handleDeletePrescription = async () => {
+    
+    await showWarningToast("This action cannot be undone. Making sure you want to delete this prescription.");
+
+    if (!confirm("You can't get back the prescription if you delete it. Do you want to continue?")) {
+      showErrorToast("Prescription deletion cancelled.");
+      return;
+    }
+
+    // deleting ...:
+    // debug:
+    // console.log("selectedRecord:\n", JSON.stringify(selectedRecord))
+    await deleteSendMedicationWithId(selectedRecord.sendMedicationId);
+    if (error) {
+      showErrorToast("Failed to delete prescription. Please try again.");
+    }
+    else {
+      showSuccessToast("Prescription deleted successfully.");
+      setDialogOpen(false)
+    }
   }
 
   const handleCloseDialog = () => {
@@ -527,7 +560,7 @@ const PrescriptionSearching = ({ pupil, userFullName }) => {
                       {selectedRecord.medicationItems.map((medication, idx) => {
                       
                         // debug:
-                        console.log('PrescriptionSearching - medication:\n', JSON.stringify(medication))
+                        // console.log('PrescriptionSearching - medication:\n', JSON.stringify(medication))
                         
                         return (
                           <TableRow key={idx}>
@@ -588,6 +621,9 @@ const PrescriptionSearching = ({ pupil, userFullName }) => {
         </DialogContent>
 
         <DialogActions sx={{ px: 3, py: 2 }}>
+          <Button onClick={handleDeletePrescription} sx={{background: "red"}} variant="contained" size="small">
+            Delete
+          </Button>
           <Button onClick={handleCloseDialog} variant="contained" size="small">
             Close
           </Button>

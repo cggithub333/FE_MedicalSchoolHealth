@@ -40,3 +40,27 @@ export const showErrorToast = (message) => {
     transition: Bounce,
   });
 }
+
+const delay = (ms) => new Promise(res => setTimeout(res, ms));
+
+export const showWarningToast = async (message) => {
+  toast.warn(`${message}!`, {
+    style: {
+      minWidth: '400px',
+      maxWidth: '600px',
+      background: '#2e2a1e',     // Warm dark background
+      color: '#ffe9b3',          // Soft yellowish text
+      border: '1px solid #ffc107' // Amber border
+    },
+    position: "top-right",
+    autoClose: 2999,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    theme: "light",
+    transition: Bounce,
+  });
+
+  await delay(2000);
+};
