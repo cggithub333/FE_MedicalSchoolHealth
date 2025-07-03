@@ -16,57 +16,54 @@ import {
 } from "@mui/material"
 import { Search, Person, People, CalendarToday, Phone, Email, School } from "@mui/icons-material"
 
-const pupilInfo = {
-  pupilId: "PP0001",
-  lastName: "Nguyen",
-  firstName: "An",
-  birthDate: "14-05-2012",
-  gender: "M",
-  gradeId: 1,
-  startYear: 2023,
-  gradeLevel: "GRADE_1",
-  gradeName: "Lớp 1A",
-  parents: [
-    {
-      userId: "PR0001",
-      lastName: "Minh",
-      firstName: "Tri",
-      email: "quachtri865@gmail.com",
-      phoneNumber: 8326699907,
-      role: "PARENT",
-    },
-  ],
-}
+import useSearchPupilInforByPupilId from "@hooks/schoolnurse/useSearchPupilInforByPupilId"
 
 const SearchPupilInformationById = () => {
   const [searchValue, setSearchValue] = useState("")
   const [pupilData, setPupilData] = useState(null)
-  const [isLoading, setIsLoading] = useState(false)
+
+  const { pupilInfo, isLoading: pupilLoading, error, refetch } = useSearchPupilInforByPupilId(searchValue);
+
+  //debug:
+  console.log("Search Value:", searchValue);
+  console.log("Pupil Info:", pupilInfo);
+  console.log("Pupil Loading:", pupilLoading);
+  console.log("Error:", error);
 
   // Debounced search effect
   useEffect(() => {
-    if (!searchValue.trim()) {
+    // if searchValue is empty, reset pupilData:
+    if (!searchValue.trim()) {1
       setPupilData(null)
       return
     }
 
-    setIsLoading(true)
-    const timeoutId = setTimeout(() => {
-      // Simulate API call - for now just return the fake data if search matches
-      if (
-        searchValue.toLowerCase().includes("pp0001") ||
-        searchValue.toLowerCase().includes("nguyen") ||
-        searchValue.toLowerCase().includes("an")
-      ) {
-        setPupilData(pupilInfo)
-      } else {
+    const timeoutId = setTimeout(async () => {
+      try {
+        await refetch(searchValue);
+      } catch (error) {
+        console.error("Error searching for pupil:", error);
         setPupilData(null)
       }
-      setIsLoading(false)
-    }, 500)
+    }, 300) // send request after 300ms delay for each change
 
-    return () => clearTimeout(timeoutId)
-  }, [searchValue])
+    // Cleanup function to prevent memory leaks
+    return () => {
+      clearTimeout(timeoutId)
+    }
+  }, [searchValue, refetch])
+
+  // Separate effect to handle pupilInfo updates
+  useEffect(() => {
+    if (pupilInfo) {
+      console.log("Pupil found:", pupilInfo);
+      setPupilData(pupilInfo)
+    } else if (searchValue.trim() && !pupilLoading) {
+      // Only set to null if we have a search value and not loading
+      console.log("No pupil found for:", searchValue);
+      setPupilData(null)
+    }
+  }, [pupilInfo, pupilLoading, searchValue])
 
   const formatPhoneNumber = (phone) => {
     const phoneStr = phone.toString()
@@ -74,7 +71,7 @@ const SearchPupilInformationById = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    <Container maxWidth="lg" sx={{ py: 4, minHeight: "70vh", transition: "all 0.3s ease" }}>
       <Box sx={{ textAlign: "center", mb: 4 }}>
         <Typography variant="h4" component="h2" gutterBottom sx={{ fontWeight: "bold", color: "text.primary" }}>
           Pupil Searching
@@ -100,20 +97,45 @@ const SearchPupilInformationById = () => {
       </Box>
 
       {/* Loading State */}
-      {isLoading && (
-        <Box sx={{ textAlign: "center", py: 4 }}>
-          <Box sx={{ display: "inline-flex", alignItems: "center", gap: 2 }}>
-            <CircularProgress size={20} />
-            <Typography color="text.secondary">Searching...</Typography>
-          </Box>
+      <Box 
+        sx={{ 
+          textAlign: "center", 
+          py: 4,
+          minHeight: "200px",
+          opacity: pupilLoading ? 1 : 0,
+          transition: "opacity 0.3s ease-in-out",
+          pointerEvents: pupilLoading ? "auto" : "none",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <Box sx={{ display: "inline-flex", alignItems: "center", gap: 2 }}>
+          <CircularProgress size={20} />
+          <Typography color="text.secondary">Searching...</Typography>
         </Box>
-      )}
+      </Box>
 
       {/* Pupil Information Display */}
-      {pupilData && !isLoading && (
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+      {pupilData && !pupilLoading && (
+        <Box 
+          sx={{ 
+            display: "flex", 
+            flexDirection: "column", 
+            gap: 3,
+            opacity: pupilData ? 1 : 0,
+            transition: "opacity 0.3s ease-in-out",
+            transform: pupilData ? "translateY(0)" : "translateY(20px)"
+          }}
+        >
           {/* Pupil Basic Information */}
-          <Card elevation={2}>
+          <Card elevation={2} sx={{
+            transition: "all 0.3s ease",
+              "&:hover": { 
+                boxShadow: 3, 
+                transform: "scale(1.03)"
+              }, 
+            }}>
             <CardHeader
               avatar={<Person sx={{ color: "primary.main" }} />}
               title={
@@ -157,7 +179,13 @@ const SearchPupilInformationById = () => {
           </Card>
 
           {/* Parent Information */}
-          <Card elevation={2}>
+          <Card elevation={2} sx={{
+            transition: "all 0.3s ease",
+            "&:hover": {
+              boxShadow: 3,
+              transform: "scale(1.03)"
+            },
+          }}>
             <CardHeader
               avatar={<People sx={{ color: "success.main" }} />}
               title={
@@ -209,15 +237,27 @@ const SearchPupilInformationById = () => {
         </Box>
       )}
 
-      {/* No Results */}
-      {searchValue && !pupilData && !isLoading && (
-        <Box sx={{ textAlign: "center", py: 4 }}>
-          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
-            <Person sx={{ fontSize: 48, color: "text.disabled" }} />
-            <Typography color="text.secondary" fontSize={'17px'}>No pupil found matching your search criteria</Typography>
-          </Box>
+      {/* No Results - Always rendered but with opacity transition to prevent layout jumping */}
+      <Box 
+        sx={{ 
+          textAlign: "center", 
+          py: 4,
+          minHeight: "200px", // Maintain consistent height
+          opacity: (searchValue && !pupilData && !pupilLoading) ? 1 : 0,
+          transition: "opacity 0.3s ease-in-out",
+          pointerEvents: (searchValue && !pupilData && !pupilLoading) ? "auto" : "none"
+        }}
+      >
+        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+          <Person sx={{ fontSize: 40, color: "text.disabled" }} />
+          <Typography color="text.secondary" fontSize={'17px'}>No pupil found</Typography>
+          {error && (
+            <Typography color="error" fontSize={'14px'}>
+              Error: {error.message || "Something went wrong"}
+            </Typography>
+          )}
         </Box>
-      )}
+      </Box>
     </Container>
   )
 }
