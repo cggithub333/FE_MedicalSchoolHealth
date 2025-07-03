@@ -405,8 +405,8 @@ const allCampaign = () => {
                                                     >
                                                         {campaign.titleCampaign}
                                                     </Typography>
-                                                    {/* Only show action menu for COMPLETED campaigns */}
-                                                    {campaign.status === "COMPLETED" && (
+                                                    {/* Only show action menu for PENDING, PUBLISHED, COMPLETED campaigns */}
+                                                    {["PENDING", "PUBLISHED", "COMPLETED"].includes(campaign.status) && (
                                                         <IconButton
                                                             size="small"
                                                             onClick={(e) => handleMenuClick(e, campaign.campaignId)}
@@ -535,15 +535,37 @@ const allCampaign = () => {
                     },
                 }}
             >
-                <MenuItem
-                    onClick={() => handleViewCampaign(allCampaigns.find((c) => c.campaignId === menuCampaignId))}
-                    sx={{ borderRadius: 1, mx: 1, my: 0.5 }}
-                >
-                    <ListItemIcon>
-                        <VisibilityIcon color="primary" />
-                    </ListItemIcon>
-                    <ListItemText>View Details</ListItemText>
-                </MenuItem>
+                {(() => {
+                    const campaign = allCampaigns.find((c) => c.campaignId === menuCampaignId);
+                    if (!campaign) return null;
+                    if (campaign.status === "COMPLETED") {
+                        return (
+                            <MenuItem
+                                onClick={() => handleViewCampaign(campaign)}
+                                sx={{ borderRadius: 1, mx: 1, my: 0.5 }}
+                            >
+                                <ListItemIcon>
+                                    <VisibilityIcon color="primary" />
+                                </ListItemIcon>
+                                <ListItemText>View Details</ListItemText>
+                            </MenuItem>
+                        );
+                    }
+                    if (["PENDING", "PUBLISHED"].includes(campaign.status)) {
+                        return (
+                            <MenuItem
+                                onClick={() => {/* TODO: implement delete handler */ }}
+                                sx={{ borderRadius: 1, mx: 1, my: 0.5 }}
+                            >
+                                <ListItemIcon>
+                                    <DeleteIcon color="error" />
+                                </ListItemIcon>
+                                <ListItemText>Delete</ListItemText>
+                            </MenuItem>
+                        );
+                    }
+                    return null;
+                })()}
             </Menu>
         </div>
     )

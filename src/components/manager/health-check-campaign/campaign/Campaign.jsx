@@ -367,7 +367,7 @@ const HealthCampaignManager = () => {
                                                     <IconButton
                                                         size="small"
                                                         onClick={(e) =>
-                                                            campaign.statusHealthCampaign === "COMPLETED"
+                                                            ["PENDING", "PUBLISHED", "COMPLETED"].includes(campaign.statusHealthCampaign)
                                                                 ? handleMenuClick(e, campaign.campaignId)
                                                                 : null
                                                         }
@@ -379,7 +379,7 @@ const HealthCampaignManager = () => {
                                                                 transform: "scale(1.1)",
                                                             },
                                                             transition: "all 0.3s ease",
-                                                            visibility: campaign.statusHealthCampaign === "COMPLETED" ? "visible" : "hidden",
+                                                            visibility: ["PENDING", "PUBLISHED", "COMPLETED"].includes(campaign.statusHealthCampaign) ? "visible" : "hidden",
                                                         }}
                                                     >
                                                         <MoreVertIcon />
@@ -475,7 +475,7 @@ const HealthCampaignManager = () => {
             {/* Action Menu */}
             <Menu
                 anchorEl={anchorEl}
-                open={Boolean(anchorEl) && allCampaigns.find((c) => c.campaignId === menuCampaignId)?.statusHealthCampaign === "COMPLETED"}
+                open={Boolean(anchorEl) && ["PENDING", "PUBLISHED", "COMPLETED"].includes(allCampaigns.find((c) => c.campaignId === menuCampaignId)?.statusHealthCampaign)}
                 onClose={handleMenuClose}
                 PaperProps={{
                     sx: {
@@ -487,22 +487,37 @@ const HealthCampaignManager = () => {
                     },
                 }}
             >
-                <MenuItem
-                    onClick={() => handleViewCampaign(allCampaigns.find((c) => c.campaignId === menuCampaignId))}
-                    sx={{ borderRadius: 1, mx: 1, my: 0.5 }}
-                >
-                    <ListItemIcon>
-                        <VisibilityIcon color="primary" />
-                    </ListItemIcon>
-                    <ListItemText>View Details</ListItemText>
-                </MenuItem>
-                {menuCampaignId &&
-                    getStatusActions(allCampaigns.find((c) => c.campaignId === menuCampaignId)).map((action) => (
-                        <MenuItem key={action.status} sx={{ borderRadius: 1, mx: 1, my: 0.5 }}>
-                            <ListItemIcon>{action.icon}</ListItemIcon>
-                            <ListItemText>{action.label}</ListItemText>
-                        </MenuItem>
-                    ))}
+                {(() => {
+                    const campaign = allCampaigns.find((c) => c.campaignId === menuCampaignId);
+                    if (!campaign) return null;
+                    if (campaign.statusHealthCampaign === "COMPLETED") {
+                        return (
+                            <MenuItem
+                                onClick={() => handleViewCampaign(campaign)}
+                                sx={{ borderRadius: 1, mx: 1, my: 0.5 }}
+                            >
+                                <ListItemIcon>
+                                    <VisibilityIcon color="primary" />
+                                </ListItemIcon>
+                                <ListItemText>View Details</ListItemText>
+                            </MenuItem>
+                        );
+                    }
+                    if (["PENDING", "PUBLISHED"].includes(campaign.statusHealthCampaign)) {
+                        return (
+                            <MenuItem
+                                onClick={() => {/* TODO: implement delete handler */ }}
+                                sx={{ borderRadius: 1, mx: 1, my: 0.5 }}
+                            >
+                                <ListItemIcon>
+                                    <DeleteIcon color="error" />
+                                </ListItemIcon>
+                                <ListItemText>Delete</ListItemText>
+                            </MenuItem>
+                        );
+                    }
+                    return null;
+                })()}
             </Menu>
 
             {/* Campaign Dialog */}
