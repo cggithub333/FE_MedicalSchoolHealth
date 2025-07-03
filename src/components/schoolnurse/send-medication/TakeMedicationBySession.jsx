@@ -31,6 +31,9 @@ import {
 import { TabPanel, TabContext } from "@mui/lab"
 import { School, Close, Medication, AccessTime, Assignment, CheckCircle, Groups } from "@mui/icons-material"
 
+
+import { showErrorToast, showSuccessToast, showWarningToast } from "@utils/toast-utils"
+
 // Mock DigitalClock component
 const DigitalClock = () => {
     const [time, setTime] = useState(new Date())
@@ -227,10 +230,27 @@ const TakeMedicationBySession = () => {
         }))
     }
 
+    const handleClickCancelDetail = async () => {
+
+        await showWarningToast("You have not submitted the medication checks yet!");
+
+        if (!window.confirm("Are you sure you want to cancel? All changes will be lost.")) {
+            return
+        } 
+        //else:
+        showErrorToast("Cancelled medication checks!");
+        setPrescriptionDetailOpen(false)
+    }
+
     const handleSubmitMedication = () => {
         // Logic to be added later
         console.log("Submitted medication checks:", medicationChecks)
         console.log("For pupil:", selectedPupil)
+
+        // temporary:
+        showSuccessToast("Medication submitted successfully!");
+        // close the dialog:
+        setPrescriptionDetailOpen(false)
     }
 
     const getGradeColor = (grade) => {
@@ -706,7 +726,7 @@ const TakeMedicationBySession = () => {
                     </Box>
                 </DialogContent>
                 <DialogActions sx={{ p: 3 }}>
-                    <Button onClick={() => setPrescriptionDetailOpen(false)} variant="outlined">
+                    <Button onClick={handleClickCancelDetail} variant="outlined">
                         Cancel
                     </Button>
                     <Button
