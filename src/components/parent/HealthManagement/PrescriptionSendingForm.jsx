@@ -182,7 +182,7 @@ const PrescriptionSendingForm = () => {
         diseaseName: diseaseName.trim(),
         startDate,
         endDate,
-        prescription_image: finalImageUrl || null,
+        prescriptionImage: finalImageUrl || null,
         note: note.trim(),
         medicationItems: medicationItems.map((item) => ({
           medicationName: item.medicationName.trim(),
