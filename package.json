@@ -19,6 +19,7 @@
     "@fullcalendar/react": "^6.1.18",
     "@fullcalendar/timegrid": "^6.1.18",
     "@mui/icons-material": "^7.1.2",
+    "@mui/lab": "^7.0.0-beta.14",
     "@mui/material": "^7.1.2",
     "@syncfusion/ej2-react-schedule": "^29.2.10",
     "@toolpad/core": "^0.16.0",

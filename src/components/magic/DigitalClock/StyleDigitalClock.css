@@ -1,0 +1,20 @@
+
+.digital-clock {
+  transition: all 0.3s ease-in-out;
+}
+
+.digital-clock:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #e0f7fa;
+}
+
+.clock-content {
+  font-size: 25px;
+  font-weight: bold;
+  background-color: #98caef;
+  color: #fff9ea;
+  padding: 10px 15px;
+  border-radius: 5px;
+  box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.1);
+}
