@@ -22,12 +22,12 @@ const PrescriptionRequestPage = () => {
       </Grid>
       <Grid container justifyContent={'center'} sx={{ marginTop: "20px", backgroundColor: "#E6F8F9", pb: "50px" }}>
         <Grid item size={{ xs: 11 }}>
-          <PrescriptionRequestPageContent/>
+          <PrescriptionRequestPageContent />
           <FloatingNavigateButton
-                  navigateLink="./../../prescription"
-                  iconForAvatar={ExitIcon}
-                  backgroundColor="#FF6B6B"
-                  textContent="Back"/>
+            navigateLink="./../../prescription"
+            iconForAvatar={ExitIcon}
+            backgroundColor="#FF6B6B"
+            textContent="Back" />
         </Grid>
       </Grid>
     </div>

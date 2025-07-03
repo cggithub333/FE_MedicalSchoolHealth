@@ -12,11 +12,6 @@ import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import "./VaccinationCampaign.scss"
 
-// Remove these incorrect imports:
-// import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos"
-// import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos"
-
-// Replace with these correct imports:
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft"
 import ChevronRightIcon from "@mui/icons-material/ChevronRight"
 

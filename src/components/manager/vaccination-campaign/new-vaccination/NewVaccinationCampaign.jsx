@@ -19,7 +19,6 @@ import {
 import AddIcon from "@mui/icons-material/Add"
 import { useNewestCampaignByStatus } from "../../../../hooks/manager/vaccination/create-new-campaign/useGetNewestCampaingByStatus"
 import { useUpdateNewCampaign } from "../../../../hooks/manager/vaccination/create-new-campaign/useUpdateNewCampaign"
-import { useDeleteCampaign } from "../../../../hooks/manager/vaccination/create-new-campaign/useDeleteCampaign"
 import VaccineCampaignForm from "./vaccination-campaign-form/VaccineCampaignForm"
 import { usePublishVaccinationCampaign } from "../../../../hooks/manager/vaccination/create-new-campaign/usePublishVaccinationCampaign"
 const cardSx = {
@@ -77,7 +76,6 @@ function getStatusColor(status) {
 const NewVaccinationCampaign = () => {
     const { allCampaigns, isLoading, refetch } = useNewestCampaignByStatus()
     const { updateNewCampaign, isLoading: isUpdating } = useUpdateNewCampaign()
-    const { deleteCampaign, isLoading: isDeleting } = useDeleteCampaign()
     const { publishCampaign, isPublishing } = usePublishVaccinationCampaign();
     const [selectedCampaign, setSelectedCampaign] = useState(null)
     const [dialogOpen, setDialogOpen] = useState(false)
@@ -198,7 +196,7 @@ const NewVaccinationCampaign = () => {
                                     ) : (
                                         getCampaignsByStatus(status).map((campaign) => (
                                             <Card
-                                                key={campaign.campaignId}
+                                                key={status + '-' + campaign.campaignId}
                                                 sx={{ ...cardSx, cursor: status === "COMPLETED" ? "default" : "pointer" }}
                                                 onClick={() => {
                                                     if (status !== "COMPLETED") {

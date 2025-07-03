@@ -1,10 +1,12 @@
+import PupilsManagement from '../../../components/schoolnurse/medical-event/pupils-management/PupilsManagement.jsx';
+
 const MedicalEvents = () => {
 
     return (
         <>
-            Schoolnurse - MedicalEvents
+            <PupilsManagement />
         </>
     );
 }
 
-export default MedicalEvents;
+export default MedicalEvents;   

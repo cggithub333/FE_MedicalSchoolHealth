@@ -144,10 +144,16 @@ const HealthCampaignManager = () => {
     const filteredCampaigns = useMemo(() => {
         let filtered = allCampaigns || []
 
+        // Only allow these statuses in ALL tab
+        const allowedStatuses = ["PENDING", "PUBLISHED", "IN_PROGRESS", "COMPLETED"];
+
         // Filter by status
         if (selectedTab > 0) {
             const status = statusTabs[selectedTab]
             filtered = filtered.filter((campaign) => campaign.statusHealthCampaign === status)
+        } else {
+            // ALL tab: filter to allowed statuses only
+            filtered = filtered.filter((campaign) => allowedStatuses.includes(campaign.statusHealthCampaign));
         }
 
         // Filter by year

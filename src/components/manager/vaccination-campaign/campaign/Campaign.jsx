@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import {
     Box,
     Card,
@@ -50,6 +50,7 @@ import VaccinesIcon from "@mui/icons-material/Vaccines"
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital"
 import NotesIcon from "@mui/icons-material/Notes"
 import { useAllVaccinationCampaign } from "../../../../hooks/manager/vaccination/campaign/useAllCampaignByStatus"
+import { useDeleteCampaignByCampaignID } from "../../../../hooks/manager/vaccination/create-new-campaign/useDeleteCampaignByCampaignID"
 import { styleCampaign } from "./StyleCampaign"
 import ScheduleForm from "./schedule/vaccination-schedule-management/ScheduleForm.jsx";
 import { useNavigate } from "react-router-dom";
@@ -120,6 +121,8 @@ const allCampaign = () => {
     const [menuCampaignId, setMenuCampaignId] = useState(null)
     const [selectedYear, setSelectedYear] = useState('ALL')
     const [showScheduleForm, setShowScheduleForm] = useState(false);
+    const [campaignIdToDelete, setCampaignIdToDelete] = useState(null);
+    const { isLoading: isDeleting, error: deleteError, success: isDeleteSuccess } = useDeleteCampaignByCampaignID(campaignIdToDelete);
     const navigate = useNavigate();
 
     // Use the same statusTabs as health check campaign
@@ -260,6 +263,13 @@ const allCampaign = () => {
 
         return actions
     }
+
+    useEffect(() => {
+        if (isDeleteSuccess) {
+            refetch();
+            setCampaignIdToDelete(null);
+        }
+    }, [isDeleteSuccess, refetch]);
 
     if (error) {
         return (
@@ -554,7 +564,11 @@ const allCampaign = () => {
                     if (["PENDING", "PUBLISHED"].includes(campaign.status)) {
                         return (
                             <MenuItem
-                                onClick={() => {/* TODO: implement delete handler */ }}
+                                onClick={() => {
+                                    setCampaignIdToDelete(campaign.campaignId);
+                                    handleMenuClose();
+                                }}
+                                disabled={isDeleting}
                                 sx={{ borderRadius: 1, mx: 1, my: 0.5 }}
                             >
                                 <ListItemIcon>
@@ -567,6 +581,22 @@ const allCampaign = () => {
                     return null;
                 })()}
             </Menu>
+            {/* Feedback Alerts for delete */}
+            {deleteError && (
+                <Alert severity="error" sx={{ position: 'fixed', bottom: 24, right: 24, zIndex: 9999 }}>
+                    Error deleting campaign: {deleteError}
+                </Alert>
+            )}
+            {isDeleting && (
+                <Alert severity="info" sx={{ position: 'fixed', bottom: 24, right: 24, zIndex: 9999 }}>
+                    Deleting campaign...
+                </Alert>
+            )}
+            {isDeleteSuccess && (
+                <Alert severity="success" sx={{ position: 'fixed', bottom: 24, right: 24, zIndex: 9999 }}>
+                    Campaign deleted successfully.
+                </Alert>
+            )}
         </div>
     )
 }
