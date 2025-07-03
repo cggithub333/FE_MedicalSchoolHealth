@@ -57,6 +57,7 @@ import NotesIcon from "@mui/icons-material/Notes"
 import { useAllCampaign } from "../../../../hooks/manager/healthcheck/campaign/useAllCampaignByStatus"
 import { styleCampaign } from "./StyleCampaign";
 import HealthCheckScheduleForm from "../campaign/schedule/healthcheck-schedule-management/ScheduleForm";
+import { useUpdateCampaignStatus } from "../../../../hooks/manager/healthcheck/create-new-campaign/useUpdateStatusOfNewCampaign";
 
 const statusConfig = {
     PENDING: {
@@ -114,6 +115,7 @@ const LoadingSkeleton = () => (
 
 const HealthCampaignManager = () => {
     const { allCampaigns, isLoading, error, refetch } = useAllCampaign()
+    const { updateCampaignStatus, isUpdating } = useUpdateCampaignStatus();
     const [selectedTab, setSelectedTab] = useState(0)
     const [selectedYear, setSelectedYear] = useState('ALL')
     const [openDialog, setOpenDialog] = useState(false)
@@ -506,7 +508,12 @@ const HealthCampaignManager = () => {
                     if (["PENDING", "PUBLISHED"].includes(campaign.statusHealthCampaign)) {
                         return (
                             <MenuItem
-                                onClick={() => {/* TODO: implement delete handler */ }}
+                                onClick={async () => {
+                                    await updateCampaignStatus(campaign.campaignId, "CANCELLED");
+                                    handleMenuClose();
+                                    refetch();
+                                }}
+                                disabled={isUpdating}
                                 sx={{ borderRadius: 1, mx: 1, my: 0.5 }}
                             >
                                 <ListItemIcon>
