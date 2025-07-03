@@ -165,21 +165,14 @@ const PrescriptionSendingForm = () => {
       // Image upload logic: If user selected an image but hasn't uploaded it yet, upload it first
       if (selectedFile && !imageUrl) {
         console.log("Starting image upload...");
-        
-        // Image upload logic: Upload the image and get the URL directly
         try {
-          await handleUpload(); // This should handle the upload and set imageUrl
-          
-          // Wait a bit for the imageUrl state to update
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          
-          // Use the imageUrl from the hook after upload
-          finalImageUrl = imageUrl;
-          
+          finalImageUrl = await handleUpload();
           console.log("Image uploaded successfully:", finalImageUrl);
         } catch (uploadError) {
           console.error("Image upload failed:", uploadError);
-          throw new Error("Failed to upload image: " + uploadError.message);
+          showErrorToast("Failed to upload image. Please try again.");
+          setSubmitting(false);
+          return;
         }
       }
 
@@ -189,7 +182,7 @@ const PrescriptionSendingForm = () => {
         diseaseName: diseaseName.trim(),
         startDate,
         endDate,
-        prescriptionImage: finalImageUrl || "https://anh.24h.com.vn/upload/4-2014/images/2014-10-24/1414124020-toa-thuoc.jpg",
+        prescription_image: finalImageUrl || null,
         note: note.trim(),
         medicationItems: medicationItems.map((item) => ({
           medicationName: item.medicationName.trim(),
@@ -197,6 +190,8 @@ const PrescriptionSendingForm = () => {
           medicationSchedule: item.medicationSchedule,
         })),
       }
+
+      console.log("Final Image Url: ", finalImageUrl);
 
       console.log("Form data prepared:", formData);
 
@@ -625,7 +620,7 @@ const PrescriptionSendingForm = () => {
               size="large"
               startIcon={submitting ? <CircularProgress size={20} color="inherit" /> : <Send />}
               onClick={handleSendPrescription}
-              disabled={!isConfirmed || submitting || uploading}
+              disabled={!isConfirmed || submitting}
               sx={{
                 px: 4,
                 py: 1.5,
@@ -633,14 +628,16 @@ const PrescriptionSendingForm = () => {
                 fontWeight: "bold",
               }}
             >
-              {submitting ? "Sending..." : uploading ? "Uploading..." : "Send Prescription"}
+              {submitting 
+                ? (selectedFile && !imageUrl ? "Uploading image..." : "Sending prescription...") 
+                : "Send Prescription"
+              }
             </Button>
           </Box>
 
-          {(!isConfirmed || uploading) && (
+          {!isConfirmed && (
             <Alert severity="warning" sx={{ mt: 2 }}>
-              {!isConfirmed && "Please confirm that you have read and agreed to the terms before sending the prescription."}
-              {uploading && "Please wait for image upload to complete before submitting."}
+              Please confirm that you have read and agreed to the terms before sending the prescription.
             </Alert>
           )}
         </CardContent>

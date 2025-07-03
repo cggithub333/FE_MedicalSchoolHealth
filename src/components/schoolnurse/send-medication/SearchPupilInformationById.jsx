@@ -89,7 +89,7 @@ const SearchPupilInformationById = () => {
         <TextField
           fullWidth
           variant="outlined"
-          placeholder="Enter Pupil ID, Name, or other information..."
+          placeholder="Enter Pupil ID"
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
           InputProps={{

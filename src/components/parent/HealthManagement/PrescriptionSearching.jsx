@@ -69,6 +69,10 @@ const PrescriptionSearching = ({ pupil, userFullName }) => {
   // Filter records based on search criteria
   const filteredRecords = useMemo(() => {
     return prescriptionArr.filter((record) => {
+
+      // debug:
+      console.log('PrescriptionSearching - record:\n', JSON.stringify(record))
+
       const matchesYear = searchYear === "" || record.requestedDate.includes(searchYear)
       const matchesStatus = selectedStatus === "ALL" || record.status === selectedStatus
       return matchesYear && matchesStatus
@@ -520,20 +524,26 @@ const PrescriptionSearching = ({ pupil, userFullName }) => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {selectedRecord.medicationItems.map((medication) => (
-                        <TableRow key={medication.medicationItemsId}>
-                          <TableCell>
-                            <Typography variant="body2" fontWeight="bold">
-                              {medication.medicationName}
-                            </Typography>
-                          </TableCell>
-                          <TableCell>
-                            <Typography variant="body2" color="primary.main" fontWeight="bold">
-                              {medication.medicationSchedule}
-                            </Typography>
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                      {selectedRecord.medicationItems.map((medication, idx) => {
+                      
+                        // debug:
+                        console.log('PrescriptionSearching - medication:\n', JSON.stringify(medication))
+                        
+                        return (
+                          <TableRow key={idx}>
+                            <TableCell>
+                              <Typography variant="body2" fontWeight="bold">
+                                {medication.medicationName}
+                              </Typography>
+                            </TableCell>
+                            <TableCell>
+                              <Typography variant="body2" color="primary.main" fontWeight="bold">
+                                {medication.medicationSchedule}
+                              </Typography>
+                            </TableCell>
+                          </TableRow>
+                        )
+                      } )}
                     </TableBody>
                   </Table>
                 </TableContainer>
@@ -545,12 +555,12 @@ const PrescriptionSearching = ({ pupil, userFullName }) => {
                   Usages & Unit ({selectedRecord.medicationItems.length})
                 </Typography>
 
-                {selectedRecord.medicationItems.map((medication) => {
+                {selectedRecord.medicationItems.map((medication, idx) => {
 
                   const usage = medication.unitAndUsage || "No usage information available."
 
                   return (
-                    <Box key={medication.medicationItemsId}>
+                    <Box key={idx}>
                       <Typography fontSize={'15px'} variant="caption" color="text.primary">
                         <b>+ {medication.medicationName} : </b>
                         <span>{usage}</span>

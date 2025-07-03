@@ -52,38 +52,44 @@ const useUploadImage = () => {
   const handleUpload = async () => {
     if (!selectedFile) {
       setError('Please select an image first');
-      return;
+      return Promise.reject(new Error('Please select an image first'));
     }
 
     setUploading(true);
     setError(null);
     setUploadProgress(0);
 
-    uploadImageToFirebaseStorage(
-      selectedFile,
-      // Progress callback
-      (progress) => {
-        setUploadProgress(Math.round(progress));
-      },
-      // Success callback
-      (result) => {
-        setUploading(false);
-        setUploadedImage(result);
-        setImageUrl(result.downloadURL || result.url || '');
-        setUploadProgress(100);
-        console.log('Upload successful:', result);
-        
-        // Show success notification
-        // alert(`Image uploaded successfully!\nURL: ${result.downloadURL || result.url || 'No URL available'}`);
-      },
-      // Error callback
-      (error) => {
-        setUploading(false);
-        setError(error.message);
-        setUploadProgress(0);
-        console.error('Upload error:', error);
-      }
-    );
+    return new Promise((resolve, reject) => {
+      uploadImageToFirebaseStorage(
+        selectedFile,
+        // Progress callback
+        (progress) => {
+          setUploadProgress(Math.round(progress));
+        },
+        // Success callback
+        (result) => {
+          setUploading(false);
+          const imageUrl = result.downloadURL || result.url || '';
+          setUploadedImage(result);
+          setImageUrl(imageUrl);
+          setUploadProgress(100);
+          console.log('Upload successful:', result);
+          
+          // Resolve the Promise with the image URL
+          resolve(imageUrl);
+        },
+        // Error callback
+        (error) => {
+          setUploading(false);
+          setError(error.message);
+          setUploadProgress(0);
+          console.error('Upload error:', error);
+          
+          // Reject the Promise with the error
+          reject(error);
+        }
+      );
+    });
   };
 
   // Reset form
