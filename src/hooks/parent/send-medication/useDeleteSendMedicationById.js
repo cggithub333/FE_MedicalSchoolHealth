@@ -1,6 +1,6 @@
 
 import { deleteSendMedicationByIdAction } from '@api/parent/parent-requests-action/send-medication/delete-sendmedication-by-id-action';
-import { useState, useEffect} from 'react';
+import { useState, useCallback} from 'react';
 
 const useDeleteSendMedicationById = () => {
 
@@ -8,20 +8,20 @@ const useDeleteSendMedicationById = () => {
   const [ loading, setLoading ] = useState(false);
   const [ error, setError ] = useState(null);
 
-  const deleteSendMedicationWithId = async (sendMedicationId) => {
+  const deleteSendMedicationWithId = useCallback(async (sendMedicationId) => {
 
     setLoading(true);
     try {
       const responseData = await deleteSendMedicationByIdAction(sendMedicationId);
 
       // debug:
-      console.log(">>>>>>>>>> useDeleteSendMedicationById responseData: ", responseData);
+      // console.log(">>>>>>>>>> useDeleteSendMedicationById responseData: ", responseData);
 
 
       if (responseData) {
         setResponseData(responseData);
       }
-    } catch(error) {
+    } catch (error) {
       //debug:
       console.log("useDeleteSendMedicationById error: ", error);
       setError(error);
@@ -29,7 +29,7 @@ const useDeleteSendMedicationById = () => {
       setLoading(false);
     }
 
-  }
+  }, [])
 
   return {
     responseData,

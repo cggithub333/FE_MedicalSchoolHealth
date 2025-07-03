@@ -38,6 +38,8 @@ import {
   Image as ImageIcon,
 } from "@mui/icons-material"
 
+import { useEffect } from "react"
+
 const renderLoadingSkeleton = ({ length: length }) => (
   <Container maxWidth="md" sx={{ py: 3 }}>
     {Array.from({ length: length }, (_, i) => i).map((index) => (
@@ -57,14 +59,36 @@ const renderLoadingSkeleton = ({ length: length }) => (
   </Container>
 )
 
+import useUpdatePrescriptionStatus from "@hooks/schoolnurse/send-medication/useUpdatePrescriptionStatus"
 import useAllPendingPrescriptions from "@hooks/schoolnurse/useAllPendingPrescriptions"
+
+import { showSuccessToast, showErrorToast, showWarningToast } from "@utils/toast-utils"
 
 const PrescriptionRequestPageRequestList = () => {
   const [selectedRequest, setSelectedRequest] = useState(null)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [imageOpen, setImageOpen] = useState(false)
 
-  const { pendingMedicationRequests, loading, error } = useAllPendingPrescriptions()
+  const { updateStatus, error: updateError, success: updateSuccess } = useUpdatePrescriptionStatus()
+  const { pendingMedicationRequests, loading, error, refetch } = useAllPendingPrescriptions()
+
+  // Add useEffect to handle success/error states
+  useEffect(() => {
+    if (updateSuccess) {
+      showSuccessToast("Request status updated successfully.")
+      handleCloseDialog() // This will close the dialog when success updates
+      // Refetch the pending prescriptions to update the list
+      refetch()
+    }
+  }, [updateSuccess, refetch])
+
+  useEffect(() => {
+    if (updateError) {
+      showErrorToast("Failed to update request status. Please try again.")
+    }
+  }, [updateError])
+
+
 
   if (loading) {
     if (pendingMedicationRequests.length === 0) {
@@ -110,14 +134,51 @@ const PrescriptionRequestPageRequestList = () => {
     setSelectedRequest(null)
   }
 
-  const handleRejectClick = () => {
-    // Empty function - logic to be added later
-    console.log("Reject clicked for request:", selectedRequest?.sendMedicationId)
+  const handleRejectClick = async () => {
+    // if no request is selected, return the function:
+    if (!selectedRequest) {
+      await showWarningToast("No request selected for rejection.")
+      return
+    }
+
+    // else: - has selectedRequest
+    await showWarningToast("You're about to reject this request. Are you sure?");
+    if (!window.confirm("Are you sure you want to reject this request?")) {
+      showErrorToast("Rejection cancelled.")
+      return
+    }
+    //else: agree to reject the request
+    try {
+      await updateStatus(selectedRequest.sendMedicationId, "REJECTED")
+
+    } catch (error) {
+      console.error("Error rejecting request:", error)
+      showErrorToast("Failed to reject the request. Please try again.")
+    }
   }
 
-  const handleApproveClick = () => {
-    // Empty function - logic to be added later
-    console.log("Approve clicked for request:", selectedRequest?.sendMedicationId)
+  const handleApproveClick = async () => {
+    // if no request is selected, return the function:
+    if (!selectedRequest) {
+      showWarningToast("No request selected for approval.")
+      return
+    }
+
+    // else: - has selectedRequest
+    await showWarningToast("You're about to approve this request. Are you sure?");
+    if (!window.confirm("Are you sure you want to approve this request?")) {
+      showErrorToast("Approval cancelled.")
+      return
+    }
+    
+    //else: agree to approve the request
+    try {
+      await updateStatus(selectedRequest.sendMedicationId, "APPROVED")
+      
+    } catch (error) {
+      console.error("Error approving request:", error)
+      showErrorToast("Failed to approve the request. Please try again.")
+    }
   }
 
   return (

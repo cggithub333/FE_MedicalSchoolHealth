@@ -57,14 +57,26 @@ import { showWarningToast, showErrorToast, showSuccessToast } from "@utils/toast
 const PrescriptionSearching = ({ pupil, userFullName }) => {
 
   const { prescriptionArr, loading, error, refetch } = usePrescriptionByPupil(pupil.pupilId)
-  const { responseData, loading: loadingDelete, error: errorDelete, deleteSendMedicationWithId } = useDeleteSendMedicationById();
+  const { responseData, error: errorDelete, deleteSendMedicationWithId } = useDeleteSendMedicationById();
   
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // reload prescription data when a prescription is deleted
   // This is to ensure that the prescription list is updated after deletion
   useEffect(() => {
-    refetch(pupil.pupilId);
-  }, [responseData, errorDelete])
+    if (errorDelete && isDeleting) {
+      showErrorToast("Failed to delete prescription. Please try again.");
+      setIsDeleting(false);
+    }
+  }, [errorDelete, isDeleting])
+
+  useEffect(() => {
+    if (responseData && isDeleting) {
+      showSuccessToast("Prescription deleted successfully.");
+      refetch(pupil.pupilId);
+      setIsDeleting(false);
+    }
+  }, [responseData, isDeleting, pupil.pupilId, refetch])
 
   // debug:
   // console.log('PrescriptionSearching - prescriptionArr:\n', JSON.stringify(prescriptionArr))
@@ -142,16 +154,13 @@ const PrescriptionSearching = ({ pupil, userFullName }) => {
       return;
     }
 
-    // deleting ...:
-    // debug:
-    // console.log("selectedRecord:\n", JSON.stringify(selectedRecord))
-    await deleteSendMedicationWithId(selectedRecord.sendMedicationId);
-    if (error) {
-      showErrorToast("Failed to delete prescription. Please try again.");
-    }
-    else {
-      showSuccessToast("Prescription deleted successfully.");
+    setIsDeleting(true);
+    try {
+      await deleteSendMedicationWithId(selectedRecord.sendMedicationId);
       setDialogOpen(false)
+    } catch (error) {
+      console.error("Delete error:", error);
+      setIsDeleting(false);
     }
   }
 
