@@ -82,7 +82,7 @@ const SearchPupilInformationById = () => {
       </Box>
 
       {/* Search Input */}
-      <Box sx={{ position: "relative", mb: 4 }}>
+      <Box sx={{ position: "relative", mb: 1 }}>
         <TextField
           fullWidth
           variant="outlined"
@@ -100,8 +100,8 @@ const SearchPupilInformationById = () => {
       <Box 
         sx={{ 
           textAlign: "center", 
-          py: 4,
-          minHeight: "200px",
+          py: 2,
+          minHeight: "80px",
           opacity: pupilLoading ? 1 : 0,
           transition: "opacity 0.3s ease-in-out",
           pointerEvents: pupilLoading ? "auto" : "none",
@@ -124,8 +124,9 @@ const SearchPupilInformationById = () => {
             flexDirection: "column", 
             gap: 3,
             opacity: pupilData ? 1 : 0,
-            transition: "opacity 0.3s ease-in-out",
-            transform: pupilData ? "translateY(0)" : "translateY(20px)"
+            transition: "all 0.3s ease-in-out",
+            transform: pupilData ? "translateY(0)" : "translateY(10px)",
+            mt: 1
           }}
         >
           {/* Pupil Basic Information */}
@@ -241,11 +242,14 @@ const SearchPupilInformationById = () => {
       <Box 
         sx={{ 
           textAlign: "center", 
-          py: 4,
-          minHeight: "200px", // Maintain consistent height
+          py: 2,
+          minHeight: "80px", // Maintain consistent height but smaller
           opacity: (searchValue && !pupilData && !pupilLoading) ? 1 : 0,
           transition: "opacity 0.3s ease-in-out",
-          pointerEvents: (searchValue && !pupilData && !pupilLoading) ? "auto" : "none"
+          pointerEvents: (searchValue && !pupilData && !pupilLoading) ? "auto" : "none",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
         }}
       >
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
