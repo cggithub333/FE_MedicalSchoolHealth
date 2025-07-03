@@ -269,7 +269,7 @@ const allCampaign = () => {
             refetch();
             setCampaignIdToDelete(null);
         }
-    }, [isDeleteSuccess, refetch]);
+    }, [isDeleteSuccess]); // Only depend on isDeleteSuccess to avoid infinite loop
 
     if (error) {
         return (
