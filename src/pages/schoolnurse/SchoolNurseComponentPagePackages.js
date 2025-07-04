@@ -12,7 +12,7 @@ import MedicalEvents from './health-management/MedicalEvents.jsx';
 import Prescription from './health-management/Prescription.jsx';
 
 import PrescriptionRequestPage from './health-management/PrescriptionRequestPage.jsx';
-
+import PupilsManagement from './health-management/PupilsManagement.jsx';
 const SchoolNurseComponentPagePackages = {
     DashboardHome,
     Notification,
@@ -23,7 +23,8 @@ const SchoolNurseComponentPagePackages = {
     HealthCheckCampaign,
     Prescription,
     MedicalEvents,
-    PrescriptionRequestPage
+    PrescriptionRequestPage,
+    PupilsManagement
 };
 
 export default SchoolNurseComponentPagePackages;

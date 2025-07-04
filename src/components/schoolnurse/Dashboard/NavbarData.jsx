@@ -11,6 +11,7 @@ import { GiMedicines as Prescriptionicon } from "react-icons/gi";
 import { MdCampaign as Campaign } from "react-icons/md";
 import { AiOutlineSchedule as ScheduleIcon } from "react-icons/ai";
 import { IoAddCircleSharp as NewCampaignIcon } from "react-icons/io5";
+import ManIcon from '@mui/icons-material/Man';
 
 const NavbarData = [
     //----------------part 1--------------------//
@@ -40,6 +41,11 @@ const NavbarData = [
     {
         kind: "header",
         title: "Health Management",
+    },
+    {
+        segment: 'schoolnurse/pupils-management',
+        title: 'Pupils Management',
+        icon: <ManIcon />,
     },
     {
         segment: "schoolnurse/medical-events",
