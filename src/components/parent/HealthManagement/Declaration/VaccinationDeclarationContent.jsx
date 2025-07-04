@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
   Container,
   Typography,
@@ -24,6 +24,8 @@ import { Vaccines, Person, Add, Delete, LocalHospital, CalendarToday, Note, Send
 
 import usePupils from "@hooks/parent/usePupils";
 import useAllDiseasesVaccines from "@hooks/parent/vaccination/useAllDiseasesVaccines"
+import useCreateBulkVaccinationHistoryForEachPupil from "@hooks/parent/vaccination/useCreateBulkVaccinationHisotyForEachPupil";
+import { showErrorToast, showSuccessToast } from "@utils/toast-utils";
 
 // help format date from "yyyy-mm-dd" to "dd-mm-yyyy" for submission
 const formatDateForSubmission = (dateString) => {
@@ -37,6 +39,7 @@ const VaccinationDeclarationFormContent = () => {
 
   const {pupils, isLoading: loadingPupils} = usePupils();
   const { diseaseVaccineMap , loading: diseasesVaccinesLoading, error: diseasesVaccinesError, refetch: diseasesVaccinesRefetch } = useAllDiseasesVaccines();
+  const { createBulkVaccinationHistory, loading: createLoading, errror: createError } = useCreateBulkVaccinationHistoryForEachPupil();
 
   const [selectedPupilId, setSelectedPupilId] = useState("")
   const [diseases, setDiseases] = useState([
@@ -130,7 +133,7 @@ const VaccinationDeclarationFormContent = () => {
     }
   }
 
-  const handleDeclareVaccine = () => {
+  const handleDeclareVaccine = async () => {
     // Prepare form data
     const formData = {
       pupilId: selectedPupilId,
@@ -146,11 +149,23 @@ const VaccinationDeclarationFormContent = () => {
               notes: dose.notes,
               doseNumber: index + 1,
             })),
-        })),
+        })),    
     }
 
+    // debug:
     console.log("Form Data to be submitted:", JSON.stringify(formData, null, 2))
-    // Additional logic will be written by you
+    
+    if (!formData) {
+      showErrorToast("Something went wrong, please try again later.")
+      return
+    }
+    // else:
+    await createBulkVaccinationHistory(formData);
+    if (!createError) {
+      showSuccessToast("Vaccination history created successfully! Please check at vaccination history page.")
+    } else {
+      showErrorToast("Failed to create vaccination history. Please try again later.")
+    }
   }
 
   const selectedPupil = pupils?.find((pupil) => pupil.pupilId === selectedPupilId)
