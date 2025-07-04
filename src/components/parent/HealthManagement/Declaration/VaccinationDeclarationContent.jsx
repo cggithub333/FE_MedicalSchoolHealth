@@ -19,6 +19,7 @@ import {
   Divider,
   IconButton,
   Alert,
+  CircularProgress,
 } from "@mui/material"
 import { Vaccines, Person, Add, Delete, LocalHospital, CalendarToday, Note, Send } from "@mui/icons-material"
 
@@ -133,7 +134,44 @@ const VaccinationDeclarationFormContent = () => {
     }
   }
 
+  const resetForm = () => {
+    setSelectedPupilId("")
+    setDiseases([
+      {
+        id: 1,
+        selectedDiseaseId: "",
+        selectedVaccineId: "",
+        doses: [{ vaccinatedAt: "", notes: "" }],
+      },
+    ])
+  }
+
+  const validateForm = () => {
+    // Check if a child is selected
+    if (!selectedPupilId) {
+      showErrorToast("Please select a child before submitting the form.")
+      return false
+    }
+
+    // Check if at least one disease is selected (vaccine and dose info are optional)
+    const validDiseases = diseases.filter((disease) => 
+      disease.selectedDiseaseId
+    )
+
+    if (validDiseases.length === 0) {
+      showErrorToast("Please select at least one disease before submitting.")
+      return false
+    }
+
+    return true
+  }
+
   const handleDeclareVaccine = async () => {
+    // Validate form before submission
+    if (!validateForm()) {
+      return
+    }
+
     // Prepare form data
     const formData = {
       pupilId: selectedPupilId,
@@ -159,10 +197,13 @@ const VaccinationDeclarationFormContent = () => {
       showErrorToast("Something went wrong, please try again later.")
       return
     }
-    // else:
+    
+    // Submit the form
     await createBulkVaccinationHistory(formData);
     if (!createError) {
       showSuccessToast("Vaccination history created successfully! Please check at vaccination history page.")
+      // Reset the form after successful submission
+      resetForm()
     } else {
       showErrorToast("Failed to create vaccination history. Please try again later.")
     }
@@ -393,9 +434,9 @@ const VaccinationDeclarationFormContent = () => {
             <Button
               variant="contained"
               size="large"
-              startIcon={<Send />}
+              startIcon={createLoading ? <CircularProgress size={20} color="inherit" /> : <Send />}
               onClick={handleDeclareVaccine}
-              disabled={!selectedPupilId}
+              disabled={!selectedPupilId || createLoading}
               sx={{
                 p: 2,
                 fontSize: "18px",
@@ -403,7 +444,7 @@ const VaccinationDeclarationFormContent = () => {
                 minWidth: 200,
               }}
             >
-              Declare Vaccination
+              {createLoading ? "Declaring..." : "Declare Vaccination"}
             </Button>
           </Box>
         </CardContent>

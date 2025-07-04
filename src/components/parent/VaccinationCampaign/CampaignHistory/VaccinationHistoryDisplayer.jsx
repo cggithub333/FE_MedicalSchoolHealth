@@ -261,7 +261,7 @@ const VaccinationHistoryDisplayer = ({ pupilObj }) => {
           <Grid item  size={{ xs: 12, md: 2}} >
             <Button fullWidth variant="outlined" onClick={clearFilters} sx={{ 
                                                                               padding: "13px 20px", 
-                                                                              fontSize:"16px",
+                                                                              fontSize:"13px",
                                                                               "&:hover": {
                                                                                 backgroundColor: "#1984d8",
                                                                                 color: "#fff",
