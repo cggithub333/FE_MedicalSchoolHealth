@@ -1,4 +1,4 @@
-import MedeicalHeader from '../../../components/schoolnurse/medical-event/medical-event-management/MedicalHeader.jsx';
+import MedicalHeader from '../../../components/schoolnurse/medical-event/medical-event-management/MedicalHeader.jsx';
 
 import { Box, Grid } from '@mui/material';
 const MedicalEvents = () => {
@@ -26,7 +26,7 @@ const MedicalEvents = () => {
                         justifyContent: "center",
                         alignItems: "center",
                     }}>
-                    <MedeicalHeader />
+                    <MedicalHeader />
                 </Grid>
 
 
