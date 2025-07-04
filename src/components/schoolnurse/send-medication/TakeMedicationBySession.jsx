@@ -32,6 +32,7 @@ import {
 import { TabPanel, TabContext } from "@mui/lab"
 import { School, Close, Medication, AccessTime, Assignment, CheckCircle, Groups } from "@mui/icons-material"
 
+import useCreateTakeMedicationLogs from "@hooks/schoolnurse/send-medication/useCreateTakeMedicationLogs"
 import useTakeMedicationsByEachPupilEachSession from "@hooks/schoolnurse/send-medication/useTakeMedicationsByEachPupilEachSession"
 import useAllPupilsBySessionAndGrade from "@hooks/schoolnurse/send-medication/useAllPupilsBySessionAndGrade"
 import useTodayTakeMedicationSessions from "@hooks/schoolnurse/send-medication/useTodayTakeMedicationSessions"
@@ -68,9 +69,13 @@ const DigitalClock = () => {
 
 const TakeMedicationBySession = () => {
 
+    const { createTakeMedicationLogs, loading: createLogsLoading, error: createLogsError } = useCreateTakeMedicationLogs()
     const { sessionsInfor, loading: sessionsLoading, error: errorLoading } = useTodayTakeMedicationSessions()
     const { pupilsInfor, loading: pupilsLoading, error: pupilsError, refetch: pupilsRefetch } = useAllPupilsBySessionAndGrade();
     const { medicationDetailsByPupil, loading: medicationDetailsLoading, error: medicationDetailsError, refetch: medicationDetailsRefetch } = useTakeMedicationsByEachPupilEachSession();
+
+    // state for manage insert new medication logs:
+    const [ isCreatedLogs, setIsCreatedLogs ] = useState(false)
 
     const [value, setValue] = useState("1")
     const [pupilListOpen, setPupilListOpen] = useState(false)
@@ -103,6 +108,24 @@ const TakeMedicationBySession = () => {
         // Fetch medication details for the selected pupil
         medicationDetailsRefetch(selectedSession + 1, selectedPupil.pupilId);
     }, [selectedPupil, selectedSession, selectedGrade, medicationDetailsRefetch]);
+
+
+    // Simplified useEffect - only for side effects after successful creation
+    useEffect(() => {
+        if (isCreatedLogs && !createLogsLoading && !createLogsError) {
+            showSuccessToast("Medication logs updated successfully!");
+            setIsCreatedLogs(false);
+
+            // Optional: Refresh data or clear form here
+            // medicationDetailsRefetch(selectedSession + 1, selectedPupil.pupilId);
+        }
+
+        if (isCreatedLogs && createLogsError) {
+            showErrorToast("Failed to update medication logs. Please try again.");
+            setIsCreatedLogs(false);
+        }
+    }, [isCreatedLogs, createLogsLoading, createLogsError])
+
 
     // render skeletions of waiting fetch data:
     if (sessionsLoading) {
@@ -177,15 +200,17 @@ const TakeMedicationBySession = () => {
     }
 
     // Add new function for handling Given button click
-    const handleGivenButtonClick = (request) => {
-
-        const formData = {
+    const handleGivenButtonClick = async (request) => {
+        
+        const medicatioLogData = {
             sendMedicationId: request.sendMedicationId,
             status: "GIVEN",
             note: getDiseaseLogMessages(request),
         }
 
-        showSuccessToast("Medication given successfully!")
+        // insert logs into db;
+        await createTakeMedicationLogs(medicatioLogData);
+        setIsCreatedLogs(true) // This will trigger the useEffect
     }
 
     // Add function to check if any medication is checked for a specific disease
@@ -219,8 +244,12 @@ const TakeMedicationBySession = () => {
     }
 
     // Modified close dialog function
-    const handleCloseDialog = () => {
-        showWarningToast("Making sure taking medication on current pupil is finished!")
+    const handleCloseDialog = async () => {
+        await showWarningToast("Making sure taking medication on current pupil is finished!")
+        
+        if (!window.confirm("Keep closing?")) {
+            return;
+        }
         setPrescriptionDetailOpen(false)
     }
 
