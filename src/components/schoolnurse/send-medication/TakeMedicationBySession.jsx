@@ -76,6 +76,8 @@ const TakeMedicationBySession = () => {
 
     // state for manage insert new medication logs:
     const [ isCreatedLogs, setIsCreatedLogs ] = useState(false)
+    // Session tracking state for time-based control
+    const [givenSessions, setGivenSessions] = useState({}) // Track which sessions are given for each disease
 
     const [value, setValue] = useState("1")
     const [pupilListOpen, setPupilListOpen] = useState(false)
@@ -158,6 +160,55 @@ const TakeMedicationBySession = () => {
             return `Session ${sessionIndex + 1}`
         }
     }
+
+    // Function to check if current time is within a session window
+    const isCurrentTimeInSession = (sessionIndex) => {
+        const now = new Date()
+        const currentHour = now.getHours()
+        const currentMinute = now.getMinutes()
+        const currentTotalMinutes = currentHour * 60 + currentMinute
+        
+        // Define session time windows (when GIVEN button can be clicked)
+        const sessionTimeWindows = [
+            { start: 9 * 60 + 30, end: 10 * 60 + 45 },   // Session 1: 9:30-10:45
+            // { start: 10 * 60 + 30, end: 11 * 60 + 15 },  // Session 2: 10:30-11:15
+            { start: 10 * 60 + 30, end: 20 * 60 + 15 },  // Session 2: 10:30-11:15
+            { start: 11 * 60 + 30, end: 12 * 60 + 15 }   // Session 3: 11:30-12:15
+        ]
+        
+        const sessionWindow = sessionTimeWindows[sessionIndex]
+        if (!sessionWindow) return false
+        
+        return currentTotalMinutes >= sessionWindow.start && currentTotalMinutes <= sessionWindow.end
+    }
+
+    // Get session time window text for display
+    const getSessionTimeWindow = (sessionIndex) => {
+        const timeWindows = [
+            "9:30-10:45",   // Session 1
+            "10:30-11:15",  // Session 2  
+            "11:30-12:15"   // Session 3
+        ]
+        return timeWindows[sessionIndex] || ""
+    }
+
+    // Function to check if given in current session
+    const isGivenInCurrentSession = (request) => {
+        // Check local tracking first
+        const localGivenSessions = givenSessions[request.sendMedicationId] || []
+        if (localGivenSessions.includes(selectedSession + 1)) {
+            return true
+        }
+        
+        // Check existing logs from API (if backend supports sessionNumber)
+        if (request.medicationLogs && request.medicationLogs.length > 0) {
+            return request.medicationLogs.some(log => 
+                log.status === "GIVEN" && log.sessionNumber === (selectedSession + 1)
+            )
+        }
+        
+        return false
+    }
     
     // Handle events functions:
     const handleChange = (event, newValue) => {
@@ -192,6 +243,9 @@ const TakeMedicationBySession = () => {
         // Reset log messages but keep school nurse name
         setLogMessages({ "schoolNurseName": "+ School Nurse's name: " + localStorage.getItem("userFullName") })
         
+        // Reset session tracking for new pupil
+        setGivenSessions({})
+        
         setPrescriptionDetailOpen(true)
     }
 
@@ -220,22 +274,52 @@ const TakeMedicationBySession = () => {
 
     // Add new function for handling Given button click
     const handleGivenButtonClick = async (request) => {
+        // Check if current time is within session window
+        if (!isCurrentTimeInSession(selectedSession)) {
+            const sessionTime = getSessionTimeWindow(selectedSession)
+            showErrorToast(`Medication can only be given during Session ${selectedSession + 1} time window: ${sessionTime}`)
+            return
+        }
         
-        const medicatioLogData = {
+        // Check if already given for this session
+        if (isGivenInCurrentSession(request)) {
+            showWarningToast(`This medication has already been given for Session ${selectedSession + 1}!`)
+            return
+        }
+
+        const medicationLogData = {
             sendMedicationId: request.sendMedicationId,
             status: "GIVEN",
             note: getDiseaseLogMessages(request),
+            sessionNumber: selectedSession + 1, // Add session number to the payload
         }
 
-        // insert logs into db;
-        await createTakeMedicationLogs(medicatioLogData);
-        setIsCreatedLogs(true) // This will trigger the useEffect
+        try {
+            // insert logs into db;
+            await createTakeMedicationLogs(medicationLogData)
+            
+            // Track locally that this disease was given in this session
+            setGivenSessions(prev => ({
+                ...prev,
+                [request.sendMedicationId]: [
+                    ...(prev[request.sendMedicationId] || []),
+                    selectedSession + 1
+                ]
+            }))
+            
+            setIsCreatedLogs(true) // This will trigger the useEffect
+        } catch (error) {
+            showErrorToast("Failed to create medication log. Please try again.")
+        }
     }
 
     // Add function to check if any medication is checked for a specific disease
     const hasCheckedMedications = (request) => {
-        // If already given, don't allow clicking again
-        if (isDiseaseAlreadyGiven(request)) return false
+        // If already given for current session, don't allow clicking
+        if (isGivenInCurrentSession(request)) return false
+        
+        // If not in session time window, don't allow clicking
+        if (!isCurrentTimeInSession(selectedSession)) return false
         
         if (!request.medicationItems) return false
         return request.medicationItems.some(medication => 
@@ -243,22 +327,27 @@ const TakeMedicationBySession = () => {
         )
     }
 
-    // Check if disease already has GIVEN status
+    // Check if disease already has GIVEN status for current session
     const isDiseaseAlreadyGiven = (request) => {
-        return request.medicationLogs && 
-               request.medicationLogs.length > 0 && 
-               request.medicationLogs.some(log => log.status === "GIVEN")
+        return isGivenInCurrentSession(request)
     }
 
     // Get log messages for a specific disease
     const getDiseaseLogMessages = (request) => {
-        // If disease already has logs with GIVEN status, show existing notes
-        if (isDiseaseAlreadyGiven(request)) {
-            const givenLog = request.medicationLogs.find(log => log.status === "GIVEN")
-            return givenLog ? givenLog.note : "Medication already given"
+        // If disease already given for current session, show existing notes
+        if (isGivenInCurrentSession(request)) {
+            const currentSessionLog = request.medicationLogs?.find(log => 
+                log.status === "GIVEN" && log.sessionNumber === (selectedSession + 1)
+            )
+            
+            if (currentSessionLog) {
+                return currentSessionLog.note
+            }
+            
+            return `Medication already given for Session ${selectedSession + 1}`
         }
 
-        // Otherwise, generate new log messages as before
+        // Otherwise, generate new log messages
         const diseaseMessages = []
         
         // Add school nurse name
@@ -276,7 +365,10 @@ const TakeMedicationBySession = () => {
             })
         }
         
-        return diseaseMessages.join("\n\n").trim() || "No medication given yet for this disease."
+        // Add session information
+        diseaseMessages.push(`+ Session: ${selectedSession + 1} (${getSessionTimeWindow(selectedSession)})`)
+        
+        return diseaseMessages.join("\n\n").trim() || `No medication given yet for Session ${selectedSession + 1}.`
     }
 
     // Modified close dialog function
@@ -699,13 +791,27 @@ const TakeMedicationBySession = () => {
                                     Disease #{diseaseIndex + 1}: {request.diseaseName}
                                     {isDiseaseAlreadyGiven(request) && (
                                         <Chip 
-                                            label="GIVEN" 
+                                            label={`GIVEN (SESSION ${selectedSession + 1})`}
                                             color="success" 
                                             size="small" 
                                             sx={{ ml: 2, fontWeight: "bold" }}
                                         />
                                     )}
                                 </Typography>
+                                
+                                {/* Show current session time window */}
+                                <Typography variant="body2" color="text.secondary">
+                                    <strong>Time for session {selectedSession + 1}:</strong> 
+                                    {!isCurrentTimeInSession(selectedSession) && (
+                                        <Chip 
+                                            label={getSessionTimeWindow(selectedSession)}
+                                            color="warning" 
+                                            size="small" 
+                                            sx={{ ml: 1 }}
+                                        />
+                                    )}
+                                </Typography>
+                                
                                 <Typography variant="body2" color="text.secondary">
                                     <strong>Treatment Period:</strong> {request.startDate} to {request.endDate}
                                 </Typography>
@@ -714,7 +820,7 @@ const TakeMedicationBySession = () => {
                                 </Typography>
                                 {isDiseaseAlreadyGiven(request) && (
                                     <Typography variant="body2" color="success.main" sx={{ mt: 1, fontWeight: "bold" }}>
-                                        <strong>Given Time:</strong> {request.medicationLogs.find(log => log.status === "GIVEN")?.givenTime}
+                                        <strong>Given Time (Session {selectedSession + 1}):</strong> {request.medicationLogs.find(log => log.status === "GIVEN")?.givenTime}
                                     </Typography>
                                 )}
                             </Paper>
@@ -795,9 +901,11 @@ const TakeMedicationBySession = () => {
                             {/* Log Messages Section for this disease */}
                             <Box sx={{ mt: 2 }}>
                                 <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                                    Note for {request.diseaseName}: 
+                                    Note for {request.diseaseName} (Session {selectedSession + 1}): 
                                     {isDiseaseAlreadyGiven(request) 
-                                        ? " This medication has been given. Below is the record."
+                                        ? " This medication has been given for this session."
+                                        : !isCurrentTimeInSession(selectedSession)
+                                        ? ` Available during ${getSessionTimeWindow(selectedSession)}`
                                         : " This note will be sent to pupil's parents through notification."
                                     }
                                 </Typography>
@@ -826,21 +934,24 @@ const TakeMedicationBySession = () => {
                                             size="medium"
                                             startIcon={<CheckCircle />}
                                             disabled={true}
-                                            sx={{ minWidth: 120 }}
+                                            sx={{ minWidth: 180 }}
                                         >
-                                            Already Given
+                                            Given (Session {selectedSession + 1})
                                         </Button>
                                     ) : (
                                         <Button
                                             variant="contained"
-                                            color="success"
+                                            color={isCurrentTimeInSession(selectedSession) ? "success" : "warning"}
                                             size="medium"
                                             startIcon={<CheckCircle />}
                                             disabled={!hasCheckedMedications(request)}
                                             onClick={() => handleGivenButtonClick(request)}
-                                            sx={{ minWidth: 120 }}
+                                            sx={{ minWidth: 180 }}
                                         >
-                                            Given
+                                            {!isCurrentTimeInSession(selectedSession)
+                                                ? `Available ${getSessionTimeWindow(selectedSession)}`
+                                                : `Give (Session ${selectedSession + 1})`
+                                            }
                                         </Button>
                                     )}
                                 </Box>

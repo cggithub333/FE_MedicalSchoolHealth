@@ -142,12 +142,25 @@ const PrescriptionSearching = ({ pupil, userFullName }) => {
 
   const handleCardClick = (record) => {
     setSelectedRecord(record)
+
+    //debug:
+    // console.log('PrescriptionSearching - handleCardClick - record:\n', JSON.stringify(record))
+
     setDialogOpen(true)
   }
 
   const handleDeletePrescription = async () => {
+
+    if (!selectedRecord) {
+      return;
+    }
+
+    if (selectedRecord.status !== "PENDING") {
+      showErrorToast("Only pending prescriptions can be deleted.");
+      return;
+    }
     
-    await showWarningToast("This action cannot be undone. Making sure you want to delete this prescription.");
+    await showWarningToast("Making sure you want to delete this prescription");
 
     if (!confirm("You can't get back the prescription if you delete it. Do you want to continue?")) {
       showErrorToast("Prescription deletion cancelled.");
@@ -159,7 +172,6 @@ const PrescriptionSearching = ({ pupil, userFullName }) => {
       await deleteSendMedicationWithId(selectedRecord.sendMedicationId);
       setDialogOpen(false)
     } catch (error) {
-      console.error("Delete error:", error);
       setIsDeleting(false);
     }
   }
