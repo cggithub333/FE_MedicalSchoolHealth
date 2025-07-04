@@ -135,7 +135,7 @@ const TakeMedicationBySession = () => {
         
         // Get all approved medication requests for this pupil
         const pupilMedications = medicationDetailsByPupil.filter(
-            request => request.pupilId === pupil.pupilId && request.status === "APPROVED"
+            request => (request.pupilId === pupil.pupilId && request.status === "APPROVED" && request.medicationItems != null && request.medicationItems.length > 0) // Ensure medicationItems is not null or empty
         )
         
         // Reset medication checks for all medications across all diseases
@@ -214,7 +214,7 @@ const TakeMedicationBySession = () => {
     const getPupilMedicationRequests = () => {
         if (!selectedPupil) return []
         return medicationDetailsByPupil.filter(
-            request => request.pupilId === selectedPupil.pupilId && request.status === "APPROVED"
+            request => (request.pupilId === selectedPupil.pupilId && request.status === "APPROVED" && request.medicationItems != null && request.medicationItems.length > 0) // Ensure medicationItems is not null or empty
         )
     }
 
