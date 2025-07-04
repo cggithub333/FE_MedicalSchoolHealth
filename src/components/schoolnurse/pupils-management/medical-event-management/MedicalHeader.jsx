@@ -41,49 +41,9 @@ import {
     Refresh as RefreshIcon,
 } from "@mui/icons-material"
 
-// Fake pupils data for Pupils Management
-const rows = [
-    {
-        pupilId: "P001",
-        classId: 1,
-        gender: "M",
-        lastName: "Nguyen",
-        firstName: "An",
-        phone: "0912345678"
-    },
-    {
-        pupilId: "P002",
-        classId: 2,
-        gender: "F",
-        lastName: "Le",
-        firstName: "Bao",
-        phone: "0987654321"
-    },
-    {
-        pupilId: "P003",
-        classId: 1,
-        gender: "F",
-        lastName: "Tran",
-        firstName: "Chi",
-        phone: "0901122334"
-    },
-    {
-        pupilId: "P004",
-        classId: 3,
-        gender: "M",
-        lastName: "Pham",
-        firstName: "David",
-        phone: "0933445566"
-    },
-    {
-        pupilId: "P005",
-        classId: 2,
-        gender: "M",
-        lastName: "Hoang",
-        firstName: "Liam",
-        phone: "0977889900"
-    },
-]
+//custom hooks
+import { useGetPupilsInformation } from "../../../../hooks/schoolnurse/new-event/useGetPupilsInformation.js";
+import { useGetAllMedicalEvent } from "../../../../hooks/schoolnurse/new-event/useGetAllMedicalEvent.js"
 
 const MedicalHeader = () => {
     const [searchTerm, setSearchTerm] = useState("")
@@ -96,6 +56,10 @@ const MedicalHeader = () => {
     const [page, setPage] = useState(1)
     const [eventFilter, setEventFilter] = useState("event") // default is event
     const rowsPerPage = 5
+
+    const { pupilsList, loading: pupilsLoading, error: pupilsError } = useGetPupilsInformation();
+    const { medicalEventList, loading, error, refetch } = useGetAllMedicalEvent();
+
 
     const handleMenuClick = (event, rowId) => {
         setAnchorEl(event.currentTarget)
@@ -134,13 +98,13 @@ const MedicalHeader = () => {
     }
 
     // Pagination logic
-    const filteredData = rows.filter((row) => {
+    const filteredData = pupilsList.filter((row) => {
         const matchesSearch =
             row.pupilId.toLowerCase().includes(searchTerm.toLowerCase()) ||
             (row.firstName + ' ' + row.lastName).toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesGrade = categoryFilter === "all" || String(row.classId) === categoryFilter;
+        const matchesGrade = categoryFilter === "all" || String(row.gradeId) === categoryFilter;
         return matchesSearch && matchesGrade;
-    })
+    });
     const pageCount = Math.ceil(filteredData.length / rowsPerPage)
     const paginatedData = filteredData.slice((page - 1) * rowsPerPage, page * rowsPerPage)
 
@@ -168,14 +132,14 @@ const MedicalHeader = () => {
     const statsData = [
         {
             title: "Total Pupils",
-            value: "1,247",
+            value: pupilsList.length,
             subtitle: "All registered students",
             color: "primary",
             delay: 200,
         },
         {
             title: "Total Events",
-            value: "89",
+            value: medicalEventList.length,
             subtitle: "Requiring medical attention",
             color: "secondary",
             delay: 400,
@@ -341,7 +305,13 @@ const MedicalHeader = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {paginatedData.length === 0 ? (
+                            {pupilsLoading ? (
+                                <TableRow>
+                                    <TableCell colSpan={5} align="center" sx={{ py: 6, color: '#aaa' }}>
+                                        Loading...
+                                    </TableCell>
+                                </TableRow>
+                            ) : paginatedData.length === 0 ? (
                                 <TableRow>
                                     <TableCell colSpan={5} align="center" sx={{ py: 6, color: '#aaa' }}>
                                         No data found.
@@ -359,9 +329,9 @@ const MedicalHeader = () => {
                                                 </Box>
                                             </Box>
                                         </TableCell>
-                                        <TableCell>{row.classId}</TableCell>
+                                        <TableCell>{row.gradeName}</TableCell>
                                         <TableCell>{row.gender === 'M' ? 'Male' : 'Female'}</TableCell>
-                                        <TableCell>{row.phone}</TableCell>
+                                        <TableCell>{row.parents && row.parents[0] ? `0${row.parents[0].phoneNumber}` : ''}</TableCell>
                                         <TableCell>
                                             <IconButton size="small" color="primary" sx={{ borderRadius: 2, background: '#e3f2fd', '&:hover': { background: '#bbdefb' } }} onClick={() => handleShowResult(row.pupilId)}>
                                                 Details

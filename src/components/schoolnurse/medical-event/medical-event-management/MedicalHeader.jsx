@@ -40,8 +40,11 @@ import {
     Cancel as CancelIcon,
     Refresh as RefreshIcon,
 } from "@mui/icons-material"
+
+// Custom hooks
 import { useGetAllMedicalEvent } from "../../../../hooks/schoolnurse/new-event/useGetAllMedicalEvent.js"
 import { showSuccessToast } from '../../../../utils/toast-utils';
+import { useGetPupilsInformation } from "../../../../hooks/schoolnurse/new-event/useGetPupilsInformation.js";
 
 const MedicalHeader = () => {
     const [searchTerm, setSearchTerm] = useState("")
@@ -55,6 +58,7 @@ const MedicalHeader = () => {
     const [eventFilter, setEventFilter] = useState("event") // default is event
     const rowsPerPage = 5
 
+    const { pupilsList, loading: pupilsLoading, error: pupilsError } = useGetPupilsInformation();
     const { medicalEventList, loading, error, refetch } = useGetAllMedicalEvent();
 
     const handleMenuClick = (event, rowId) => {
@@ -139,7 +143,7 @@ const MedicalHeader = () => {
     const statsData = [
         {
             title: "Total Pupils",
-            value: "247",
+            value: pupilsList.length,
             subtitle: "All registered students",
             color: "primary",
             delay: 200,
