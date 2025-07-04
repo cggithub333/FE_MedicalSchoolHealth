@@ -41,6 +41,7 @@ import {
     Refresh as RefreshIcon,
 } from "@mui/icons-material"
 import { useGetAllMedicalEvent } from "../../../../hooks/schoolnurse/new-event/useGetAllMedicalEvent.js"
+import { showSuccessToast } from '../../../../utils/toast-utils';
 
 const MedicalHeader = () => {
     const [searchTerm, setSearchTerm] = useState("")
@@ -54,7 +55,7 @@ const MedicalHeader = () => {
     const [eventFilter, setEventFilter] = useState("event") // default is event
     const rowsPerPage = 5
 
-    const { medicalEventList, loading, error } = useGetAllMedicalEvent();
+    const { medicalEventList, loading, error, refetch } = useGetAllMedicalEvent();
 
     const handleMenuClick = (event, rowId) => {
         setAnchorEl(event.currentTarget)
@@ -127,6 +128,14 @@ const MedicalHeader = () => {
     const [showForm, setShowForm] = useState(false);
     const [showresult, setShowResult] = useState(false);
     const [selectedEventId, setSelectedEventId] = useState(null);
+
+    // Callback to handle successful event creation
+    const handleEventCreated = () => {
+        showSuccessToast('Medical event created successfully');
+        setShowForm(false);
+        refetch(); // Reload the event list
+    };
+
     const statsData = [
         {
             title: "Total Pupils",
@@ -170,7 +179,7 @@ const MedicalHeader = () => {
 
     if (showForm) {
         return (
-            <MedicalEventForm onCancel={handleCancelForm} />
+            <MedicalEventForm onCancel={handleCancelForm} onSuccess={handleEventCreated} />
         );
     }
 

@@ -27,7 +27,7 @@ import { useCreateNewMedicalEvent } from "../../../../hooks/schoolnurse/new-even
 import { useGetAllEquipment } from "../../../../hooks/schoolnurse/new-event/useGetAllEquipment"
 import { useGetAllMedication } from "../../../../hooks/schoolnurse/new-event/useGetAllMedication"
 
-const MedicalEventForm = ({ onCancel }) => {
+const MedicalEventForm = ({ onCancel, onSuccess }) => {
     // Get current date-time in yyyy-MM-ddTHH:mm format for input type="datetime-local"
     const getCurrentDateTime = () => {
         const now = new Date()
@@ -69,13 +69,13 @@ const MedicalEventForm = ({ onCancel }) => {
         }))
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!selectedPupil) {
             alert('Please select a pupil.');
             return;
         }
-        createNewMedicalEvent({
+        await createNewMedicalEvent({
             pupilId: selectedPupil.pupilId,
             injuryDescription: formData.injuryDescription,
             treatmentDescription: formData.treatmentDescription,
@@ -84,6 +84,9 @@ const MedicalEventForm = ({ onCancel }) => {
             equipmentIds: selectedEquipment.map(e => e.equipmentId),
             medicationIds: selectedMedications.map(m => m.medicationId),
         });
+        if (!createError) {
+            if (onSuccess) onSuccess();
+        }
     }
 
     const handleClearForm = () => {

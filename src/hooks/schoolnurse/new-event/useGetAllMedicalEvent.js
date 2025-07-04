@@ -22,5 +22,6 @@ export const useGetAllMedicalEvent = () => {
         fetchMedicalEventList();
     }, []);
 
-    return { medicalEventList, loading, error };
+    // Expose refetch for manual reload
+    return { medicalEventList, loading, error, refetch: fetchMedicalEventList };
 }
