@@ -1,9 +1,8 @@
 "use client"
 
-import { Grid, TextField } from "@mui/material"
 import { useState, useEffect } from "react"
-import React from "react"
 import {
+    Grid,
     Tabs,
     Tab,
     Box,
@@ -19,6 +18,7 @@ import {
     TableBody,
     TableCell,
     TableContainer,
+    Container,
     TableHead,
     TableRow,
     Paper,
@@ -27,11 +27,13 @@ import {
     IconButton,
     Checkbox,
     FormControlLabel,
+    Skeleton
 } from "@mui/material"
 import { TabPanel, TabContext } from "@mui/lab"
 import { School, Close, Medication, AccessTime, Assignment, CheckCircle, Groups } from "@mui/icons-material"
 
-
+import useAllPupilsBySessionAndGrade from "@hooks/schoolnurse/send-medication/useAllPupilsBySessionAndGrade"
+import useTodayTakeMedicationSessions from "@hooks/schoolnurse/send-medication/useTodayTakeMedicationSessions"
 import { showErrorToast, showSuccessToast, showWarningToast } from "@utils/toast-utils"
 
 // Mock DigitalClock component
@@ -63,147 +65,175 @@ const DigitalClock = () => {
     )
 }
 
-const medicationSessionsByGrade = [
-    {
-        session: "After Breakfast",
-        quantityPupilByGrade: [
-            { grade: 1, quantity: 1 },
-            { grade: 4, quantity: 1 },
-        ],
-    },
-    {
-        session: "Before Lunch",
-        quantityPupilByGrade: [
-            { grade: 1, quantity: 1 },
-            { grade: 4, quantity: 1 },
-        ],
-    },
-    {
-        session: "After Lunch",
-        quantityPupilByGrade: [
-            { grade: 1, quantity: 1 },
-            { grade: 4, quantity: 1 },
-        ],
-    },
-]
-
-const pupils = [
+const approvedMedicationRequests = [
     {
         pupilId: "PP0006",
-        lastName: "Hoàng",
-        firstName: "Em",
-        birthDate: "12-01-2018",
-        gender: "M",
-        gradeId: 1,
-        startYear: 2025,
-        gradeLevel: "GRADE_1",
-        gradeName: "Lớp 1D",
+        senderName: "",
+        sendMedicationId: 1,
+        diseaseName: "Common cold with cough",
+        startDate: "04-07-2025",
+        endDate: "08-07-2025",
+        requestedDate: "03-07-2025 15:26:13",
+        prescriptionImage:
+            "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751531167635-thuoc-tay-2.jpg?alt=media&token=e94960df-29e7-41d4-8e08-9c6303c272b9",
+        note:
+            "My child has a mild cough and sore throat. Please help him take the medicine on time.",
+        status: "APPROVED",
+        medicationItems: [
+            {
+                medicationId: 2,
+                medicationName: "Guaifenesin",
+                unitAndUsage:
+                    "1 tablet taken to loosen mucus and ease chest congestion",
+                medicationSchedule: "Before lunch: 10h30-11h00"
+            }
+        ],
+        medicationLogs: []
     },
     {
-        pupilId: "PP0007",
-        lastName: "Võ",
-        firstName: "Lan",
-        birthDate: "25-11-2015",
-        gender: "F",
-        gradeId: 4,
-        startYear: 2025,
-        gradeLevel: "GRADE_4",
-        gradeName: "Lớp 4A",
+        pupilId: "PP0006",
+        senderName: "",
+        sendMedicationId: 2,
+        diseaseName: "Allergic cough",
+        startDate: "11-07-2025",
+        endDate: "22-07-2025",
+        requestedDate: "03-07-2025 15:27:54",
+        prescriptionImage:
+            "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751531270417-thuoc-tay-temp.jpg?alt=media&token=f6b23d24-282f-48a1-a916-54041bc12e50",
+        note:
+            "Child has persistent dry cough due to allergy. Needs antihistamine and cough suppressant.",
+        status: "APPROVED",
+        medicationItems: [
+            {
+                medicationId: 4,
+                medicationName: "Dextromethorphan",
+                unitAndUsage: "1 capsule to suppress dry cough",
+                medicationSchedule: "Before lunch: 10h30-11h00"
+            }
+        ],
+        medicationLogs: []
     },
     {
-        pupilId: "PP0008",
-        lastName: "Nguyễn",
-        firstName: "Minh",
-        birthDate: "03-03-2016",
-        gender: "M",
-        gradeId: 3,
-        startYear: 2025,
-        gradeLevel: "GRADE_3",
-        gradeName: "Lớp 3B",
+        pupilId: "PP0006",
+        senderName: "",
+        sendMedicationId: 3,
+        diseaseName: "Allergic cough",
+        startDate: "04-07-2025",
+        endDate: "11-07-2025",
+        requestedDate: "03-07-2025 21:22:51",
+        prescriptionImage:
+            "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751552565552-thuoc-tay-3.jpeg?alt=media&token=51ad2c85-1be6-426b-9f6b-31dfc32c49d6",
+        note:
+            "Child has persistent dry cough due to allergy. Needs antihistamine and cough suppressant.",
+        status: "APPROVED",
+        medicationItems: [],
+        medicationLogs: []
     },
     {
-        pupilId: "PP0009",
-        lastName: "Lê",
-        firstName: "Thảo",
-        birthDate: "17-09-2017",
-        gender: "F",
-        gradeId: 2,
-        startYear: 2025,
-        gradeLevel: "GRADE_2",
-        gradeName: "Lớp 2C",
-    },
-    {
-        pupilId: "PP0010",
-        lastName: "Trần",
-        firstName: "Quân",
-        birthDate: "05-06-2014",
-        gender: "M",
-        gradeId: 5,
-        startYear: 2025,
-        gradeLevel: "GRADE_5",
-        gradeName: "Lớp 5A",
-    },
-]
+        pupilId: "PP0006",
+        senderName: "",
+        sendMedicationId: 4,
+        diseaseName: "Mild cold and throat irritation",
+        startDate: "10-07-2025",
+        endDate: "16-07-2025",
+        requestedDate: "03-07-2025 21:23:55",
+        prescriptionImage:
+            "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751552633798-thuoc-tay-4.jpg?alt=media&token=48e6c0f6-5fc4-4179-8135-c727ef963077",
+        note:
+            "Child has slight cold symptoms, no fever. Needs throat lozenges and warm fluids.",
+        status: "APPROVED",
+        medicationItems: [
+            {
+                medicationId: 8,
+                medicationName: "Paracetamol",
+                unitAndUsage:
+                    "1 tablet if child experiences mild discomfort",
+                medicationSchedule: "Before lunch: 10h30-11h00"
+            }
+        ],
+        medicationLogs: []
+    }
+];
+  
 
-const pupilDetailPrescription = {
-    pupilId: "PP0001",
-    sessionId: 1,
-    medications: [
-        {
-            medicationId: 101,
-            medicationName: "Paracetamol",
-            unitAndUsage: "500mg, twice a day after meals",
-            medicationSchedule: "2024-07-01 to 2024-07-05",
-        },
-        {
-            medicationId: 102,
-            medicationName: "Ibuprofen",
-            unitAndUsage: "200mg, once a day",
-            medicationSchedule: "2024-07-01 to 2024-07-03",
-        },
-    ],
-}
+
 
 const TakeMedicationBySession = () => {
-    const [value, setValue] = React.useState("1")
+
+
+    const { sessionsInfor, loading: sessionsLoading, error: errorLoading } = useTodayTakeMedicationSessions()
+    const { pupilsInfor, loading: pupilsLoading, error: pupilsError, refetch: pupilsRefetch } = useAllPupilsBySessionAndGrade();
+
+    const [value, setValue] = useState("1")
     const [pupilListOpen, setPupilListOpen] = useState(false)
     const [prescriptionDetailOpen, setPrescriptionDetailOpen] = useState(false)
     const [selectedGrade, setSelectedGrade] = useState(null)
     const [selectedSession, setSelectedSession] = useState(null)
     const [selectedPupil, setSelectedPupil] = useState(null)
     const [medicationChecks, setMedicationChecks] = useState({})
-
     const [logMessages, setLogMessages] = useState({ "schoolNurseName": "+ School Nurse's name: " + localStorage.getItem("userFullName") }) 
     // manage log message of each pupil's detail, will be removed if submit for current pupil complete to continue with the next pupil;
     // fill school nurse's name to know which school nurse is taking medication for which pupil
 
-    const handleChange = (event, newValue) => {
-        setValue(newValue)
+    // handle re-select different session and grade:
+    useEffect(() => {
+
+        if (selectedGrade === null || selectedSession === null) {
+            return // No grade or session selected yet
+        }
+
+        /* Note: selectedSession is 0, 1, 2 properly sessions 1, 2, 3 */
+        /*       selectedGrade is the gradeId 1, 2, 3, 4, 5 */
+        pupilsRefetch(selectedSession + 1, selectedGrade)
+
+    }, [selectedGrade, selectedSession]);
+
+    // render skeletions of waiting fetch data:
+    if (sessionsLoading) {
+        return renderLoadingSkeleton({ length: 3 }) // Show 3 skeletons for 3 sessions
     }
 
+    // Utils functions:
     const getSessionTime = (sessionIndex) => {
         const times = ["09:30 - 10:00", "10:30 - 11:00", "11:30 - 12:00"]
         return times[sessionIndex] || ""
     }
 
     const getSessionName = (sessionIndex) => {
-        return medicationSessionsByGrade[sessionIndex]?.session || ""
+        return sessionsInfor[sessionIndex]?.session || ""
+    }
+    
+    // Handle events functions:
+    const handleChange = (event, newValue) => {
+        setValue(newValue)
     }
 
     const handleGradeCardClick = (grade, sessionIndex) => {
         setSelectedGrade(grade)
-        setSelectedSession(sessionIndex)
+        setSelectedSession(sessionIndex) 
         setPupilListOpen(true)
     }
 
     const handlePupilDetailClick = (pupil) => {
         setSelectedPupil(pupil)
-        // Reset medication checks
+        
+        // Get all approved medication requests for this pupil
+        const pupilMedications = approvedMedicationRequests.filter(
+            request => request.pupilId === pupil.pupilId && request.status === "APPROVED"
+        )
+        
+        // Reset medication checks for all medications across all diseases
         const initialChecks = {}
-        pupilDetailPrescription.medications.forEach((med) => {
-            initialChecks[med.medicationId] = false
+        pupilMedications.forEach((request) => {
+            request.medicationItems.forEach((med) => {
+                initialChecks[med.medicationId] = false
+            })
         })
         setMedicationChecks(initialChecks)
+        
+        // Reset log messages but keep school nurse name
+        setLogMessages({ "schoolNurseName": "+ School Nurse's name: " + localStorage.getItem("userFullName") })
+        
         setPrescriptionDetailOpen(true)
     }
 
@@ -264,6 +294,14 @@ const TakeMedicationBySession = () => {
         return colors[(grade - 1) % colors.length]
     }
 
+    // Get approved medication requests for selected pupil
+    const getPupilMedicationRequests = () => {
+        if (!selectedPupil) return []
+        return approvedMedicationRequests.filter(
+            request => request.pupilId === selectedPupil.pupilId && request.status === "APPROVED"
+        )
+    }
+
     const getGenderColor = (gender) => {
         return gender === "M" ? "primary" : "secondary"
     }
@@ -273,9 +311,9 @@ const TakeMedicationBySession = () => {
         return `${day}/${month}/${year}`
     }
 
-    // Filter pupils by grade
+    // Filter pupilsInfor by grade
     const getPupilsByGrade = (grade) => {
-        return pupils.filter((pupil) => pupil.gradeId === grade)
+        return pupilsInfor.filter((pupil) => pupil.gradeId === grade)
     }
 
     return (
@@ -350,7 +388,7 @@ const TakeMedicationBySession = () => {
                                 </Typography>
                             </Box>
                             <Grid container spacing={3}>
-                                {medicationSessionsByGrade[0]?.quantityPupilByGrade.map((gradeData) => (
+                                {sessionsInfor[0]?.quantityPupilByGrade.map((gradeData) => (
                                     <Grid item size={{ xs: 6 }} key={gradeData.grade}>
                                         <Card
                                             sx={{
@@ -405,7 +443,7 @@ const TakeMedicationBySession = () => {
                                 </Typography>
                             </Box>
                             <Grid container spacing={3}>
-                                {medicationSessionsByGrade[1]?.quantityPupilByGrade.map((gradeData) => (
+                                {sessionsInfor[1]?.quantityPupilByGrade.map((gradeData) => (
                                     <Grid item size={{ xs: 6 }} key={gradeData.grade}>
                                         <Card
                                             sx={{
@@ -460,7 +498,7 @@ const TakeMedicationBySession = () => {
                                 </Typography>
                             </Box>
                             <Grid container spacing={3}>
-                                {medicationSessionsByGrade[2]?.quantityPupilByGrade.map((gradeData) => (
+                                {sessionsInfor[2]?.quantityPupilByGrade.map((gradeData) => (
                                     <Grid item size={{ xs: 6 }} key={gradeData.grade}>
                                         <Card
                                             sx={{
@@ -560,6 +598,12 @@ const TakeMedicationBySession = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
+                                {
+                                    pupilsLoading && (
+                                        // show skeletons while loading pupils
+                                        <>{renderLoadingSkeleton(3)}</>
+                                    )
+                                }
                                 {getPupilsByGrade(selectedGrade).map((pupil) => (
                                     <TableRow key={pupil.pupilId}>
                                         <TableCell>
@@ -635,76 +679,111 @@ const TakeMedicationBySession = () => {
                     </Box>
 
                     <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
-                        Take medication
+                        Take Medication by Disease
                     </Typography>
-                    <TableContainer component={Paper} elevation={0}>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>
-                                        <Typography variant="subtitle2" fontWeight="bold">
-                                            Medication Name
-                                        </Typography>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Typography variant="subtitle2" fontWeight="bold">
-                                            Unit & Usage
-                                        </Typography>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Typography variant="subtitle2" fontWeight="bold">
-                                            Schedule
-                                        </Typography>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Typography variant="subtitle2" fontWeight="bold">
-                                            Mark As Given
-                                        </Typography>
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {pupilDetailPrescription.medications.map((medication, idx) => {
 
-                                    // get school nurse information:
-                                    
+                    {/* Render each disease as a separate section */}
+                    {getPupilMedicationRequests().map((request, diseaseIndex) => (
+                        <Box key={request.sendMedicationId} sx={{ mb: 4 }}>
+                            {/* Disease Header */}
+                            <Paper sx={{ p: 2, mb: 2, bgcolor: "warning.50" }}>
+                                <Typography variant="subtitle1" fontWeight="bold" color="warning.main" sx={{ mb: 1 }}>
+                                    Disease #{diseaseIndex + 1}: {request.diseaseName}
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                    <strong>Treatment Period:</strong> {request.startDate} to {request.endDate}
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                    <strong>Note:</strong> {request.note}
+                                </Typography>
+                            </Paper>
 
-                                    // each log message contains medication name, unit and usage, schedule, and mark as given status
-                                    const logMessage = `+ Medication: ${medication.medicationName}; Unit & Usage: ${medication.unitAndUsage}; Schedule: ${medication.medicationSchedule}; Given: Yes; Given Time: ${new Date().toLocaleTimeString()}`;
+                            {/* Medications Table for this disease */}
+                            {request.medicationItems && request.medicationItems.length > 0 ? (
+                                <TableContainer component={Paper} elevation={0} sx={{ mb: 2 }}>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>
+                                                    <Typography variant="subtitle2" fontWeight="bold">
+                                                        Medication Name
+                                                    </Typography>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Typography variant="subtitle2" fontWeight="bold">
+                                                        Unit & Usage
+                                                    </Typography>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Typography variant="subtitle2" fontWeight="bold">
+                                                        Schedule
+                                                    </Typography>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Typography variant="subtitle2" fontWeight="bold">
+                                                        Mark As Given
+                                                    </Typography>
+                                                </TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {request.medicationItems.map((medication) => {
+                                                // each log message contains medication name, unit and usage, schedule, and mark as given status
+                                                const logMessage = `+ Disease: ${request.diseaseName}; Medication: ${medication.medicationName}; Unit & Usage: ${medication.unitAndUsage}; Schedule: ${medication.medicationSchedule}; Given: Yes; Given Time: ${new Date().toLocaleTimeString()}`;
 
-                                    return ((
-                                        <TableRow key={medication.medicationId}>
-                                            <TableCell>
-                                                <Typography variant="body2" fontWeight="bold">
-                                                    {medication.medicationName}
-                                                </Typography>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Typography variant="body2">{medication.unitAndUsage}</Typography>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Typography variant="body2">{medication.medicationSchedule}</Typography>
-                                            </TableCell>
-                                            <TableCell>
-                                                <FormControlLabel
-                                                    control={
-                                                        <Checkbox
-                                                            checked={medicationChecks[medication.medicationId] || false}
-                                                            onChange={(e) => handleMedicationCheck(medication.medicationId, e.target.checked, logMessage)}
-                                                            color="success"
-                                                        />
-                                                    }
-                                                    label="Given"
-                                                />
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
-                                })}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    <Box>
-                        <Typography variant="body2" color="text.secondary" sx={{ mt: 4 }}>
+                                                return (
+                                                    <TableRow key={medication.medicationId}>
+                                                        <TableCell>
+                                                            <Typography variant="body2" fontWeight="bold">
+                                                                {medication.medicationName}
+                                                            </Typography>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Typography variant="body2">{medication.unitAndUsage}</Typography>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Typography variant="body2">{medication.medicationSchedule}</Typography>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <FormControlLabel
+                                                                control={
+                                                                    <Checkbox
+                                                                        checked={medicationChecks[medication.medicationId] || false}
+                                                                        onChange={(e) => handleMedicationCheck(medication.medicationId, e.target.checked, logMessage)}
+                                                                        color="success"
+                                                                    />
+                                                                }
+                                                                label="Given"
+                                                            />
+                                                        </TableCell>
+                                                    </TableRow>
+                                                )
+                                            })}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            ) : (
+                                <Paper sx={{ p: 2, textAlign: "center", bgcolor: "grey.50" }}>
+                                    <Typography variant="body2" color="text.secondary">
+                                        No medications specified for this disease
+                                    </Typography>
+                                </Paper>
+                            )}
+                        </Box>
+                    ))}
+
+                    {/* Show message if no approved requests */}
+                    {getPupilMedicationRequests().length === 0 && (
+                        <Paper sx={{ p: 3, textAlign: "center", bgcolor: "grey.50" }}>
+                            <Typography variant="body1" color="text.secondary">
+                                No approved medication requests found for this pupil
+                            </Typography>
+                        </Paper>
+                    )}
+
+                    {/* Log Messages Section */}
+                    <Box sx={{ mt: 3 }}>
+                        <Typography variant="body2" color="text.secondary">
                             Note: This note will be sent to pupil's parents through notification.
                         </Typography>
                         <textarea
@@ -720,15 +799,14 @@ const TakeMedicationBySession = () => {
                                 height: '170px',
                                 marginTop: '12px',
                                 border: '1px solid #ccc',
-                                borderRadius: '0px',
+                                borderRadius: '4px',
                                 padding: '12px',
                                 fontSize: '16px',
                                 fontFamily: 'inherit',
-                                resize: 'none', // disables resize handle
+                                resize: 'none',
                                 backgroundColor: '#f5f5f5',
                             }}
                         />
-
                     </Box>
                 </DialogContent>
                 <DialogActions sx={{ p: 3 }}>
@@ -749,5 +827,24 @@ const TakeMedicationBySession = () => {
         </Grid>
     )
 }
+
+const renderLoadingSkeleton = ({ length: length  }) => (
+    <Container maxWidth="md" sx={{ py: 3 }}>
+        {Array.from({ length: length }, (_, i) => i).map((index) => (
+            <Card key={index} sx={{ mb: 2 }}>
+                <CardContent>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                        <Skeleton variant="circular" width={48} height={48} />
+                        <Box sx={{ flex: 1 }}>
+                            <Skeleton variant="text" width="80%" height={24} />
+                            <Skeleton variant="text" width="60%" height={20} />
+                        </Box>
+                        <Skeleton variant="rectangular" width={80} height={32} />
+                    </Box>
+                </CardContent>
+            </Card>
+        ))}
+    </Container>
+)
 
 export default TakeMedicationBySession
