@@ -6,7 +6,8 @@ import CampaignsVaccination from './vaccination-campaign/Campaigns.jsx';
 import VaccinationHistory from './vaccination-campaign/VaccinationHistory.jsx';
 import SurveysVaccination from './vaccination-campaign/Surveys.jsx';
 
-import HealthDeclaration from './health-management/HealthDeclaration.jsx';
+import HealthDeclaration from './health-management/declaration/HealthDeclaration.jsx';
+import VaccinationDeclaration from './health-management/declaration/VaccinationDeclaration.jsx';
 import Prescription from './health-management/Prescription.jsx';
 import MedicalEvents from './health-management/MedicalEvents.jsx';
 
@@ -26,6 +27,7 @@ const ParentComponentPagePackages = {
   VaccinationHistory,
   SurveysVaccination,
   HealthDeclaration,
+  VaccinationDeclaration,
   Prescription,
   MedicalEvents,
   Notification,

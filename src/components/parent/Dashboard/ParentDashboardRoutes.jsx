@@ -12,10 +12,15 @@ const ParentDashboardRoutes = () => {
         <Route path={"profile"} element={<ParentComponentPagePackages.Profile />} />
         <Route path={"notification"} element={<ParentComponentPagePackages.Notification />} />
         {/* health-management */}
-        <Route path={"health-declaration"} element={<ParentComponentPagePackages.HealthDeclaration />} />
         <Route path={"prescription"} element={<ParentComponentPagePackages.Prescription />} />
         <Route path={"prescription/new-prescription"} element={<ParentComponentPagePackages.NewPrescription />} />
         <Route path={"medical-events"} element={<ParentComponentPagePackages.MedicalEvents />} />
+
+        {/* Declaration */}
+        <Route path={"declaration"}>
+          <Route path={"health-declaration"} element={<ParentComponentPagePackages.HealthDeclaration />} />
+          <Route path={"vaccination-declaration"} element={<ParentComponentPagePackages.VaccinationDeclaration />} />
+        </Route>
 
         {/* vaccination-campaign */}
         <Route path={"vaccination-campaign"}>

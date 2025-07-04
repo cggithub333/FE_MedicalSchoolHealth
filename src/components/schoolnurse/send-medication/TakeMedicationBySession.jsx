@@ -79,6 +79,9 @@ const TakeMedicationBySession = () => {
     // Session tracking state for time-based control
     const [givenSessions, setGivenSessions] = useState({}) // Track which sessions are given for each disease
 
+    // state for selected pupil and medication details of that pupil:
+    const [selectedMedicationDetails, setSelectedMedicationDetails] = useState(null);
+
     const [value, setValue] = useState("1")
     const [pupilListOpen, setPupilListOpen] = useState(false)
     const [prescriptionDetailOpen, setPrescriptionDetailOpen] = useState(false)
@@ -171,9 +174,29 @@ const TakeMedicationBySession = () => {
         // Define session time windows (when GIVEN button can be clicked)
         const sessionTimeWindows = [
             { start: 9 * 60 + 30, end: 10 * 60 + 45 },   // Session 1: 9:30-10:45
-            // { start: 10 * 60 + 30, end: 11 * 60 + 15 },  // Session 2: 10:30-11:15
-            { start: 10 * 60 + 30, end: 20 * 60 + 15 },  // Session 2: 10:30-11:15
+            { start: 10 * 60 + 30, end: 11 * 60 + 15 },  // Session 2: 10:30-11:15
             { start: 11 * 60 + 30, end: 12 * 60 + 15 }   // Session 3: 11:30-12:15
+        ]
+
+        // for test session 1:
+        const sessionTimeWindows1 = [
+            { start: currentTotalMinutes - 30, end: currentTotalMinutes + 30 }, // Session 1: Current time ±30 min
+            { start: 10 * 60 + 30, end: 11 * 60 + 15 },  // Session 2: 10:30-11:15
+            { start: 11 * 60 + 30, end: 12 * 60 + 15 }   // Session 3: 11:30-12:15
+        ]
+
+        // for test session 2:
+        const sessionTimeWindows2 = [
+            { start: 9 * 60 + 30, end: 10 * 60 + 45 },   // Session 1: 9:30-10:45
+            { start: currentTotalMinutes - 30, end: currentTotalMinutes + 30 }, // Session 1: Current time ±30 min
+            { start: 11 * 60 + 30, end: 12 * 60 + 15 }   // Session 3: 11:30-12:15
+        ]
+
+        // for test session 3:
+        const sessionTimeWindows3 = [
+            { start: 9 * 60 + 30, end: 10 * 60 + 45 },   // Session 1: 9:30-10:45
+            { start: 10 * 60 + 30, end: 11 * 60 + 15 },  // Session 2: 10:30-11:15
+            { start: currentTotalMinutes - 30, end: currentTotalMinutes + 30 }, // Session 1: Current time ±30 min
         ]
         
         const sessionWindow = sessionTimeWindows[sessionIndex]
@@ -223,11 +246,20 @@ const TakeMedicationBySession = () => {
 
     const handlePupilDetailClick = (pupil) => {
         setSelectedPupil(pupil)
+
+        setSelectedMedicationDetails(null); // Reset selected medication details
         
         // Get all approved medication requests for this pupil
         const pupilMedications = (medicationDetailsByPupil || []).filter(
             request => (request.pupilId === pupil.pupilId && request.status === "APPROVED" && request.medicationItems != null && request.medicationItems.length > 0) // Ensure medicationItems is not null or empty
         )
+
+        setSelectedMedicationDetails(pupilMedications) // Set medication details for this pupil
+
+        // debug, show selectedMedicationDetails and getPupilMedicationRequests:
+        console.log("Selected pupil medication details:", pupilMedications) // ✅ Shows actual data
+        console.log("Medication requests for pupil:", pupilMedications)      // ✅ Same data
+        
         
         // Reset medication checks for all medications across all diseases
         const initialChecks = {}
@@ -377,6 +409,8 @@ const TakeMedicationBySession = () => {
         
         if (window.confirm("Are you sure you want to close? Any unsaved changes will be lost.")) {
             setPrescriptionDetailOpen(false)
+            setSelectedMedicationDetails(null) // Reset selected medication details
+            setSelectedPupil(null) // Reset selected pupil
         }
     }
 
@@ -745,7 +779,12 @@ const TakeMedicationBySession = () => {
             </Dialog>
 
             {/* Prescription Detail Modal */}
-            <Dialog open={prescriptionDetailOpen} onClose={() => setPrescriptionDetailOpen(false)} maxWidth="md" fullWidth>
+            <Dialog open={prescriptionDetailOpen} onClose={() => {
+                                                                setPrescriptionDetailOpen(false)
+                                                                setSelectedMedicationDetails(null); // Reset selected medication details
+                                                                setSelectedPupil(null); // Reset selected pupil
+                                                            }
+            } maxWidth="md" fullWidth>
                 <DialogTitle>
                     <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -754,7 +793,11 @@ const TakeMedicationBySession = () => {
                                 Medication Details - {selectedPupil?.lastName} {selectedPupil?.firstName}
                             </Typography>
                         </Box>
-                        <IconButton onClick={() => setPrescriptionDetailOpen(false)} size="small">
+                        <IconButton onClick={() => {
+                            setPrescriptionDetailOpen(false);
+                            setSelectedMedicationDetails(null); // Reset selected medication details
+                            setSelectedPupil(null); // Reset selected pupil
+                        }} size="small">
                             <Close />
                         </IconButton>
                     </Box>
@@ -901,13 +944,7 @@ const TakeMedicationBySession = () => {
                             {/* Log Messages Section for this disease */}
                             <Box sx={{ mt: 2 }}>
                                 <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                                    Note for {request.diseaseName} (Session {selectedSession + 1}): 
-                                    {isDiseaseAlreadyGiven(request) 
-                                        ? " This medication has been given for this session."
-                                        : !isCurrentTimeInSession(selectedSession)
-                                        ? ` Available during ${getSessionTimeWindow(selectedSession)}`
-                                        : " This note will be sent to pupil's parents through notification."
-                                    }
+                                    This note will be notified to the pupil's parents.
                                 </Typography>
                                 <textarea
                                     value={getDiseaseLogMessages(request)}

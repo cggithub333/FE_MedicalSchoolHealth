@@ -3,7 +3,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import ProfileIcon from '@mui/icons-material/AssignmentInd';
 import NotificationIcon from '@mui/icons-material/SwitchAccount';
 import MedicalEventIcon from '@mui/icons-material/MedicalInformation';
-import HealthDeclarationIcon from '@mui/icons-material/Description';
+import DeclarationIcon from '@mui/icons-material/Description';
 
 import VaccinationCampaignIcon from '@mui/icons-material/Vaccines';
 import HealthCheckCampaignIcon from '@mui/icons-material/HealthAndSafety';
@@ -57,9 +57,21 @@ const NavbarData = [
     icon: <PrescriptionIcon />,
   },
   {
-    segment: 'parent/health-declaration',
-    title: 'Health Declaration',
-    icon: <HealthDeclarationIcon />,
+    segment: 'parent/declaration',
+    title: 'Declarations',
+    icon: <DeclarationIcon />,
+    children: [
+      {
+        segment: 'vaccination-declaration',
+        title: 'Vaccination Declaration',
+        icon: <DeclarationIcon />,
+      },
+      {
+        segment: 'health-declaration',
+        title: 'Health Declaration',
+        icon: <DeclarationIcon />,
+      }
+    ],
   },
   {
     kind: 'divider',
