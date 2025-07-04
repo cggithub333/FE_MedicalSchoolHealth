@@ -3,7 +3,8 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import DescriptionIcon from '@mui/icons-material/Description';
 import LayersIcon from '@mui/icons-material/Layers';
-
+import MedicalEventIcon from "@mui/icons-material/Accessible";
+import ManIcon from '@mui/icons-material/Man';
 import ProfileIcon from '@mui/icons-material/AssignmentInd';
 import AccountManagementIcon from '@mui/icons-material/SwitchAccount';
 import NotificationIcon from '@mui/icons-material/NotificationsActive';
@@ -34,6 +35,26 @@ const NavbarData = [
     kind: 'divider',
   },
   // -----------------Part 2------------------------//
+  {
+    kind: 'header',
+    title: 'Pupils Management',
+  },
+  {
+    segment: 'admin/pupils-management',
+    title: 'Pupils Management',
+    icon: <ManIcon />,
+  },
+  {
+    segment: "admin/medical-events",
+    title: "Medical Events",
+    icon: <MedicalEventIcon />,
+  },
+  {
+    kind: 'divider',
+  },
+
+
+  // -----------------Part 3------------------------//
   {
     kind: 'header',
     title: 'Account Management',

@@ -9,6 +9,8 @@ import HealthCheckIcon from "@mui/icons-material/MedicationLiquid";
 import { MdCampaign as Campaign } from "react-icons/md";
 import { AiOutlineSchedule as ScheduleIcon } from "react-icons/ai";
 import { IoAddCircleSharp as NewCampaignIcon } from "react-icons/io5";
+import MedicalEventIcon from "@mui/icons-material/Accessible";
+import ManIcon from '@mui/icons-material/Man';
 
 const NavbarData = [
     //----------------part 1--------------------//
@@ -34,8 +36,28 @@ const NavbarData = [
 
     {
         kind: "divider",
+
     },
-    //----------------part 2--------------------//
+
+    // -----------------Part 2------------------------//
+    {
+        kind: 'header',
+        title: 'Pupils Management',
+    },
+    {
+        segment: 'manager/pupils-management',
+        title: 'Pupils Management',
+        icon: <ManIcon />,
+    },
+    {
+        segment: "manager/medical-events",
+        title: "Medical Events",
+        icon: <MedicalEventIcon />,
+    },
+    {
+        kind: 'divider',
+    },
+    //----------------part 3--------------------//
     {
         kind: "header",
         title: "Campaigns Management",

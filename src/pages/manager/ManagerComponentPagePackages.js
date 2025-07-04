@@ -14,6 +14,9 @@ import ReportsA from './reports/ReportsA.jsx';
 import ReportsB from './reports/ReportsB.jsx';
 import Integration from './reports/Integration.jsx';
 
+import MedicalEvents from './pupils-management/MedicalEvents.jsx';
+import PupilsManagement from './pupils-management/PupilsManagement.jsx';
+
 const ManagerComponentPagePackages = {
   DashboardHome,
   Notification,
@@ -26,7 +29,9 @@ const ManagerComponentPagePackages = {
   HealthCheckCampaign,
   ReportsA,
   Integration,
-  ReportsB
+  ReportsB,
+  MedicalEvents,
+  PupilsManagement
 };
 
 export default ManagerComponentPagePackages;

@@ -12,6 +12,9 @@ const ManagerDashboardRoutes = () => {
                 <Route path={"dashboard"} element={<ManagerComponentPagePackages.DashboardHome />} />
                 <Route path={"profile"} element={<ManagerComponentPagePackages.Profile />} />
                 <Route path={"notification"} element={<ManagerComponentPagePackages.Notification />} />
+                {/* pupils-management */}
+                <Route path={"pupils-management"} element={<ManagerComponentPagePackages.PupilsManagement />} />
+                <Route path={"medical-events"} element={<ManagerComponentPagePackages.MedicalEvents />} />
 
                 {/* vaccination-campaign */}
                 <Route path="vaccination-campaign">
