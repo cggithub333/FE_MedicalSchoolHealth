@@ -2,7 +2,7 @@ import PupilsManagement from '../../../components/schoolnurse/medical-event/pupi
 import MedicalEventForm from '../../../components/schoolnurse/medical-event/new-medical-event/EventForm.jsx';
 import MedicalEvent from '../../../components/schoolnurse/medical-event/medical-event-management/content/MedicalEvent.jsx';
 import MedeicalHeader from '../../../components/schoolnurse/medical-event/medical-event-management/header/MedicalHeader.jsx';
-
+import MedicalEventResultForm from '../../../components/schoolnurse/medical-event/pupils-information/new-medical-event/EventForm.jsx';
 import { Box, Grid } from '@mui/material';
 const MedicalEvents = () => {
 
@@ -49,6 +49,14 @@ const MedicalEvents = () => {
                         alignItems: "center",
                     }}>
                     <MedicalEventForm />
+                </Grid>
+                <Grid size={12} container
+                    direction="row"
+                    sx={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}>
+                    <MedicalEventResultForm />
                 </Grid>
 
             </Grid>
