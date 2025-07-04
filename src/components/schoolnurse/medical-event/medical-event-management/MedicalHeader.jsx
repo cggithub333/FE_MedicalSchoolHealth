@@ -40,104 +40,7 @@ import {
     Cancel as CancelIcon,
     Refresh as RefreshIcon,
 } from "@mui/icons-material"
-
-const rows = [
-    {
-        medical_event_id: "ME001",
-        pupilsInfor: [
-            {
-                pupilId: "P001",
-                lastName: "Smith",
-                firstName: "John",
-                Grade: "3",
-            },
-        ],
-        medicationInfor: [
-            {
-                injuryDescription: "Sprained ankle",
-                detailedInformation: "Nurse Anna Tran",
-                date: "2025-07-01",
-                Status: "medium",
-            },
-        ],
-    },
-    {
-        medical_event_id: "ME002",
-        pupilsInfor: [
-            {
-                pupilId: "P002",
-                lastName: "Johnson",
-                firstName: "Emma",
-                Grade: "4",
-            },
-        ],
-        medicationInfor: [
-            {
-                injuryDescription: "Minor cut",
-                detailedInformation: "Nurse Anna Tran",
-                date: "2025-07-02",
-                Status: "low",
-            },
-        ],
-    },
-    {
-        medical_event_id: "ME003",
-        pupilsInfor: [
-            {
-                pupilId: "P003",
-                lastName: "Brown",
-                firstName: "Michael",
-                Grade: "5",
-            },
-        ],
-        medicationInfor: [
-            {
-                injuryDescription: "Headache",
-                detailedInformation: "Nurse Anna Tran",
-                date: "2025-07-03",
-                Status: "low",
-            },
-        ],
-    },
-    {
-        medical_event_id: "ME004",
-        pupilsInfor: [
-            {
-                pupilId: "P004",
-                lastName: "Lee",
-                firstName: "Sophia",
-                Grade: "2",
-            },
-        ],
-        medicationInfor: [
-            {
-                injuryDescription: "Bruised knee",
-                detailedInformation: "Nurse Anna Tran",
-                date: "2025-07-03",
-                Status: "medium",
-            },
-        ],
-    },
-    {
-        medical_event_id: "ME005",
-        pupilsInfor: [
-            {
-                pupilId: "P005",
-                lastName: "Nguyen",
-                firstName: "Liam",
-                Grade: "1",
-            },
-        ],
-        medicationInfor: [
-            {
-                injuryDescription: "High fever",
-                detailedInformation: "Nurse Anna Tran",
-                date: "2025-07-04",
-                Status: "high",
-            },
-        ],
-    },
-]
+import { useGetAllMedicalEvent } from "../../../../hooks/schoolnurse/new-event/useGetAllMedicalEvent.js"
 
 const MedicalHeader = () => {
     const [searchTerm, setSearchTerm] = useState("")
@@ -150,6 +53,8 @@ const MedicalHeader = () => {
     const [page, setPage] = useState(1)
     const [eventFilter, setEventFilter] = useState("event") // default is event
     const rowsPerPage = 5
+
+    const { medicalEventList, loading, error } = useGetAllMedicalEvent();
 
     const handleMenuClick = (event, rowId) => {
         setAnchorEl(event.currentTarget)
@@ -188,17 +93,16 @@ const MedicalHeader = () => {
     }
 
     // Pagination logic
-    const filteredData = rows.filter((row) => {
-        const pupil = row.pupilsInfor[0]
-        const med = row.medicationInfor[0]
+    const filteredData = medicalEventList.filter((row) => {
+        const pupil = row.pupil;
         const matchesSearch =
-            row.medical_event_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (row.medicalEventId + '').toLowerCase().includes(searchTerm.toLowerCase()) ||
             (pupil.firstName + ' ' + pupil.lastName).toLowerCase().includes(searchTerm.toLowerCase()) ||
-            pupil.pupilId.toLowerCase().includes(searchTerm.toLowerCase())
-        const matchesStatus = statusFilter === "all" || med.Status === statusFilter
-        const matchesGrade = categoryFilter === "all" || pupil.Grade === categoryFilter
-        return matchesSearch && matchesStatus && matchesGrade
-    })
+            pupil.pupilId.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesStatus = statusFilter === "all" || row.status.toLowerCase() === statusFilter;
+        const matchesGrade = categoryFilter === "all" || pupil.gradeName.replace(/[^0-9]/g, '') === categoryFilter;
+        return matchesSearch && matchesStatus && matchesGrade;
+    });
     const pageCount = Math.ceil(filteredData.length / rowsPerPage)
     const paginatedData = filteredData.slice((page - 1) * rowsPerPage, page * rowsPerPage)
 
@@ -427,10 +331,9 @@ const MedicalHeader = () => {
                                     </TableCell>
                                 </TableRow>
                             ) : paginatedData.map((row) => {
-                                const pupil = row.pupilsInfor[0]
-                                const med = row.medicationInfor[0]
+                                const pupil = row.pupil;
                                 return (
-                                    <TableRow key={row.medical_event_id} hover sx={{ transition: 'background 0.2s', '&:hover': { background: '#f5f7fa' } }}>
+                                    <TableRow key={row.medicalEventId} hover sx={{ transition: 'background 0.2s', '&:hover': { background: '#f5f7fa' } }}>
                                         <TableCell>
                                             <Box display="flex" alignItems="center" gap={1}>
                                                 <Avatar sx={{ bgcolor: '#1976d2', color: '#fff', fontWeight: 600 }}>{pupil.firstName[0]}</Avatar>
@@ -440,15 +343,15 @@ const MedicalHeader = () => {
                                                 </Box>
                                             </Box>
                                         </TableCell>
-                                        <TableCell>{pupil.Grade}</TableCell>
-                                        <TableCell>{med.injuryDescription}</TableCell>
-                                        <TableCell>{med.detailedInformation}</TableCell>
-                                        <TableCell>{med.date}</TableCell>
+                                        <TableCell>{pupil.gradeName}</TableCell>
+                                        <TableCell>{row.injuryDescription}</TableCell>
+                                        <TableCell>{row.schoolNurse ? `${row.schoolNurse.firstName} ${row.schoolNurse.lastName}` : ''}</TableCell>
+                                        <TableCell>{row.dateTime}</TableCell>
                                         <TableCell>
-                                            <Chip label={med.Status} color={getStatusColor(med.Status)} size="small" sx={{ textTransform: 'capitalize', fontWeight: 500 }} />
+                                            <Chip label={row.status.toLowerCase()} color={getStatusColor(row.status.toLowerCase())} size="small" sx={{ textTransform: 'capitalize', fontWeight: 500 }} />
                                         </TableCell>
                                         <TableCell>
-                                            <IconButton size="small" color="primary" sx={{ borderRadius: 2, background: '#e3f2fd', '&:hover': { background: '#bbdefb' } }} onClick={() => handleShowResult(row.medical_event_id)}>
+                                            <IconButton size="small" color="primary" sx={{ borderRadius: 2, background: '#e3f2fd', '&:hover': { background: '#bbdefb' } }} onClick={() => handleShowResult(row.medicalEventId)}>
                                                 Details
                                             </IconButton>
                                         </TableCell>
