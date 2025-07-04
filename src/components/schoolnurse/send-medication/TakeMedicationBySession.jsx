@@ -176,32 +176,51 @@ const TakeMedicationBySession = () => {
         }))
     }
 
-    const handleClickCancelDetail = async () => {
+    // Add new function for handling Given button click
+    const handleGivenButtonClick = (request) => {
 
-        await showWarningToast("You have not submitted the medication checks yet!");
+        const formData = {
+            sendMedicationId: request.sendMedicationId,
+            status: "GIVEN",
+            note: getDiseaseLogMessages(request),
+        }
 
-        if (!window.confirm("Are you sure you want to cancel? All changes will be lost.")) {
-            return
-        } 
-        //else:
-        showErrorToast("Cancelled medication checks!");
-        // reset log messages
-        setLogMessages(prev => {
-            prev = {}
-            prev["schoolNurseName"] = "+ School Nurse's name: " + localStorage.getItem("userFullName") // keep school nurse's name
-            return prev
-        })
-        setPrescriptionDetailOpen(false)
+        showSuccessToast("Medication given successfully!")
     }
 
-    const handleSubmitMedication = () => {
-        // Logic to be added later
-        console.log("Submitted medication checks:", medicationChecks)
-        console.log("For pupil:", selectedPupil)
+    // Add function to check if any medication is checked for a specific disease
+    const hasCheckedMedications = (request) => {
+        if (!request.medicationItems) return false
+        return request.medicationItems.some(medication => 
+            medicationChecks[medication.medicationId] === true
+        )
+    }
 
-        // temporary:
-        showSuccessToast("Medication submitted successfully!");
-        // close the dialog:
+    // Get log messages for a specific disease
+    const getDiseaseLogMessages = (request) => {
+        const diseaseMessages = []
+        
+        // Add school nurse name
+        if (logMessages["schoolNurseName"]) {
+            diseaseMessages.push(logMessages["schoolNurseName"])
+        }
+        
+        // Add medication messages for this specific disease
+        if (request.medicationItems) {
+            request.medicationItems.forEach(medication => {
+                const medicationLog = logMessages[medication.medicationId]
+                if (medicationLog && medicationLog.trim() !== "") {
+                    diseaseMessages.push(medicationLog)
+                }
+            })
+        }
+        
+        return diseaseMessages.join("\n\n").trim() || "No medication given yet for this disease."
+    }
+
+    // Modified close dialog function
+    const handleCloseDialog = () => {
+        showWarningToast("Making sure taking medication on current pupil is finished!")
         setPrescriptionDetailOpen(false)
     }
 
@@ -685,6 +704,43 @@ const TakeMedicationBySession = () => {
                                     </Typography>
                                 </Paper>
                             )}
+
+                            {/* Log Messages Section for this disease */}
+                            <Box sx={{ mt: 2 }}>
+                                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                    Note for {request.diseaseName}: This note will be sent to pupil's parents through notification.
+                                </Typography>
+                                <textarea
+                                    value={getDiseaseLogMessages(request)}
+                                    readOnly
+                                    style={{
+                                        width: '100%',
+                                        height: '120px',
+                                        border: '1px solid #ccc',
+                                        borderRadius: '4px',
+                                        padding: '12px',
+                                        fontSize: '14px',
+                                        fontFamily: 'inherit',
+                                        resize: 'none',
+                                        backgroundColor: '#f9f9f9',
+                                        marginBottom: '12px'
+                                    }}
+                                />
+                                {/* Given Button for each disease - positioned under the notes */}
+                                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                    <Button
+                                        variant="contained"
+                                        color="success"
+                                        size="medium"
+                                        startIcon={<CheckCircle />}
+                                        disabled={!hasCheckedMedications(request)}
+                                        onClick={() => handleGivenButtonClick(request)}
+                                        sx={{ minWidth: 120 }}
+                                    >
+                                        Given
+                                    </Button>
+                                </Box>
+                            </Box>
                         </Box>
                     ))}
 
@@ -696,47 +752,10 @@ const TakeMedicationBySession = () => {
                             </Typography>
                         </Paper>
                     )}
-
-                    {/* Log Messages Section */}
-                    <Box sx={{ mt: 3 }}>
-                        <Typography variant="body2" color="text.secondary">
-                            Note: This note will be sent to pupil's parents through notification.
-                        </Typography>
-                        <textarea
-                            value={
-                                Object.values(logMessages)
-                                    .filter(val => val?.trim() !== "")  // remove empty or whitespace-only values
-                                    .join("\n\n")
-                                    .trim() || "No medication given yet."
-                            }
-                            readOnly
-                            style={{
-                                width: '100%',
-                                height: '170px',
-                                marginTop: '12px',
-                                border: '1px solid #ccc',
-                                borderRadius: '4px',
-                                padding: '12px',
-                                fontSize: '16px',
-                                fontFamily: 'inherit',
-                                resize: 'none',
-                                backgroundColor: '#f5f5f5',
-                            }}
-                        />
-                    </Box>
                 </DialogContent>
                 <DialogActions sx={{ p: 3 }}>
-                    <Button onClick={handleClickCancelDetail} variant="outlined">
-                        Cancel
-                    </Button>
-                    <Button
-                        onClick={handleSubmitMedication}
-                        variant="contained"
-                        startIcon={<CheckCircle />}
-                        color="success"
-                        sx={{ minWidth: 120 }}
-                    >
-                        Submit
+                    <Button onClick={handleCloseDialog} variant="contained" color="primary">
+                        Close
                     </Button>
                 </DialogActions>
             </Dialog>
