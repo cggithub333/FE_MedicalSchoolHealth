@@ -25,252 +25,32 @@ import {
 } from '@mui/material';
 import "./MedicalEventForm.scss"
 
-// Fake pupils data with parent info
-const fakePupils = [
-    {
-        id: "P001",
-        name: "Alice Nguyen",
-        grade: "5th",
-        class: "5A",
-        parent: {
-            name: "Minh Nguyen",
-            phone: "555-1234",
-            email: "minh.nguyen@email.com",
-        },
-    },
-    {
-        id: "P002",
-        name: "Bao Le",
-        grade: "4th",
-        class: "4B",
-        parent: {
-            name: "Lan Le",
-            phone: "555-5678",
-            email: "lan.le@email.com",
-        },
-    },
-    {
-        id: "P003",
-        name: "Chi Pham",
-        grade: "6th",
-        class: "6C",
-        parent: {
-            name: "Tuan Pham",
-            phone: "555-9012",
-            email: "tuan.pham@email.com",
-        },
-    },
-    {
-        id: "P004",
-        name: "David Kim",
-        grade: "3rd",
-        class: "3A",
-        parent: {
-            name: "Sarah Kim",
-            phone: "555-3456",
-            email: "sarah.kim@email.com",
-        },
-    },
-    {
-        id: "P005",
-        name: "Emma Wilson",
-        grade: "5th",
-        class: "5B",
-        parent: {
-            name: "John Wilson",
-            phone: "555-7890",
-            email: "john.wilson@email.com",
-        },
-    },
-]
+//custom hooks 
+import { useGetMedicalEventByMedicalEventId } from "@hooks/schoolnurse/new-event/useGetMedicalEventByMedicalEventId"
 
-// Fake medications data
-const fakeMedications = [
-    { medication_id: "M001", name: "Paracetamol", description: "Pain reliever and fever reducer", dosage: "500mg", unit: "tablet", is_active: true },
-    { medication_id: "M002", name: "Ibuprofen", description: "Anti-inflammatory and pain relief", dosage: "200mg", unit: "tablet", is_active: true },
-    { medication_id: "M003", name: "Amoxicillin", description: "Antibiotic for infections", dosage: "250mg", unit: "capsule", is_active: true },
-    { medication_id: "M004", name: "Cetirizine", description: "Antihistamine for allergies", dosage: "10mg", unit: "tablet", is_active: true },
-    { medication_id: "M005", name: "Salbutamol Inhaler", description: "Relief for asthma symptoms", dosage: "100mcg", unit: "puff", is_active: true },
-]
+const MedicalEventResultForm = ({ onCancel, eventId }) => {
+    // Fetch real event details
+    console.log("Fetching event details for ID:", eventId);
+    const { medicalEventDetail: event, loading, error } = useGetMedicalEventByMedicalEventId(eventId);
+    console.log("Event details:", event);
+    if (loading) return <div>Loading...</div>;
+    if (error || !event) return <div>Error loading event details.</div>;
 
-// Fake equipment data
-const fakeEquipment = [
-    { equipment_id: "E001", name: "Bandage", description: "Sterile bandage for wounds", unit: "piece", is_active: true },
-    { equipment_id: "E002", name: "Ice Pack", description: "Reusable cold pack for injuries", unit: "pack", is_active: true },
-    { equipment_id: "E003", name: "Thermometer", description: "Digital thermometer for temperature", unit: "unit", is_active: true },
-    { equipment_id: "E004", name: "Gloves", description: "Disposable medical gloves", unit: "pair", is_active: true },
-    { equipment_id: "E005", name: "Antiseptic Wipes", description: "Wipes for cleaning wounds", unit: "piece", is_active: true },
-]
+    // Destructure event data
+    const {
+        injuryDescription,
+        treatmentDescription,
+        detailedInformation,
+        status,
+        dateTime,
+        pupil,
+        schoolNurse,
+        equipmentUsed = [],
+        medicationUsed = [],
+    } = event;
+    const parent = pupil?.parents?.[0] || {};
 
-
-
-// Generate fake medical events for each pupil
-const fakeMedicalEvents = fakePupils.map((pupil, idx) => ({
-    medicalEventId: idx + 1,
-    injuryDescription: `Sample injury description for ${pupil.name}`,
-    treatmentDescription: `Sample treatment for ${pupil.name}`,
-    detailedInformation: `Additional details for ${pupil.name}`,
-    status: ["low", "medium", "high"][idx % 3],
-    dateTime: new Date(Date.now() - idx * 86400000).toISOString(),
-    isActive: true,
-    pupil: {
-        pupilId: pupil.id,
-        lastName: pupil.name.split(" ").slice(-1)[0],
-        firstName: pupil.name.split(" ")[0],
-        birthDate: "2012-01-01",
-        gender: idx % 2 === 0 ? "Female" : "Male",
-        avatar: "",
-        gradeId: idx + 1,
-        startYear: 2017,
-        gradeLevel: `GRADE_${pupil.grade.replace(/\D/g, '')}`,
-        gradeName: pupil.class,
-        parents: [
-            {
-                userId: `parent${idx + 1}`,
-                lastName: pupil.parent.name.split(" ").slice(-1)[0],
-                firstName: pupil.parent.name.split(" ")[0],
-                birthDate: "1980-01-01",
-                email: pupil.parent.email,
-                phoneNumber: pupil.parent.phone,
-                avatar: "",
-                createdAt: "2020-01-01",
-                role: "PARENT"
-            }
-        ]
-    },
-    schoolNurse: {
-        userId: `nurse${idx + 1}`,
-        firstName: "Nurse",
-        lastName: `#${idx + 1}`,
-        phoneNumber: "555-0000"
-    },
-    equipmentUsed: [fakeEquipment[idx % fakeEquipment.length]],
-    medicationUsed: [fakeMedications[idx % fakeMedications.length]]
-}))
-
-const event = fakeMedicalEvents[0];
-const medicalEventId = event.medicalEventId;
-const injuryDescription = event.injuryDescription;
-const treatmentDescription = event.treatmentDescription;
-const detailedInformation = event.detailedInformation;
-const status = event.status;
-const dateTime = event.dateTime;
-const isActive = event.isActive;
-
-// Pupil info
-const pupil = event.pupil;
-const pupilId = pupil.pupilId;
-const lastName = pupil.lastName;
-const firstName = pupil.firstName;
-const birthDate = pupil.birthDate;
-const gender = pupil.gender;
-const avatar = pupil.avatar;
-const gradeId = pupil.gradeId;
-const startYear = pupil.startYear;
-const gradeLevel = pupil.gradeLevel;
-const gradeName = pupil.gradeName;
-
-// parent info
-const parents = pupil.parents[0]; // array of parent objects
-const parentUserId = parents.userId;
-const parentLastName = parents.lastName;
-const parentFirstName = parents.firstName;
-const parentBirthDate = parents.birthDate;
-const parentEmail = parents.email;
-const parentPhoneNumber = parents.phoneNumber;
-const parentAvatar = parents.avatar;
-const parentCreatedAt = parents.createdAt;
-const parentRole = parents.role; // e.g., "PARENT"
-
-
-// School nurse info
-const schoolNurse = event.schoolNurse;
-const nurseUserId = schoolNurse.userId;
-const nurseFirstName = schoolNurse.firstName;
-const nurseLastName = schoolNurse.lastName;
-const nursePhoneNumber = schoolNurse.phoneNumber;
-
-// Equipment and medication used (arrays)
-const equipmentUsed = event.equipmentUsed; // array of equipment objects
-const medicationUsed = event.medicationUsed; // array of medication objects
-
-const getStatusColor = (status) => {
-    switch (status) {
-        case "low":
-            return "success"
-        case "medium":
-            return "warning"
-        case "high":
-            return "error"
-        default:
-            return "default"
-    }
-}
-
-const MedicalEventResultForm = ({ onCancel }) => {
-    // Get current date-time in yyyy-MM-ddTHH:mm format for input type="datetime-local"
-    const getCurrentDateTime = () => {
-        const now = new Date()
-        const pad = (n) => n.toString().padStart(2, '0')
-        const yyyy = now.getFullYear()
-        const MM = pad(now.getMonth() + 1)
-        const dd = pad(now.getDate())
-        const hh = pad(now.getHours())
-        const mm = pad(now.getMinutes())
-        return `${yyyy}-${MM}-${dd}T${hh}:${mm}`
-    }
-
-    const [formData, setFormData] = useState({
-        dateTime: getCurrentDateTime(),
-        injuryDescription: "",
-        treatmentDescription: "",
-        detailedInformation: "",
-        status: "",
-    })
-
-    const [selectedPupil, setSelectedPupil] = useState(null)
-    const [showPupilDetails, setShowPupilDetails] = useState(false)
-    const [selectedMedications, setSelectedMedications] = useState([])
-    const [selectedEquipment, setSelectedEquipment] = useState([])
-
-    const handlePupilSelect = (event) => {
-        const pupilId = event.target.value
-        const pupil = fakePupils.find((p) => p.id === pupilId)
-        setSelectedPupil(pupil || null)
-        setShowPupilDetails(!!pupil)
-    }
-
-    const handleInputChange = (field, value) => {
-        setFormData((prev) => ({
-            ...prev,
-            [field]: value,
-        }))
-    }
-
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        console.log("Medical Event Form Data:", { ...formData, selectedPupil, selectedMedications, selectedEquipment })
-        alert("Medical event recorded successfully!");
-    }
-
-    const handleClearForm = () => {
-        const confirmed = window.confirm("Are you sure you want to clear all form data?")
-        if (confirmed) {
-            setFormData({
-                dateTime: getCurrentDateTime(),
-                injuryDescription: "",
-                treatmentDescription: "",
-                detailedInformation: "",
-                status: "",
-            })
-            setSelectedPupil(null)
-            setShowPupilDetails(false)
-            setSelectedMedications([])
-            setSelectedEquipment([])
-        }
-    }
-
-    const getSeverityColor = (status) => {
+    const getStatusColor = (status) => {
         switch (status) {
             case "low":
                 return "success"
@@ -314,9 +94,9 @@ const MedicalEventResultForm = ({ onCancel }) => {
                         </Card>
                     </Fade>
 
-                    <form onSubmit={handleSubmit}>
+                    {/* Student Information */}
+                    <form>
                         <Box sx={{ mt: 4, display: "flex", flexDirection: "column", gap: 4 }}>
-                            {/* Student Information */}
                             <Slide direction="up" in timeout={600}>
                                 <Card className="form-section-card" elevation={4}>
                                     <Box className="section-header">
@@ -337,13 +117,13 @@ const MedicalEventResultForm = ({ onCancel }) => {
                                                             </Typography>
                                                             <Box className="details-content">
                                                                 <Typography>
-                                                                    <strong>Name:</strong> {firstName} {lastName}
+                                                                    <strong>Name:</strong> {pupil?.firstName} {pupil?.lastName}
                                                                 </Typography>
                                                                 <Typography>
-                                                                    <strong>ID:</strong> {pupilId}
+                                                                    <strong>ID:</strong> {pupil?.pupilId}
                                                                 </Typography>
                                                                 <Typography>
-                                                                    <strong>Class:</strong> {gradeName}
+                                                                    <strong>Class:</strong> {pupil?.gradeName}
                                                                 </Typography>
                                                             </Box>
                                                         </Grid>
@@ -357,24 +137,21 @@ const MedicalEventResultForm = ({ onCancel }) => {
                                                             <Box className="details-content">
                                                                 <Typography sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                                                                     <Person fontSize="small" />
-                                                                    {parentLastName} {parentFirstName}
+                                                                    {parent?.lastName} {parent?.firstName}
                                                                 </Typography>
                                                                 <Typography sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                                                                     <Phone fontSize="small" />
-                                                                    {parentPhoneNumber}
-                                                                </Typography>
-                                                                <Typography sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                                                    <Email fontSize="small" />
-                                                                    {parentEmail}
+                                                                    {parent?.phoneNumber}
                                                                 </Typography>
                                                             </Box>
                                                         </Grid>
                                                     </div>
+
                                                     <div style={{ width: "20%" }}>
                                                         <Typography variant="h6" className="details-title">
                                                             Health status
                                                         </Typography>
-                                                        <Chip label={status} color={getStatusColor(status)} size="normal" sx={{ textTransform: 'capitalize', fontWeight: 1000 }} />
+                                                        <Chip label={status} color={getStatusColor(status?.toLowerCase())} size="normal" sx={{ textTransform: 'capitalize', fontWeight: 1000 }} />
                                                     </div>
 
                                                 </Grid>
@@ -406,7 +183,7 @@ const MedicalEventResultForm = ({ onCancel }) => {
                                                             <TextField
                                                                 fullWidth
                                                                 multiline
-                                                                minRows={1} // minimum rows
+                                                                minRows={1}
                                                                 maxRows={10}
                                                                 value={injuryDescription}
                                                                 className="textarea-field"
@@ -423,7 +200,7 @@ const MedicalEventResultForm = ({ onCancel }) => {
                                                                 fullWidth
                                                                 required
                                                                 multiline
-                                                                minRows={1} // minimum rows
+                                                                minRows={1}
                                                                 maxRows={10}
                                                                 value={treatmentDescription}
                                                                 disabled
@@ -438,7 +215,7 @@ const MedicalEventResultForm = ({ onCancel }) => {
                                                             fullWidth
                                                             required
                                                             multiline
-                                                            minRows={1} // minimum rows
+                                                            minRows={1}
                                                             maxRows={10}
                                                             value={detailedInformation}
                                                             disabled
@@ -470,11 +247,10 @@ const MedicalEventResultForm = ({ onCancel }) => {
                                                     <div style={{ width: "100%" }}>
                                                         <Grid item xs={12} md={5}>
                                                             <Typography variant="h6" className="details-title">
-                                                                Medication Details
+                                                                Equipment Details
                                                             </Typography>
                                                             <TableContainer component={Paper}>
                                                                 <Table>
-                                                                    {/* Table Header */}
                                                                     <TableHead>
                                                                         <TableRow>
                                                                             <TableCell>Name</TableCell>
@@ -482,8 +258,6 @@ const MedicalEventResultForm = ({ onCancel }) => {
                                                                             <TableCell>Unit</TableCell>
                                                                         </TableRow>
                                                                     </TableHead>
-
-                                                                    {/* Table Body */}
                                                                     <TableBody>
                                                                         {equipmentUsed.map((item, index) => (
                                                                             <TableRow key={index}>
@@ -501,11 +275,10 @@ const MedicalEventResultForm = ({ onCancel }) => {
                                                     <div style={{ width: "100%" }}>
                                                         <Grid item xs={12} md={5}>
                                                             <Typography variant="h6" className="details-title">
-                                                                Equipment Details
+                                                                Medication Details
                                                             </Typography>
                                                             <TableContainer component={Paper}>
                                                                 <Table>
-                                                                    {/* Table Header */}
                                                                     <TableHead>
                                                                         <TableRow>
                                                                             <TableCell>Name</TableCell>
@@ -514,8 +287,6 @@ const MedicalEventResultForm = ({ onCancel }) => {
                                                                             <TableCell>Unit</TableCell>
                                                                         </TableRow>
                                                                     </TableHead>
-
-                                                                    {/* Table Body */}
                                                                     <TableBody>
                                                                         {medicationUsed.map((item, index) => (
                                                                             <TableRow key={index}>
@@ -530,8 +301,6 @@ const MedicalEventResultForm = ({ onCancel }) => {
                                                             </TableContainer>
                                                         </Grid>
                                                     </div>
-
-
                                                 </Grid>
                                             </Paper>
                                         </Fade>
@@ -539,6 +308,7 @@ const MedicalEventResultForm = ({ onCancel }) => {
                                 </Card>
                             </Slide>
 
+                            {/* Responsible Nurse */}
                             <Slide direction="up" in timeout={800}>
                                 <Card className="form-section-card" elevation={4}>
                                     <Box className="section-header">
@@ -552,7 +322,6 @@ const MedicalEventResultForm = ({ onCancel }) => {
                                         <Paper className="pupil-details-card" elevation={2}>
                                             <Box sx={{ p: 3 }}>
                                                 <Grid container spacing={2}>
-
                                                     <div style={{ width: "35%" }}>
                                                         <Grid item xs={12} md={5}>
                                                             <Typography variant="h6" className="details-title">
@@ -560,12 +329,11 @@ const MedicalEventResultForm = ({ onCancel }) => {
                                                             </Typography>
                                                             <Box className="details-content">
                                                                 <Typography>
-                                                                    <strong>Name:</strong> {nurseFirstName} {nurseLastName}
+                                                                    <strong>Name:</strong> {schoolNurse?.firstName} {schoolNurse?.lastName}
                                                                 </Typography>
                                                                 <Typography>
-                                                                    <strong>Contact:</strong> {nursePhoneNumber}
+                                                                    <strong>Contact:</strong> {schoolNurse?.phoneNumber}
                                                                 </Typography>
-
                                                             </Box>
                                                         </Grid>
                                                     </div>
@@ -595,7 +363,7 @@ const MedicalEventResultForm = ({ onCancel }) => {
                 </Box>
             </Container>
         </div>
-    )
+    );
 }
 
 export default MedicalEventResultForm

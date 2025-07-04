@@ -139,14 +139,14 @@ const MedicalHeader = () => {
     const statsData = [
         {
             title: "Total Pupils",
-            value: "1,247",
+            value: "247",
             subtitle: "All registered students",
             color: "primary",
             delay: 200,
         },
         {
             title: "Total Events",
-            value: "89",
+            value: medicalEventList.length, // Dynamic count
             subtitle: "Requiring medical attention",
             color: "secondary",
             delay: 400,

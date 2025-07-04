@@ -21,84 +21,13 @@ import { CalendarToday, Person, Phone, Email, Warning, LocalHospital, Print, Cle
 import { Autocomplete } from '@mui/material';
 import "./MedicalEventForm.scss"
 
-// Fake pupils data with parent info
-const fakePupils = [
-    {
-        id: "P001",
-        name: "Alice Nguyen",
-        grade: "5th",
-        class: "5A",
-        parent: {
-            name: "Minh Nguyen",
-            phone: "555-1234",
-            email: "minh.nguyen@email.com",
-        },
-    },
-    {
-        id: "P002",
-        name: "Bao Le",
-        grade: "4th",
-        class: "4B",
-        parent: {
-            name: "Lan Le",
-            phone: "555-5678",
-            email: "lan.le@email.com",
-        },
-    },
-    {
-        id: "P003",
-        name: "Chi Pham",
-        grade: "6th",
-        class: "6C",
-        parent: {
-            name: "Tuan Pham",
-            phone: "555-9012",
-            email: "tuan.pham@email.com",
-        },
-    },
-    {
-        id: "P004",
-        name: "David Kim",
-        grade: "3rd",
-        class: "3A",
-        parent: {
-            name: "Sarah Kim",
-            phone: "555-3456",
-            email: "sarah.kim@email.com",
-        },
-    },
-    {
-        id: "P005",
-        name: "Emma Wilson",
-        grade: "5th",
-        class: "5B",
-        parent: {
-            name: "John Wilson",
-            phone: "555-7890",
-            email: "john.wilson@email.com",
-        },
-    },
-]
+//custom hooks
+import { useGetPupilsInformation } from "../../../../hooks/schoolnurse/new-event/useGetPupilsInformation"
+import { useCreateNewMedicalEvent } from "../../../../hooks/schoolnurse/new-event/useCreateNewMedicalEvent"
+import { useGetAllEquipment } from "../../../../hooks/schoolnurse/new-event/useGetAllEquipment"
+import { useGetAllMedication } from "../../../../hooks/schoolnurse/new-event/useGetAllMedication"
 
-// Fake medications data
-const fakeMedications = [
-    { medication_id: "M001", name: "Paracetamol", description: "Pain reliever and fever reducer", dosage: "500mg", unit: "tablet", is_active: true },
-    { medication_id: "M002", name: "Ibuprofen", description: "Anti-inflammatory and pain relief", dosage: "200mg", unit: "tablet", is_active: true },
-    { medication_id: "M003", name: "Amoxicillin", description: "Antibiotic for infections", dosage: "250mg", unit: "capsule", is_active: true },
-    { medication_id: "M004", name: "Cetirizine", description: "Antihistamine for allergies", dosage: "10mg", unit: "tablet", is_active: true },
-    { medication_id: "M005", name: "Salbutamol Inhaler", description: "Relief for asthma symptoms", dosage: "100mcg", unit: "puff", is_active: true },
-]
-
-// Fake equipment data
-const fakeEquipment = [
-    { equipment_id: "E001", name: "Bandage", description: "Sterile bandage for wounds", unit: "piece", is_active: true },
-    { equipment_id: "E002", name: "Ice Pack", description: "Reusable cold pack for injuries", unit: "pack", is_active: true },
-    { equipment_id: "E003", name: "Thermometer", description: "Digital thermometer for temperature", unit: "unit", is_active: true },
-    { equipment_id: "E004", name: "Gloves", description: "Disposable medical gloves", unit: "pair", is_active: true },
-    { equipment_id: "E005", name: "Antiseptic Wipes", description: "Wipes for cleaning wounds", unit: "piece", is_active: true },
-]
-
-const MedicalEventForm = ({ onCancel }) => {
+const MedicalEventForm = ({ onCancel, onSuccess }) => {
     // Get current date-time in yyyy-MM-ddTHH:mm format for input type="datetime-local"
     const getCurrentDateTime = () => {
         const now = new Date()
@@ -124,12 +53,14 @@ const MedicalEventForm = ({ onCancel }) => {
     const [selectedMedications, setSelectedMedications] = useState([])
     const [selectedEquipment, setSelectedEquipment] = useState([])
 
-    const handlePupilSelect = (event) => {
-        const pupilId = event.target.value
-        const pupil = fakePupils.find((p) => p.id === pupilId)
-        setSelectedPupil(pupil || null)
-        setShowPupilDetails(!!pupil)
-    }
+    // Use custom hooks for real data
+    const { pupilsList: pupils = [], loading: pupilsLoading } = useGetPupilsInformation();
+    const { medicationList: medications = [], loading: medicationsLoading } = useGetAllMedication();
+    const { equipmentList: equipment = [], loading: equipmentLoading } = useGetAllEquipment();
+    const { createNewMedicalEvent, loading: createLoading, error: createError, success: createSuccess } = useCreateNewMedicalEvent();
+
+    // Debug: Log pupils array to verify data at render time
+    console.log('Pupils from API:', pupils);
 
     const handleInputChange = (field, value) => {
         setFormData((prev) => ({
@@ -138,10 +69,24 @@ const MedicalEventForm = ({ onCancel }) => {
         }))
     }
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        console.log("Medical Event Form Data:", { ...formData, selectedPupil, selectedMedications, selectedEquipment })
-        alert("Medical event recorded successfully!");
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!selectedPupil) {
+            alert('Please select a pupil.');
+            return;
+        }
+        await createNewMedicalEvent({
+            pupilId: selectedPupil.pupilId,
+            injuryDescription: formData.injuryDescription,
+            treatmentDescription: formData.treatmentDescription,
+            detailedInformation: formData.detailedInformation,
+            status: formData.status.toUpperCase(),
+            equipmentIds: selectedEquipment.map(e => e.equipmentId),
+            medicationIds: selectedMedications.map(m => m.medicationId),
+        });
+        if (!createError) {
+            if (onSuccess) onSuccess();
+        }
     }
 
     const handleClearForm = () => {
@@ -227,8 +172,8 @@ const MedicalEventForm = ({ onCancel }) => {
                                                     <Grid item xs={12} md={6}>
                                                         <Autocomplete
                                                             fullWidth
-                                                            options={fakePupils}
-                                                            getOptionLabel={(option) => option ? `${option.name} (${option.id})` : ''}
+                                                            options={pupils}
+                                                            getOptionLabel={(option) => option ? `${option.firstName} ${option.lastName} (${option.pupilId})` : ''}
                                                             value={selectedPupil}
                                                             onChange={(_, value) => {
                                                                 setSelectedPupil(value)
@@ -237,14 +182,15 @@ const MedicalEventForm = ({ onCancel }) => {
                                                             renderInput={(params) => (
                                                                 <TextField {...params} label="Search Pupil or ID" placeholder="Type name or ID..." variant="outlined" required />
                                                             )}
-                                                            isOptionEqualToValue={(option, value) => option?.id === value?.id}
+                                                            isOptionEqualToValue={(option, value) => option?.pupilId === value?.pupilId}
                                                             filterOptions={(options, { inputValue }) =>
                                                                 options.filter(
                                                                     (p) =>
-                                                                        p.name.toLowerCase().includes(inputValue.toLowerCase()) ||
-                                                                        p.id.toLowerCase().includes(inputValue.toLowerCase())
+                                                                        `${p.firstName} ${p.lastName}`.toLowerCase().includes(inputValue.toLowerCase()) ||
+                                                                        p.pupilId.toLowerCase().includes(inputValue.toLowerCase())
                                                                 )
                                                             }
+                                                            loading={pupilsLoading}
                                                         />
                                                     </Grid>
                                                 </div>
@@ -275,13 +221,13 @@ const MedicalEventForm = ({ onCancel }) => {
                                                                 </Typography>
                                                                 <Box className="details-content">
                                                                     <Typography>
-                                                                        <strong>Name:</strong> {selectedPupil.name}
+                                                                        <strong>Name:</strong> {selectedPupil.firstName} {selectedPupil.lastName}
                                                                     </Typography>
                                                                     <Typography>
-                                                                        <strong>ID:</strong> {selectedPupil.id}
+                                                                        <strong>ID:</strong> {selectedPupil.pupilId}
                                                                     </Typography>
                                                                     <Typography>
-                                                                        <strong>Class:</strong> {selectedPupil.class}
+                                                                        <strong>Class:</strong> {selectedPupil.gradeName}
                                                                     </Typography>
                                                                 </Box>
                                                             </Grid>
@@ -290,18 +236,18 @@ const MedicalEventForm = ({ onCancel }) => {
                                                                     Parent/Guardian Contact
                                                                 </Typography>
                                                                 <Box className="details-content">
-                                                                    <Typography sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                                                        <Person fontSize="small" />
-                                                                        {selectedPupil.parent.name}
-                                                                    </Typography>
-                                                                    <Typography sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                                                        <Phone fontSize="small" />
-                                                                        {selectedPupil.parent.phone}
-                                                                    </Typography>
-                                                                    <Typography sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                                                        <Email fontSize="small" />
-                                                                        {selectedPupil.parent.email}
-                                                                    </Typography>
+                                                                    {selectedPupil.parents && selectedPupil.parents.length > 0 && (
+                                                                        <>
+                                                                            <Typography sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                                                                <Person fontSize="small" />
+                                                                                {selectedPupil.parents[0].firstName} {selectedPupil.parents[0].lastName}
+                                                                            </Typography>
+                                                                            <Typography sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                                                                <Phone fontSize="small" />
+                                                                                {selectedPupil.parents[0].phoneNumber}
+                                                                            </Typography>
+                                                                        </>
+                                                                    )}
                                                                 </Box>
                                                             </Grid>
                                                         </Grid>
@@ -394,14 +340,14 @@ const MedicalEventForm = ({ onCancel }) => {
                                                         <Autocomplete
                                                             multiple
                                                             fullWidth
-                                                            options={fakeMedications}
+                                                            options={medications}
                                                             getOptionLabel={(option) => option ? `${option.name} (${option.dosage} ${option.unit})` : ''}
                                                             value={selectedMedications}
                                                             onChange={(_, value) => setSelectedMedications(value)}
                                                             renderInput={(params) => (
                                                                 <TextField {...params} label="Search & Add Medication" placeholder="Type medication name..." variant="outlined" />
                                                             )}
-                                                            isOptionEqualToValue={(option, value) => option?.medication_id === value?.medication_id}
+                                                            isOptionEqualToValue={(option, value) => option?.medicationId === value?.medicationId}
                                                             filterOptions={(options, { inputValue }) =>
                                                                 options.filter(
                                                                     (m) =>
@@ -414,10 +360,11 @@ const MedicalEventForm = ({ onCancel }) => {
                                                                     <Chip
                                                                         label={`${option.name} (${option.dosage} ${option.unit})`}
                                                                         {...getTagProps({ index })}
-                                                                        key={option.medication_id}
+                                                                        key={option.medicationId}
                                                                     />
                                                                 ))
                                                             }
+                                                            loading={medicationsLoading}
                                                         />
                                                     </Grid>
                                                 </div>
@@ -427,14 +374,14 @@ const MedicalEventForm = ({ onCancel }) => {
                                                         <Autocomplete
                                                             multiple
                                                             fullWidth
-                                                            options={fakeEquipment}
+                                                            options={equipment}
                                                             getOptionLabel={(option) => option ? `${option.name} (${option.unit})` : ''}
                                                             value={selectedEquipment}
                                                             onChange={(_, value) => setSelectedEquipment(value)}
                                                             renderInput={(params) => (
                                                                 <TextField {...params} label="Search & Add Equipment" placeholder="Type equipment name..." variant="outlined" />
                                                             )}
-                                                            isOptionEqualToValue={(option, value) => option?.equipment_id === value?.equipment_id}
+                                                            isOptionEqualToValue={(option, value) => option?.equipmentId === value?.equipmentId}
                                                             filterOptions={(options, { inputValue }) =>
                                                                 options.filter(
                                                                     (e) =>
@@ -447,10 +394,11 @@ const MedicalEventForm = ({ onCancel }) => {
                                                                     <Chip
                                                                         label={`${option.name} (${option.unit})`}
                                                                         {...getTagProps({ index })}
-                                                                        key={option.equipment_id}
+                                                                        key={option.equipmentId}
                                                                     />
                                                                 ))
                                                             }
+                                                            loading={equipmentLoading}
                                                         />
                                                     </Grid>
                                                 </div>
