@@ -32,6 +32,7 @@ import {
 import { TabPanel, TabContext } from "@mui/lab"
 import { School, Close, Medication, AccessTime, Assignment, CheckCircle, Groups } from "@mui/icons-material"
 
+import useTakeMedicationsByEachPupilEachSession from "@hooks/schoolnurse/send-medication/useTakeMedicationsByEachPupilEachSession"
 import useAllPupilsBySessionAndGrade from "@hooks/schoolnurse/send-medication/useAllPupilsBySessionAndGrade"
 import useTodayTakeMedicationSessions from "@hooks/schoolnurse/send-medication/useTodayTakeMedicationSessions"
 import { showErrorToast, showSuccessToast, showWarningToast } from "@utils/toast-utils"
@@ -65,104 +66,11 @@ const DigitalClock = () => {
     )
 }
 
-const approvedMedicationRequests = [
-    {
-        pupilId: "PP0006",
-        senderName: "",
-        sendMedicationId: 1,
-        diseaseName: "Common cold with cough",
-        startDate: "04-07-2025",
-        endDate: "08-07-2025",
-        requestedDate: "03-07-2025 15:26:13",
-        prescriptionImage:
-            "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751531167635-thuoc-tay-2.jpg?alt=media&token=e94960df-29e7-41d4-8e08-9c6303c272b9",
-        note:
-            "My child has a mild cough and sore throat. Please help him take the medicine on time.",
-        status: "APPROVED",
-        medicationItems: [
-            {
-                medicationId: 2,
-                medicationName: "Guaifenesin",
-                unitAndUsage:
-                    "1 tablet taken to loosen mucus and ease chest congestion",
-                medicationSchedule: "Before lunch: 10h30-11h00"
-            }
-        ],
-        medicationLogs: []
-    },
-    {
-        pupilId: "PP0006",
-        senderName: "",
-        sendMedicationId: 2,
-        diseaseName: "Allergic cough",
-        startDate: "11-07-2025",
-        endDate: "22-07-2025",
-        requestedDate: "03-07-2025 15:27:54",
-        prescriptionImage:
-            "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751531270417-thuoc-tay-temp.jpg?alt=media&token=f6b23d24-282f-48a1-a916-54041bc12e50",
-        note:
-            "Child has persistent dry cough due to allergy. Needs antihistamine and cough suppressant.",
-        status: "APPROVED",
-        medicationItems: [
-            {
-                medicationId: 4,
-                medicationName: "Dextromethorphan",
-                unitAndUsage: "1 capsule to suppress dry cough",
-                medicationSchedule: "Before lunch: 10h30-11h00"
-            }
-        ],
-        medicationLogs: []
-    },
-    {
-        pupilId: "PP0006",
-        senderName: "",
-        sendMedicationId: 3,
-        diseaseName: "Allergic cough",
-        startDate: "04-07-2025",
-        endDate: "11-07-2025",
-        requestedDate: "03-07-2025 21:22:51",
-        prescriptionImage:
-            "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751552565552-thuoc-tay-3.jpeg?alt=media&token=51ad2c85-1be6-426b-9f6b-31dfc32c49d6",
-        note:
-            "Child has persistent dry cough due to allergy. Needs antihistamine and cough suppressant.",
-        status: "APPROVED",
-        medicationItems: [],
-        medicationLogs: []
-    },
-    {
-        pupilId: "PP0006",
-        senderName: "",
-        sendMedicationId: 4,
-        diseaseName: "Mild cold and throat irritation",
-        startDate: "10-07-2025",
-        endDate: "16-07-2025",
-        requestedDate: "03-07-2025 21:23:55",
-        prescriptionImage:
-            "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751552633798-thuoc-tay-4.jpg?alt=media&token=48e6c0f6-5fc4-4179-8135-c727ef963077",
-        note:
-            "Child has slight cold symptoms, no fever. Needs throat lozenges and warm fluids.",
-        status: "APPROVED",
-        medicationItems: [
-            {
-                medicationId: 8,
-                medicationName: "Paracetamol",
-                unitAndUsage:
-                    "1 tablet if child experiences mild discomfort",
-                medicationSchedule: "Before lunch: 10h30-11h00"
-            }
-        ],
-        medicationLogs: []
-    }
-];
-  
-
-
-
 const TakeMedicationBySession = () => {
-
 
     const { sessionsInfor, loading: sessionsLoading, error: errorLoading } = useTodayTakeMedicationSessions()
     const { pupilsInfor, loading: pupilsLoading, error: pupilsError, refetch: pupilsRefetch } = useAllPupilsBySessionAndGrade();
+    const { medicationDetailsByPupil, loading: medicationDetailsLoading, error: medicationDetailsError, refetch: medicationDetailsRefetch } = useTakeMedicationsByEachPupilEachSession();
 
     const [value, setValue] = useState("1")
     const [pupilListOpen, setPupilListOpen] = useState(false)
@@ -175,18 +83,26 @@ const TakeMedicationBySession = () => {
     // manage log message of each pupil's detail, will be removed if submit for current pupil complete to continue with the next pupil;
     // fill school nurse's name to know which school nurse is taking medication for which pupil
 
-    // handle re-select different session and grade:
+    // handle re-fetch pupils when selectedGrade or selectedSession changes:
     useEffect(() => {
-
         if (selectedGrade === null || selectedSession === null) {
             return // No grade or session selected yet
         }
-
         /* Note: selectedSession is 0, 1, 2 properly sessions 1, 2, 3 */
         /*       selectedGrade is the gradeId 1, 2, 3, 4, 5 */
         pupilsRefetch(selectedSession + 1, selectedGrade)
 
     }, [selectedGrade, selectedSession]);
+
+
+    // handle re-fetch medication details when selectedPupil changes:
+    useEffect(() => {
+        if (!selectedPupil) {
+            return // No pupil selected yet
+        }
+        // Fetch medication details for the selected pupil
+        medicationDetailsRefetch(selectedSession + 1, selectedPupil.pupilId);
+    }, [selectedPupil, selectedSession, selectedGrade, medicationDetailsRefetch]);
 
     // render skeletions of waiting fetch data:
     if (sessionsLoading) {
@@ -218,7 +134,7 @@ const TakeMedicationBySession = () => {
         setSelectedPupil(pupil)
         
         // Get all approved medication requests for this pupil
-        const pupilMedications = approvedMedicationRequests.filter(
+        const pupilMedications = medicationDetailsByPupil.filter(
             request => request.pupilId === pupil.pupilId && request.status === "APPROVED"
         )
         
@@ -297,7 +213,7 @@ const TakeMedicationBySession = () => {
     // Get approved medication requests for selected pupil
     const getPupilMedicationRequests = () => {
         if (!selectedPupil) return []
-        return approvedMedicationRequests.filter(
+        return medicationDetailsByPupil.filter(
             request => request.pupilId === selectedPupil.pupilId && request.status === "APPROVED"
         )
     }
