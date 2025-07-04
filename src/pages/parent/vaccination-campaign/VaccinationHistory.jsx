@@ -8,6 +8,9 @@ import InstructChooseChildImg from '@assets/images/instruct_choose_child.png';
 import { Base64 } from 'js-base64';
 import VaccinationHistoryDisplayer from '@components/parent/VaccinationCampaign/CampaignHistory/VaccinationHistoryDisplayer';
 
+import FloatingNavigateButton from '@components/magic/FloatingNavigateButton/FloatingNavigateButton';
+import { FaWpforms as FormIcon } from "react-icons/fa6";
+
 const VaccinationHistory = () => {
 
   // get pupilInfor from localStorage:
@@ -46,6 +49,11 @@ const VaccinationHistory = () => {
           )
         }
       </Grid>
+      <FloatingNavigateButton 
+        iconForAvatar={FormIcon}
+                    navigateLink={'./../../declaration/vaccination-declaration'}
+                    backgroundColor={"#3199d8"} 
+                    textContent="Declare"/>
     </div>
   );
 }
