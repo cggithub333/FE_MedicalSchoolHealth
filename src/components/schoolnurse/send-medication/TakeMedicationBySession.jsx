@@ -239,6 +239,12 @@ const TakeMedicationBySession = () => {
         } 
         //else:
         showErrorToast("Cancelled medication checks!");
+        // reset log messages
+        setLogMessages(prev => {
+            prev = {}
+            prev["schoolNurseName"] = "+ School Nurse's name: " + localStorage.getItem("userFullName") // keep school nurse's name
+            return prev
+        })
         setPrescriptionDetailOpen(false)
     }
 
