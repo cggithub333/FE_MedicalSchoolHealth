@@ -156,7 +156,6 @@ $card-hover-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 
 // Cards
 .info-card {
-    margin-bottom: 32px;
     border-radius: 16px;
     box-shadow: $card-shadow;
     transition: all 0.3s ease;
@@ -172,7 +171,6 @@ $card-hover-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
         display: flex;
         align-items: center;
         gap: 12px;
-        margin-bottom: 24px;
 
         .icon-container {
             width: 40px;
@@ -249,7 +247,6 @@ $card-hover-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
         background: linear-gradient(135deg, rgba(76, 175, 80, 0.05), rgba(46, 125, 50, 0.05));
         border: 1px solid rgba(76, 175, 80, 0.2);
         border-radius: 12px;
-        margin-bottom: 12px;
         transition: all 0.3s ease;
 
         &:hover {
@@ -283,7 +280,6 @@ $card-hover-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
             .vaccination-date {
                 color: #666;
                 font-weight: 500;
-                margin-bottom: 4px;
             }
 
             .status-chip.complete {
@@ -305,7 +301,6 @@ $card-hover-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
         background: linear-gradient(135deg, rgba(255, 152, 0, 0.05), rgba(245, 124, 0, 0.05));
         border: 1px solid rgba(255, 152, 0, 0.2);
         border-radius: 12px;
-        margin-bottom: 12px;
         transition: all 0.3s ease;
 
         &:hover {

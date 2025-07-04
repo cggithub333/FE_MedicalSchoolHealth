@@ -370,6 +370,7 @@ const MedicalEventResultForm = ({ onCancel }) => {
                                                             </Box>
                                                         </Grid>
                                                     </div>
+
                                                     <div style={{ width: "20%" }}>
                                                         <Typography variant="h6" className="details-title">
                                                             Health status
