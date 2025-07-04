@@ -1,8 +1,5 @@
-import PupilsManagement from '../../../components/schoolnurse/medical-event/pupils-management/PupilsManagement.jsx';
-import MedicalEventForm from '../../../components/schoolnurse/medical-event/new-medical-event/EventForm.jsx';
-import MedicalEvent from '../../../components/schoolnurse/medical-event/medical-event-management/content/MedicalEvent.jsx';
-import MedeicalHeader from '../../../components/schoolnurse/medical-event/medical-event-management/header/MedicalHeader.jsx';
-import MedicalEventResultForm from '../../../components/schoolnurse/medical-event/pupils-information/new-medical-event/EventForm.jsx';
+import MedeicalHeader from '../../../components/schoolnurse/medical-event/medical-event-management/MedicalHeader.jsx';
+
 import { Box, Grid } from '@mui/material';
 const MedicalEvents = () => {
 
@@ -23,41 +20,17 @@ const MedicalEvents = () => {
 
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                 {/* header */}
-                <MedeicalHeader />
+                <Grid size={12} container
+                    direction="row"
+                    sx={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}>
+                    <MedeicalHeader />
+                </Grid>
 
-                {/* Pupils Management */}
-                <Grid size={12} container
-                    direction="row"
-                    sx={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                    }}>
-                    pupils - title
-                </Grid>
-                <Grid size={12} container
-                    direction="row"
-                    sx={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                    }}>
-                    <MedicalEvent />
-                </Grid>
-                <Grid size={12} container
-                    direction="row"
-                    sx={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                    }}>
-                    <MedicalEventForm />
-                </Grid>
-                <Grid size={12} container
-                    direction="row"
-                    sx={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                    }}>
-                    <MedicalEventResultForm />
-                </Grid>
+
+
 
             </Grid>
         </Box>

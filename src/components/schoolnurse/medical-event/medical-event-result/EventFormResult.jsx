@@ -207,7 +207,7 @@ const getStatusColor = (status) => {
     }
 }
 
-const MedicalEventResultForm = () => {
+const MedicalEventResultForm = ({ onCancel }) => {
     // Get current date-time in yyyy-MM-ddTHH:mm format for input type="datetime-local"
     const getCurrentDateTime = () => {
         const now = new Date()
@@ -573,6 +573,20 @@ const MedicalEventResultForm = () => {
                                             </Box>
                                         </Paper>
                                     </Box>
+                                    <Grid item xs={12} sm={12} md={4}>
+                                        <Button
+                                            type="button"
+                                            size="large"
+                                            fullWidth
+                                            onClick={onCancel}
+                                            variant="outlined"
+                                            color="secondary"
+                                            startIcon={<Clear />}
+                                            className="clear-button"
+                                        >
+                                            BACK
+                                        </Button>
+                                    </Grid>
                                 </Card>
                             </Slide>
 
