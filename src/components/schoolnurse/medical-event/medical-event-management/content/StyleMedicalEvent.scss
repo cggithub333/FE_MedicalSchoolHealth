@@ -1,0 +1,80 @@
+.invoice-table-container {
+    width: 100%;
+    padding: 20px;
+
+    .filters-container {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+        align-items: center;
+
+        .search-field {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .filter-select {
+            min-width: 120px;
+        }
+    }
+
+    .table-container {
+        .customer-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            .customer-avatar {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
+
+            .customer-name {
+                font-weight: 500;
+                font-size: 14px;
+            }
+
+            .customer-email {
+                color: #666;
+                font-size: 12px;
+            }
+        }
+
+        .actions-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            .download-link {
+                color: #1976d2;
+                cursor: pointer;
+                font-size: 14px;
+                text-decoration: none;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+    .invoice-table-container {
+        padding: 16px;
+
+        .filters-container {
+            flex-direction: column;
+            align-items: stretch;
+
+            .search-field,
+            .filter-select {
+                width: 100%;
+                min-width: unset;
+            }
+        }
+    }
+}

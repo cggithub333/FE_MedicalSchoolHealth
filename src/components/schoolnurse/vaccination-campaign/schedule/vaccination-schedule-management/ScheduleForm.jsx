@@ -186,7 +186,7 @@ const VaccinationScheduleForm = () => {
 
     if (isLoading || pupilsLoading) {
         return (
-            <div className="vaccine-schedule-root">
+            <div >
                 {/* Quick Navigation Bar */}
                 {/* <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
                     <Button
@@ -221,7 +221,7 @@ const VaccinationScheduleForm = () => {
 
     if (error || !activeCampaign) {
         return (
-            <div className="vaccine-schedule-root">
+            <div >
                 {/* Quick Navigation Bar */}
                 {/* <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
                     <Button
@@ -264,7 +264,6 @@ const VaccinationScheduleForm = () => {
     if (showInjectionList && selectedShift) {
         return (
             <>
-
                 <Fade in={showInjectionList}>
                     <div>
                         <ScheduleInjectedList shift={selectedShift} campaign={activeCampaign} onBack={handleBackFromStudentList} />
@@ -281,8 +280,9 @@ const VaccinationScheduleForm = () => {
     if ((!activeCampaign) && Array.isArray(newestVaccinationCampaign) && newestVaccinationCampaign.length > 0) {
         // Fallback: show all campaigns for debugging
         return (
-            <div className="vaccine-schedule-root">
-                <Paper elevation={3} sx={{ p: 4, textAlign: "center", borderRadius: 3, maxWidth: 600, mx: "auto" }}>
+            <div>
+                < Paper elevation={3} sx={{ p: 4, textAlign: "center", borderRadius: 3, maxWidth: 600, mx: "auto" }
+                }>
                     <Typography variant="h5" gutterBottom>
                         No campaign with status IN_PROGRESS found
                     </Typography>
@@ -296,13 +296,13 @@ const VaccinationScheduleForm = () => {
                             </li>
                         ))}
                     </ul>
-                </Paper>
-            </div>
+                </Paper >
+            </div >
         )
     }
 
     return (
-        <div className="vaccine-schedule-root">
+        <div >
             {/* Quick Navigation Bar */}
 
             <Fade in={!showInjectionList}>
