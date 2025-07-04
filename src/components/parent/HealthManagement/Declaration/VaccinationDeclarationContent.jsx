@@ -22,83 +22,8 @@ import {
 } from "@mui/material"
 import { Vaccines, Person, Add, Delete, LocalHospital, CalendarToday, Note, Send } from "@mui/icons-material"
 
-const diseaseVaccineMap = {
-  GetVaccineByDisease: [
-    {
-      diseaseId: 1,
-      diseaseName: "Sởi",
-      doseQuantity: 1,
-      vaccines: [{ vaccineId: 1, name: "Vaccine MMR" }],
-    },
-    {
-      diseaseId: 2,
-      diseaseName: "Ho gà",
-      doseQuantity: 3,
-      vaccines: [{ vaccineId: 2, name: "Vaccine DTP" }],
-    },
-    {
-      diseaseId: 3,
-      diseaseName: "Bạch hầu",
-      doseQuantity: 3,
-      vaccines: [{ vaccineId: 2, name: "Vaccine DTP" }],
-    },
-    {
-      diseaseId: 4,
-      diseaseName: "Uốn ván",
-      doseQuantity: 3,
-      vaccines: [{ vaccineId: 2, name: "Vaccine DTP" }],
-    },
-    {
-      diseaseId: 5,
-      diseaseName: "Rubella",
-      doseQuantity: 1,
-      vaccines: [{ vaccineId: 1, name: "Vaccine MMR" }],
-    },
-    {
-      diseaseId: 6,
-      diseaseName: "Vệ sinh cơ quan sinh dục",
-      doseQuantity: 1,
-      vaccines: [],
-    },
-    {
-      diseaseId: 7,
-      diseaseName: "Viêm gan B",
-      doseQuantity: 3,
-      vaccines: [],
-    },
-    {
-      diseaseId: 8,
-      diseaseName: "Cúm",
-      doseQuantity: 1,
-      vaccines: [],
-    },
-  ],
-}
-
-const pupils = [
-  {
-    pupilId: "PP0006",
-    lastName: "Hoàng",
-    firstName: "Em",
-    birthDate: "12-01-2018",
-    gender: "M",
-    gradeId: 1,
-    startYear: 2025,
-    gradeLevel: "GRADE_1",
-    gradeName: "Lớp 1D",
-  },
-  {
-    pupilId: "PP0007",
-    lastName: "Võ",
-    firstName: "Lan",
-    birthDate: "25-11-2015",
-    gender: "F",
-    gradeId: 4,
-    startYear: 2025,
-    gradeLevel: "GRADE_4",
-    gradeName: "Lớp 4A",
-  },
-]
+import usePupils from "@hooks/parent/usePupils";
+import useAllDiseasesVaccines from "@hooks/parent/vaccination/useAllDiseasesVaccines"
 
 // help format date from "yyyy-mm-dd" to "dd-mm-yyyy" for submission
 const formatDateForSubmission = (dateString) => {
@@ -109,6 +34,10 @@ const formatDateForSubmission = (dateString) => {
 }
 
 const VaccinationDeclarationFormContent = () => {
+
+  const {pupils, isLoading: loadingPupils} = usePupils();
+  const { diseaseVaccineMap , loading: diseasesVaccinesLoading, error: diseasesVaccinesError, refetch: diseasesVaccinesRefetch } = useAllDiseasesVaccines();
+
   const [selectedPupilId, setSelectedPupilId] = useState("")
   const [diseases, setDiseases] = useState([
     {
@@ -130,7 +59,7 @@ const VaccinationDeclarationFormContent = () => {
   }
 
   const getSelectedDisease = (diseaseId) => {
-    return diseaseVaccineMap.GetVaccineByDisease.find((disease) => disease.diseaseId === diseaseId)
+    return diseaseVaccineMap?.GetVaccineByDisease?.find((disease) => disease.diseaseId === diseaseId)
   }
 
   const getAvailableVaccines = (diseaseId) => {
@@ -224,7 +153,7 @@ const VaccinationDeclarationFormContent = () => {
     // Additional logic will be written by you
   }
 
-  const selectedPupil = pupils.find((pupil) => pupil.pupilId === selectedPupilId)
+  const selectedPupil = pupils?.find((pupil) => pupil.pupilId === selectedPupilId)
 
   return (
     <Container maxWidth="lg" sx={{ py: 3 }}>
@@ -251,7 +180,7 @@ const VaccinationDeclarationFormContent = () => {
             <FormControl fullWidth>
               <InputLabel>Choose your child</InputLabel>
               <Select value={selectedPupilId} label="Choose your child" onChange={handlePupilChange}>
-                {pupils.map((pupil) => (
+                {pupils?.map((pupil) => (
                   <MenuItem key={pupil.pupilId} value={pupil.pupilId}>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2, width: "100%" }}>
                       <Typography fontWeight="bold">{pupil.pupilId}</Typography>
@@ -326,7 +255,7 @@ const VaccinationDeclarationFormContent = () => {
                       label="Select Disease"
                       onChange={(e) => handleDiseaseChange(diseaseIndex, e.target.value)}
                     >
-                      {diseaseVaccineMap.GetVaccineByDisease.map((diseaseOption) => (
+                      {diseaseVaccineMap?.GetVaccineByDisease?.map((diseaseOption) => (
                         <MenuItem key={diseaseOption.diseaseId} value={diseaseOption.diseaseId}>
                           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                             <Typography fontWeight="bold">{diseaseOption.diseaseName}</Typography>
