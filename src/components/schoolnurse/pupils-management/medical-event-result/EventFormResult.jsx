@@ -48,7 +48,10 @@ import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 //custom hooks
 import { useGetAllMedicalEventByPupilsId } from "../../../../hooks/schoolnurse/new-event/useGetAllMedicalEventByPupilsId"
 import { useGetVaccinationHistoryByPupilId } from "../../../../hooks/schoolnurse/new-event/useGetVaccinationByPupilId"
+import { useGetAllHealthCheckByPupilID } from "../../../../hooks/schoolnurse/new-event/useGetAllHealthCheckByPupilID"
+
 import MedicalEventDetails from "./medical-event-details/EventFormResult.jsx";
+import ScheduleResult from "./healthcheck-schedule-management-result/ScheduleResult.jsx";
 import "./MedicalEventForm.scss"
 
 function TabPanel({ children, value, index, ...other }) {
@@ -142,6 +145,9 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
     const [tabValue, setTabValue] = useState(0)
     // Add state for selected event
     const [selectedEventId, setSelectedEventId] = useState(null);
+    // Add state for selected health check consent form
+    const [selectedConsentFormId, setSelectedConsentFormId] = useState(null);
+    const [selectedPupilData, setSelectedPupilData] = useState(null);
 
     const handleTabChange = (event, newValue) => {
         setTabValue(newValue)
@@ -168,6 +174,15 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
     } = useGetVaccinationHistoryByPupilId(pupilId);
     console.log("Vaccination History2:", vaccinationHistory);
 
+    // Fetch health check history for the selected pupil
+    const {
+        healthCheckCampaigns = [],
+        loading: isHealthCheckLoading,
+        error: healthCheckError
+    } = useGetAllHealthCheckByPupilID(pupilId) || {};
+    // Defensive: ensure array
+    const healthCheckList = Array.isArray(healthCheckCampaigns) ? healthCheckCampaigns : (Array.isArray(healthCheckCampaigns?.data) ? healthCheckCampaigns.data : []);
+
     const event = medicalEvents[0]; // or any event in the array
 
     // Defensive checks to avoid TypeError if event or event.pupil is undefined
@@ -179,29 +194,6 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
     const parentName = parent ? `${parent.firstName} ${parent.lastName}` : "";
     const parentPhone = parent ? parent.phoneNumber : "";
 
-    const healthVisits = [
-        {
-            title: "Routine Health Check",
-            description: "Annual physical examination",
-            date: "Oct 15, 2024",
-            nurse: "Nurse Johnson",
-            status: "Complete",
-        },
-        {
-            title: "Vision Screening",
-            description: "Annual vision test - passed",
-            date: "Sep 28, 2024",
-            nurse: "Nurse Johnson",
-            status: "Complete",
-        },
-        {
-            title: "Hearing Screening",
-            description: "Annual hearing test - normal",
-            date: "Sep 20, 2024",
-            nurse: "Nurse Johnson",
-            status: "Complete",
-        },
-    ]
 
     const getStatusColor = (status) => {
         switch (status?.toLowerCase()) {
@@ -329,28 +321,68 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
                                     </Item>
                                 </Grid>
                                 <Grid size={4}>
-                                    <Item>Height</Item>
+                                    <Item>
+                                        <Typography variant="h6" sx={{ alignItems: 'center', gap: 1, color: '#1976d2' }}>
+                                            Height
+                                        </Typography>
+                                        {/* <span>{Height}</span> */}
+                                    </Item>
                                 </Grid>
                                 <Grid size={4}>
-                                    <Item>Weight</Item>
+                                    <Item>
+                                        <Typography variant="h6" sx={{ alignItems: 'center', gap: 1, color: '#1976d2' }}>
+                                            Weight
+                                        </Typography>
+                                        {/* <span>{Weight}</span> */}
+                                    </Item>
                                 </Grid>
                                 <Grid size={4}>
-                                    <Item>BMI</Item>
+                                    <Item>
+                                        <Typography variant="h6" sx={{ alignItems: 'center', gap: 1, color: '#1976d2' }}>
+                                            BMI
+                                        </Typography>
+                                        {/* <span>{BMI}</span> */}
+                                    </Item>
                                 </Grid>
                                 <Grid size={6}>
-                                    <Item>Left eye</Item>
+                                    <Item>
+                                        <Typography variant="h6" sx={{ alignItems: 'center', gap: 1, color: '#1976d2' }}>
+                                            Left eye
+                                        </Typography>
+                                        {/* <span>{Lefteye}</span> */}
+                                    </Item>
                                 </Grid>
                                 <Grid size={6}>
-                                    <Item>Right eye</Item>
+                                    <Item>
+                                        <Typography variant="h6" sx={{ alignItems: 'center', gap: 1, color: '#1976d2' }}>
+                                            Right eye
+                                        </Typography>
+                                        {/* <span>{Righteye}</span> */}
+                                    </Item>
                                 </Grid>
                                 <Grid size={6}>
-                                    <Item>Blood Pressure</Item>
+                                    <Item>
+                                        <Typography variant="h6" sx={{ alignItems: 'center', gap: 1, color: '#1976d2' }}>
+                                            Blood Pressure
+                                        </Typography>
+                                        {/* <span>{BloodPressure}</span> */}
+                                    </Item>
                                 </Grid>
                                 <Grid size={6}>
-                                    <Item>Dental Check</Item>
+                                    <Item>
+                                        <Typography variant="h6" sx={{ alignItems: 'center', gap: 1, color: '#1976d2' }}>
+                                            Dental Check
+                                        </Typography>
+                                        {/* <span>{DentalCheck}</span> */}
+                                    </Item>
                                 </Grid>
                                 <Grid size={12}>
-                                    <Item>Notes</Item>
+                                    <Item>
+                                        <Typography variant="h6" sx={{ alignItems: 'center', gap: 1, color: '#1976d2' }}>
+                                            Notes
+                                        </Typography>
+                                        {/* <span>{Notes}</span> */}
+                                    </Item>
                                 </Grid>
                             </Grid>
 
@@ -459,79 +491,106 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
             </TabPanel >
 
             <TabPanel value={tabValue} index={2}>
-                <Grid container size={12} spacing={2} sx={{ bgcolor: '#f5f5f5', borderRadius: 2 }}>
-                    <Grid size={12} sx={{ bgcolor: '#fff', px: 10, borderRadius: 2, width: '100%' }}>
-                        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                            {/* basic infor */}
-                            <Grid container spacing={2} sx={{ bgcolor: '#fff', p: 2, borderRadius: 2 }} size={12}>
-                                {/* Header */}
-                                <Grid item size={12}>
-                                    <Item>
-                                        <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#1976d2' }}>
-                                            <CalendarIcon />  Health Check History
-                                        </Typography>
-                                    </Item>
+                {selectedConsentFormId ? (
+                    <ScheduleResult
+                        consentFormId={selectedConsentFormId}
+                        pupilData={selectedPupilData}
+                        onBack={() => {
+                            setSelectedConsentFormId(null);
+                            setSelectedPupilData(null);
+                        }}
+                    />
+                ) : (
+                    <Grid container size={12} spacing={2} sx={{ bgcolor: '#f5f5f5', borderRadius: 2 }}>
+                        <Grid size={12} sx={{ bgcolor: '#fff', px: 10, borderRadius: 2, width: '100%' }}>
+                            <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                                {/* basic infor */}
+                                <Grid container spacing={2} sx={{ bgcolor: '#fff', p: 2, borderRadius: 2 }} size={12}>
+                                    {/* Header */}
+                                    <Grid item size={12}>
+                                        <Item>
+                                            <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#1976d2' }}>
+                                                <CalendarIcon />  Health Check History
+                                            </Typography>
+                                        </Item>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid item size={12}>
+                            <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                                {/* basic infor */}
+                                <Grid container spacing={2} sx={{ bgcolor: '#fff', p: 2, borderRadius: 2 }} size={12}>
+                                    {/* Header */}
+                                    <Grid item size={12}>
+                                        <Item>
+                                            {isHealthCheckLoading ? (
+                                                <Box p={4}><Typography>Loading health check history...</Typography></Box>
+                                            ) : healthCheckError ? (
+                                                <Box p={4}><Typography color="error">Error loading health check history: {healthCheckError?.message || "Unknown error"}</Typography></Box>
+                                            ) : healthCheckList.length === 0 ? (
+                                                <Box className="empty-state" sx={{ textAlign: 'center', py: 6 }}>
+                                                    <CalendarIcon className="empty-icon" sx={{ fontSize: 48, color: 'grey.400', mb: 2 }} />
+                                                    <Typography variant="h6">No Health Check History</Typography>
+                                                    <Typography variant="body2" color="textSecondary">
+                                                        No health check campaigns or results found for this pupil.
+                                                    </Typography>
+                                                </Box>
+                                            ) : (
+                                                <TableContainer>
+                                                    <Table>
+                                                        <TableHead>
+                                                            <TableRow className="table-header">
+                                                                <TableCell>Title</TableCell>
+                                                                <TableCell>Description</TableCell>
+                                                                <TableCell>Date</TableCell>
+                                                                <TableCell>Status</TableCell>
+                                                                <TableCell>Action</TableCell>
+                                                            </TableRow>
+                                                        </TableHead>
+                                                        <TableBody>
+                                                            {healthCheckList.map((campaign, idx) => {
+                                                                const history = campaign.healthCheckHistoryRes;
+                                                                // Find the consentFormId for this campaign (if available)
+                                                                const consentFormId = campaign.consentFormId || (history && history.consentFormId);
+                                                                return (
+                                                                    <TableRow key={campaign.campaignId || idx} className="table-row">
+                                                                        <TableCell>{campaign.title}</TableCell>
+                                                                        <TableCell>{campaign.description}</TableCell>
+                                                                        <TableCell>{history?.createdAt ? new Date(history.createdAt).toLocaleDateString() : '-'}</TableCell>
+                                                                        <TableCell>
+                                                                            <Chip
+                                                                                label={history ? 'Complete' : 'Pending'}
+                                                                                color={history ? 'success' : 'warning'}
+                                                                                size="small"
+                                                                                className="status-chip"
+                                                                            />
+                                                                        </TableCell>
+                                                                        <TableCell>
+                                                                            <Button size="small" variant="outlined" className="details-button"
+                                                                                onClick={() => {
+                                                                                    setSelectedConsentFormId(consentFormId);
+                                                                                    setSelectedPupilData(campaign);
+                                                                                }}
+                                                                                disabled={!consentFormId}
+                                                                            >
+                                                                                Details
+                                                                            </Button>
+                                                                        </TableCell>
+                                                                    </TableRow>
+                                                                );
+                                                            })}
+                                                        </TableBody>
+                                                    </Table>
+                                                </TableContainer>
+                                            )}
+                                        </Item>
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid item size={12}>
-                        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                            {/* basic infor */}
-                            <Grid container spacing={2} sx={{ bgcolor: '#fff', p: 2, borderRadius: 2 }} size={12}>
-                                {/* Header */}
-                                <Grid item size={12}>
-                                    <Item>
-                                        <TableContainer>
-                                            <Table>
-                                                <TableHead>
-                                                    <TableRow className="table-header">
-                                                        <TableCell>Visit Type</TableCell>
-                                                        <TableCell>Description</TableCell>
-                                                        <TableCell>Date</TableCell>
-                                                        <TableCell>Healthcare Provider</TableCell>
-                                                        <TableCell>Status</TableCell>
-                                                        <TableCell>Action</TableCell>
-
-                                                    </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                    {healthVisits.map((visit, index) => (
-                                                        <TableRow key={index} className="table-row">
-                                                            <TableCell>
-                                                                <Box className="visit-info">
-                                                                    <Typography variant="body1" className="visit-title">
-                                                                        {visit.title}
-                                                                    </Typography>
-                                                                </Box>
-                                                            </TableCell>
-                                                            <TableCell>{visit.description}</TableCell>
-                                                            <TableCell>{visit.date}</TableCell>
-                                                            <TableCell>{visit.nurse}</TableCell>
-                                                            <TableCell>
-                                                                <Chip
-                                                                    label={visit.status}
-                                                                    color={getStatusColor(visit.status)}
-                                                                    size="small"
-                                                                    className="status-chip"
-                                                                />
-                                                            </TableCell>
-                                                            <TableCell>
-                                                                <Button size="small" variant="outlined" className="details-button">
-                                                                    Details
-                                                                </Button>
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    ))}
-                                                </TableBody>
-                                            </Table>
-                                        </TableContainer>
-                                    </Item>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Grid>
+                )}
             </TabPanel >
 
             <TabPanel value={tabValue} index={3}>

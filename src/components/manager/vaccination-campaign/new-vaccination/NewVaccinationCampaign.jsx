@@ -304,15 +304,7 @@ const NewVaccinationCampaign = () => {
                         <>
                             {selectedCampaign.status === "PENDING" && canPublish() && (
                                 <>
-                                    <Button
-                                        variant="outlined"
-                                        color="error"
-                                        onClick={() => handleDelete(selectedCampaign.campaignId)}
-                                        disabled={isDeleting}
-                                        sx={{ borderRadius: 2, textTransform: "none" }}
-                                    >
-                                        {isDeleting ? <CircularProgress size={20} /> : "Delete"}
-                                    </Button>
+
                                     <Button
                                         variant="contained"
                                         color="success"
@@ -326,15 +318,7 @@ const NewVaccinationCampaign = () => {
                             )}
                             {selectedCampaign.status === "PUBLISHED" && (
                                 <>
-                                    <Button
-                                        variant="outlined"
-                                        color="error"
-                                        onClick={() => handleDelete(selectedCampaign.campaignId)}
-                                        disabled={isDeleting}
-                                        sx={{ borderRadius: 2, textTransform: "none" }}
-                                    >
-                                        {isDeleting ? <CircularProgress size={20} /> : "Delete"}
-                                    </Button>
+
                                     <Button
                                         variant="contained"
                                         color="primary"

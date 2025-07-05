@@ -42,6 +42,7 @@ import {
 } from "@mui/icons-material"
 import { useGetAllMedicalEvent } from "../../../../hooks/schoolnurse/new-event/useGetAllMedicalEvent.js"
 import { showSuccessToast } from '../../../../utils/toast-utils';
+import { useGetPupilsInformation } from "../../../../hooks/schoolnurse/new-event/useGetPupilsInformation.js";
 
 const MedicalHeader = () => {
     const [searchTerm, setSearchTerm] = useState("")
@@ -54,6 +55,7 @@ const MedicalHeader = () => {
     const [page, setPage] = useState(1)
     const [eventFilter, setEventFilter] = useState("event") // default is event
     const rowsPerPage = 5
+    const { pupilsList, loading: pupilsLoading, error: pupilsError } = useGetPupilsInformation();
 
     const { medicalEventList, loading, error, refetch } = useGetAllMedicalEvent();
 
@@ -139,7 +141,7 @@ const MedicalHeader = () => {
     const statsData = [
         {
             title: "Total Pupils",
-            value: "247",
+            value: pupilsList.length, // Dynamic count
             subtitle: "All registered students",
             color: "primary",
             delay: 200,
