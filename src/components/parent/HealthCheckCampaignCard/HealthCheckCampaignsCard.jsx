@@ -293,7 +293,7 @@ export default function HealthCampaignPage() {
             </Typography>
             <Grid container spacing={3}>
               <Grid item size={{ xs: 12, md: 6 }}>
-                <Link to="../schedule" style={{ textDecoration: "none" }}>
+                <Link to="./../../campaign-schedule" style={{ textDecoration: "none" }}>
                   <Button
                     fullWidth
                     variant="contained"
