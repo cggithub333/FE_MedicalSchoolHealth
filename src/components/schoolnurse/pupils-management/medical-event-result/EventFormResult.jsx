@@ -46,7 +46,9 @@ import {
 } from "@mui/icons-material"
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 
-
+//custom hooks
+import { useGetAllMedicalEventByPupilsId } from "../../../../hooks/schoolnurse/new-event/useGetAllMedicalEventByPupilsId"
+import { getVaccinationHistoryByPupilId } from "../../../../hooks/schoolnurse/new-event/useGetVaccinationByPupilId"
 import "./MedicalEventForm.scss"
 
 function TabPanel({ children, value, index, ...other }) {
@@ -334,7 +336,7 @@ const MedicalEventResultForm = ({ onBack }) => {
                                 <Grid item size={12}>
                                     <Item>
                                         <Typography fontWeight={1000} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                            <HeartIcon sx={{ color: '#e57373' }} /> Health Records
+                                            <HeartIcon sx={{ color: '#e57373' }} /> Health Records Recently
                                         </Typography>
                                     </Item>
                                 </Grid>
@@ -567,8 +569,7 @@ const MedicalEventResultForm = ({ onBack }) => {
                                             <Table>
                                                 <TableHead>
                                                     <TableRow className="table-header">
-                                                        <TableCell>Pupil</TableCell>
-                                                        <TableCell>Grade</TableCell>
+                                                        <TableCell>Details</TableCell>
                                                         <TableCell>Injury Description</TableCell>
                                                         <TableCell>School Nurse</TableCell>
                                                         <TableCell>Date</TableCell>
@@ -596,13 +597,12 @@ const MedicalEventResultForm = ({ onBack }) => {
                                                                     <Box className="pupil-info">
                                                                         <Box>
                                                                             <Typography variant="body2" className="pupil-name">
-                                                                                {event.pupil.name}
+                                                                                detailedInformation
                                                                             </Typography>
 
                                                                         </Box>
                                                                     </Box>
                                                                 </TableCell>
-                                                                <TableCell>{event.grade}</TableCell>
                                                                 <TableCell>{event.injuryDescription}</TableCell>
                                                                 <TableCell>{event.schoolNurse}</TableCell>
                                                                 <TableCell>{event.dateTime}</TableCell>
