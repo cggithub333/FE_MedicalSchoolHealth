@@ -233,117 +233,125 @@ const MedicalEventsContent = () => {
         </Card>
       ) : (
         <Grid container spacing={3}>
-          {notiNewEventOfPupils?.map((event) => (
-            <Grid item xs={12} md={6} lg={4} key={event.medicalEventId}>
-              <Card
-                sx={{
-                  cursor: "pointer",
-                  transition: "all 0.3s ease",
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  "&:hover": {
-                    transform: "translateY(-4px)",
-                    boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
-                  },
-                }}
-                onClick={() => handleCardClick(event)}
-              >
-                <CardContent sx={{ p: 3, flex: 1, display: "flex", flexDirection: "column" }}>
-                  {/* Header with Status */}
-                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 2 }}>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <MedicalServices color="primary" />
-                      <Typography variant="h6" fontWeight="bold" color="primary.main">
-                        Event #{event.medicalEventId}
-                      </Typography>
-                    </Box>
-                    <Chip
-                      label={getStatusText(event.status)}
-                      color={getStatusColor(event.status)}
-                      size="small"
-                      variant="filled"
-                      sx={{ fontWeight: "bold" }}
-                    />
-                  </Box>
+          {notiNewEventOfPupils?.map((event) => {
 
-                  {/* Injury Description */}
-                  <Typography
-                    variant="body1"
-                    fontWeight="bold"
-                    sx={{
-                      mb: 2,
-                      minHeight: 48,
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                    }}
-                  >
-                    {event.injuryDescription}
-                  </Typography>
+            if (event == null) {
+              return null;
+            }
 
-                  {/* Date and Time */}
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-                    <CalendarToday fontSize="small" color="action" />
-                    <Typography variant="body2" color="text.secondary">
-                      {formatDateTime(event.dateTime).date} at {formatDateTime(event.dateTime).time}
-                    </Typography>
-                  </Box>
-
-                  {/* Student Information */}
-                  <Paper sx={{ p: 2, mb: 2, bgcolor: "primary.50", flex: 1 }}>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                      <Person color="primary" fontSize="small" />
-                      <Typography variant="subtitle2" fontWeight="bold" color="primary.main">
-                        Student
-                      </Typography>
-                    </Box>
-                    <Typography variant="body2" fontWeight="bold">
-                      {event.pupil.lastName} {event.pupil.firstName}
-                    </Typography>
-                    <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
+            return (
+              <Grid item size={{xs: 12, md: 6}} lg={4} key={event.medicalEventId}>
+                <Card
+                  sx={{
+                    cursor: "pointer",
+                    transition: "all 0.3s ease",
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    "&:hover": {
+                      transform: "translateY(-4px)",
+                      boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
+                    },
+                  }}
+                  onClick={() => handleCardClick(event)}
+                >
+                  <CardContent sx={{ p: 3, flex: 1, display: "flex", flexDirection: "column" }}>
+                    {/* Header with Status */}
+                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 2 }}>
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <MedicalServices color="primary" />
+                        <Typography variant="h6" fontWeight="bold" color="primary.main">
+                          Event #{event.medicalEventId}
+                        </Typography>
+                      </Box>
                       <Chip
-                        label={getGenderText(event.pupil.gender)}
-                        color={getGenderColor(event.pupil.gender)}
+                        label={getStatusText(event.status)}
+                        color={getStatusColor(event.status)}
                         size="small"
-                        variant="outlined"
+                        variant="filled"
+                        sx={{ fontWeight: "bold" }}
                       />
-                      <Typography variant="body2" color="text.secondary">
-                        Born: {formatDate(event.pupil.birthDate)}
-                      </Typography>
                     </Box>
-                  </Paper>
 
-                  {/* School Nurse Information */}
-                  <Paper sx={{ p: 2, bgcolor: "success.50" }}>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                      <School color="success" fontSize="small" />
-                      <Typography variant="subtitle2" fontWeight="bold" color="success.main">
-                        School Nurse
-                      </Typography>
-                    </Box>
-                    <Typography variant="body2" fontWeight="bold">
-                      {event.schoolNurse.lastName} {event.schoolNurse.firstName}
+                    {/* Injury Description */}
+                    <Typography
+                      variant="body1"
+                      fontWeight="bold"
+                      sx={{
+                        mb: 2,
+                        minHeight: 48,
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {event.injuryDescription}
                     </Typography>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}>
-                      <Phone fontSize="small" color="action" />
-                      <Typography variant="body2" color="text.secondary">
-                        {event.schoolNurse.phoneNumber}
-                      </Typography>
-                    </Box>
-                  </Paper>
 
-                  {/* Click to view details */}
-                  <Box sx={{ textAlign: "center", mt: 2 }}>
-                    <Typography variant="body2" color="primary.main" fontWeight="bold">
-                      Click to view full details
-                    </Typography>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
+                    {/* Date and Time */}
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+                      <CalendarToday fontSize="small" color="action" />
+                      <Typography variant="body2" color="text.secondary">
+                        {formatDateTime(event.dateTime).date} at {formatDateTime(event.dateTime).time}
+                      </Typography>
+                    </Box>
+
+                    {/* Student Information */}
+                    <Paper sx={{ p: 2, mb: 2, bgcolor: "primary.50", flex: 1 }}>
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                        <Person color="primary" fontSize="small" />
+                        <Typography variant="subtitle2" fontWeight="bold" color="primary.main">
+                          Student
+                        </Typography>
+                      </Box>
+                      <Typography variant="body2" fontWeight="bold">
+                        {event.pupil.lastName} {event.pupil.firstName}
+                      </Typography>
+                      <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
+                        <Chip
+                          label={getGenderText(event.pupil.gender)}
+                          color={getGenderColor(event.pupil.gender)}
+                          size="small"
+                          variant="outlined"
+                        />
+                        <Typography variant="body2" color="text.secondary">
+                          Born: {formatDate(event.pupil.birthDate)}
+                        </Typography>
+                      </Box>
+                    </Paper>
+
+                    {/* School Nurse Information */}
+                    <Paper sx={{ p: 2, bgcolor: "success.50" }}>
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                        <School color="success" fontSize="small" />
+                        <Typography variant="subtitle2" fontWeight="bold" color="success.main">
+                          School Nurse
+                        </Typography>
+                      </Box>
+                      <Typography variant="body2" fontWeight="bold">
+                        {event.schoolNurse.lastName} {event.schoolNurse.firstName}
+                      </Typography>
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}>
+                        <Phone fontSize="small" color="action" />
+                        <Typography variant="body2" color="text.secondary">
+                          {event.schoolNurse.phoneNumber}
+                        </Typography>
+                      </Box>
+                    </Paper>
+
+                    {/* Click to view details */}
+                    <Box sx={{ textAlign: "center", mt: 2 }}>
+                      <Typography variant="body2" color="primary.main" fontWeight="bold">
+                        Click to view full details
+                      </Typography>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            )
+          }
+          )}
         </Grid>
       )}
 
@@ -380,7 +388,7 @@ const MedicalEventsContent = () => {
                   />
                 </Box>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} md={6}>
+                  <Grid item size={{xs: 12, md: 6}}>
                     <Typography variant="body2" color="text.secondary">
                       Date & Time
                     </Typography>
@@ -388,7 +396,7 @@ const MedicalEventsContent = () => {
                       {formatDateTime(selectedEvent.dateTime).fullDateTime}
                     </Typography>
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid item size={{xs: 12, md: 6}}>
                     <Typography variant="body2" color="text.secondary">
                       Status
                     </Typography>
@@ -405,7 +413,7 @@ const MedicalEventsContent = () => {
                   Student Information
                 </Typography>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} md={3}>
+                  <Grid item size={{xs: 12, md: 3}}>
                     <Typography variant="body2" color="text.secondary">
                       Student ID
                     </Typography>
@@ -413,7 +421,7 @@ const MedicalEventsContent = () => {
                       {selectedEvent.pupil.pupilId}
                     </Typography>
                   </Grid>
-                  <Grid item xs={12} md={3}>
+                  <Grid item size={{xs: 12, md: 3}}>
                     <Typography variant="body2" color="text.secondary">
                       Full Name
                     </Typography>
@@ -421,7 +429,7 @@ const MedicalEventsContent = () => {
                       {selectedEvent.pupil.lastName} {selectedEvent.pupil.firstName}
                     </Typography>
                   </Grid>
-                  <Grid item xs={12} md={3}>
+                  <Grid item size={{xs: 12, md: 3}}>
                     <Typography variant="body2" color="text.secondary">
                       Birth Date
                     </Typography>
@@ -429,7 +437,7 @@ const MedicalEventsContent = () => {
                       {formatDate(selectedEvent.pupil.birthDate)}
                     </Typography>
                   </Grid>
-                  <Grid item xs={12} md={3}>
+                  <Grid item size={{xs: 12, md: 3}}>
                     <Typography variant="body2" color="text.secondary">
                       Class
                     </Typography>
@@ -444,7 +452,7 @@ const MedicalEventsContent = () => {
                   Attending School Nurse
                 </Typography>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} md={4}>
+                  <Grid item size={{xs: 12, md: 4}}>
                     <Typography variant="body2" color="text.secondary">
                       Nurse ID
                     </Typography>
@@ -452,7 +460,7 @@ const MedicalEventsContent = () => {
                       {selectedEvent.schoolNurse.userId}
                     </Typography>
                   </Grid>
-                  <Grid item xs={12} md={4}>
+                  <Grid item size={{xs: 12, md: 4}}>
                     <Typography variant="body2" color="text.secondary">
                       Full Name
                     </Typography>
@@ -460,7 +468,7 @@ const MedicalEventsContent = () => {
                       {selectedEvent.schoolNurse.lastName} {selectedEvent.schoolNurse.firstName}
                     </Typography>
                   </Grid>
-                  <Grid item xs={12} md={4}>
+                  <Grid item size={{xs: 12, md: 4}}>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                       <ContactPhone color="success" fontSize="small" />
                       <Box>
