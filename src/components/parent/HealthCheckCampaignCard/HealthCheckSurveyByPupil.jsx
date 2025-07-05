@@ -21,6 +21,7 @@ import {
   Alert,
   Divider,
   IconButton,
+  CircularProgress,
 } from "@mui/material"
 import {
   LocalHospital,
@@ -47,11 +48,14 @@ const currentPupil = {
 
 import useCurrentStoragedPupil from "@hooks/parent/useCurrentStoragedPupil"
 import useLatestHealthCheckCampaign from "@hooks/parent/useLatestHealthCheckCampaign"
+import useSendHealthCheckSurvey from "@hooks/parent/health-check/useSendHealthCheckSurvey"
+import { showErrorToast, showSuccessToast } from "@utils/toast-utils"
 
 const HealthCheckSurveyByPupil = () => {
 
   const { currentPupil, loading: pupilLoading, refetch: pupilRefetch} = useCurrentStoragedPupil();
   const { latestHealthCheckCampaign: healthCampaignInfo, isLoading: campaignLoading, refetch: campaignRefetch, error: campaignError } = useLatestHealthCheckCampaign();
+  const { sendHealthCheckSurvey, loading: surveyLoading, error: surveyError } = useSendHealthCheckSurvey();
 
   const [dialogOpen, setDialogOpen] = useState(false)
   const [selectedDiseases, setSelectedDiseases] = useState([])
@@ -111,22 +115,30 @@ const HealthCheckSurveyByPupil = () => {
     setAgreementChecked(event.target.checked)
   }
 
-  const handleSubmitSurvey = () => {
+  const handleSubmitSurvey = async () => {
     // Prepare form data
-    const formData = {
+    const confirmationData = {
       campaignId: healthCampaignInfo?.campaignId,
       pupilId: currentPupil?.pupilId,
       diseaseId: selectedDiseases,
     }
 
-    console.log("Survey data to be submitted:", JSON.stringify(formData, null, 2))
-    // Additional logic for sending to server will be added by you
+    // debug:
+    console.log("Survey data to be submitted:", JSON.stringify(confirmationData, null, 2))
 
-    // Close dialog after successful submission
-    handleCloseDialog()
+    // logic for sending confitmationData to server:
+    try {
+      await sendHealthCheckSurvey(confirmationData);
+      showSuccessToast("Health check survey submitted successfully!");
+      // Close dialog after successful submission
+      handleCloseDialog()
+    } catch (error) {
+      console.error("Error submitting health check survey:", error);
+      showErrorToast("Failed to submit health check survey. Please try again later.");
+    }
   }
 
-  const isSubmitDisabled = selectedDiseases.length === 0 || !agreementChecked
+  const isSubmitDisabled = selectedDiseases.length === 0 || !agreementChecked || surveyLoading
 
   return (
     <Container sx={{ py: 3, width: "80%" }}>
@@ -444,11 +456,11 @@ const HealthCheckSurveyByPupil = () => {
             onClick={handleSubmitSurvey}
             variant="contained"
             color="success"
-            startIcon={<CheckCircle />}
+            startIcon={surveyLoading ? <CircularProgress size={20} color="inherit" /> : <CheckCircle />}
             disabled={isSubmitDisabled}
             sx={{ minWidth: 120 }}
           >
-            Submit Survey
+            {surveyLoading ? "Submitting..." : "Submit Survey"}
           </Button>
         </DialogActions>
       </Dialog>
