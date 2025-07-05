@@ -71,6 +71,105 @@ const MedicalHeader = () => {
         setMenuRowId(null)
     }
 
+    //sample data 
+    const pupilData = {
+        name: "Emma Martinez",
+        pupilId: "STU-2024-001",
+        grade: "Grade 3",
+        gender: "Female",
+        teacher: "Mrs. Smith",
+    }
+
+    const healthData = {
+        height: "4'2\" (127 cm)",
+        weight: "65 lbs (29.5 kg)",
+        bmi: "18.2 (Normal)",
+        leftEye: "20/20",
+        rightEye: "20/20",
+        bloodPressure: "110/70 mmHg",
+        dentalCheck: "Good",
+        notes: "Student is in excellent health. No concerns noted during examination.",
+    }
+
+    const parentContact = {
+        motherName: "Maria Martinez",
+        motherPhone: "(555) 123-4567",
+        motherEmail: "maria.martinez@email.com",
+        fatherName: "Carlos Martinez",
+        fatherPhone: "(555) 123-4568",
+        fatherEmail: "carlos.martinez@email.com",
+        address: "123 Oak Street, Springfield, IL 62701",
+    }
+
+    const vaccinations = [
+        {
+            name: "COVID-19 (Pfizer-BioNTech)",
+            dose: "Dose 2 of 2",
+            date: "Sep 15, 2024",
+            status: "Complete",
+            nurse: "Nurse Johnson",
+        },
+        {
+            name: "Flu Vaccine (2024-2025)",
+            dose: "Annual dose",
+            date: "Oct 10, 2024",
+            status: "Complete",
+            nurse: "Nurse Smith",
+        },
+        {
+            name: "Tdap (Tetanus, Diphtheria, Pertussis)",
+            dose: "Booster dose",
+            date: "Aug 20, 2024",
+            status: "Complete",
+            nurse: "Nurse Johnson",
+        },
+    ]
+
+    const healthVisits = [
+        {
+            title: "Routine Health Check",
+            description: "Annual physical examination",
+            date: "Oct 15, 2024",
+            nurse: "Nurse Johnson",
+            status: "Complete",
+        },
+        {
+            title: "Vision Screening",
+            description: "Annual vision test - passed",
+            date: "Sep 28, 2024",
+            nurse: "Nurse Johnson",
+            status: "Complete",
+        },
+        {
+            title: "Hearing Screening",
+            description: "Annual hearing test - normal",
+            date: "Sep 20, 2024",
+            nurse: "Nurse Johnson",
+            status: "Complete",
+        },
+    ]
+
+    const medicalEvents = [
+        {
+            id: 1,
+            pupil: pupilData,
+            grade: pupilData.grade,
+            injuryDescription: "Minor cut on finger during art class",
+            schoolNurse: "Nurse Johnson",
+            dateTime: "Nov 15, 2024 10:30 AM",
+            status: "Treated",
+        },
+        {
+            id: 2,
+            pupil: pupilData,
+            grade: pupilData.grade,
+            injuryDescription: "Headache complaint",
+            schoolNurse: "Nurse Smith",
+            dateTime: "Nov 10, 2024 2:15 PM",
+            status: "Resolved",
+        },
+    ]
+
     const getStatusIcon = (status) => {
         switch (status) {
             case "Paid":

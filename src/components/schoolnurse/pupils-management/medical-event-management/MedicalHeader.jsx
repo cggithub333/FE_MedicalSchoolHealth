@@ -30,7 +30,6 @@ import {
     InputAdornment,
 } from "@mui/material";
 import { Add } from "@mui/icons-material";
-import MedicalEventForm from '../new-medical-event/NewMedicalEventForm.jsx';
 import MedicalEventResultForm from '../medical-event-result/EventFormResult.jsx';
 import "./StyleMedicalHeader.scss";
 import {
@@ -127,7 +126,7 @@ const MedicalHeader = () => {
     const isSelected = (id) => selected.includes(id)
 
     const [showForm, setShowForm] = useState(false);
-    const [showresult, setShowResult] = useState(false);
+    const [showResult, setShowResult] = useState(false);
     const [selectedEventId, setSelectedEventId] = useState(null);
     const statsData = [
         {
@@ -150,10 +149,10 @@ const MedicalHeader = () => {
         setSelectedEventId(eventId);
         setShowResult(true);
     };
-
-    const handleCloseResultForm = () => {
-        setShowResult(false); // Hide the result
-    }
+    const handleBackFromResult = () => {
+        setShowResult(false);
+        setSelectedEventId(null);
+    };
 
     const handleNewEventClick = () => {
         setShowForm(true); // Show the form
@@ -163,18 +162,12 @@ const MedicalHeader = () => {
         setShowForm(false); // Hide the form
     };
 
-    if (showresult) {
+    if (showResult) {
         return (
-            <MedicalEventResultForm eventId={selectedEventId} onCancel={handleCloseResultForm} />
+            <MedicalEventResultForm onBack={handleBackFromResult} eventId={selectedEventId} />
         );
     }
 
-
-    if (showForm) {
-        return (
-            <MedicalEventForm onCancel={handleCancelForm} />
-        );
-    }
 
     return (
         <>

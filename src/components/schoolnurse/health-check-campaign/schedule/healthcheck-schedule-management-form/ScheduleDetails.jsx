@@ -189,7 +189,7 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
     if (!sensitive_disease.length) {
         return (
             <div className="schedule-details-root empty-container">
-                <Warning sx={{ fontSize: 60, color: "#ff9800", mb: 2 }} />
+                <Warning sx={{ fontSize: 60, color: "#ff9800" }} />
                 <Typography variant="h5">No Health Check Data</Typography>
                 <Typography variant="body1" color="text.secondary">
                     No health check data found for student {pupilId}
@@ -266,7 +266,6 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
                                 onChange={() => handleSectionToggle(categoryKey)}
                                 className="health-section modern-accordion"
                                 sx={{
-                                    mb: 2.5,
                                     borderRadius: 3,
                                     boxShadow: expandedSections[categoryKey] ? 4 : 1,
                                     background: expandedSections[categoryKey] ? "linear-gradient(120deg, #f5fafd 60%, #e3f2fd 100%)" : "#f8fafc",
@@ -299,7 +298,6 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
                                                     borderRadius: 2,
                                                     background: '#fff',
                                                     boxShadow: 1,
-                                                    mb: 1,
                                                     transition: 'box-shadow 0.2s',
                                                     '&:hover': { boxShadow: 3, background: '#f5fafd' },
                                                 }}>

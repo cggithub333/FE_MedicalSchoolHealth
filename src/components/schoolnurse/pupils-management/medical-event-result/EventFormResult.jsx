@@ -1,4 +1,6 @@
 import { useState } from "react"
+
+import { styled } from '@mui/material/styles';
 import {
     Box,
     Paper,
@@ -12,9 +14,19 @@ import {
     CardContent,
     Chip,
     IconButton,
-    Grow,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Divider,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    Fade,
 } from "@mui/material"
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import {
     Print as PrintIcon,
     Close as CloseIcon,
@@ -22,28 +34,142 @@ import {
     Shield as ShieldIcon,
     CalendarToday as CalendarIcon,
     Phone as PhoneIcon,
-    Warning as WarningIcon,
-    LocalPharmacy as PillIcon,
     Description as FileIcon,
     CheckCircle as CheckIcon,
     Person as PersonIcon,
+    School as SchoolIcon,
+    Height as HeightIcon,
+    Visibility as VisionIcon,
+    Email as EmailIcon,
+    Home as HomeIcon,
+    ContactPhone as ContactIcon,
 } from "@mui/icons-material"
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+
+
 import "./MedicalEventForm.scss"
 
 function TabPanel({ children, value, index, ...other }) {
     return (
         <div role="tabpanel" hidden={value !== index} id={`tabpanel-${index}`} aria-labelledby={`tab-${index}`} {...other}>
-            {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+            {value === index && <Box>{children}</Box>}
         </div>
     )
 }
 
+const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+    ...theme.typography.body2,
+    padding: theme.spacing(2),
+    borderRadius: theme.spacing(2),
+    boxShadow: theme.shadows[1],
+    color: theme.palette.text.primary,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(0.5),
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    minHeight: '80px',
+    transition: 'all 0.3s ease',
+    width: '100%',
 
-const MedicalEventResultForm = () => {
+    '& .label': {
+        fontWeight: 600,
+        fontSize: '0.85rem',
+        color: theme.palette.text.secondary,
+    },
+
+    '& .value': {
+        fontWeight: 700,
+        fontSize: '1rem',
+        color: theme.palette.text.primary,
+    },
+    '&:hover': {
+        boxShadow: theme.shadows[3],
+        transform: 'translateY(-2px)',
+    },
+}));
+
+// Add StyledCard definition for consistent card styling
+const StyledCard = styled(Card)(({ theme }) => ({
+    borderRadius: theme.spacing(2),
+    boxShadow: theme.shadows[1],
+    background: theme.palette.background.paper,
+    marginBottom: theme.spacing(2),
+    transition: "all 0.3s ease",
+    '&:hover': {
+        boxShadow: theme.shadows[3],
+        transform: 'translateY(-2px)',
+    },
+    '& .MuiCardContent-root': {
+        padding: theme.spacing(3),
+    },
+    '& .MuiTypography-root': {
+        color: theme.palette.text.primary,
+    },
+    alignItems: "center",
+    display: "flex",
+
+}));
+
+const InfoBox = styled(Paper)(({ theme }) => ({
+    padding: theme.spacing(3),
+    borderRadius: "12px",
+    background: "linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.9))",
+    border: "1px solid rgba(0, 0, 0, 0.06)",
+    transition: "all 0.3s ease",
+    "&:hover": {
+        background: "linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.95))",
+        transform: "translateY(-1px)",
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+    },
+}))
+
+const SectionHeader = styled(Box)(({ theme }) => ({
+    display: "flex",
+    alignItems: "center",
+    gap: theme.spacing(2),
+    marginBottom: theme.spacing(3),
+    padding: theme.spacing(2),
+    background: "linear-gradient(135deg, rgba(25, 118, 210, 0.05), rgba(21, 101, 192, 0.05))",
+    borderRadius: "12px",
+    border: "1px solid rgba(25, 118, 210, 0.1)",
+}))
+
+const MedicalEventResultForm = ({ onBack }) => {
     const [tabValue, setTabValue] = useState(0)
 
     const handleTabChange = (event, newValue) => {
         setTabValue(newValue)
+    }
+
+    const pupilData = {
+        name: "Emma Martinez",
+        pupilId: "STU-2024-001",
+        grade: "Grade 3",
+        gender: "Female",
+        teacher: "Mrs. Smith",
+    }
+
+    const healthData = {
+        height: "4'2\" (127 cm)",
+        weight: "65 lbs (29.5 kg)",
+        bmi: "18.2 (Normal)",
+        leftEye: "20/20",
+        rightEye: "20/20",
+        bloodPressure: "110/70 mmHg",
+        dentalCheck: "Good",
+        notes: "Student is in excellent health. No concerns noted during examination.",
+    }
+
+    const parentContact = {
+        motherName: "Maria Martinez",
+        motherPhone: "(555) 123-4567",
+        motherEmail: "maria.martinez@email.com",
+        fatherName: "Carlos Martinez",
+        fatherPhone: "(555) 123-4568",
+        fatherEmail: "carlos.martinez@email.com",
+        address: "123 Oak Street, Springfield, IL 62701",
     }
 
     const vaccinations = [
@@ -52,18 +178,21 @@ const MedicalEventResultForm = () => {
             dose: "Dose 2 of 2",
             date: "Sep 15, 2024",
             status: "Complete",
+            nurse: "Nurse Johnson",
         },
         {
             name: "Flu Vaccine (2024-2025)",
             dose: "Annual dose",
             date: "Oct 10, 2024",
             status: "Complete",
+            nurse: "Nurse Smith",
         },
         {
             name: "Tdap (Tetanus, Diphtheria, Pertussis)",
             dose: "Booster dose",
             date: "Aug 20, 2024",
             status: "Complete",
+            nurse: "Nurse Johnson",
         },
     ]
 
@@ -73,29 +202,59 @@ const MedicalEventResultForm = () => {
             description: "Annual physical examination",
             date: "Oct 15, 2024",
             nurse: "Nurse Johnson",
+            status: "Complete",
         },
         {
             title: "Vision Screening",
             description: "Annual vision test - passed",
             date: "Sep 28, 2024",
             nurse: "Nurse Johnson",
+            status: "Complete",
         },
         {
             title: "Hearing Screening",
             description: "Annual hearing test - normal",
             date: "Sep 20, 2024",
             nurse: "Nurse Johnson",
+            status: "Complete",
         },
     ]
 
-    const healthInfo = [
-        { label: "Blood Type", value: "O+" },
-        { label: "Height", value: "4'2\" (127 cm)" },
-        { label: "Weight", value: "65 lbs (29.5 kg)" },
-        { label: "BMI", value: "18.2 (Normal)", isNormal: true },
-        { label: "Vision", value: "20/20 Both Eyes" },
-        { label: "Hearing", value: "Normal" },
+    const medicalEvents = [
+        {
+            id: 1,
+            pupil: pupilData,
+            grade: pupilData.grade,
+            injuryDescription: "Minor cut on finger during art class",
+            schoolNurse: "Nurse Johnson",
+            dateTime: "Nov 15, 2024 10:30 AM",
+            status: "Treated",
+        },
+        {
+            id: 2,
+            pupil: pupilData,
+            grade: pupilData.grade,
+            injuryDescription: "Headache complaint",
+            schoolNurse: "Nurse Smith",
+            dateTime: "Nov 10, 2024 2:15 PM",
+            status: "Resolved",
+        },
     ]
+
+    const getStatusColor = (status) => {
+        switch (status.toLowerCase()) {
+            case "complete":
+            case "treated":
+            case "resolved":
+                return "success"
+            case "pending":
+                return "warning"
+            case "cancelled":
+                return "error"
+            default:
+                return "default"
+        }
+    }
     return (
         <Grid container spacing={2}>
             {/* Header */}
@@ -114,7 +273,7 @@ const MedicalEventResultForm = () => {
                     </Box>
                 </Grid>
                 <Grid item size={3} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-                    <IconButton className="close-button" sx={{ borderRadius: 2, bgcolor: '#f5f5f5', ml: 1, top: 0, right: 0 }}>
+                    <IconButton className="close-button" sx={{ borderRadius: 2, bgcolor: '#f5f5f5', ml: 1, top: 0, right: 0 }} onClick={onBack}>
                         <CloseIcon />
                     </IconButton>
                 </Grid>
@@ -136,40 +295,78 @@ const MedicalEventResultForm = () => {
                 </Card>
             </Grid>
 
-            {/* Tab Content */}
             <TabPanel value={tabValue} index={0}>
-                <Grid container spacing={1}>
-                    <Grid item size={8}>
-                        <Card className="info-card health-info-card" sx={{ borderRadius: 3, boxShadow: 0, bgcolor: '#fff' }}>
-                            <CardContent>
-                                <Grid container alignItems="center" spacing={1}>
-                                    <Grid item><HeartIcon sx={{ color: '#e57373' }} /></Grid>
-                                    <Grid item xs>
-                                        <Typography variant="subtitle1" fontWeight={600}>
-                                            Basic Health Information
+                <Grid container size={12} spacing={2}>
+                    <Grid size={8.5}>
+                        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                            {/* basic infor */}
+                            <Grid container spacing={2} sx={{ bgcolor: '#fff', p: 2, borderRadius: 2 }} size={12}>
+                                {/* Header */}
+                                <Grid item size={12}>
+                                    <Item>
+                                        <Typography fontWeight={1000} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                            <HeartIcon sx={{ color: '#e57373' }} /> Pupils Information
                                         </Typography>
-                                    </Grid>
+                                    </Item>
                                 </Grid>
 
-                                <Grid container spacing={2} className="health-grid" mt={1}>
-                                    {healthInfo.map((info, index) => (
-                                        <Grid item xs={12} sm={6} key={index}>
-                                            <Box className={`health-item ${info.isNormal ? "normal-value" : ""}`}>
-                                                <Typography variant="body2" className="health-label">
-                                                    {info.label}
-                                                </Typography>
-                                                <Typography variant="body1" className="health-value">
-                                                    {info.value}
-                                                </Typography>
-                                            </Box>
-                                        </Grid>
-                                    ))}
+                                {/* Name and ID side by side */}
+                                <Grid item size={6}>
+                                    <Item>Name</Item>
                                 </Grid>
-                            </CardContent>
-                        </Card>
+                                <Grid item size={6}>
+                                    <Item>Pupil ID</Item>
+                                </Grid>
+
+                                {/* Grade and Gender side by side */}
+                                <Grid item size={6}>
+                                    <Item>Grade</Item>
+                                </Grid>
+                                <Grid item size={6}>
+                                    <Item>Gender</Item>
+                                </Grid>
+                            </Grid>
+
+
+
+                            <Grid container spacing={2} sx={{ bgcolor: '#fff', p: 2, borderRadius: 2 }} size={12}>
+
+                                <Grid item size={12}>
+                                    <Item>
+                                        <Typography fontWeight={1000} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                            <HeartIcon sx={{ color: '#e57373' }} /> Health Records
+                                        </Typography>
+                                    </Item>
+                                </Grid>
+                                <Grid size={4}>
+                                    <Item>Height</Item>
+                                </Grid>
+                                <Grid size={4}>
+                                    <Item>Weight</Item>
+                                </Grid>
+                                <Grid size={4}>
+                                    <Item>BMI</Item>
+                                </Grid>
+                                <Grid size={6}>
+                                    <Item>Left eye</Item>
+                                </Grid>
+                                <Grid size={6}>
+                                    <Item>Right eye</Item>
+                                </Grid>
+                                <Grid size={6}>
+                                    <Item>Blood Pressure</Item>
+                                </Grid>
+                                <Grid size={6}>
+                                    <Item>Dental Check</Item>
+                                </Grid>
+                                <Grid size={12}>
+                                    <Item>Notes</Item>
+                                </Grid>
+                            </Grid>
+
+                        </Grid>
                     </Grid>
-
-                    <Grid item size={4}>
+                    <Grid size={3.5}>
                         <div className="sidebar-card emergency-card" >
                             <CardContent>
                                 <Grid container alignItems="center" spacing={1}>
@@ -193,93 +390,257 @@ const MedicalEventResultForm = () => {
                             </CardContent>
                         </div>
                     </Grid>
-
-                    {/* vaccanation */}
-                    <Grid item size={8}>
-                        <Card className="info-card vaccination-card" sx={{ borderRadius: 3, boxShadow: 0, bgcolor: '#e3f2fd' }}>
-                            <CardContent>
-                                <Grid container alignItems="center" spacing={1} size={8}>
-                                    <Grid item><ShieldIcon sx={{ color: '#4caf50' }} /></Grid>
-                                    <Grid item sx={{ p: 2 }}><Typography variant="subtitle1" fontWeight={600}>Recent Vaccinations</Typography></Grid>
-                                </Grid>
-                                <Grid container direction="column" spacing={1} className="vaccination-list">
-                                    {vaccinations.map((vaccine, index) => (
-                                        <Grid item key={index}>
-                                            <Grid container sx={6} alignItems="center" justifyContent="space-between">
-                                                <Grid item sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                                    <CheckIcon className="check-icon" sx={{ color: '#4caf50' }} />
-                                                    <Box>
-                                                        <Typography variant="body1" className="vaccination-name">
-                                                            {vaccine.name}
-                                                        </Typography>
-                                                        <Typography variant="body2" className="vaccination-dose">
-                                                            {vaccine.dose}
-                                                        </Typography>
-                                                    </Box>
-                                                </Grid>
-                                                <Grid item size={6} sx={{ textAlign: 'center' }}>
-                                                    <Typography variant="body2" className="vaccination-date">
-                                                        {vaccine.date}
-                                                    </Typography>
-                                                    <Chip label={vaccine.status} className="status-chip complete" size="small" sx={{ bgcolor: '#e8f5e9', color: '#388e3c', fontWeight: 600 }} />
-                                                </Grid>
-                                            </Grid>
-                                        </Grid>
-                                    ))}
-                                </Grid>
-                                <Grid>
-                                    <Button color="secondary">View All <KeyboardArrowRightIcon /> </Button>
-                                </Grid>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                    <Grid item size={8}>
-                        <Card className="info-card vaccination-card" sx={{ borderRadius: 3, boxShadow: 0, bgcolor: '#e3f2fd' }}>
-                            <CardContent>
-                                <Grid container alignItems="center" spacing={1} size={8}>
-                                    <Grid item><CalendarIcon sx={{ color: '#ffb300' }} /></Grid>
-                                    <Grid item xs><Typography variant="subtitle1" fontWeight={600}>Recent Health Visits</Typography></Grid>
-                                    <Grid item sx={{ textAlign: 'right' }}>
-                                        <Button color="secondary">View All <KeyboardArrowRightIcon /> </Button>
-                                    </Grid>
-                                </Grid>
-                                <Grid container direction="column" spacing={1} className="vaccination-list">
-                                    {healthVisits.map((visit, index) => (
-                                        <Grid item key={index}>
-                                            <Grid container sx={6} alignItems="center" justifyContent="space-between">
-                                                <Grid item sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                                    <CheckIcon className="check-icon" sx={{ color: '#4caf50' }} />
-                                                    <Box>
-                                                        <Typography variant="body1" className="visit-title">
-                                                            {visit.title}
-                                                        </Typography>
-                                                        <Typography variant="body2" className="visit-description">
-                                                            {visit.description}
-                                                        </Typography>
-                                                    </Box>
-                                                </Grid>
-                                                <Grid item size={6} sx={{ textAlign: 'center' }}>
-                                                    <Typography variant="body2" className="visit-date">
-                                                        {visit.date}
-                                                    </Typography>
-                                                    <Typography variant="body2" className="visit-nurse">
-                                                        {visit.nurse}
-                                                    </Typography>
-                                                </Grid>
-                                            </Grid>
-                                        </Grid>
-                                    ))}
-                                </Grid>
-
-                            </CardContent>
-                        </Card>
-                    </Grid>
-
-
-
                 </Grid>
+            </TabPanel>
 
+            <TabPanel value={tabValue} index={1}>
+                <Grid container size={12} spacing={2} sx={{ bgcolor: '#f5f5f5', borderRadius: 2 }}>
+                    <Grid size={12} sx={{ bgcolor: '#fff', px: 10, borderRadius: 2, width: '100%' }}>
+                        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                            {/* basic infor */}
+                            <Grid container spacing={2} sx={{ bgcolor: '#fff', p: 2, borderRadius: 2 }} size={12}>
+                                {/* Header */}
+                                <Grid item size={12}>
+                                    <Item>
+                                        <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#1976d2' }}>
+                                            <ShieldIcon />Vaccination History
+                                        </Typography>
+                                    </Item>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid item size={12}>
+                        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                            {/* basic infor */}
+                            <Grid container spacing={2} sx={{ bgcolor: '#fff', p: 2, borderRadius: 2 }} size={12}>
+                                {/* Header */}
+                                <Grid item size={12}>
+                                    <Item>
+                                        <TableContainer className="table-container">
+                                            <Table>
+                                                <TableHead>
+                                                    <TableRow className="table-header">
+                                                        <TableCell>Vaccine Name</TableCell>
+                                                        <TableCell>Dose</TableCell>
+                                                        <TableCell>Date</TableCell>
+                                                        <TableCell>Administered By</TableCell>
+                                                        <TableCell>Status</TableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    {vaccinations.map((vaccine, index) => (
+                                                        <TableRow key={index} className="table-row">
+                                                            <TableCell>
+                                                                <Box className="vaccine-info">
+                                                                    <Typography variant="body1" className="vaccine-name">
+                                                                        {vaccine.name}
+                                                                    </Typography>
+                                                                </Box>
+                                                            </TableCell>
+                                                            <TableCell>{vaccine.dose}</TableCell>
+                                                            <TableCell>{vaccine.date}</TableCell>
+                                                            <TableCell>{vaccine.nurse}</TableCell>
+                                                            <TableCell>
+                                                                <Chip
+                                                                    label={vaccine.status}
+                                                                    color={getStatusColor(vaccine.status)}
+                                                                    size="small"
+                                                                    className="status-chip"
+                                                                />
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                    </Item>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
             </TabPanel >
+
+            <TabPanel value={tabValue} index={2}>
+                <Grid container size={12} spacing={2} sx={{ bgcolor: '#f5f5f5', borderRadius: 2 }}>
+                    <Grid size={12} sx={{ bgcolor: '#fff', px: 10, borderRadius: 2, width: '100%' }}>
+                        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                            {/* basic infor */}
+                            <Grid container spacing={2} sx={{ bgcolor: '#fff', p: 2, borderRadius: 2 }} size={12}>
+                                {/* Header */}
+                                <Grid item size={12}>
+                                    <Item>
+                                        <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#1976d2' }}>
+                                            <CalendarIcon />  Health Check History
+                                        </Typography>
+                                    </Item>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid item size={12}>
+                        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                            {/* basic infor */}
+                            <Grid container spacing={2} sx={{ bgcolor: '#fff', p: 2, borderRadius: 2 }} size={12}>
+                                {/* Header */}
+                                <Grid item size={12}>
+                                    <Item>
+                                        <TableContainer>
+                                            <Table>
+                                                <TableHead>
+                                                    <TableRow className="table-header">
+                                                        <TableCell>Visit Type</TableCell>
+                                                        <TableCell>Description</TableCell>
+                                                        <TableCell>Date</TableCell>
+                                                        <TableCell>Healthcare Provider</TableCell>
+                                                        <TableCell>Status</TableCell>
+                                                        <TableCell>Action</TableCell>
+
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    {healthVisits.map((visit, index) => (
+                                                        <TableRow key={index} className="table-row">
+                                                            <TableCell>
+                                                                <Box className="visit-info">
+                                                                    <Typography variant="body1" className="visit-title">
+                                                                        {visit.title}
+                                                                    </Typography>
+                                                                </Box>
+                                                            </TableCell>
+                                                            <TableCell>{visit.description}</TableCell>
+                                                            <TableCell>{visit.date}</TableCell>
+                                                            <TableCell>{visit.nurse}</TableCell>
+                                                            <TableCell>
+                                                                <Chip
+                                                                    label={visit.status}
+                                                                    color={getStatusColor(visit.status)}
+                                                                    size="small"
+                                                                    className="status-chip"
+                                                                />
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <Button size="small" variant="outlined" className="details-button">
+                                                                    Details
+                                                                </Button>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                    </Item>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </TabPanel >
+
+            <TabPanel value={tabValue} index={3}>
+                <Grid container size={12} spacing={2} sx={{ bgcolor: '#f5f5f5', borderRadius: 2 }}>
+                    <Grid size={12} sx={{ bgcolor: '#fff', px: 10, borderRadius: 2, width: '100%' }}>
+                        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                            {/* basic infor */}
+                            <Grid container spacing={2} sx={{ bgcolor: '#fff', p: 2, borderRadius: 2 }} size={12}>
+                                {/* Header */}
+                                <Grid item size={12}>
+                                    <Item>
+
+                                        <Typography variant="h6" className="section-title">
+                                            <FileIcon /> Medical Events
+                                        </Typography>
+                                    </Item>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid item size={12}>
+                        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                            {/* basic infor */}
+                            <Grid container spacing={2} sx={{ bgcolor: '#fff', p: 2, borderRadius: 2 }} size={12}>
+                                {/* Header */}
+                                <Grid item size={12}>
+                                    <Item>
+                                        <TableContainer className="table-container">
+                                            <Table>
+                                                <TableHead>
+                                                    <TableRow className="table-header">
+                                                        <TableCell>Pupil</TableCell>
+                                                        <TableCell>Grade</TableCell>
+                                                        <TableCell>Injury Description</TableCell>
+                                                        <TableCell>School Nurse</TableCell>
+                                                        <TableCell>Date</TableCell>
+                                                        <TableCell>Status</TableCell>
+                                                        <TableCell>Action</TableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    {medicalEvents.length === 0 ? (
+                                                        <TableRow>
+                                                            <TableCell colSpan={7} align="center" className="no-data">
+                                                                <Box className="empty-state">
+                                                                    <FileIcon className="empty-icon" />
+                                                                    <Typography variant="h6">No Medical Events</Typography>
+                                                                    <Typography variant="body2" color="textSecondary">
+                                                                        No medical events have been recorded.
+                                                                    </Typography>
+                                                                </Box>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ) : (
+                                                        medicalEvents.map((event) => (
+                                                            <TableRow key={event.id} className="table-row">
+                                                                <TableCell>
+                                                                    <Box className="pupil-info">
+                                                                        <Box>
+                                                                            <Typography variant="body2" className="pupil-name">
+                                                                                {event.pupil.name}
+                                                                            </Typography>
+
+                                                                        </Box>
+                                                                    </Box>
+                                                                </TableCell>
+                                                                <TableCell>{event.grade}</TableCell>
+                                                                <TableCell>{event.injuryDescription}</TableCell>
+                                                                <TableCell>{event.schoolNurse}</TableCell>
+                                                                <TableCell>{event.dateTime}</TableCell>
+                                                                <TableCell>
+                                                                    <Chip
+                                                                        label={event.status}
+                                                                        color={getStatusColor(event.status)}
+                                                                        size="small"
+                                                                        className="status-chip"
+                                                                    />
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                    <Button size="small" variant="outlined" className="details-button">
+                                                                        Details
+                                                                    </Button>
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        ))
+                                                    )}
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                    </Item>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </TabPanel >
+
+
+
+
+
+
+
+
+
         </Grid >
     )
 }
