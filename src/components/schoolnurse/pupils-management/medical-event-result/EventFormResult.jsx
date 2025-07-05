@@ -48,6 +48,7 @@ import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 //custom hooks
 import { useGetAllMedicalEventByPupilsId } from "../../../../hooks/schoolnurse/new-event/useGetAllMedicalEventByPupilsId"
 import { useGetVaccinationHistoryByPupilId } from "../../../../hooks/schoolnurse/new-event/useGetVaccinationByPupilId"
+import MedicalEventDetails from "./medical-event-details/EventFormResult.jsx";
 import "./MedicalEventForm.scss"
 
 function TabPanel({ children, value, index, ...other }) {
@@ -139,6 +140,8 @@ const SectionHeader = styled(Box)(({ theme }) => ({
 
 const MedicalEventResultForm = ({ pupilId, onBack }) => {
     const [tabValue, setTabValue] = useState(0)
+    // Add state for selected event
+    const [selectedEventId, setSelectedEventId] = useState(null);
 
     const handleTabChange = (event, newValue) => {
         setTabValue(newValue)
@@ -532,92 +535,98 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
             </TabPanel >
 
             <TabPanel value={tabValue} index={3}>
-                <Grid container size={12} spacing={2} sx={{ bgcolor: '#f5f5f5', borderRadius: 2 }}>
-                    <Grid size={12} sx={{ bgcolor: '#fff', px: 10, borderRadius: 2, width: '100%' }}>
-                        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                            {/* basic infor */}
-                            <Grid container spacing={2} sx={{ bgcolor: '#fff', p: 2, borderRadius: 2 }} size={12}>
-                                {/* Header */}
-                                <Grid item size={12}>
-                                    <Item>
-
-                                        <Typography variant="h6" className="section-title">
-                                            <FileIcon /> Medical Events
-                                        </Typography>
-                                    </Item>
+                {selectedEventId ? (
+                    <MedicalEventDetails
+                        eventId={selectedEventId}
+                        onCancel={() => setSelectedEventId(null)}
+                    />
+                ) : (
+                    <Grid container size={12} spacing={2} sx={{ bgcolor: '#f5f5f5', borderRadius: 2 }}>
+                        <Grid size={12} sx={{ bgcolor: '#fff', px: 10, borderRadius: 2, width: '100%' }}>
+                            <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                                {/* basic infor */}
+                                <Grid container spacing={2} sx={{ bgcolor: '#fff', p: 2, borderRadius: 2 }} size={12}>
+                                    {/* Header */}
+                                    <Grid item size={12}>
+                                        <Item>
+                                            <Typography variant="h6" className="section-title">
+                                                <FileIcon /> Medical Events
+                                            </Typography>
+                                        </Item>
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </Grid>
-                    </Grid>
-                    <Grid item size={12}>
-                        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                            {/* basic infor */}
-                            <Grid container spacing={2} sx={{ bgcolor: '#fff', p: 2, borderRadius: 2 }} size={12}>
-                                {/* Header */}
-                                <Grid item size={12}>
-                                    <Item>
-                                        {medicalEvents.length === 0 ? (
-                                            <Box className="empty-state" sx={{ textAlign: 'center', py: 6 }}>
-                                                <FileIcon className="empty-icon" sx={{ fontSize: 48, color: 'grey.400', mb: 2 }} />
-                                                <Typography variant="h6">No Medical Events</Typography>
-                                                <Typography variant="body2" color="textSecondary">
-                                                    No medical events have been recorded for this pupil.
-                                                </Typography>
-                                            </Box>
-                                        ) : (
-                                            <TableContainer className="table-container">
-                                                <Table>
-                                                    <TableHead>
-                                                        <TableRow className="table-header">
-                                                            <TableCell>Details</TableCell>
-                                                            <TableCell>Injury Description</TableCell>
-                                                            <TableCell>School Nurse</TableCell>
-                                                            <TableCell>Date</TableCell>
-                                                            <TableCell>Status</TableCell>
-                                                            <TableCell>Action</TableCell>
-                                                        </TableRow>
-                                                    </TableHead>
-                                                    <TableBody>
-                                                        {medicalEvents.map((event) => (
-                                                            <TableRow key={event.id} className="table-row">
-                                                                <TableCell>
-                                                                    <Box className="pupil-info">
-                                                                        <Box>
-                                                                            <Typography variant="body2" className="pupil-name">
-                                                                                {event.detailedInformation}
-                                                                            </Typography>
-
-                                                                        </Box>
-                                                                    </Box>
-                                                                </TableCell>
-                                                                <TableCell>{event.injuryDescription}</TableCell>
-                                                                <TableCell>{event.schoolNurse ? `${event.schoolNurse.firstName} ${event.schoolNurse.lastName}` : ''}</TableCell>
-                                                                <TableCell>{event.dateTime}</TableCell>
-                                                                <TableCell>
-                                                                    <Chip
-                                                                        label={event.status}
-                                                                        color={getStatusColor(event.status)}
-                                                                        size="small"
-                                                                        className="status-chip"
-                                                                    />
-                                                                </TableCell>
-                                                                <TableCell>
-                                                                    <Button size="small" variant="outlined" className="details-button">
-                                                                        Details
-                                                                    </Button>
-                                                                </TableCell>
+                        <Grid item size={12}>
+                            <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                                {/* basic infor */}
+                                <Grid container spacing={2} sx={{ bgcolor: '#fff', p: 2, borderRadius: 2 }} size={12}>
+                                    {/* Header */}
+                                    <Grid item size={12}>
+                                        <Item>
+                                            {medicalEvents.length === 0 ? (
+                                                <Box className="empty-state" sx={{ textAlign: 'center', py: 6 }}>
+                                                    <FileIcon className="empty-icon" sx={{ fontSize: 48, color: 'grey.400', mb: 2 }} />
+                                                    <Typography variant="h6">No Medical Events</Typography>
+                                                    <Typography variant="body2" color="textSecondary">
+                                                        No medical events have been recorded for this pupil.
+                                                    </Typography>
+                                                </Box>
+                                            ) : (
+                                                <TableContainer className="table-container">
+                                                    <Table>
+                                                        <TableHead>
+                                                            <TableRow className="table-header">
+                                                                <TableCell>Details</TableCell>
+                                                                <TableCell>Injury Description</TableCell>
+                                                                <TableCell>School Nurse</TableCell>
+                                                                <TableCell>Date</TableCell>
+                                                                <TableCell>Status</TableCell>
+                                                                <TableCell>Action</TableCell>
                                                             </TableRow>
-                                                        ))}
-                                                    </TableBody>
-                                                </Table>
-                                            </TableContainer>
-                                        )}
-                                    </Item>
+                                                        </TableHead>
+                                                        <TableBody>
+                                                            {medicalEvents.map((event) => (
+                                                                <TableRow key={event.id} className="table-row">
+                                                                    <TableCell>
+                                                                        <Box className="pupil-info">
+                                                                            <Box>
+                                                                                <Typography variant="body2" className="pupil-name">
+                                                                                    {event.detailedInformation}
+                                                                                </Typography>
+
+                                                                            </Box>
+                                                                        </Box>
+                                                                    </TableCell>
+                                                                    <TableCell>{event.injuryDescription}</TableCell>
+                                                                    <TableCell>{event.schoolNurse ? `${event.schoolNurse.firstName} ${event.schoolNurse.lastName}` : ''}</TableCell>
+                                                                    <TableCell>{event.dateTime}</TableCell>
+                                                                    <TableCell>
+                                                                        <Chip
+                                                                            label={event.status}
+                                                                            color={getStatusColor(event.status)}
+                                                                            size="small"
+                                                                            className="status-chip"
+                                                                        />
+                                                                    </TableCell>
+                                                                    <TableCell>
+                                                                        <Button size="small" variant="outlined" className="details-button" onClick={() => setSelectedEventId(event.medicalEventId)}>
+                                                                            Details
+                                                                        </Button>
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                            ))}
+                                                        </TableBody>
+                                                    </Table>
+                                                </TableContainer>
+                                            )}
+                                        </Item>
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
+                )}
             </TabPanel >
 
 

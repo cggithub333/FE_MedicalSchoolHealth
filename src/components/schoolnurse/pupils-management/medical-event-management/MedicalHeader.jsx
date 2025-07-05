@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
     Box,
     Grid,
@@ -161,6 +161,17 @@ const MedicalHeader = () => {
     const handleCancelForm = () => {
         setShowForm(false); // Hide the form
     };
+
+    // Clamp page if it exceeds pageCount after filtering
+    useEffect(() => {
+        if (page > pageCount) {
+            setPage(pageCount === 0 ? 1 : pageCount);
+        }
+    }, [pageCount]);
+    // Reset page to 1 when search/filter changes
+    useEffect(() => {
+        setPage(1);
+    }, [searchTerm, categoryFilter]);
 
     if (showresult) {
         return (
