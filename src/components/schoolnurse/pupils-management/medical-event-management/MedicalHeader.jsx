@@ -126,7 +126,7 @@ const MedicalHeader = () => {
     const isSelected = (id) => selected.includes(id)
 
     const [showForm, setShowForm] = useState(false);
-    const [showResult, setShowResult] = useState(false);
+    const [showresult, setShowResult] = useState(false);
     const [selectedEventId, setSelectedEventId] = useState(null);
     const statsData = [
         {
@@ -149,10 +149,10 @@ const MedicalHeader = () => {
         setSelectedEventId(eventId);
         setShowResult(true);
     };
-    const handleBackFromResult = () => {
-        setShowResult(false);
-        setSelectedEventId(null);
-    };
+
+    const handleCloseResultForm = () => {
+        setShowResult(false); // Hide the result
+    }
 
     const handleNewEventClick = () => {
         setShowForm(true); // Show the form
@@ -162,16 +162,16 @@ const MedicalHeader = () => {
         setShowForm(false); // Hide the form
     };
 
-    if (showResult) {
+    if (showresult) {
         return (
-            <MedicalEventResultForm onBack={handleBackFromResult} eventId={selectedEventId} />
+            <MedicalEventResultForm pupilId={selectedEventId} onBack={handleCloseResultForm} />
         );
     }
 
 
     return (
         <>
-            <div maxWidth="xxl" className="medical-header" style={{}}>
+            <div className="medical-header" style={{}}>
                 {/* Header Section */}
                 <Box className="header-section" sx={{ position: 'relative' }}>
                     <Grid container spacing={3} alignItems="center">

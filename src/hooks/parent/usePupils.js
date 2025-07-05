@@ -5,8 +5,8 @@ import { fetchAllPupils } from '../../api/parent/parent-requests-action/pupil-re
 
 const usePupils = () => {
 
-  const [ pupils, setPupils ] = useState([]);
-  const [ isLoading, setIsLoading ] = useState(false);
+  const [pupils, setPupils] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
 
@@ -14,9 +14,12 @@ const usePupils = () => {
 
       // fetching data..
       setIsLoading(true);
-      
+
       try {
         const data = await fetchAllPupils();
+
+        // debug:
+        console.log("Pupils: " + JSON.stringify(data, null, 2));
 
         if (!data) {
           // empty, null, undefined;
@@ -25,7 +28,7 @@ const usePupils = () => {
 
         //else:
         setPupils(data);
-      } catch(error) {
+      } catch (error) {
         console.error("usePupils.js: error happened!");
         console.error("details: " + error);
       } finally {

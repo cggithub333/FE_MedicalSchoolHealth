@@ -1,5 +1,4 @@
 import { useState } from "react"
-
 import { styled } from '@mui/material/styles';
 import {
     Box,
@@ -48,7 +47,7 @@ import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 
 //custom hooks
 import { useGetAllMedicalEventByPupilsId } from "../../../../hooks/schoolnurse/new-event/useGetAllMedicalEventByPupilsId"
-import { getVaccinationHistoryByPupilId } from "../../../../hooks/schoolnurse/new-event/useGetVaccinationByPupilId"
+import { useGetVaccinationHistoryByPupilId } from "../../../../hooks/schoolnurse/new-event/useGetVaccinationByPupilId"
 import "./MedicalEventForm.scss"
 
 function TabPanel({ children, value, index, ...other }) {
@@ -138,65 +137,44 @@ const SectionHeader = styled(Box)(({ theme }) => ({
     border: "1px solid rgba(25, 118, 210, 0.1)",
 }))
 
-const MedicalEventResultForm = ({ onBack }) => {
+const MedicalEventResultForm = ({ pupilId, onBack }) => {
     const [tabValue, setTabValue] = useState(0)
 
     const handleTabChange = (event, newValue) => {
         setTabValue(newValue)
     }
 
-    const pupilData = {
-        name: "Emma Martinez",
-        pupilId: "STU-2024-001",
-        grade: "Grade 3",
-        gender: "Female",
-        teacher: "Mrs. Smith",
-    }
+    // Fetch medical events for the selected pupil
+    const {
+        medicalEventList,
+        loading: isMedicalEventsLoading,
+        error: medicalEventsError
+    } = useGetAllMedicalEventByPupilsId(pupilId);
+    // Fix: support both array and object with data property
+    const medicalEvents = Array.isArray(medicalEventList)
+        ? medicalEventList
+        : Array.isArray(medicalEventList?.data)
+            ? medicalEventList.data
+            : [];
 
-    const healthData = {
-        height: "4'2\" (127 cm)",
-        weight: "65 lbs (29.5 kg)",
-        bmi: "18.2 (Normal)",
-        leftEye: "20/20",
-        rightEye: "20/20",
-        bloodPressure: "110/70 mmHg",
-        dentalCheck: "Good",
-        notes: "Student is in excellent health. No concerns noted during examination.",
-    }
+    // Fetch vaccination history for the selected pupil
+    const {
+        vaccinationHistory,
+        loading: isVaccinationLoading,
+        error: vaccinationError
+    } = useGetVaccinationHistoryByPupilId(pupilId);
+    console.log("Vaccination History2:", vaccinationHistory);
 
-    const parentContact = {
-        motherName: "Maria Martinez",
-        motherPhone: "(555) 123-4567",
-        motherEmail: "maria.martinez@email.com",
-        fatherName: "Carlos Martinez",
-        fatherPhone: "(555) 123-4568",
-        fatherEmail: "carlos.martinez@email.com",
-        address: "123 Oak Street, Springfield, IL 62701",
-    }
+    const event = medicalEvents[0]; // or any event in the array
 
-    const vaccinations = [
-        {
-            name: "COVID-19 (Pfizer-BioNTech)",
-            dose: "Dose 2 of 2",
-            date: "Sep 15, 2024",
-            status: "Complete",
-            nurse: "Nurse Johnson",
-        },
-        {
-            name: "Flu Vaccine (2024-2025)",
-            dose: "Annual dose",
-            date: "Oct 10, 2024",
-            status: "Complete",
-            nurse: "Nurse Smith",
-        },
-        {
-            name: "Tdap (Tetanus, Diphtheria, Pertussis)",
-            dose: "Booster dose",
-            date: "Aug 20, 2024",
-            status: "Complete",
-            nurse: "Nurse Johnson",
-        },
-    ]
+    // Defensive checks to avoid TypeError if event or event.pupil is undefined
+    const pupilName = event && event.pupil ? `${event.pupil.firstName} ${event.pupil.lastName}` : "";
+    const grade = event && event.pupil ? (event.pupil.gradeName || event.pupil.gradeLevel || "") : "";
+    const gender = event && event.pupil ? event.pupil.gender : "";
+
+    const parent = event && event.pupil && Array.isArray(event.pupil.parents) && event.pupil.parents.length > 0 ? event.pupil.parents[0] : null;
+    const parentName = parent ? `${parent.firstName} ${parent.lastName}` : "";
+    const parentPhone = parent ? parent.phoneNumber : "";
 
     const healthVisits = [
         {
@@ -222,29 +200,8 @@ const MedicalEventResultForm = ({ onBack }) => {
         },
     ]
 
-    const medicalEvents = [
-        {
-            id: 1,
-            pupil: pupilData,
-            grade: pupilData.grade,
-            injuryDescription: "Minor cut on finger during art class",
-            schoolNurse: "Nurse Johnson",
-            dateTime: "Nov 15, 2024 10:30 AM",
-            status: "Treated",
-        },
-        {
-            id: 2,
-            pupil: pupilData,
-            grade: pupilData.grade,
-            injuryDescription: "Headache complaint",
-            schoolNurse: "Nurse Smith",
-            dateTime: "Nov 10, 2024 2:15 PM",
-            status: "Resolved",
-        },
-    ]
-
     const getStatusColor = (status) => {
-        switch (status.toLowerCase()) {
+        switch (status?.toLowerCase()) {
             case "complete":
             case "treated":
             case "resolved":
@@ -257,20 +214,28 @@ const MedicalEventResultForm = ({ onBack }) => {
                 return "default"
         }
     }
+
+    if (isMedicalEventsLoading) {
+        return <Box p={4}><Typography>Loading medical events...</Typography></Box>;
+    }
+    if (medicalEventsError) {
+        return <Box p={4}><Typography color="error">Error loading medical events: {medicalEventsError?.message || "Unknown error"}</Typography></Box>;
+    }
+
     return (
         <Grid container spacing={2}>
             {/* Header */}
             <Grid container alignItems="center" spacing={2} size={12} sx={{ mb: 2, bgcolor: `rgb(255, 255, 255)`, p: 2, borderRadius: 2 }}>
                 <Grid item size={1} >
-                    <Avatar className="student-avatar" sx={{ width: 64, height: 64, fontSize: 32, bgcolor: '#1976d2' }}>EM</Avatar>
+                    <Avatar className="student-avatar" sx={{ width: 64, height: 64, fontSize: 32, bgcolor: '#1976d2' }}></Avatar>
                 </Grid>
                 <Grid item size={8}>
                     <Typography variant="h4" className="student-name" sx={{ fontWeight: 700, color: '#222' }}>
-                        Emma Martinez
+                        {pupilName}
                     </Typography>
                     <Box className="student-meta" sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 0.5 }}>
                         <Typography variant="body2" className="grade-info" sx={{ color: 'text.secondary' }}>
-                            Grade 3 • Mrs. Smith
+                            {grade}
                         </Typography>
                     </Box>
                 </Grid>
@@ -314,18 +279,38 @@ const MedicalEventResultForm = ({ onBack }) => {
 
                                 {/* Name and ID side by side */}
                                 <Grid item size={6}>
-                                    <Item>Name</Item>
+                                    <Item>
+                                        <Typography variant="h6" sx={{ alignItems: 'center', gap: 1, color: '#1976d2' }}>
+                                            Name
+                                        </Typography>
+                                        <span>{pupilName}</span>
+                                    </Item>
                                 </Grid>
                                 <Grid item size={6}>
-                                    <Item>Pupil ID</Item>
+                                    <Item>
+                                        <Typography variant="h6" sx={{ alignItems: 'center', gap: 1, color: '#1976d2' }}>
+                                            Pupil ID
+                                        </Typography>
+                                        <span>{pupilId}</span>
+                                    </Item>
                                 </Grid>
 
                                 {/* Grade and Gender side by side */}
                                 <Grid item size={6}>
-                                    <Item>Grade</Item>
+                                    <Item>
+                                        <Typography variant="h6" sx={{ alignItems: 'center', gap: 1, color: '#1976d2' }}>
+                                            Grade
+                                        </Typography>
+                                        <span>{grade}</span>
+                                    </Item>
                                 </Grid>
                                 <Grid item size={6}>
-                                    <Item>Gender</Item>
+                                    <Item>
+                                        <Typography variant="h6" sx={{ alignItems: 'center', gap: 1, color: '#1976d2' }}>
+                                            Gender
+                                        </Typography>
+                                        <span>{gender}</span>
+                                    </Item>
                                 </Grid>
                             </Grid>
 
@@ -378,14 +363,8 @@ const MedicalEventResultForm = ({ onBack }) => {
                                 <Box className="contact-list" sx={{ mt: 1 }}>
                                     <Grid container spacing={5}>
                                         <Grid item xs={12}>
-                                            <Typography variant="body1" fontWeight={600}>Maria Martinez</Typography>
-                                            <Typography variant="body2">Mother</Typography>
-                                            <Typography variant="body2">(555) 123-4567</Typography>
-                                        </Grid>
-                                        <Grid item xs={12}>
-                                            <Typography variant="body1" fontWeight={600}>Carlos Martinez</Typography>
-                                            <Typography variant="body2">Father</Typography>
-                                            <Typography variant="body2">(555) 123-4568</Typography>
+                                            <Typography variant="body1" fontWeight={600}>Parent'Name : {parentName}</Typography>
+                                            <Typography variant="body1" fontWeight={600}>Phone Number : 0{parentPhone}</Typography>
                                         </Grid>
                                     </Grid>
                                 </Box>
@@ -419,43 +398,55 @@ const MedicalEventResultForm = ({ onBack }) => {
                                 {/* Header */}
                                 <Grid item size={12}>
                                     <Item>
-                                        <TableContainer className="table-container">
-                                            <Table>
-                                                <TableHead>
-                                                    <TableRow className="table-header">
-                                                        <TableCell>Vaccine Name</TableCell>
-                                                        <TableCell>Dose</TableCell>
-                                                        <TableCell>Date</TableCell>
-                                                        <TableCell>Administered By</TableCell>
-                                                        <TableCell>Status</TableCell>
-                                                    </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                    {vaccinations.map((vaccine, index) => (
-                                                        <TableRow key={index} className="table-row">
-                                                            <TableCell>
-                                                                <Box className="vaccine-info">
-                                                                    <Typography variant="body1" className="vaccine-name">
-                                                                        {vaccine.name}
-                                                                    </Typography>
-                                                                </Box>
-                                                            </TableCell>
-                                                            <TableCell>{vaccine.dose}</TableCell>
-                                                            <TableCell>{vaccine.date}</TableCell>
-                                                            <TableCell>{vaccine.nurse}</TableCell>
-                                                            <TableCell>
-                                                                <Chip
-                                                                    label={vaccine.status}
-                                                                    color={getStatusColor(vaccine.status)}
-                                                                    size="small"
-                                                                    className="status-chip"
-                                                                />
-                                                            </TableCell>
+                                        {isVaccinationLoading ? (
+                                            <Box p={4}><Typography>Loading vaccination history...</Typography></Box>
+                                        ) : vaccinationError ? (
+                                            <Box p={4}><Typography color="error">Error loading vaccination history: {vaccinationError?.message || "Unknown error"}</Typography></Box>
+                                        ) : (
+                                            <TableContainer className="table-container">
+                                                <Table>
+                                                    <TableHead>
+                                                        <TableRow className="table-header">
+                                                            <TableCell>Vaccine Name</TableCell>
+                                                            <TableCell>Disease</TableCell>
+                                                            <TableCell>Date</TableCell>
+                                                            <TableCell>Source</TableCell>
+                                                            <TableCell>Status</TableCell>
                                                         </TableRow>
-                                                    ))}
-                                                </TableBody>
-                                            </Table>
-                                        </TableContainer>
+                                                    </TableHead>
+                                                    <TableBody>
+                                                        {(Array.isArray(vaccinationHistory) ? vaccinationHistory : []).length === 0 ? (
+                                                            <TableRow>
+                                                                <TableCell colSpan={5} align="center">No vaccination records found.</TableCell>
+                                                            </TableRow>
+                                                        ) : (
+                                                            (vaccinationHistory || []).map((vaccine, index) => (
+                                                                <TableRow key={vaccine.historyId || index} className="table-row">
+                                                                    <TableCell>
+                                                                        <Box className="vaccine-info">
+                                                                            <Typography variant="body1" className="vaccine-name">
+                                                                                {vaccine.vaccineName}
+                                                                            </Typography>
+                                                                        </Box>
+                                                                    </TableCell>
+                                                                    <TableCell>{vaccine.diseaseName}</TableCell>
+                                                                    <TableCell>{vaccine.vaccinatedAt ? new Date(vaccine.vaccinatedAt).toLocaleDateString() : "-"}</TableCell>
+                                                                    <TableCell>{vaccine.source}</TableCell>
+                                                                    <TableCell>
+                                                                        <Chip
+                                                                            label={vaccine.active ? "Active" : "Inactive"}
+                                                                            color={vaccine.active ? "success" : "default"}
+                                                                            size="small"
+                                                                            className="status-chip"
+                                                                        />
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                            ))
+                                                        )}
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
+                                        )}
                                     </Item>
                                 </Grid>
                             </Grid>
@@ -565,46 +556,42 @@ const MedicalEventResultForm = ({ onBack }) => {
                                 {/* Header */}
                                 <Grid item size={12}>
                                     <Item>
-                                        <TableContainer className="table-container">
-                                            <Table>
-                                                <TableHead>
-                                                    <TableRow className="table-header">
-                                                        <TableCell>Details</TableCell>
-                                                        <TableCell>Injury Description</TableCell>
-                                                        <TableCell>School Nurse</TableCell>
-                                                        <TableCell>Date</TableCell>
-                                                        <TableCell>Status</TableCell>
-                                                        <TableCell>Action</TableCell>
-                                                    </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                    {medicalEvents.length === 0 ? (
-                                                        <TableRow>
-                                                            <TableCell colSpan={7} align="center" className="no-data">
-                                                                <Box className="empty-state">
-                                                                    <FileIcon className="empty-icon" />
-                                                                    <Typography variant="h6">No Medical Events</Typography>
-                                                                    <Typography variant="body2" color="textSecondary">
-                                                                        No medical events have been recorded.
-                                                                    </Typography>
-                                                                </Box>
-                                                            </TableCell>
+                                        {medicalEvents.length === 0 ? (
+                                            <Box className="empty-state" sx={{ textAlign: 'center', py: 6 }}>
+                                                <FileIcon className="empty-icon" sx={{ fontSize: 48, color: 'grey.400', mb: 2 }} />
+                                                <Typography variant="h6">No Medical Events</Typography>
+                                                <Typography variant="body2" color="textSecondary">
+                                                    No medical events have been recorded for this pupil.
+                                                </Typography>
+                                            </Box>
+                                        ) : (
+                                            <TableContainer className="table-container">
+                                                <Table>
+                                                    <TableHead>
+                                                        <TableRow className="table-header">
+                                                            <TableCell>Details</TableCell>
+                                                            <TableCell>Injury Description</TableCell>
+                                                            <TableCell>School Nurse</TableCell>
+                                                            <TableCell>Date</TableCell>
+                                                            <TableCell>Status</TableCell>
+                                                            <TableCell>Action</TableCell>
                                                         </TableRow>
-                                                    ) : (
-                                                        medicalEvents.map((event) => (
+                                                    </TableHead>
+                                                    <TableBody>
+                                                        {medicalEvents.map((event) => (
                                                             <TableRow key={event.id} className="table-row">
                                                                 <TableCell>
                                                                     <Box className="pupil-info">
                                                                         <Box>
                                                                             <Typography variant="body2" className="pupil-name">
-                                                                                detailedInformation
+                                                                                {event.detailedInformation}
                                                                             </Typography>
 
                                                                         </Box>
                                                                     </Box>
                                                                 </TableCell>
                                                                 <TableCell>{event.injuryDescription}</TableCell>
-                                                                <TableCell>{event.schoolNurse}</TableCell>
+                                                                <TableCell>{event.schoolNurse ? `${event.schoolNurse.firstName} ${event.schoolNurse.lastName}` : ''}</TableCell>
                                                                 <TableCell>{event.dateTime}</TableCell>
                                                                 <TableCell>
                                                                     <Chip
@@ -620,11 +607,11 @@ const MedicalEventResultForm = ({ onBack }) => {
                                                                     </Button>
                                                                 </TableCell>
                                                             </TableRow>
-                                                        ))
-                                                    )}
-                                                </TableBody>
-                                            </Table>
-                                        </TableContainer>
+                                                        ))}
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
+                                        )}
                                     </Item>
                                 </Grid>
                             </Grid>

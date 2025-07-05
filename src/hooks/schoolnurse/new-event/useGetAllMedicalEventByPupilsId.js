@@ -6,24 +6,27 @@ export const useGetAllMedicalEventByPupilsId = (pupilId) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const fetchMedicalEventList = async () => {
-        try {
-            setLoading(true);
-            const response = await getAllMedicalEventByPupilId(pupilId);
-            setMedicalEventList(response.data);
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
+
+        const fetchMedicalEventList = async () => {
+            try {
+                setLoading(true);
+                const response = await getAllMedicalEventByPupilId(pupilId);
+                setMedicalEventList(response || []);
+                setError(null);
+            } catch (err) {
+                setError(err?.message || "Unknown error");
+            } finally {
+                setLoading(false);
+            }
+        };
+
         if (pupilId) {
             fetchMedicalEventList();
         }
+
+
     }, [pupilId]);
 
     return { medicalEventList, loading, error };
-}
-
+};

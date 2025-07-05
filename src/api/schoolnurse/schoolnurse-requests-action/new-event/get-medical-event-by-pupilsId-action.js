@@ -3,8 +3,9 @@ import { getAllMedicalEventByPupilIdCallback } from "@api/schoolnurse/schoolnurs
 
 export const getAllMedicalEventByPupilId = async (pupilId) => {
     try {
-        const response = await getAllMedicalEventByPupilIdCallback(pupilId);
-        return fetchResponse(response);
+        // Correct: pass a function to fetchResponse
+        const response = await fetchResponse(() => getAllMedicalEventByPupilIdCallback(pupilId));
+        return response;
     } catch (error) {
         console.error("Error fetching medical events by pupil ID:", error);
         throw error;

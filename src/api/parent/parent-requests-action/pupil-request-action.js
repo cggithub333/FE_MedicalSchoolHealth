@@ -1,17 +1,20 @@
 
 import { fetchResponse } from '../../fetch-response';
-import { 
-  getAllPupils, 
+import {
+  getAllPupils,
   getSurveyByPupilId,
   getVaccinationSurvey,
   getVaccinationHistoryByPupilId,
   getHealthCheckHistoryByPupilId
-} from '../parent-requests-callback/pupil-request-callback'; 
+} from '../parent-requests-callback/pupil-request-callback';
 
 export const fetchAllPupils = async () => {
 
   try {
     const resp = await fetchResponse(getAllPupils);
+
+    // debug:
+    console.log("pupilRequestAction.js: fetchAllPupils response: ", resp);
 
     if (resp.status === false)
       throw new Error("pupilRequestAction.js: Can't fetch pupils!");
@@ -20,7 +23,7 @@ export const fetchAllPupils = async () => {
     // no errors:
     return pupils;
 
-  } catch(error) {
+  } catch (error) {
     console.error("pupilRequestAction.js: Can't fetch pupils!");
     console.error("details: " + error);
     throw error; // throw for far processing in other components;
@@ -33,14 +36,14 @@ export const fetchSurveyByPupilId = async (pupilId) => {
     const getProperCallback = () => getSurveyByPupilId(pupilId);
 
     const resp = await fetchResponse(getProperCallback);
-    
+
     if (resp.status === false)
       throw new Error("pupilRequestAction.js: Can't fetch surveys!");
 
     // no errors:
     return await resp.data;
 
-  } catch(error) {
+  } catch (error) {
     console.error("pupilRequestAction.js: Can't fetch surveys!");
     console.error("details: " + error);
     throw error; // throw for far processing in other components;
