@@ -1,0 +1,459 @@
+"use client"
+
+import { useState } from "react"
+import {
+  Container,
+  Typography,
+  Card,
+  CardContent,
+  Box,
+  Grid,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Paper,
+  Avatar,
+  Chip,
+  FormControlLabel,
+  Checkbox,
+  Alert,
+  Divider,
+  IconButton,
+} from "@mui/material"
+import {
+  LocalHospital,
+  CalendarToday,
+  LocationOn,
+  Schedule,
+  Person,
+  Close,
+  CheckCircle,
+  Assignment,
+} from "@mui/icons-material"
+
+const currentPupil = {
+  pupilId: "PP0006",
+  lastName: "Hoàng",
+  firstName: "Em",
+  birthDate: "12-01-2018",
+  gender: "M",
+  gradeId: 1,
+  startYear: 2025,
+  gradeLevel: "GRADE_1",
+  gradeName: "Lớp 1D",
+}
+
+import useCurrentStoragedPupil from "@hooks/parent/useCurrentStoragedPupil"
+import useLatestHealthCheckCampaign from "@hooks/parent/useLatestHealthCheckCampaign"
+
+const HealthCheckSurveyByPupil = () => {
+
+  const { currentPupil, loading: pupilLoading, refetch: pupilRefetch} = useCurrentStoragedPupil();
+  const { latestHealthCheckCampaign: healthCampaignInfo, isLoading: campaignLoading, refetch: campaignRefetch, error: campaignError } = useLatestHealthCheckCampaign();
+
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [selectedDiseases, setSelectedDiseases] = useState([])
+  const [agreementChecked, setAgreementChecked] = useState(false)
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
+  }
+
+  const formatDateTime = (dateString) => {
+    return new Date(dateString).toLocaleString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+  }
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "PUBLISHED":
+        return "success"
+      case "PENDING":
+        return "warning"
+      case "COMPLETED":
+        return "info"
+      default:
+        return "default"
+    }
+  }
+
+  const handleCardClick = () => {
+    setDialogOpen(true)
+  }
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false)
+    // Reset form state when closing
+    setSelectedDiseases([])
+    setAgreementChecked(false)
+  }
+
+  const handleDiseaseChange = (diseaseId, checked) => {
+    if (checked) {
+      setSelectedDiseases([...selectedDiseases, diseaseId])
+    } else {
+      setSelectedDiseases(selectedDiseases.filter((id) => id !== diseaseId))
+    }
+  }
+
+  const handleAgreementChange = (event) => {
+    setAgreementChecked(event.target.checked)
+  }
+
+  const handleSubmitSurvey = () => {
+    // Prepare form data
+    const formData = {
+      campaignId: healthCampaignInfo?.campaignId,
+      pupilId: currentPupil?.pupilId,
+      diseaseId: selectedDiseases,
+    }
+
+    console.log("Survey data to be submitted:", JSON.stringify(formData, null, 2))
+    // Additional logic for sending to server will be added by you
+
+    // Close dialog after successful submission
+    handleCloseDialog()
+  }
+
+  const isSubmitDisabled = selectedDiseases.length === 0 || !agreementChecked
+
+  return (
+    <Container sx={{ py: 3, width: "80%" }}>
+      {/* Header */}
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 4 }}>
+        <Avatar sx={{ bgcolor: "primary.main", width: 48, height: 48 }}>
+          <LocalHospital />
+        </Avatar>
+        <Box>
+          <Typography variant="h4" fontWeight="bold">
+            Health Check Survey
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            Health examination consent for your child
+          </Typography>
+        </Box>
+      </Box>
+
+      {/* Campaign Card */}
+      <Card
+        sx={{
+          cursor: "pointer",
+          transition: "all 0.3s ease",
+          "&:hover": {
+            transform: "translateY(-4px)",
+            boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
+          },
+        }}
+        onClick={handleCardClick}
+      >
+        <CardContent sx={{ p: 4 }}>
+          {/* Campaign Header */}
+          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 3 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+              <Avatar sx={{ bgcolor: "success.main", width: 56, height: 56 }}>
+                <LocalHospital fontSize="large" />
+              </Avatar>
+              <Box>
+                <Typography variant="h5" fontWeight="bold">
+                  {healthCampaignInfo?.title}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Campaign ID: #{healthCampaignInfo?.campaignId}
+                </Typography>
+              </Box>
+            </Box>
+            <Chip
+              label={healthCampaignInfo?.statusHealthCampaign}
+              color={getStatusColor(healthCampaignInfo?.statusHealthCampaign)}
+              variant="filled"
+              sx={{ fontWeight: "bold" }}
+            />
+          </Box>
+
+          {/* Campaign Description */}
+          <Typography variant="body1" sx={{ mb: 3, lineHeight: 1.6 }}>
+            {healthCampaignInfo?.description}
+          </Typography>
+
+          {/* Campaign Details */}
+          <Grid container spacing={3}>
+            <Grid item size={{ xs: 12, md:6}} sx={{ height: "110px", mb: 1}}>
+              <Paper sx={{ p: 2, bgcolor: "info.50", height: "100%" }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                  <LocationOn color="info" fontSize="small" />
+                  <Typography variant="subtitle2" fontWeight="bold" color="info.main">
+                    Examination Location
+                  </Typography>
+                </Box>
+                <Typography variant="body2">{healthCampaignInfo?.address}</Typography>
+              </Paper>
+            </Grid>
+
+            <Grid item size={{ xs: 12, md: 6 }} sx={{ height: "110px", mb: 1 }}>
+              <Paper sx={{ p: 2, bgcolor: "warning.50", height: "100%" }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                  <CalendarToday color="warning" fontSize="small" />
+                  <Typography variant="subtitle2" fontWeight="bold" color="warning.main">
+                    Registration Deadline
+                  </Typography>
+                </Box>
+                <Typography variant="body2" fontWeight="bold">
+                  {formatDate(healthCampaignInfo?.deadlineDate)}
+                </Typography>
+              </Paper>
+            </Grid>
+
+            <Grid item size={{ xs: 12, md: 6 }} sx={{ height: "110px", mb: 1 }}>
+              <Paper sx={{ p: 2, bgcolor: "success.50", height: "100%" }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                  <Schedule color="success" fontSize="small" />
+                  <Typography variant="subtitle2" fontWeight="bold" color="success.main">
+                    Examination Start
+                  </Typography>
+                </Box>
+                <Typography variant="body2" fontWeight="bold">
+                  {formatDateTime(healthCampaignInfo?.startExaminationDate)}
+                </Typography>
+              </Paper>
+            </Grid>
+
+            <Grid item size={{ xs: 12, md: 6 }} sx={{ height: "110px", mb: 1 }}>
+              <Paper sx={{ p: 2, bgcolor: "error.50" , height: "100%" }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                  <Schedule color="error" fontSize="small" />
+                  <Typography variant="subtitle2" fontWeight="bold" color="error.main">
+                    Examination End
+                  </Typography>
+                </Box>
+                <Typography variant="body2" fontWeight="bold">
+                  {formatDateTime(healthCampaignInfo?.endExaminationDate)}
+                </Typography>
+              </Paper>
+            </Grid>
+          </Grid>
+
+          {/* Student Info */}
+          <Paper sx={{ p: 3, mt: 3, bgcolor: "primary.50" }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+              <Person color="primary" />
+              <Typography variant="h6" fontWeight="bold" color="primary.main">
+                Student Information
+              </Typography>
+            </Box>
+            <Grid container spacing={2}>
+              <Grid item size={{ xs: 6, md:3}}>
+                <Typography variant="body2" color="text.secondary">
+                  Student ID
+                </Typography>
+                <Typography variant="body1" fontWeight="bold">
+                  {currentPupil?.pupilId}
+                </Typography>
+              </Grid>
+              <Grid item size={{ xs: 6, md:3}}>
+                <Typography variant="body2" color="text.secondary">
+                  Full Name
+                </Typography>
+                <Typography variant="body1" fontWeight="bold">
+                  {currentPupil?.lastName} {currentPupil?.firstName}
+                </Typography>
+              </Grid>
+              <Grid item size={{ xs: 6, md:3}}>
+                <Typography variant="body2" color="text.secondary">
+                  Birth Date
+                </Typography>
+                <Typography variant="body1" fontWeight="bold">
+                  {currentPupil?.birthDate}
+                </Typography>
+              </Grid>
+              <Grid item size={{ xs: 6, md:3}}>
+                <Typography variant="body2" color="text.secondary">
+                  Class
+                </Typography>
+                <Chip label={currentPupil?.gradeName} color="primary" variant="outlined" />
+              </Grid>
+            </Grid>
+          </Paper>
+
+          {/* Click to Continue */}
+          <Box sx={{ textAlign: "center", mt: 3 }}>
+            <Typography variant="body1" color="primary.main" fontWeight="bold">
+              Click to review and confirm examination details
+            </Typography>
+          </Box>
+        </CardContent>
+      </Card>
+
+      {/* Survey Dialog */}
+      <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="lg" fullWidth>
+        <DialogTitle>
+          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Assignment color="primary" />
+              <Typography variant="h6" fontWeight="bold">
+                Health Check Consent Form
+              </Typography>
+            </Box>
+            <IconButton onClick={handleCloseDialog} size="small">
+              <Close />
+            </IconButton>
+          </Box>
+        </DialogTitle>
+
+        <DialogContent sx={{ py: 3 }}>
+          {/* Student Information */}
+          <Paper sx={{ p: 3, mb: 3, bgcolor: "primary.50" }}>
+            <Typography variant="h6" fontWeight="bold" sx={{ mb: 2, color: "primary.main" }}>
+              Student Information
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item size={{ xs: 6, md:3}}>
+                <Typography variant="body2" color="text.secondary">
+                  Student ID
+                </Typography>
+                <Typography variant="body1" fontWeight="bold">
+                  {currentPupil?.pupilId}
+                </Typography>
+              </Grid>
+              <Grid item size={{ xs: 6, md:3}}>
+                <Typography variant="body2" color="text.secondary">
+                  Full Name
+                </Typography>
+                <Typography variant="body1" fontWeight="bold">
+                  {currentPupil?.lastName} {currentPupil?.firstName}
+                </Typography>
+              </Grid>
+              <Grid item size={{ xs: 6, md:3}}>
+                <Typography variant="body2" color="text.secondary">
+                  Birth Date
+                </Typography>
+                <Typography variant="body1" fontWeight="bold">
+                  {currentPupil?.birthDate}
+                </Typography>
+              </Grid>
+              <Grid item size={{ xs: 6, md:3}}>
+                <Typography variant="body2" color="text.secondary">
+                  Class
+                </Typography>
+                <Chip label={currentPupil?.gradeName} color="primary" variant="outlined" />
+              </Grid>
+            </Grid>
+          </Paper>
+
+          {/* Campaign Information */}
+          <Paper sx={{ p: 3, mb: 3, bgcolor: "success.50" }}>
+            <Typography variant="h6" fontWeight="bold" sx={{ mb: 2, color: "success.main" }}>
+              Campaign: {healthCampaignInfo?.title}
+            </Typography>
+            <Typography variant="body2" sx={{ mb: 2 }}>
+              {healthCampaignInfo?.description}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              <strong>Location:</strong> {healthCampaignInfo?.address}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              <strong>Date:</strong> {formatDateTime(healthCampaignInfo?.startExaminationDate)} -{" "}
+              {formatDateTime(healthCampaignInfo?.endExaminationDate)}
+            </Typography>
+          </Paper>
+
+          {/* Disease Selection */}
+          <Paper sx={{ p: 3, mb: 3, bgcolor: "warning.50" }}>
+            <Typography variant="h6" fontWeight="bold" sx={{ mb: 2, color: "warning.main" }}>
+              Sensitive diseases
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              Please select which examinations you consent to for your child:
+            </Typography>
+
+            {healthCampaignInfo?.diseases?.map((disease) => (
+              <Paper key={disease.diseaseId} sx={{ p: 2, mb: 2, bgcolor: "white" }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={selectedDiseases.includes(disease.diseaseId)}
+                      onChange={(e) => handleDiseaseChange(disease.diseaseId, e.target.checked)}
+                      color="primary"
+                    />
+                  }
+                  label={
+                    <Box>
+                      <Typography variant="body1" fontWeight="bold">
+                        {disease.name}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {disease.description}
+                      </Typography>
+                    </Box>
+                  }
+                />
+              </Paper>
+            ))}
+
+            {selectedDiseases.length === 0 && (
+              <Alert severity="warning" sx={{ mt: 2 }}>
+                Please select at least one examination area to proceed.
+              </Alert>
+            )}
+          </Paper>
+
+          <Divider sx={{ my: 3 }} />
+
+          {/* Agreement Checkbox */}
+          <Paper sx={{ p: 3, bgcolor: "grey.50" }}>
+            <FormControlLabel
+              control={
+                <Checkbox checked={agreementChecked} onChange={handleAgreementChange} color="success" size="large" />
+              }
+              label={
+                <Box sx={{ ml: 1 }}>
+                  <Typography variant="body1" fontWeight="bold">
+                    I agree to the selected examinations
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    I understand and consent to the selected health examinations being performed on my child by
+                    qualified school nurses during the scheduled health check campaign.
+                  </Typography>
+                </Box>
+              }
+            />
+          </Paper>
+
+          {!agreementChecked && selectedDiseases.length > 0 && (
+            <Alert severity="info" sx={{ mt: 2 }}>
+              Please confirm your agreement to proceed with the submission.
+            </Alert>
+          )}
+        </DialogContent>
+
+        <DialogActions sx={{ p: 3, gap: 2 }}>
+          <Button onClick={handleCloseDialog} variant="outlined" color="inherit">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSubmitSurvey}
+            variant="contained"
+            color="success"
+            startIcon={<CheckCircle />}
+            disabled={isSubmitDisabled}
+            sx={{ minWidth: 120 }}
+          >
+            Submit Survey
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Container>
+  )
+}
+
+export default HealthCheckSurveyByPupil
