@@ -21,6 +21,7 @@ import {
     Chip,
     Grid,
     IconButton,
+    Pagination,
 } from "@mui/material"
 import { TabContext, TabList, TabPanel } from "@mui/lab"
 import {
@@ -88,6 +89,98 @@ const allPrescriptions = [
         pupilLastName: "Võ",
         senderName: "AnhQuốc",
         sendMedicationId: 3,
+        diseaseName: "Mild cold and throat irritation",
+        startDate: "04-07-2025",
+        endDate: "10-07-2025",
+        requestedDate: "04-07-2025 18:13:06",
+        prescriptionImage:
+            "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751627585773-thuoc-tay-4.jpg?alt=media&token=87fa66f2-7cd9-4d03-a663-9ffad8b143cf",
+        note: "Child has slight cold symptoms, no fever. Needs throat lozenges and warm fluids.",
+        status: "APPROVED",
+        medicationItems: [
+            {
+                medicationId: 15,
+                medicationName: "Betadine gargle",
+                unitAndUsage: "Gargle for 30 seconds",
+                medicationSchedule: "After breakfast: 9h00-9h30",
+            },
+        ],
+    },
+    {
+        pupilId: "PP0007",
+        pupilFirstName: "Lan",
+        pupilLastName: "Võ",
+        senderName: "AnhQuốc",
+        sendMedicationId: 4,
+        diseaseName: "Mild cold and throat irritation",
+        startDate: "04-07-2025",
+        endDate: "10-07-2025",
+        requestedDate: "04-07-2025 18:13:06",
+        prescriptionImage:
+            "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751627585773-thuoc-tay-4.jpg?alt=media&token=87fa66f2-7cd9-4d03-a663-9ffad8b143cf",
+        note: "Child has slight cold symptoms, no fever. Needs throat lozenges and warm fluids.",
+        status: "APPROVED",
+        medicationItems: [
+            {
+                medicationId: 15,
+                medicationName: "Betadine gargle",
+                unitAndUsage: "Gargle for 30 seconds",
+                medicationSchedule: "After breakfast: 9h00-9h30",
+            },
+        ],
+    },
+    {
+        pupilId: "PP0007",
+        pupilFirstName: "Lan",
+        pupilLastName: "Võ",
+        senderName: "AnhQuốc",
+        sendMedicationId: 5,
+        diseaseName: "Mild cold and throat irritation",
+        startDate: "04-07-2025",
+        endDate: "10-07-2025",
+        requestedDate: "04-07-2025 18:13:06",
+        prescriptionImage:
+            "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751627585773-thuoc-tay-4.jpg?alt=media&token=87fa66f2-7cd9-4d03-a663-9ffad8b143cf",
+        note: "Child has slight cold symptoms, no fever. Needs throat lozenges and warm fluids.",
+        status: "APPROVED",
+        medicationItems: [
+            {
+                medicationId: 15,
+                medicationName: "Betadine gargle",
+                unitAndUsage: "Gargle for 30 seconds",
+                medicationSchedule: "After breakfast: 9h00-9h30",
+            },
+        ],
+    },
+    {
+        pupilId: "PP0007",
+        pupilFirstName: "Lan",
+        pupilLastName: "Võ",
+        senderName: "AnhQuốc",
+        sendMedicationId: 6,
+        diseaseName: "Mild cold and throat irritation",
+        startDate: "04-07-2025",
+        endDate: "10-07-2025",
+        requestedDate: "04-07-2025 18:13:06",
+        prescriptionImage:
+            "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751627585773-thuoc-tay-4.jpg?alt=media&token=87fa66f2-7cd9-4d03-a663-9ffad8b143cf",
+        note: "Child has slight cold symptoms, no fever. Needs throat lozenges and warm fluids.",
+        status: "APPROVED",
+        medicationItems: [
+            {
+                medicationId: 15,
+                medicationName: "Betadine gargle",
+                unitAndUsage: "Gargle for 30 seconds",
+                medicationSchedule: "After breakfast: 9h00-9h30",
+            },
+        ],
+    },
+    {
+        pupilId: "PP0007",
+        pupilFirstName: "Lan",
+        pupilLastName: "Võ",
+        senderName: "AnhQuốc",
+        sendMedicationId:7,
         diseaseName: "Mild cold and throat irritation",
         startDate: "04-07-2025",
         endDate: "10-07-2025",
@@ -245,6 +338,13 @@ const PrescriptionTrackingTable = () => {
     const [dialogOpen, setDialogOpen] = useState(false)
     const [imageZoomOpen, setImageZoomOpen] = useState(false)
 
+    // Separate page states for each tab
+    const [pageIndexes, setPageIndexes] = useState({
+        "all": 1, // All prescriptions
+        "inprogress": 1, // In progress
+        "completed": 1  // Completed
+    })
+
     const handleChange = (event, newValue) => {
         setValue(newValue)
     }
@@ -285,100 +385,137 @@ const PrescriptionTrackingTable = () => {
         }
     }
 
-    const PrescriptionTable = ({ prescriptions }) => (
-        <TableContainer component={Paper} sx={{ mt: 2 }}>
-            <Table>
-                <TableHead>
-                    <TableRow sx={{ bgcolor: "primary.50" }}>
-                        <TableCell>
-                            <Typography variant="subtitle2" fontWeight="bold">
-                                Pupil ID
-                            </Typography>
-                        </TableCell>
-                        <TableCell>
-                            <Typography variant="subtitle2" fontWeight="bold">
-                                Pupil Name
-                            </Typography>
-                        </TableCell>
-                        <TableCell>
-                            <Typography variant="subtitle2" fontWeight="bold">
-                                Disease Name
-                            </Typography>
-                        </TableCell>
-                        <TableCell>
-                            <Typography variant="subtitle2" fontWeight="bold">
-                                Start Date
-                            </Typography>
-                        </TableCell>
-                        <TableCell>
-                            <Typography variant="subtitle2" fontWeight="bold">
-                                End Date
-                            </Typography>
-                        </TableCell>
-                        <TableCell>
-                            <Typography variant="subtitle2" fontWeight="bold">
-                                Status
-                            </Typography>
-                        </TableCell>
-                        <TableCell align="center">
-                            <Typography variant="subtitle2" fontWeight="bold">
-                                Action
-                            </Typography>
-                        </TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {prescriptions.map((prescription) => (
-                        <TableRow key={prescription.sendMedicationId} sx={{ "&:hover": { bgcolor: "grey.50" } }}>
-                            <TableCell>
-                                <Typography variant="body2" fontWeight="bold">
-                                    {prescription.pupilId}
-                                </Typography>
-                            </TableCell>
-                            <TableCell>
-                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                    <Person fontSize="small" color="primary" />
-                                    <Typography variant="body2">
-                                        {prescription.pupilLastName} {prescription.pupilFirstName}
+    const PrescriptionTable = ({ prescriptions, option }) => {
+
+        const rowsPerPage = 4;
+        const paginationLength = prescriptions.length === 0 ? 1 : (Math.ceil(prescriptions.length / rowsPerPage));
+
+        return (
+            <>
+                <TableContainer component={Paper} sx={{ mt: 2 }}>
+                    <Table>
+                        <TableHead>
+                            <TableRow sx={{ bgcolor: "primary.50" }}>
+                                <TableCell>
+                                    <Typography variant="subtitle2" fontWeight="bold">
+                                        Pupil ID
                                     </Typography>
-                                </Box>
-                            </TableCell>
-                            <TableCell>
-                                <Typography variant="body2" fontWeight="500">
-                                    {prescription.diseaseName}
-                                </Typography>
-                            </TableCell>
-                            <TableCell>
-                                <Typography variant="body2">{formatDate(prescription.startDate)}</Typography>
-                            </TableCell>
-                            <TableCell>
-                                <Typography variant="body2">{formatDate(prescription.endDate)}</Typography>
-                            </TableCell>
-                            <TableCell>
-                                <Chip
-                                    label={prescription.status}
-                                    color={getStatusColor(prescription.status)}
-                                    size="small"
-                                    variant="filled"
-                                />
-                            </TableCell>
-                            <TableCell align="center">
-                                <Button
-                                    variant="outlined"
-                                    size="small"
-                                    startIcon={<Visibility />}
-                                    onClick={() => handleDetailClick(prescription)}
-                                    sx={{ minWidth: 100 }}
-                                >
-                                    Details
-                                </Button>
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
-    )
+                                </TableCell>
+                                <TableCell>
+                                    <Typography variant="subtitle2" fontWeight="bold">
+                                        Pupil Name
+                                    </Typography>
+                                </TableCell>
+                                <TableCell>
+                                    <Typography variant="subtitle2" fontWeight="bold">
+                                        Disease Name
+                                    </Typography>
+                                </TableCell>
+                                <TableCell>
+                                    <Typography variant="subtitle2" fontWeight="bold">
+                                        Start Date
+                                    </Typography>
+                                </TableCell>
+                                <TableCell>
+                                    <Typography variant="subtitle2" fontWeight="bold">
+                                        End Date
+                                    </Typography>
+                                </TableCell>
+                                <TableCell>
+                                    <Typography variant="subtitle2" fontWeight="bold">
+                                        Status
+                                    </Typography>
+                                </TableCell>
+                                <TableCell align="center">
+                                    <Typography variant="subtitle2" fontWeight="bold">
+                                        Action
+                                    </Typography>
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {prescriptions.map((prescription, idx) => {
+
+                                // filder number of rows:
+                                const startIndex = (pageIndexes[option] - 1) * rowsPerPage;
+                                const endIndex = startIndex + rowsPerPage;
+
+                                if (idx < startIndex || idx >= endIndex) {
+                                    return null; // Skip rendering this row
+                                }
+
+                                return (
+                                    <TableRow key={prescription.sendMedicationId} sx={{ "&:hover": { bgcolor: "grey.50" } }}>
+                                        <TableCell>
+                                            <Typography variant="body2" fontWeight="bold">
+                                                {prescription.pupilId}
+                                            </Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                                <Person fontSize="small" color="primary" />
+                                                <Typography variant="body2">
+                                                    {prescription.pupilLastName} {prescription.pupilFirstName}
+                                                </Typography>
+                                            </Box>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography variant="body2" fontWeight="500">
+                                                {prescription.diseaseName}
+                                            </Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography variant="body2">{formatDate(prescription.startDate)}</Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography variant="body2">{formatDate(prescription.endDate)}</Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Chip
+                                                label={prescription.status}
+                                                color={getStatusColor(prescription.status)}
+                                                size="small"
+                                                variant="filled"
+                                            />
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            <Button
+                                                variant="outlined"
+                                                size="small"
+                                                startIcon={<Visibility />}
+                                                onClick={() => handleDetailClick(prescription)}
+                                                sx={{ minWidth: 100 }}
+                                            >
+                                                Details
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                )
+                            })}
+                        </TableBody>
+
+                    </Table>
+                </TableContainer>
+                <Grid container justifyContent={'center'} size={{ xs: 12 }} mt={3}>
+                    <Pagination 
+                        count={paginationLength} 
+                        page={pageIndexes[option]}
+                        variant="outlined" 
+                        color="primary" 
+                        onChange={(event, page) => { 
+                            
+                            // debug:
+                            console.log("Page number:" , page);
+
+                            setPageIndexes(prev => ({ 
+                                ...prev, 
+                                [option]: page 
+                            }));
+                        }}/>
+                </Grid>
+            </>
+        )
+    }
 
     return (
         <Box sx={{ width: "100%", typography: "body1" }}>
@@ -426,15 +563,15 @@ const PrescriptionTrackingTable = () => {
                 </Box>
 
                 <TabPanel value="1" sx={{ px: 0 }}>
-                    <PrescriptionTable prescriptions={allPrescriptions} />
+                    <PrescriptionTable prescriptions={(allPrescriptions != null ? allPrescriptions : [])} option="all" />
                 </TabPanel>
 
                 <TabPanel value="2" sx={{ px: 0 }}>
-                    <PrescriptionTable prescriptions={inProgressPrescriptions} />
+                    <PrescriptionTable prescriptions={(inProgressPrescriptions != null ? inProgressPrescriptions : [])} option="inprogress" />
                 </TabPanel>
 
                 <TabPanel value="3" sx={{ px: 0 }}>
-                    <PrescriptionTable prescriptions={completedPrescriptions} />
+                    <PrescriptionTable prescriptions={(completedPrescriptions != null ? completedPrescriptions : [])} option="completed" />
                 </TabPanel>
             </TabContext>
 
