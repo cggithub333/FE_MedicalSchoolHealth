@@ -3,15 +3,12 @@ import { Grid } from '@mui/material';
 import CustomTittle from '../../../components/magic/CustomTittle/CustomTitle';
 import Breadcrumbs from '../../../components/magic/Breadcrumb/CustomBreadcrumb';
 
-import useSurveyByPupilId from '../../../hooks/parent/useSurveyByPupilId';
 import chooseChildImg from '../../../assets/images/instruct_choose_child.png';
 
-import SurveysCard from '../../../components/parent/HealthCheckCampaignCard/SurveysCard';
+import HealthCheckSurveyByPupil from '@components/parent/HealthCheckCampaignCard/HealthCheckSurveyByPupil';
 import CircularLoading from '../../../components/magic/CircularLoading/CircularLoading';
 
 const Surveys = () => {
-
-  const { survey, isLoading, chooseChild } = useSurveyByPupilId();
 
   return (
     <div style={{ background: "#e6f8f9", width: "100%", height: "100vh" }}>
@@ -25,36 +22,11 @@ const Surveys = () => {
           <CustomTittle title={"Health Check Surveys"} />
         </Grid>
       </Grid>
-      {
-        !chooseChild && (
-          <div style={styleNotificationMssg}>
-            <div>Choose your child first!</div>
-            <div style={{width: "80%", height: "auto"}}>
-              <img style={{ width: "100%", height: "100%" }} src={chooseChildImg} alt={"instruction for choosing child"} />
-            </div>
-          </div>
-        )
-      }
-      {
-        chooseChild && (
-          <>
-            {isLoading && (<div style={styleNotificationMssg}>
-                              <CircularLoading message={"Loading surveys ..."} />
-                          </div>)}
-            {!isLoading && !survey && (
-              <div style={styleNotificationMssg}  >
-                There is no ongoing Survey for health check campaign
-                {(localStorage.getItem('pupilName')) && (
-                  <span>(Pupil: `{localStorage.getItem('pupilName')}`)</span>
-                )}
-              </div>
-            )}
-            {survey && <div style={styleNotificationMssg}>
-                          <SurveysCard survey={survey} />
-                      </div> }
-          </>
-        )
-      }
+      <Grid container backgroundColor={"#e6f8f9"} justifyContent={'center'} paddingBottom="60px">
+        <Grid item size={{ xs: 11}}>
+          <HealthCheckSurveyByPupil  />
+        </Grid>
+      </Grid>
     </div>
   )
 }

@@ -5,6 +5,10 @@ import { fetchResponse } from "@api/fetch-response";
 export const sendMedicationAction = async (formData) => {
 
   try {
+
+    //debug:
+    console.log("Form data in send-medication-action.js:", JSON.stringify(formData, null, 2));
+
     const callback = () => sendMedicationCallback(formData);
 
     const response = await fetchResponse(callback);

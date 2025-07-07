@@ -28,11 +28,14 @@ import {
 import { Link } from "react-router-dom"
 
 import useAllNotifications from "@hooks/parent/health-check/useAllNotifications"
+import useNotifyNewMedicalEvents from "@hooks/parent/medical-events/useNotifyNewMedicalEvents"
 
 const ITEMS_PER_PAGE = 5;
 
 const ParentNotifications = () => {
   const { notifications, loading, error, refetch } = useAllNotifications()
+
+  const { notiNewEventOfPupils, loading: eventsLoading, error: eventsError, refetch: eventsRefetch } = useNotifyNewMedicalEvents()
 
   {
     const [pageIndex, setPageIndex] = useState(
@@ -172,25 +175,41 @@ const ParentNotifications = () => {
         {/* Header */}
         {/* Summary Cards */}
         <Grid container spacing={2} sx={{ mb: 4 }}>
-          <Grid item size={{ xs: 12, md: 6 }}>
-            <Paper sx={{ p: 2, textAlign: "center", bgcolor: "success.50", ...hoverPaper }}>
-              <Typography variant="h4" fontWeight="bold" color="success.main">
-                {groupedNotifications.VACCINATION_CAMPAIGN?.length || 0}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Tiêm chủng
-              </Typography>
-            </Paper>
+          <Grid item size={{ xs: 12, md: 4 }}>
+            <Link to="../vaccination-campaign/campaigns" style={{ textDecoration: "none" }}>
+              <Paper sx={{ p: 2, textAlign: "center", bgcolor: "success.50", ...hoverPaper, cursor: "pointer" }}>
+                <Typography variant="h4" fontWeight="bold" color="success.main">
+                  {groupedNotifications.VACCINATION_CAMPAIGN?.length || 0}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Vaccination
+                </Typography>
+              </Paper>
+            </Link>
           </Grid>
-          <Grid item size={{ xs: 12, md: 6 }}>
-            <Paper sx={{ p: 2, textAlign: "center", bgcolor: "primary.50", ...hoverPaper }}>
-              <Typography variant="h4" fontWeight="bold" color="primary.main">
-                {groupedNotifications.HEALTH_CHECK_CAMPAIGN?.length || 0}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Khám sức khỏe
-              </Typography>
-            </Paper>
+          <Grid item size={{ xs: 12, md: 4 }}>
+            <Link to="../health-check-campaign/campaigns" style={{ textDecoration: "none" }}>
+              <Paper sx={{ p: 2, textAlign: "center", bgcolor: "primary.50", ...hoverPaper, cursor: "pointer" }}>
+                <Typography variant="h4" fontWeight="bold" color="primary.main">
+                  {groupedNotifications.HEALTH_CHECK_CAMPAIGN?.length || 0}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Health Check
+                </Typography>
+              </Paper>
+            </Link>
+          </Grid>
+          <Grid item size={{ xs: 12, md: 4 }}>
+            <Link to="../medical-events" style={{ textDecoration: "none" }}>
+              <Paper sx={{ p: 2, textAlign: "center", bgcolor: "primary.50", ...hoverPaper, cursor: "pointer" }}>
+                <Typography variant="h4" fontWeight="bold" color="orange">
+                  {notiNewEventOfPupils?.length || 0}
+                </Typography>
+                <Typography variant="body2" color="orange">
+                  Medical Events
+                </Typography>
+              </Paper>
+            </Link>
           </Grid>
         </Grid>
 
@@ -200,9 +219,9 @@ const ParentNotifications = () => {
             <CardContent sx={{ textAlign: "center", py: 6 }}>
               <NotificationsNone sx={{ fontSize: 64, color: "text.secondary", mb: 2 }} />
               <Typography variant="h5" fontWeight="bold" sx={{ mb: 1 }}>
-                Không có thông báo
+                No Notifications
               </Typography>
-              <Typography color="text.secondary">Hiện tại bạn không có thông báo nào mới</Typography>
+              <Typography color="text.secondary">No notifications for current</Typography>
             </CardContent>
           </Card>
         ) : (

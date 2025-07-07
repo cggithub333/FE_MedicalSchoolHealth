@@ -31,7 +31,7 @@ const fetchResponse = async (syncCallbackRequest) => {
 
     return {
       data: response.data,
-      status: response.status >= 200 && response.status < 300,
+      status: response.status >= 200 && response.status < 300, // Check if status is in the range of success
     }
 
   } catch (error) {

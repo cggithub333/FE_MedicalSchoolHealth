@@ -1,194 +1,64 @@
 "use client"
-import { Box, Typography, Card, CardContent, Chip, Avatar, Button, Paper } from "@mui/material"
+import { Box, Typography, Card, CardContent, Chip, Avatar, Button, Paper, Container, Skeleton } from "@mui/material"
 import { LocalPharmacy, Person, CalendarToday, Medication, ArrowForward, ViewList } from "@mui/icons-material"
 import { Link } from "react-router-dom"
 
 import { useNavigate } from "react-router-dom"
 
+import useAllPendingPrescriptions from "@hooks/schoolnurse/useAllPendingPrescriptions"
 
-const pendingMedicationRequests = [
-    {
-        pupilId: "PP0001",
-        sendMedicationId: 2,
-        diseaseName: "Seasonal allergy",
-        startDate: "03-07-2025",
-        endDate: "08-07-2025",
-        requestedDate: "02-07-2025 08:15:10",
-        prescriptionImage: "https://cdn.medigoapp.com/website/uploads/2022/10/toa-thuoc-mau-1.jpg",
-        note: "Child is sneezing and has watery eyes in the morning.",
-        status: "PENDING",
-        medicationItems: [
-            {
-                medicationId: 4,
-                medicationName: "Loratadine",
-                unitAndUsage: "1 tablet for allergy relief",
-                medicationSchedule: "After breakfast: 8h00-8h30",
-            },
-            {
-                medicationId: 5,
-                medicationName: "Saline nasal spray",
-                unitAndUsage: "1 spray per nostril",
-                medicationSchedule: "Before bed: 20h30-21h00",
-            },
-        ],
-        medicationLogs: [],
-    },
-    {
-        pupilId: "PP0002",
-        sendMedicationId: 3,
-        diseaseName: "Stomach flu",
-        startDate: "02-07-2025",
-        endDate: "06-07-2025",
-        requestedDate: "02-07-2025 12:33:44",
-        prescriptionImage: "https://images.benhvienvinhchuc.vn/2023/03/toa-thuoc-viem-da-co-dia.jpg",
-        note: "She has mild diarrhea and stomach cramps.",
-        status: "PENDING",
-        medicationItems: [
-            {
-                medicationId: 6,
-                medicationName: "ORS (Oral Rehydration Salts)",
-                unitAndUsage: "100ml after each loose stool",
-                medicationSchedule: "As needed",
-            },
-            {
-                medicationId: 7,
-                medicationName: "Buscopan",
-                unitAndUsage: "1 tablet to ease abdominal pain",
-                medicationSchedule: "After lunch: 12h30-13h00",
-            },
-        ],
-        medicationLogs: [],
-    },
-    {
-        pupilId: "PP0003",
-        sendMedicationId: 4,
-        diseaseName: "Mild fever and fatigue",
-        startDate: "04-07-2025",
-        endDate: "07-07-2025",
-        requestedDate: "03-07-2025 10:20:33",
-        prescriptionImage: "https://toathuoc.vn/wp-content/uploads/2021/06/toa-thuoc-1.jpg",
-        note: "Child feels tired with a slight fever.",
-        status: "PENDING",
-        medicationItems: [
-            {
-                medicationId: 8,
-                medicationName: "Paracetamol 250mg",
-                unitAndUsage: "1 tablet to reduce fever",
-                medicationSchedule: "Every 6 hours as needed",
-            },
-        ],
-        medicationLogs: [],
-    },
-    {
-        pupilId: "PP0004",
-        sendMedicationId: 5,
-        diseaseName: "Eye infection",
-        startDate: "05-07-2025",
-        endDate: "09-07-2025",
-        requestedDate: "04-07-2025 15:45:01",
-        prescriptionImage: "https://trungtamthuoc.com/images/ckeditor/toathuoc.jpg",
-        note: "His right eye is red and watery.",
-        status: "PENDING",
-        medicationItems: [
-            {
-                medicationId: 9,
-                medicationName: "Tobramycin eye drops",
-                unitAndUsage: "1 drop in affected eye",
-                medicationSchedule: "Morning, noon, and evening",
-            },
-        ],
-        medicationLogs: [],
-    },
-    {
-        pupilId: "PP0005",
-        sendMedicationId: 6,
-        diseaseName: "Sore throat",
-        startDate: "01-07-2025",
-        endDate: "05-07-2025",
-        requestedDate: "01-07-2025 19:12:59",
-        prescriptionImage: "https://ytevietnhat.com/upload/images/news/toathuocmau.jpg",
-        note: "She complains of throat pain when swallowing.",
-        status: "PENDING",
-        medicationItems: [
-            {
-                medicationId: 10,
-                medicationName: "Cefixime 100mg",
-                unitAndUsage: "1 tablet to treat infection",
-                medicationSchedule: "After dinner: 18h00-18h30",
-            },
-            {
-                medicationId: 11,
-                medicationName: "Betadine gargle",
-                unitAndUsage: "Gargle for 30 seconds",
-                medicationSchedule: "Morning and night",
-            },
-        ],
-        medicationLogs: [],
-    },
-    {
-        pupilId: "PP0006",
-        sendMedicationId: 1,
-        diseaseName: "Common cold with cough",
-        startDate: "01-07-2025",
-        endDate: "10-07-2025",
-        requestedDate: "01-07-2025 21:54:22",
-        prescriptionImage: "https://anh.24h.com.vn/upload/4-2014/images/2014-10-24/1414124020-toa-thuoc.jpg",
-        note: "My child has a mild cough and sore throat. Please help him take the medicine on time.",
-        status: "PENDING",
-        medicationItems: [
-            {
-                medicationId: 1,
-                medicationName: "Dextromethorphan",
-                unitAndUsage: "1 capsule taken by mouth to suppress dry cough",
-                medicationSchedule: "After breakfast: 9h00-9h30",
-            },
-            {
-                medicationId: 2,
-                medicationName: "Guaifenesin",
-                unitAndUsage: "1 tablet taken to loosen mucus and ease chest congestion",
-                medicationSchedule: "After lunch: 11h30-12h00",
-            },
-            {
-                medicationId: 3,
-                medicationName: "Strepsils lozenges",
-                unitAndUsage: "1 lozenge dissolved slowly in mouth to soothe throat",
-                medicationSchedule: "Before lunch: 10h30-11h00",
-            },
-        ],
-        medicationLogs: [],
-    },
-    {
-        pupilId: "PP0007",
-        sendMedicationId: 7,
-        diseaseName: "Skin rash",
-        startDate: "06-07-2025",
-        endDate: "11-07-2025",
-        requestedDate: "05-07-2025 11:00:15",
-        prescriptionImage: "https://cdn.medigoapp.com/website/uploads/2022/11/toa-thuoc-bac-si.jpg",
-        note: "Red rash appeared on his arms and back.",
-        status: "PENDING",
-        medicationItems: [
-            {
-                medicationId: 12,
-                medicationName: "Hydrocortisone cream",
-                unitAndUsage: "Apply a thin layer on affected area",
-                medicationSchedule: "Morning and night",
-            },
-            {
-                medicationId: 13,
-                medicationName: "Cetirizine",
-                unitAndUsage: "1 tablet for itching",
-                medicationSchedule: "After dinner: 19h00-19h30",
-            },
-        ],
-        medicationLogs: [],
-    },
-]
+const renderLoadingSkeleton = ({ length: length, linkPrescriptionRequestPage: linkPrescriptionRequestPage }) => (
+    <Container maxWidth="md" sx={{ py: 3 }}>
+        {Array.from({ length: length }, (_, i) => i).map((index) => (
+            <Card key={index} sx={{ mb: 2 }}>
+                <CardContent>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                        <Skeleton variant="circular" width={48} height={48} />
+                        <Box sx={{ flex: 1 }}>
+                            <Skeleton variant="text" width="80%" height={24} />
+                            <Skeleton variant="text" width="60%" height={20} />
+                        </Box>
+                        <Skeleton variant="rectangular" width={80} height={32} />
+                    </Box>
+                </CardContent>
+            </Card>
+        ))}
+        <Button
+            fullWidth
+            variant="outlined"
+            startIcon={<ViewList />}
+            sx={{
+                borderStyle: "dashed",
+                borderWidth: 2,
+                py: 1,
+                "&:hover": {
+                    borderStyle: "solid",
+                    bgcolor: "primary.50",
+                },
+                bgcolor: "#fff"
+            }}
+            onClick={() => {
+                // Navigate to the full prescription requests page:
+                navigate(`${linkPrescriptionRequestPage}`);
+            }}
+        >
+            View All Requests ({length})
+        </Button>
+    </Container>
+)
 
 const PrescriptionRequest = ({ linkPrescriptionRequestPage }) => {
 
     const navigate = useNavigate();
 
+    const { pendingMedicationRequests, loading, error, refetch } = useAllPendingPrescriptions()
+
+    if (loading) {
+        if (pendingMedicationRequests.length === 0) {
+            return renderLoadingSkeleton({ length: 1, linkPrescriptionRequestPage: linkPrescriptionRequestPage });
+        }
+        return renderLoadingSkeleton({ length: pendingMedicationRequests.length, linkPrescriptionRequestPage: linkPrescriptionRequestPage }); 
+    }
 
     // Show only first 5 items
     const displayedRequests = pendingMedicationRequests.slice(0, 5)

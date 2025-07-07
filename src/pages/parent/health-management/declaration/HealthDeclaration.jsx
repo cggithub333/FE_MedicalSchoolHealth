@@ -2,6 +2,7 @@
 import { Grid } from "@mui/material";
 import CustomTittle from "@components/magic/CustomTittle/CustomTitle";
 import Breadcrumbs from "@components/magic/Breadcrumb/CustomBreadcrumb";
+import HealthDeclarationContent from "@components/parent/HealthManagement/Declaration/HealthDeclarationContent";
 
 const HealthDeclaration = () => {
 
@@ -19,7 +20,7 @@ const HealthDeclaration = () => {
       </Grid>
       <Grid container justifyContent={'center'}>
         <Grid item size={{ xs: 11 }}>
-          {/* <HealthDeclarationPage /> */}
+          <HealthDeclarationContent />
         </Grid>
       </Grid>
     </div>

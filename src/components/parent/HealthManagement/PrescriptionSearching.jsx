@@ -50,13 +50,36 @@ import {
 
 import { FaChildReaching as ChildIcon } from "react-icons/fa6";
 import usePrescriptionByPupil from "@hooks/parent/send-medication/usePrescriptionByPupil";
+import useDeleteSendMedicationById from "@hooks/parent/send-medication/useDeleteSendMedicationById";
+
+import { showWarningToast, showErrorToast, showSuccessToast } from "@utils/toast-utils";
 
 const PrescriptionSearching = ({ pupil, userFullName }) => {
 
   const { prescriptionArr, loading, error, refetch } = usePrescriptionByPupil(pupil.pupilId)
+  const { responseData, error: errorDelete, deleteSendMedicationWithId } = useDeleteSendMedicationById();
+  
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // reload prescription data when a prescription is deleted
+  // This is to ensure that the prescription list is updated after deletion
+  useEffect(() => {
+    if (errorDelete && isDeleting) {
+      showErrorToast("Failed to delete prescription. Please try again.");
+      setIsDeleting(false);
+    }
+  }, [errorDelete, isDeleting])
+
+  useEffect(() => {
+    if (responseData && isDeleting) {
+      showSuccessToast("Prescription deleted successfully.");
+      refetch(pupil.pupilId);
+      setIsDeleting(false);
+    }
+  }, [responseData, isDeleting, pupil.pupilId, refetch])
 
   // debug:
-  console.log('PrescriptionSearching - prescriptionArr:\n', JSON.stringify(prescriptionArr))
+  // console.log('PrescriptionSearching - prescriptionArr:\n', JSON.stringify(prescriptionArr))
 
   // Search and filter states
   const [searchYear, setSearchYear] = useState("")
@@ -69,6 +92,10 @@ const PrescriptionSearching = ({ pupil, userFullName }) => {
   // Filter records based on search criteria
   const filteredRecords = useMemo(() => {
     return prescriptionArr.filter((record) => {
+
+      // debug:
+      // console.log('PrescriptionSearching - record:\n', JSON.stringify(record))
+
       const matchesYear = searchYear === "" || record.requestedDate.includes(searchYear)
       const matchesStatus = selectedStatus === "ALL" || record.status === selectedStatus
       return matchesYear && matchesStatus
@@ -115,7 +142,38 @@ const PrescriptionSearching = ({ pupil, userFullName }) => {
 
   const handleCardClick = (record) => {
     setSelectedRecord(record)
+
+    //debug:
+    // console.log('PrescriptionSearching - handleCardClick - record:\n', JSON.stringify(record))
+
     setDialogOpen(true)
+  }
+
+  const handleDeletePrescription = async () => {
+
+    if (!selectedRecord) {
+      return;
+    }
+
+    if (selectedRecord.status !== "PENDING") {
+      showErrorToast("Only pending prescriptions can be deleted.");
+      return;
+    }
+    
+    await showWarningToast("Making sure you want to delete this prescription");
+
+    if (!confirm("You can't get back the prescription if you delete it. Do you want to continue?")) {
+      showErrorToast("Prescription deletion cancelled.");
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      await deleteSendMedicationWithId(selectedRecord.sendMedicationId);
+      setDialogOpen(false)
+    } catch (error) {
+      setIsDeleting(false);
+    }
   }
 
   const handleCloseDialog = () => {
@@ -332,92 +390,108 @@ const PrescriptionSearching = ({ pupil, userFullName }) => {
         </Card>
       ) : (
         <Grid container spacing={3}>
-          {filteredRecords.map((record) => (
-            <Grid item size={{ xs: 12, md: 6, lg: 4 }} key={record.sendMedicationId}>
-              <Card
-                sx={{
-                  cursor: "pointer",
-                  transition: "all 0.3s ease",
-                  position: "relative",
-                  height: 280, // Fixed height for uniform cards
-                  display: "flex",
-                  flexDirection: "column",
-                  "&:hover": {
-                    transform: "translateY(-4px)",
-                    boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
-                  },
-                }}
-                onClick={() => handleCardClick(record)}
-              >
-                {/* Sender Name Chip in top right */}
-                <Box sx={{ position: "absolute", top: 12, right: 12, zIndex: 1 }}>
-                  <Chip
-                    label={userFullName || "Parent"}
-                    color="primary"
-                    size="small"
-                    variant="filled"
-                    sx={{ fontWeight: "bold", maxWidth: 120 }}
-                  />
-                </Box>
+          {filteredRecords.map((record) => {
 
-                <CardContent sx={{ pt: 5, flex: 1, display: "flex", flexDirection: "column" }}>
-                  {/* Disease Name */}
-                  <Typography
-                    variant="h6"
-                    fontWeight="bold"
-                    color="primary.main"
-                    sx={{
-                      mb: 2,
-                      pr: 8,
-                      minHeight: 48,
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                    }}
-                  >
-                    {record.diseaseName}
-                  </Typography>
-
-                  {/* Request Date */}
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                    <CalendarToday fontSize="small" color="action" />
-                    <Typography variant="body2" color="text.secondary">
-                      Request:
-                    </Typography>
-                    <Typography variant="body2" fontWeight="bold">
-                      {formatDate(record.requestDate)}
-                    </Typography>
-                  </Box>
-
-                  {/* End Date */}
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-                    <Schedule fontSize="small" color="action" />
-                    <Typography variant="body2" color="text.secondary">
-                      End:
-                    </Typography>
-                    <Typography variant="body2" fontWeight="bold">
-                      {formatDate(record.endDate)}
-                    </Typography>
-                  </Box>
-
-                  {/* Bottom section */}
-                  <Box sx={{ mt: "auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            // debug:
+            return (
+              <Grid item size={{ xs: 12, md: 6, lg: 4 }} key={record.sendMedicationId}>
+                <Card
+                  sx={{
+                    cursor: "pointer",
+                    transition: "all 0.3s ease",
+                    position: "relative",
+                    height: 280, // Fixed height for uniform cards
+                    display: "flex",
+                    flexDirection: "column",
+                    "&:hover": {
+                      transform: "translateY(-4px)",
+                      boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
+                    },
+                  }}
+                  onClick={() => handleCardClick(record)}
+                >
+                  {/* Sender Name Chip in top right */}
+                  <Box sx={{ position: "absolute", top: 12, right: 12, zIndex: 1 }}>
                     <Chip
-                      label={record.status}
-                      color={getStatusColor(record.status)}
-                      icon={getStatusIcon(record.status)}
-                      variant="filled"
+                      label={userFullName || "Parent"}
+                      color="primary"
                       size="small"
+                      variant="filled"
+                      sx={{ fontWeight: "bold", maxWidth: 120 }}
                     />
-                    <Typography variant="body2" color="text.secondary">
-                      {record.medicationItems.length} medication(s)
-                    </Typography>
                   </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
+
+                  <CardContent sx={{ pt: 5, flex: 1, display: "flex", flexDirection: "column" }}>
+                    {/* Disease Name */}
+                    <Typography
+                      variant="h6"
+                      fontWeight="bold"
+                      color="primary.main"
+                      sx={{
+                        mb: 2,
+                        pr: 8,
+                        minHeight: 48,
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {record.diseaseName}
+                    </Typography>
+
+                    {/* Request Date */}
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                      <CalendarToday fontSize="small" color="action" />
+                      <Typography variant="body2" color="text.secondary">
+                        Request:
+                      </Typography>
+                      <Typography variant="body2" fontWeight="bold">
+                        {(record.requestedDate)}
+                      </Typography>
+                    </Box>
+
+                    {/* Start Date */}
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2, mt: 1 }}>
+                      <Schedule fontSize="small" color="action" />
+                      <Typography variant="body2" color="text.secondary">
+                        Start:
+                      </Typography>
+                      <Typography variant="body2" fontWeight="bold">
+                        {(record.startDate)}
+                      </Typography>
+                    </Box>
+
+
+                    {/* End Date */}
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+                      <Schedule fontSize="small" color="action" />
+                      <Typography variant="body2" color="text.secondary">
+                        End:
+                      </Typography>
+                      <Typography variant="body2" fontWeight="bold">
+                        {(record.endDate)}
+                      </Typography>
+                    </Box>
+
+                    {/* Bottom section */}
+                    <Box sx={{ mt: "auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                      <Chip
+                        label={record.status}
+                        color={getStatusColor(record.status)}
+                        icon={getStatusIcon(record.status)}
+                        variant="filled"
+                        size="small"
+                      />
+                      <Typography variant="body2" color="text.secondary">
+                        {record.medicationItems.length} medication(s)
+                      </Typography>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            )
+          })}
         </Grid>
       )}
 
@@ -520,20 +594,26 @@ const PrescriptionSearching = ({ pupil, userFullName }) => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {selectedRecord.medicationItems.map((medication) => (
-                        <TableRow key={medication.medicationItemsId}>
-                          <TableCell>
-                            <Typography variant="body2" fontWeight="bold">
-                              {medication.medicationName}
-                            </Typography>
-                          </TableCell>
-                          <TableCell>
-                            <Typography variant="body2" color="primary.main" fontWeight="bold">
-                              {medication.medicationSchedule}
-                            </Typography>
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                      {selectedRecord.medicationItems.map((medication, idx) => {
+                      
+                        // debug:
+                        // console.log('PrescriptionSearching - medication:\n', JSON.stringify(medication))
+                        
+                        return (
+                          <TableRow key={idx}>
+                            <TableCell>
+                              <Typography variant="body2" fontWeight="bold">
+                                {medication.medicationName}
+                              </Typography>
+                            </TableCell>
+                            <TableCell>
+                              <Typography variant="body2" color="primary.main" fontWeight="bold">
+                                {medication.medicationSchedule}
+                              </Typography>
+                            </TableCell>
+                          </TableRow>
+                        )
+                      } )}
                     </TableBody>
                   </Table>
                 </TableContainer>
@@ -545,12 +625,12 @@ const PrescriptionSearching = ({ pupil, userFullName }) => {
                   Usages & Unit ({selectedRecord.medicationItems.length})
                 </Typography>
 
-                {selectedRecord.medicationItems.map((medication) => {
+                {selectedRecord.medicationItems.map((medication, idx) => {
 
                   const usage = medication.unitAndUsage || "No usage information available."
 
                   return (
-                    <Box key={medication.medicationItemsId}>
+                    <Box key={idx}>
                       <Typography fontSize={'15px'} variant="caption" color="text.primary">
                         <b>+ {medication.medicationName} : </b>
                         <span>{usage}</span>
@@ -578,6 +658,9 @@ const PrescriptionSearching = ({ pupil, userFullName }) => {
         </DialogContent>
 
         <DialogActions sx={{ px: 3, py: 2 }}>
+          <Button onClick={handleDeletePrescription} sx={{background: "red"}} variant="contained" size="small">
+            Delete
+          </Button>
           <Button onClick={handleCloseDialog} variant="contained" size="small">
             Close
           </Button>
