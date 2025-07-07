@@ -36,6 +36,8 @@ import {
 } from "@mui/icons-material"
 import PrescriptionDatePicker from "./PrescriptionDatePicker"
 
+import useDatePicker from "../../../hooks/store-hooks/useDatePicker"
+
 // Fake prescriptions data:
 const allPrescriptions = [
     {
@@ -339,6 +341,8 @@ const PrescriptionTrackingTable = () => {
     const [dialogOpen, setDialogOpen] = useState(false)
     const [imageZoomOpen, setImageZoomOpen] = useState(false)
 
+    const datePickerData = useDatePicker()
+
     // Separate page states for each tab
     const [pageIndexes, setPageIndexes] = useState({
         "all": 1, // All prescriptions
@@ -383,6 +387,23 @@ const PrescriptionTrackingTable = () => {
                 return "error"
             default:
                 return "default"
+        }
+    }
+
+    const handleRowClick = (prescription) => {
+
+        // debug:
+        console.log("----Handel Row Click----")
+
+        // console pupil id, name:
+        console.log("Pupil ID:", prescription.pupilId)
+        console.log("Pupil Name:", prescription.pupilLastName, prescription.pupilFirstName)
+
+
+        // get date from redux store:
+        if (datePickerData) {
+            const chosenDate = datePickerData.format("DD-MM-YYYY");
+            console.log("Chosen Date:", chosenDate);
         }
     }
 
@@ -446,10 +467,13 @@ const PrescriptionTrackingTable = () => {
                                 }
 
                                 return (
-                                    <TableRow key={prescription.sendMedicationId} sx={{ "&:hover": { bgcolor: "grey.50", transform: "scale(1.02)" }, 
-                                                                                        cursor: "pointer",
-                                                                                        transition: "all 0.4s ease-in-out"
-                                                                                    }}>
+                                    <TableRow   key={prescription.sendMedicationId} 
+                                                sx={{ "&:hover": { bgcolor: "grey.50", transform: "scale(1.02)" }, 
+                                                    cursor: "pointer",
+                                                    transition: "all 0.4s ease-in-out"
+                                                }}
+                                                onClick={() => handleRowClick(prescription)}                                                
+                                                >
                                         <TableCell>
                                             <Typography variant="body2" fontWeight="bold">
                                                 {prescription.pupilId}

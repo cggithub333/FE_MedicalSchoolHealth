@@ -25,6 +25,7 @@
     "@mui/x-data-grid": "^8.6.0",
     "@mui/x-data-grid-premium": "^8.6.0",
     "@mui/x-data-grid-pro": "^8.6.0",
+    "@redux-devtools/extension": "^3.3.0",
     "@reduxjs/toolkit": "^2.8.2",
     "@syncfusion/ej2-react-schedule": "^29.2.10",
     "@toolpad/core": "^0.16.0",
