@@ -49,6 +49,7 @@ import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import { useGetAllMedicalEventByPupilsId } from "../../../../hooks/schoolnurse/new-event/useGetAllMedicalEventByPupilsId"
 import { useGetVaccinationHistoryByPupilId } from "../../../../hooks/schoolnurse/new-event/useGetVaccinationByPupilId"
 import { useGetAllHealthCheckByPupilID } from "../../../../hooks/schoolnurse/new-event/useGetAllHealthCheckByPupilID"
+import useSearchPupilInforByPupilId from "../../../../hooks/schoolnurse/useSearchPupilInforByPupilId";
 
 import MedicalEventDetails from "./medical-event-details/EventFormResult.jsx";
 import ScheduleResult from "./healthcheck-schedule-management-result/ScheduleResult.jsx";
@@ -138,14 +139,18 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
     // Defensive: ensure array
     const healthCheckList = Array.isArray(rawHealthCheckList) ? rawHealthCheckList : (Array.isArray(rawHealthCheckList?.data) ? rawHealthCheckList.data : []);
 
+    // Fetch full pupil info by pupilId
+    const { pupilInfo, isLoading: isPupilLoading, error: pupilError } = useSearchPupilInforByPupilId(pupilId);
+
     const event = medicalEvents[0]; // or any event in the array
 
     // Defensive checks to avoid TypeError if event or event.pupil is undefined
-    const pupilName = event && event.pupil ? `${event.pupil.firstName} ${event.pupil.lastName}` : "";
-    const grade = event && event.pupil ? (event.pupil.gradeName || event.pupil.gradeLevel || "") : "";
-    const gender = event && event.pupil ? event.pupil.gender : "";
-
-    const parent = event && event.pupil && Array.isArray(event.pupil.parents) && event.pupil.parents.length > 0 ? event.pupil.parents[0] : null;
+    // Use pupilInfo for details if available, fallback to event.pupil
+    const pupil = pupilInfo || (event && event.pupil) || {};
+    const pupilName = pupil.firstName && pupil.lastName ? `${pupil.firstName} ${pupil.lastName}` : "";
+    const grade = pupil.gradeName || pupil.gradeLevel || "";
+    const gender = pupil.gender || "";
+    const parent = Array.isArray(pupil.parents) && pupil.parents.length > 0 ? pupil.parents[0] : null;
     const parentName = parent ? `${parent.firstName} ${parent.lastName}` : "";
     const parentPhone = parent ? parent.phoneNumber : "";
 
@@ -395,7 +400,7 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
                                 {/* Header */}
                                 <Grid item size={12}>
                                     <Item>
-                                        <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#1976d2' }}>
+                                        <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#1976d2', marginX: 30 }}>
                                             <ShieldIcon />Vaccination History
                                         </Typography>
                                     </Item>
@@ -486,7 +491,7 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
                                     {/* Header */}
                                     <Grid item size={12}>
                                         <Item>
-                                            <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#1976d2' }}>
+                                            <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#1976d2', marginX: 30 }}>
                                                 <CalendarIcon />  Health Check History
                                             </Typography>
                                         </Item>
@@ -586,11 +591,11 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
                         <Grid size={12} sx={{ bgcolor: '#fff', px: 10, borderRadius: 2, width: '100%' }}>
                             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                                 {/* basic infor */}
-                                <Grid container spacing={2} sx={{ bgcolor: '#fff', p: 2, borderRadius: 2 }} size={12}>
+                                <Grid container spacing={2} sx={{ bgcolor: '#fff', p: 2, borderRadius: 2, }} size={12}>
                                     {/* Header */}
-                                    <Grid item size={12}>
-                                        <Item>
-                                            <Typography variant="h6" className="section-title">
+                                    <Grid item size={12} >
+                                        <Item >
+                                            <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#1976d2', marginX: 30 }}>
                                                 <FileIcon /> Medical Events
                                             </Typography>
                                         </Item>
@@ -667,7 +672,8 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
                             </Grid>
                         </Grid>
                     </Grid>
-                )}
+                )
+                }
             </TabPanel >
 
 
