@@ -17,6 +17,7 @@ const PrescriptionDatePicker = () => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleOpen = (event) => {
+    event.stopPropagation(); // prevent re-trigger on popover clicks
     setAnchorEl(event.currentTarget);
   };
 
@@ -48,26 +49,50 @@ const PrescriptionDatePicker = () => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Box display="flex" alignItems="center" gap={1}>
-        <Typography>{value.format('DD/MM/YYYY')}</Typography>
-        <IconButton onClick={handleOpen}>
-          <CalendarToday />
+      <Box
+        display="flex"
+        alignItems="center"
+        gap={1}
+        sx={stylePickerBox}
+        onClick={handleOpen}
+      >
+        <Typography sx={{ fontWeight: "bold", fontSize: "17px" }}>
+          {value.format('DD/MM/YYYY')}
+        </Typography>
+        <IconButton>
+          <CalendarToday sx={{ color: "#fff" }} />
         </IconButton>
+
         <Popover
           open={open}
           anchorEl={anchorEl}
           onClose={handleClose}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
         >
-          <DateCalendar
-            value={value}
-            onChange={handleOnchange}
-          />
+          <Box onClick={(e) => e.stopPropagation()}>
+            <DateCalendar
+              value={value}
+              onChange={handleOnchange}
+            />
+          </Box>
         </Popover>
       </Box>
     </LocalizationProvider>
+
   );
 }
 
+const stylePickerBox = { 
+  background: "#0288d1", 
+  color: "#fff", 
+  padding: "5px 10px", 
+  borderRadius: "8px",
+  fontWeight: "800",
+  "&:hover": {
+    background: "#01669e",
+    cursor: "pointer"
+  },
+  transition: "all 0.45s ease-in-out",
+}
 
 export default PrescriptionDatePicker;
