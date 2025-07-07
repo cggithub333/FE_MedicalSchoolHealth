@@ -264,7 +264,7 @@ const ParentNotifications = () => {
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Health Check
-                </Typography>
+                </Typography> 
               </Paper>
             </Link>
           </Grid>
