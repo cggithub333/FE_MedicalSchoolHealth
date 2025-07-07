@@ -13,7 +13,6 @@ export const useNewestVaccinationCampaign = () => {
             setIsLoading(true);
             try {
                 const response = await fetchNewestVaccinationCampaign();
-                console.log("Fetched newest vaccination campaign:", response);
                 setNewestVaccinationCampaign(response || []);
             } catch (error) {
                 console.error("Failed to fetch newest vaccination campaign:", error);

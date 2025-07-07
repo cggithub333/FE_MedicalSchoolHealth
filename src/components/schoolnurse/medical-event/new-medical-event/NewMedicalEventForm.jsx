@@ -20,6 +20,7 @@ import {
 import { CalendarToday, Person, Phone, Email, Warning, LocalHospital, Print, Clear, Save } from "@mui/icons-material"
 import { Autocomplete } from '@mui/material';
 import "./MedicalEventForm.scss"
+import { showSuccessToast, showErrorToast } from '../../../../utils/toast-utils';
 
 //custom hooks
 import { useGetPupilsInformation } from "../../../../hooks/schoolnurse/new-event/useGetPupilsInformation"
@@ -73,7 +74,7 @@ const MedicalEventForm = ({ onCancel, onSuccess }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!selectedPupil) {
-            alert('Please select a pupil.');
+            showErrorToast('Please select a pupil.');
             return;
         }
         await createNewMedicalEvent({
@@ -86,7 +87,10 @@ const MedicalEventForm = ({ onCancel, onSuccess }) => {
             medicationIds: selectedMedications.map(m => m.medicationId),
         });
         if (!createError) {
+            // showSuccessToast('Medical event created successfully');
             if (onSuccess) onSuccess();
+        } else {
+            showErrorToast('Failed to create medical event');
         }
     }
 

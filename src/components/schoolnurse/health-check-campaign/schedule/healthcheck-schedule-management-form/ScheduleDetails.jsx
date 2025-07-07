@@ -8,6 +8,7 @@ import {
 } from "@mui/icons-material"
 import { useSaveResultOfHealthCheckCampaign } from "../../../../../hooks/schoolnurse/healthcheck/schedule/useSaveResultOfHealthCheckCampaign"
 import { useNavigate } from "react-router-dom"
+import { showSuccessToast, showErrorToast } from '../../../../../utils/toast-utils';
 
 const HEALTH_CHECK_DISEASES = [
     { field: "height", name: "Height", type: "number", category: "physical" },
@@ -130,6 +131,7 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
     };
     const handleSave = async (newStatus) => {
         if (!validateFields()) {
+            showErrorToast("Please fill in all required fields before saving.");
             setSnackbar({ open: true, message: "Please fill in all required fields before saving.", severity: "error" });
             return;
         }
@@ -140,7 +142,7 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
         // Debug log for consentId
         console.debug("[ScheduleDetails] Using consentId for save:", consentId);
         if (!consentId) {
-            console.error("Consent ID not found! pupilData:", pupilData);
+            showErrorToast("Consent ID not found in pupilData or props. Please check your data source.");
             setSnackbar({ open: true, message: "Consent ID not found in pupilData or props. Please check your data source.", severity: "error" });
             return;
         }
@@ -153,14 +155,14 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
             errorMsg = err?.message || err?.toString() || null;
         }
         if (success) {
-            setSnackbar({
-                open: true, message: `Saved as ${newStatus}`, severity: "success"
-            });
+            showSuccessToast(`Saved as ${newStatus}`);
+            setSnackbar({ open: true, message: `Saved as ${newStatus}`, severity: "success" });
             setTimeout(() => {
                 if (typeof onResultSaved === 'function') onResultSaved();
             }, 1200);
         } else {
-            setSnackbar({ open: true, message: errorMsg ? `Failed to save: ${errorMsg}` : "Failed to save result.", severity: "error" });
+            showErrorToast(errorMsg || "Failed to save result.");
+            setSnackbar({ open: true, message: errorMsg || "Failed to save result.", severity: "error" });
         }
     };
     const handleSubmit = () => {
