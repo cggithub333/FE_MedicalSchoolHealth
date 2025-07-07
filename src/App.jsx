@@ -39,7 +39,7 @@ function App() {
             />
             <Router>
                 <Routes>
-                    <Route path="/" element={<Homepage />} />
+                    <Route path="/" element={<Navigate to={"/homepage"} />} />
                     <Route path="/homepage" element={<Homepage />} />
                     <Route element={<RouteProtecter.forAll />}>
 
