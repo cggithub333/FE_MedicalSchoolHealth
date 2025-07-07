@@ -39,7 +39,7 @@ function App() {
             />
             <Router>
                 <Routes>
-                    <Route path="/" element={<Navigate to={"/homepage"} />} />
+                    <Route path="/" element={<Navigate to={"/homepage"} />} /> {/* entry point of the application */}
                     <Route path="/homepage" element={<Homepage />} />
                     <Route element={<RouteProtecter.forAll />}>
 

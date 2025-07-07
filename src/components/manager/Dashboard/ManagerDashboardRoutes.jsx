@@ -15,6 +15,8 @@ const ManagerDashboardRoutes = () => {
                 {/* pupils-management */}
                 <Route path={"pupils-management"} element={<ManagerComponentPagePackages.PupilsManagement />} />
                 <Route path={"medical-events"} element={<ManagerComponentPagePackages.MedicalEvents />} />
+                <Route path={"prescriptions"} element={<ManagerComponentPagePackages.Prescriptions />} />
+                <Route path={"prescriptions/tracking"} element={<ManagerComponentPagePackages.PrescriptionTracking />} />
 
                 {/* vaccination-campaign */}
                 <Route path="vaccination-campaign">
