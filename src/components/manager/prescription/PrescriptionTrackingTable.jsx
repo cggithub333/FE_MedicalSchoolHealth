@@ -34,6 +34,7 @@ import {
     Medication,
     Image as ImageIcon,
 } from "@mui/icons-material"
+import PrescriptionDatePicker from "./PrescriptionDatePicker"
 
 // Fake prescriptions data:
 const allPrescriptions = [
@@ -445,7 +446,10 @@ const PrescriptionTrackingTable = () => {
                                 }
 
                                 return (
-                                    <TableRow key={prescription.sendMedicationId} sx={{ "&:hover": { bgcolor: "grey.50" } }}>
+                                    <TableRow key={prescription.sendMedicationId} sx={{ "&:hover": { bgcolor: "grey.50", transform: "scale(1.02)" }, 
+                                                                                        cursor: "pointer",
+                                                                                        transition: "all 0.4s ease-in-out"
+                                                                                    }}>
                                         <TableCell>
                                             <Typography variant="body2" fontWeight="bold">
                                                 {prescription.pupilId}
@@ -516,17 +520,24 @@ const PrescriptionTrackingTable = () => {
             </>
         )
     }
-
+//<DatePicker label="Basic date picker" />
     return (
         <Box sx={{ width: "100%", typography: "body1" }}>
             {/* Header */}
             <Box sx={{ mb: 3 }}>
-                <Typography variant="h5" fontWeight="bold" sx={{ mb: 1 }}>
-                    Prescription Tracking
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    Monitor and manage prescription requests and treatments
-                </Typography>
+                <Grid container alignItems="center" justifyContent="space-between">
+                    <Grid item>
+                        <Typography variant="h5" fontWeight="bold" sx={{ mb: 1 }}>
+                            Prescription Tracking
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            Monitor and manage prescription requests and treatments
+                        </Typography>
+                    </Grid>
+                    <Grid item>
+                        <PrescriptionDatePicker />
+                    </Grid>
+                </Grid> 
             </Box>
 
             <TabContext value={value}>
@@ -610,7 +621,7 @@ const PrescriptionTrackingTable = () => {
                                     </Grid>
                                     <Grid item size={{xs: 6, md: 3}}>
                                         <Typography variant="body2" color="text.secondary">
-                                            Student ID
+                                            Pupil ID
                                         </Typography>
                                         <Typography variant="body1" fontWeight="bold">
                                             {selectedPrescription.pupilId}
@@ -618,7 +629,7 @@ const PrescriptionTrackingTable = () => {
                                     </Grid>
                                     <Grid item size={{xs: 6, md: 3}}>
                                         <Typography variant="body2" color="text.secondary">
-                                            Student Name
+                                            Pupil Name
                                         </Typography>
                                         <Typography variant="body1" fontWeight="bold">
                                             {selectedPrescription.pupilLastName} {selectedPrescription.pupilFirstName}
