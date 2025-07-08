@@ -33,15 +33,3 @@ export const getJWTToken = () => {
   console.log("getJWTToken() -> JWT Token: " + token);
   return token; 
 }
-
-export const isExpiredToken = () => {
-  const currentSeconds = Math.floor(Date.now() / 1000);
-  const { exp, error } = getPayloadResources() || {};
-  
-  if (!exp || error) {
-    console.error("Session expired: 'exp' is not defined in the JWT payload.");
-    return true; // consider it expired if exp is not defined
-  }
-
-  return currentSeconds >= exp;
-}
