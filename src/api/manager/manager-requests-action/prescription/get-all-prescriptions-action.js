@@ -10,7 +10,7 @@ export const getAllPrescriptionsAction = async () => {
     const response = await fetchResponse(callback);
 
     // debug:
-    console.log("getAllPrescriptionsAction response:", response);
+    // console.log("getAllPrescriptionsAction response:", response);
 
     return await response.data || [];
 

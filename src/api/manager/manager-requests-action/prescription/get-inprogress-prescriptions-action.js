@@ -10,7 +10,7 @@ export const getInProgressPrescriptionsAction = async () => {
     const response = await fetchResponse(callback);
 
     // debug:
-    console.log("getInProgressPrescriptionsAction response:", response);
+    // console.log("getInProgressPrescriptionsAction response:", response);
 
     return await response.data || []; // Return an empty array if no data is found
 

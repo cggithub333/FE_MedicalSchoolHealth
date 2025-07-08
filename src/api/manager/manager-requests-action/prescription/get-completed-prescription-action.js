@@ -9,7 +9,7 @@ export const getCompletedPrescriptionsAction = async () => {
     const response = await fetchResponse(callback);
 
     // debug:
-    console.log("getCompletedPrescriptionsAction response:", response);
+    // console.log("getCompletedPrescriptionsAction response:", response);
 
     return await response.data || []; // Return an empty array if no data is found
 
