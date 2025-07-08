@@ -31,6 +31,7 @@ import {
 } from "@mui/icons-material"
 
 import { FaChild as ChildIcon } from "react-icons/fa";
+import { FaCalendarDays as CalendarIcon } from "react-icons/fa6";
 
 import useStoredPrescription from '@hooks/store-hooks/useStoredPrescription';
 import useDatePicker from '@hooks/store-hooks/useDatePicker';
@@ -38,6 +39,7 @@ import useDatePicker from '@hooks/store-hooks/useDatePicker';
 import useAllLogsByMedicationIdAndDate from "@hooks/manager/prescription/useAllLogsByMedicationIdAndDate"
 
 import { parseMedicalInfo } from "@utils/parseLogsObject"
+import { getDDMMYYYYFromISOString } from "@utils/date-utils";
 
 const rowsPerPage = 4 // Number of logs to display per page
 const PrescriptionTrackingLogs = () => {
@@ -140,6 +142,35 @@ const PrescriptionTrackingLogs = () => {
                 <Chip label={(prescriptionLogs || []).length} size="small" color="primary" sx={{ ml: "auto" }} />
             </Box>
 
+            {/* Pupil information, date information */}
+            <Card
+                sx={{
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                    "&:hover": {
+                        transform: "translateX(4px)",
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                    },
+                    marginBottom: 2,
+                }}
+            >
+                <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
+                    {/* Nurse Name */}
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                        <ChildIcon fontSize="small" color="action" />
+                        <Typography variant="body2" fontWeight="500">
+                            Pupil: {selectedPrescription ? `${selectedPrescription.pupilLastName} ${selectedPrescription.pupilFirstName}` : "No Information"}
+                        </Typography>
+                    </Box>
+                    {/* Date */}
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                        <CalendarIcon fontSize="small" color="action" />
+                        <Typography variant="body2" fontWeight="500">
+                            Date: {(pickedDate) ? `${getDDMMYYYYFromISOString(pickedDate)}` : "No Information"}
+                        </Typography>
+                    </Box>
+                </CardContent>
+            </Card>
             {/* Compact Log Cards */}
             <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
                 {(prescriptionLogs || []).map((log, idx) => {

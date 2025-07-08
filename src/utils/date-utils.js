@@ -70,3 +70,13 @@ export function getYYYYMMDDFromISOString(isoString) {
   if (isNaN(date.getTime())) return '';
   return getYYYYMMDDFromDate(date);
 }
+
+export function getDDMMYYYYFromISOString(isoString) {
+  // Converts an ISO date string to 'dd-mm-yyyy'
+  const date = new Date(isoString);
+  if (isNaN(date.getTime())) return '';
+  const dd = String(date.getDate()).padStart(2, '0');
+  const mm = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+  const yyyy = date.getFullYear();
+  return `${dd}-${mm}-${yyyy}`;
+}
