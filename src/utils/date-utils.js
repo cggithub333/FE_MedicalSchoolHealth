@@ -26,3 +26,24 @@ export function formatDateTimeToReadable(dateTimeStr) {
 
   return `${hourStr}:${minutes}:${seconds} ${ampm} ${day}-${month}-${year}`;
 }
+
+export function formatISOToYYYYMMDD(isoString) {
+  const date = new Date(isoString);
+
+  if (isNaN(date)) {
+    throw new Error("Invalid ISO date string");
+  }
+
+  const dd = String(date.getDate()).padStart(2, '0');
+  const mm = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+  const yyyy = date.getFullYear();
+
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+export function convertDDMMYYYYToYYYYMMDD(dateStr) {
+  if (!dateStr) return '';
+  const [day, month, year] = dateStr.split('-');
+  if (!year || !month || !day) return dateStr;
+  return `${year}-${month}-${day}`;
+}

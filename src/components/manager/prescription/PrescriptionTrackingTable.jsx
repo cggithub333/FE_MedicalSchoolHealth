@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
     Box,
     Tab,
@@ -34,15 +34,23 @@ import {
     Medication,
     Image as ImageIcon,
 } from "@mui/icons-material"
-import PrescriptionDatePicker from "./PrescriptionDatePicker"
 
-import useDatePicker from "../../../hooks/store-hooks/useDatePicker"
+import PrescriptionDatePicker from "./PrescriptionDatePicker"
+import useDatePicker from "@hooks/store-hooks/useDatePicker"
+import useStoredPrescription from "@hooks/store-hooks/useStoredPrescription"
+
+import { useDispatch } from "react-redux"
+import { setSelectedPrescription as setStoredPrescription } from "@store/slices/prescriptionSlice"
 
 import useGetInProgressPrescriptions from "@hooks/manager/prescription/useGetInProgressPrescriptions"
 import useGetAllPrescriptions from "@hooks/manager/prescription/useGetAllPrescriptions"
 import useGetCompletedPrescriptions from "@hooks/manager/prescription/useCompletedPrescriptions"
+import { formatISOToYYYYMMDD, convertDDMMYYYYToYYYYMMDD } from "@utils/date-utils"
+
 
 const PrescriptionTrackingTable = () => {
+
+    const dispatch = useDispatch()
 
     const { allPrescriptions, loading: allLoading, error: allError, refetch: allRefetch } = useGetAllPrescriptions()
     const { inProgressPrescriptions, loading: inProgressLoading, error: inProgressError, refetch: inProgressRefetch } = useGetInProgressPrescriptions()
@@ -54,6 +62,42 @@ const PrescriptionTrackingTable = () => {
     const [imageZoomOpen, setImageZoomOpen] = useState(false)
 
     const datePickerData = useDatePicker()
+    const storedPrescription = useStoredPrescription()
+
+    // filter:
+    const [filterAllPrescriptionsByDate, setFilterAllPrescriptionsByDate] = useState([])
+    const [filterInProgressPrescriptionsByDate, setFilterInProgressPrescriptionsByDate] = useState([])
+    const [filterCompletedPrescriptionsByDate, setFilterCompletedPrescriptionsByDate] = useState([])
+
+    // refetched new value for storedPrescription:
+    useEffect(() => {
+        console.log("-------useEffect code -------");
+        if (storedPrescription?.selectedPrescription) {
+            // debug:
+            console.log("Redux updated state: ", storedPrescription.selectedPrescription);
+        } else{
+            // debug:
+            console.log("No selected prescription in Redux state.");
+        }
+        console.log("-----End useEffect code -----");
+    }, [storedPrescription]); // catch the changes of prescription inside the  storedPrescription for debugging
+
+    // refetch prescriptions when datePickerData changes
+    useEffect(() => {
+        console.log("-------useEffect code -------");
+        if (datePickerData) {
+            // debug:
+            console.log("DatePickerData available, filtering prescriptions by date...");
+
+            setFilterAllPrescriptionsByDate(filterPrescriptionsByDate(allPrescriptions))
+            setFilterInProgressPrescriptionsByDate(filterPrescriptionsByDate(inProgressPrescriptions))
+            setFilterCompletedPrescriptionsByDate(filterPrescriptionsByDate(completedPrescriptions))
+        } else{
+            // debug:
+            console.log("No datePickerData available, skipping filter.");
+        }
+        console.log("------End useEffect code -----");
+    }, [datePickerData])
 
     // Separate page states for each tab
     const [pageIndexes, setPageIndexes] = useState({
@@ -61,6 +105,46 @@ const PrescriptionTrackingTable = () => {
         "inprogress": 1, // In progress
         "completed": 1  // Completed
     })
+
+    const filterPrescriptionsByDate = (prescriptions) => {
+        if (prescriptions == null || prescriptions.length === 0) {
+            return []
+        }
+
+        const datePickerValue = datePickerData?.value; // ISOString;
+        const convertedDatePickerValue = formatISOToYYYYMMDD(datePickerValue);
+
+        // else:
+        return prescriptions.filter(item => {
+
+            if (item.medicationItems == null || item.medicationItems.length === 0) {
+                return false;   // Skip items without medication items
+            }
+
+            if (item.status === "PENDING") {
+                return false; // Skip pending prescriptions
+            }
+
+            const startDate = item.startDate ? convertDDMMYYYYToYYYYMMDD(item.startDate) : null;
+            const endDate = item.endDate ? convertDDMMYYYYToYYYYMMDD(item.endDate) : null;
+
+            if (startDate === null || endDate === null) {
+                // If either startDate or endDate is null, we cannot filter by date
+                return false;
+            }
+
+            // debug:
+            console.log("convertedDatePickerValue:", convertedDatePickerValue);
+            console.log("Start Date:", startDate);
+            console.log("End Date:", endDate);
+
+            return convertedDatePickerValue && (
+                        convertedDatePickerValue.localeCompare(startDate) >= 0 
+                        && 
+                        convertedDatePickerValue.localeCompare(endDate) <= 0
+            );
+        })
+    }
 
     const handleChange = (event, newValue) => {
         setValue(newValue)
@@ -104,6 +188,10 @@ const PrescriptionTrackingTable = () => {
 
     const handleRowClick = (prescription) => {
 
+        if (prescription) {
+            dispatch(setStoredPrescription(prescription))
+        }
+
         // debug:
         console.log("----Handel Row Click----")
 
@@ -111,12 +199,9 @@ const PrescriptionTrackingTable = () => {
         console.log("Pupil ID:", prescription.pupilId)
         console.log("Pupil Name:", prescription.pupilLastName, prescription.pupilFirstName)
 
-
-        // get date from redux store:
-        if (datePickerData) {
-            const chosenDate = datePickerData.format("DD-MM-YYYY");
-            console.log("Chosen Date:", chosenDate);
-        }
+        // debug: test filter function
+        const  filteredPrescriptions = filterPrescriptionsByDate(allPrescriptions);
+        console.log("Filtered from ALl Prescriptions by Date:", filteredPrescriptions);
     }
 
     const PrescriptionTable = ({ prescriptions, option }) => {
@@ -292,7 +377,7 @@ const PrescriptionTrackingTable = () => {
                             label={
                                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                                     <LocalPharmacy fontSize="small" />
-                                    All ({allPrescriptions?.length})
+                                    All ({filterAllPrescriptionsByDate?.length})
                                 </Box>
                             }
                             value="1"
@@ -301,7 +386,7 @@ const PrescriptionTrackingTable = () => {
                             label={
                                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                                     <CalendarToday fontSize="small" />
-                                    In Progress ({inProgressPrescriptions?.length})
+                                    In Progress ({filterInProgressPrescriptionsByDate?.length})
                                 </Box>
                             }
                             value="2"
@@ -310,7 +395,7 @@ const PrescriptionTrackingTable = () => {
                             label={
                                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                                     <Medication fontSize="small" />
-                                    Completed ({completedPrescriptions?.length})
+                                    Completed ({filterCompletedPrescriptionsByDate?.length})
                                 </Box>
                             }
                             value="3"
@@ -319,15 +404,15 @@ const PrescriptionTrackingTable = () => {
                 </Box>
 
                 <TabPanel value="1" sx={{ px: 0 }}>
-                    <PrescriptionTable prescriptions={(allPrescriptions != null ? allPrescriptions : [])} option="all" />
+                    <PrescriptionTable prescriptions={filterAllPrescriptionsByDate} option="all" />
                 </TabPanel>
 
                 <TabPanel value="2" sx={{ px: 0 }}>
-                    <PrescriptionTable prescriptions={(inProgressPrescriptions != null ? inProgressPrescriptions : [])} option="inprogress" />
+                    <PrescriptionTable prescriptions={filterInProgressPrescriptionsByDate} option="inprogress" />
                 </TabPanel>
 
                 <TabPanel value="3" sx={{ px: 0 }}>
-                    <PrescriptionTable prescriptions={(completedPrescriptions != null ? completedPrescriptions : [])} option="completed" />
+                    <PrescriptionTable prescriptions={filterCompletedPrescriptionsByDate} option="completed" />
                 </TabPanel>
             </TabContext>
 

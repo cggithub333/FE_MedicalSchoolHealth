@@ -32,10 +32,10 @@ const PrescriptionDatePicker = () => {
 
 
     // change value of datePickerSlice in store:
-    dispatch(setDate(newValue));
+    dispatch(setDate(newValue.toISOString()));
 
     //debug:
-    console.log('Selected date:', newValue.format('DD/MM/YYYY'));
+    console.log('Selected date:', newValue.toISOString());
 
     /*
       Information:

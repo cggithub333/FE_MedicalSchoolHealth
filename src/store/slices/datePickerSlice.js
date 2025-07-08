@@ -5,14 +5,20 @@ import { createSlice } from '@reduxjs/toolkit';
 const datePickerSlice = createSlice({
   name: "datePicker",
   initialState: {
-    value: dayjs(),
+    value: dayjs().toISOString(), // Initialize with the current date
   },
   reducers: {
     setDate: (state, action) => {
-      state.value = action.payload;
+      return {
+        ...state,
+        value: dayjs(action.payload).toISOString(), // Update the date with the provided value
+      }
     },
     resetDate: (state) => {
-      state.value = dayjs();
+      return {
+        ...state,
+        value: dayjs().toISOString(), // Reset to the current date
+      }
     },
   },
 });
