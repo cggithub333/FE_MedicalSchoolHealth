@@ -11,6 +11,7 @@ import { AiOutlineSchedule as ScheduleIcon } from "react-icons/ai";
 import { IoAddCircleSharp as NewCampaignIcon } from "react-icons/io5";
 import MedicalEventIcon from "@mui/icons-material/Accessible";
 import ManIcon from '@mui/icons-material/Man';
+import { GiMedicinePills as PrescriptionIcon } from "react-icons/gi";
 
 const NavbarData = [
     //----------------part 1--------------------//
@@ -53,6 +54,11 @@ const NavbarData = [
         segment: "manager/medical-events",
         title: "Medical Events",
         icon: <MedicalEventIcon />,
+    },
+    {
+        segment: "manager/prescriptions",
+        title: "Prescriptions",
+        icon: <PrescriptionIcon />,
     },
     {
         kind: 'divider',

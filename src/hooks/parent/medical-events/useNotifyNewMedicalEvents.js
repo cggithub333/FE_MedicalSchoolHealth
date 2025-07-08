@@ -13,10 +13,10 @@ const useNotifyNewMedicalEvents = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await getNofityNewMedicalEventsAction();
+      const notiNewEvents = await getNofityNewMedicalEventsAction();
       //debug:
-      console.log("Fetched Notifications for Pupils' New Events:", response);
-      setNotiNewEventOfPupils(response.data);
+      console.log("Fetched Notifications for Pupils' New Events:", notiNewEvents);
+      setNotiNewEventOfPupils(notiNewEvents);
     } catch (err) {
       setError(err.message);
       console.error("Error fetching notifications for pupils' new events:", err);

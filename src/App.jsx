@@ -17,10 +17,46 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { getPayloadResources } from './utils/jwt-utils';
 import { isContained } from './utils/string-utils';
+import Test from '@pages/test/Test';
+import LogoutAction from '@components/Logout';
+
+const DashboardRedirect = () => {
+    const { role } = getPayloadResources() || {};
+    
+    switch (role) {
+        case "ADMIN":
+            return <Navigate to={"/admin/dashboard"} replace />;
+        case "MANAGER":
+            return <Navigate to={"/manager/dashboard"} replace />;
+        case "SCHOOL_NURSE":
+            return <Navigate to={"/schoolnurse/dashboard"} replace />;
+        case "PARENT":
+            return <Navigate to={"/parent/dashboard"} replace />;
+        default:
+            return <Navigate to={"/homepage"} replace />;
+    }
+};
+
+const ProfileRedirect = () => {
+    const { role } = getPayloadResources() || {};
+    switch (role) {
+        case "ADMIN":
+            return <Navigate to={"/admin/profile"} replace />;
+        case "MANAGER":
+            return <Navigate to={"/manager/profile"} replace />;
+        case "SCHOOL_NURSE":
+            return <Navigate to={"/schoolnurse/profile"} replace />;
+        case "PARENT":
+            return <Navigate to={"/parent/profile"} replace />;
+        default:
+            return <Navigate to={"/homepage"} replace />;
+    }
+};
 
 function App() {
 
     const RouteProtecter = protecter();
+    const { role } = getPayloadResources() || {};
 
     return (
         <>
@@ -39,7 +75,12 @@ function App() {
             />
             <Router>
                 <Routes>
+                    <Route path="/" element={<Navigate to={"/homepage"} />} /> {/* entry point of the application */}
                     <Route path="/homepage" element={<Homepage />} />
+                    <Route path="/test" element={<Test />} />
+                    <Route path="/dashboard" element={<DashboardRedirect />} />
+                    <Route path="/profile" element={<ProfileRedirect />} />
+                    <Route path="/logout" element={<LogoutAction />} />
                     <Route element={<RouteProtecter.forAll />}>
 
                         <Route path="/admin/*" element={<RouteProtecter.forAdmin>

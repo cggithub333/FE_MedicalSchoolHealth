@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useLocation } from "react-router-dom"
 import {
   Container,
   Typography,
@@ -27,12 +28,58 @@ import {
 } from "@mui/icons-material"
 import { Link } from "react-router-dom"
 
+import { GiMedicinePills as SendMedicationIcon } from "react-icons/gi";
+import { LuBriefcaseMedical as MedicalEventIcon } from "react-icons/lu";
+
 import useAllNotifications from "@hooks/parent/health-check/useAllNotifications"
 import useNotifyNewMedicalEvents from "@hooks/parent/medical-events/useNotifyNewMedicalEvents"
 
 const ITEMS_PER_PAGE = 5;
 
 const ParentNotifications = () => {
+
+  const location = useLocation();
+
+  useEffect(() => {
+
+    // get the hash value from the URL:
+    const hashVal = location.hash;
+
+    if (hashVal === "#vaccination-campaign") {
+
+      // get the element with id get is the type of notification
+      const element = document.getElementById("VACCINATION_CAMPAIGN");
+      if (element) {
+        // scroll to the element with id "VACCINATION_CAMPAIGN"
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+    else if (hashVal === "#health-check-campaign") {
+      // get the element with id get is the type of notification
+      const element = document.getElementById("HEALTH_CHECK_CAMPAIGN");
+      if (element) {
+        // scroll to the element with id "HEALTH_CHECK_CAMPAIGN"
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+    else if (hashVal === "#medical-events") {
+      // get the element with id get is the type of notification
+      const element = document.getElementById("MED_EVENT");
+      if (element) {
+        // scroll to the element with id "MED_EVENT"
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+    else if (hashVal === "#send-medication") {
+      // get the element with id get is the type of notification
+      const element = document.getElementById("SEND_MEDICAL");
+      if (element) {
+        // scroll to the element with id "SEND_MEDICAL"
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  }, [location])
+
   const { notifications, loading, error, refetch } = useAllNotifications()
 
   const { notiNewEventOfPupils, loading: eventsLoading, error: eventsError, refetch: eventsRefetch } = useNotifyNewMedicalEvents()
@@ -42,6 +89,8 @@ const ParentNotifications = () => {
       {
         "VACCINATION_CAMPAIGN": 1,
         "HEALTH_CHECK_CAMPAIGN": 1,
+        "SEND_MEDICAL": 1,
+        "MED_EVENT": 1,
       }
     );
 
@@ -54,6 +103,10 @@ const ParentNotifications = () => {
           return <Vaccines />
         case "HEALTH_CHECK_CAMPAIGN":
           return <LocalHospital />
+        case "SEND_MEDICAL":
+          return <SendMedicationIcon/>
+        case "MED_EVENT":
+          return <MedicalEventIcon />
         default:
           return <Notifications />
       }
@@ -65,6 +118,10 @@ const ParentNotifications = () => {
           return "success"
         case "HEALTH_CHECK_CAMPAIGN":
           return "primary"
+        case "SEND_MEDICAL":
+          return "warning"
+        case "MED_EVENT":
+          return "error"
         default:
           return "default"
       }
@@ -80,6 +137,10 @@ const ParentNotifications = () => {
           return "success"
         case "HEALTH_CHECK_CAMPAIGN":
           return "primary"
+        case "SEND_MEDICAL":
+          return "warning"
+        case "MED_EVENT":
+          return "error"
         default:
           return "default"
       }
@@ -91,6 +152,10 @@ const ParentNotifications = () => {
           return "../vaccination-campaign/surveys"
         case "HEALTH_CHECK_CAMPAIGN":
           return "../health-check-campaign/surveys"
+        case "SEND_MEDICAL":
+          return "../prescription"
+        case "MED_EVENT":
+          return "../medical-events"
         default:
           return "#"
       }
@@ -102,6 +167,10 @@ const ParentNotifications = () => {
           return "Vaccination Campaign"
         case "HEALTH_CHECK_CAMPAIGN":
           return "Health Check Campaign"
+        case "SEND_MEDICAL":
+          return "Send Medication"
+        case "MED_EVENT":
+          return "Medical Event"
         default:
           return "Notification"
       }
@@ -175,8 +244,8 @@ const ParentNotifications = () => {
         {/* Header */}
         {/* Summary Cards */}
         <Grid container spacing={2} sx={{ mb: 4 }}>
-          <Grid item size={{ xs: 12, md: 4 }}>
-            <Link to="../vaccination-campaign/campaigns" style={{ textDecoration: "none" }}>
+          <Grid item size={{ xs: 12, md: 3 }}>
+            <Link to="#vaccination-campaign" style={{ textDecoration: "none" }}>
               <Paper sx={{ p: 2, textAlign: "center", bgcolor: "success.50", ...hoverPaper, cursor: "pointer" }}>
                 <Typography variant="h4" fontWeight="bold" color="success.main">
                   {groupedNotifications.VACCINATION_CAMPAIGN?.length || 0}
@@ -187,26 +256,38 @@ const ParentNotifications = () => {
               </Paper>
             </Link>
           </Grid>
-          <Grid item size={{ xs: 12, md: 4 }}>
-            <Link to="../health-check-campaign/campaigns" style={{ textDecoration: "none" }}>
+          <Grid item size={{ xs: 12, md: 3 }}>
+            <Link to="#health-check-campaign" style={{ textDecoration: "none" }}>
               <Paper sx={{ p: 2, textAlign: "center", bgcolor: "primary.50", ...hoverPaper, cursor: "pointer" }}>
                 <Typography variant="h4" fontWeight="bold" color="primary.main">
                   {groupedNotifications.HEALTH_CHECK_CAMPAIGN?.length || 0}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Health Check
+                </Typography> 
+              </Paper>
+            </Link>
+          </Grid>
+          <Grid item size={{ xs: 12, md: 3 }}>
+            <Link to="#medical-events" style={{ textDecoration: "none" }}>
+              <Paper sx={{ p: 2, textAlign: "center", bgcolor: "primary.50", ...hoverPaper, cursor: "pointer" }}>
+                <Typography variant="h4" fontWeight="bold" color="red">
+                  {groupedNotifications.MED_EVENT?.length || 0}
+                </Typography>
+                <Typography variant="body2" color="red">
+                  Medical Events
                 </Typography>
               </Paper>
             </Link>
           </Grid>
-          <Grid item size={{ xs: 12, md: 4 }}>
-            <Link to="../medical-events" style={{ textDecoration: "none" }}>
+          <Grid item size={{ xs: 12, md: 3 }}>
+            <Link to="#send-medication" style={{ textDecoration: "none" }}>
               <Paper sx={{ p: 2, textAlign: "center", bgcolor: "primary.50", ...hoverPaper, cursor: "pointer" }}>
                 <Typography variant="h4" fontWeight="bold" color="orange">
-                  {notiNewEventOfPupils?.length || 0}
+                  {groupedNotifications.SEND_MEDICAL?.length || 0}
                 </Typography>
                 <Typography variant="body2" color="orange">
-                  Medical Events
+                  Send Medication
                 </Typography>
               </Paper>
             </Link>
@@ -233,7 +314,7 @@ const ParentNotifications = () => {
                   <Avatar sx={{ bgcolor: `${getNotificationColor(type)}.main`, width: 32, height: 32 }}>
                     {getNotificationIcon(type)}
                   </Avatar>
-                  <Typography variant="h6" fontWeight="bold">
+                  <Typography variant="h6" fontWeight="bold" id={type}>
                     {getNotificationTypeText(type)}
                   </Typography>
                   <Chip

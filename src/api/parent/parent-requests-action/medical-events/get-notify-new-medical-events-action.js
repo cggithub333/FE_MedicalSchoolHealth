@@ -9,7 +9,7 @@ export const getNofityNewMedicalEventsAction = async () => {
     // debug:
     console.log("Fetched Notifications for Pupils' New Events:", response);
 
-    return fetchResponse(response);
+    return await response.data || []; // Return an empty array if no data is found
   } catch (error) {
     console.error("Error fetching notifications for pupils' new events:", error);
     throw error;

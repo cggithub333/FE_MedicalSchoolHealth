@@ -7,7 +7,25 @@ import OtpModal from "./otp-modal.jsx"
 import { Navigate } from "react-router-dom"
 import useAuth from '@hooks/auth/useAuth.js';
 
+import { getPayloadResources } from "@utils/jwt-utils.js"
 import { showSuccessToast, showErrorToast } from "@utils/toast-utils.js"
+import AccountMenu from "./account-menu.jsx"
+
+const isUserLoggedIn = () => {
+  try {
+    const token = localStorage.getItem('jwtToken');
+    if (!token) return false;
+
+    const { exp, error } = getPayloadResources();
+    if (error) return false;
+
+    const currentSeconds = Math.floor(Date.now() / 1000);
+    return currentSeconds < exp; // Token is valid if current time is less than expiration
+  } catch (error) {
+    console.error("Error checking login status:", error);
+    return false;
+  }
+};
 
 export default function LoginModal() {
 
@@ -135,13 +153,21 @@ export default function LoginModal() {
   }
   return (
     <>
-      <Button
-        variant="contained"
-        sx={{ bgcolor: "success.main", "&:hover": { bgcolor: "success.dark" } }}
-        onClick={() => setOpen(true)}
-      >
-        Login
-      </Button>
+      {
+        (!isUserLoggedIn()) ? (
+          <Button
+            variant="contained" //5ba8e5 0189f4
+            sx={{ bgcolor: "#5ba8e5", "&:hover": { bgcolor: "#0189f4" } }}
+            onClick={() => setOpen(true)}
+          >
+            Login
+          </Button>
+        )
+        :
+        (<AccountMenu gender="male"
+                      username={localStorage.getItem('userFullName') || "User"} 
+                      role={getPayloadResources.role}/>)
+      }
 
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle sx={{ textAlign: "center", pb: 1 }}>
@@ -194,7 +220,7 @@ export default function LoginModal() {
               >
                 {isLoading ? "Signing In..." : "Sign In"}
               </Button>
-              <Button 
+              {/* <Button 
                 variant="outlined" 
                 size="large" 
                 fullWidth 
@@ -202,7 +228,7 @@ export default function LoginModal() {
                 disabled={isLoading}
               >
                 Login with OTP
-              </Button>
+              </Button> */}
             </Box>
             <Box sx={{ textAlign: "center" }}>
               <Link href="#" variant="body2" color="text.secondary">

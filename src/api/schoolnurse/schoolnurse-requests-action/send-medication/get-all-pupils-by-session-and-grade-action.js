@@ -12,6 +12,9 @@ export const getAllPupilsBySessionAndGradeAction = async (sessionId, gradeId) =>
 
     const pupilsInfor = await response.data || [];
 
+    // debug:
+    console.log("getAllPupilsBySessionAndGradeAction pupilsInfor:", pupilsInfor);
+
     return pupilsInfor;
   } catch (error) {
     console.error("getAllPupilsBySessionAndGradeAction error:", error);

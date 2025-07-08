@@ -37,8 +37,6 @@ const fetchResponse = async (syncCallbackRequest) => {
   } catch (error) {
     if (error.code === "ECONNABORTED") {
       console.error("Request timed out");
-    } else {
-      console.error("API error:", error.message);
     }
     return {
       error: error.message,

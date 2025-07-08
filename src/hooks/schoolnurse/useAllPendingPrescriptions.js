@@ -15,7 +15,7 @@ const useAllPendingPrescriptions = () => {
       const pendingPrescriptions = await getAllPendingPrescriptionsAction();
       setPendingMedicationRequests(pendingPrescriptions);
     } catch (error) {
-      console.error("Error fetching all pending prescriptions:", error);
+      // console.error("Error fetching all pending prescriptions:", error);
       setError(error);
       setPendingMedicationRequests([]);
     } finally {

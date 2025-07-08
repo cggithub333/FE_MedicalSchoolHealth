@@ -17,6 +17,9 @@ import Integration from './reports/Integration.jsx';
 import MedicalEvents from './pupils-management/MedicalEvents.jsx';
 import PupilsManagement from './pupils-management/PupilsManagement.jsx';
 
+import Prescriptions from './pupils-management/Prescriptions.jsx';
+import PrescriptionTracking from './pupils-management/PrescriptionTracking.jsx';
+
 const ManagerComponentPagePackages = {
   DashboardHome,
   Notification,
@@ -31,7 +34,9 @@ const ManagerComponentPagePackages = {
   Integration,
   ReportsB,
   MedicalEvents,
-  PupilsManagement
+  PupilsManagement,
+  Prescriptions,
+  PrescriptionTracking
 };
 
 export default ManagerComponentPagePackages;

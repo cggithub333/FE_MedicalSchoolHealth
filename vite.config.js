@@ -15,6 +15,7 @@ export default defineConfig({
       '@api': path.resolve(__dirname, 'src/api'),
       '@config': path.resolve(__dirname, 'src/config'),
       '@controllers': path.resolve(__dirname, 'src/controllers'),
+      '@store': path.resolve(__dirname, 'src/store'),
       // '@services': path.resolve(__dirname, 'src/services'),
       // '@constants': path.resolve(__dirname, 'src/constants'),
       // '@styles': path.resolve(__dirname, 'src/styles'),

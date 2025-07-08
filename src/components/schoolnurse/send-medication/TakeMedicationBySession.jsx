@@ -38,6 +38,8 @@ import useAllPupilsBySessionAndGrade from "@hooks/schoolnurse/send-medication/us
 import useTodayTakeMedicationSessions from "@hooks/schoolnurse/send-medication/useTodayTakeMedicationSessions"
 import { showErrorToast, showSuccessToast, showWarningToast } from "@utils/toast-utils"
 
+import { getDateFromDDMMYYYY } from "@utils/date-utils"
+
 // Mock DigitalClock component
 const DigitalClock = () => {
     const [time, setTime] = useState(new Date())
@@ -67,6 +69,54 @@ const DigitalClock = () => {
     )
 }
 
+const currentSessionInfor = () => {
+    const now = new Date()
+    const currentHour = now.getHours()
+    const currentMinute = now.getMinutes()
+    return {
+        "session1": (currentHour === 9 && currentMinute >= 30) || (currentHour === 10 && currentMinute < 15),
+        "session2": (currentHour === 10 && currentMinute >= 30) || (currentHour === 11 && currentMinute < 15),
+        "session3": (currentHour === 11 && currentMinute >= 30) || (currentHour === 12 && currentMinute < 15)
+    }
+}
+
+// for testing:
+const currentSessionInfor1 = () => {
+    const now = new Date()
+    const currentHour = now.getHours()
+    const currentMinute = now.getMinutes()
+    return {
+        "session1": true,
+        "session2": (currentHour === 10 && currentMinute >= 30) || (currentHour === 11 && currentMinute < 15),
+        "session3": (currentHour === 11 && currentMinute >= 30) || (currentHour === 12 && currentMinute < 15)
+    }
+}
+
+
+const currentSessionInfor2 = () => {
+    const now = new Date()
+    const currentHour = now.getHours()
+    const currentMinute = now.getMinutes()
+    return {
+        "session1": (currentHour === 9 && currentMinute >= 30) || (currentHour === 10 && currentMinute < 15),
+        "session2": true,
+        "session3": (currentHour === 11 && currentMinute >= 30) || (currentHour === 12 && currentMinute < 15)
+    }
+}
+
+
+const currentSessionInfor3 = () => {
+    const now = new Date()
+    const currentHour = now.getHours()
+    const currentMinute = now.getMinutes()
+    return {
+        "session1": (currentHour === 9 && currentMinute >= 30) || (currentHour === 10 && currentMinute < 15),
+        "session2": (currentHour === 10 && currentMinute >= 30) || (currentHour === 11 && currentMinute < 15),
+        "session3": true
+    }
+}
+
+
 const TakeMedicationBySession = () => {
 
     const { createTakeMedicationLogs, loading: createLogsLoading, error: createLogsError } = useCreateTakeMedicationLogs()
@@ -83,6 +133,7 @@ const TakeMedicationBySession = () => {
     const [selectedMedicationDetails, setSelectedMedicationDetails] = useState(null);
 
     const [value, setValue] = useState("1")
+    const [givenPrescriptionBySession, setGivenPrescriptionBySession] = useState([]);
     const [pupilListOpen, setPupilListOpen] = useState(false)
     const [prescriptionDetailOpen, setPrescriptionDetailOpen] = useState(false)
     const [selectedGrade, setSelectedGrade] = useState(null)
@@ -136,7 +187,15 @@ const TakeMedicationBySession = () => {
 
     // render skeletions of waiting fetch data:
     if (sessionsLoading) {
-        return renderLoadingSkeleton({ length: 3 }) // Show 3 skeletons for 3 sessions
+        return (
+            <TableContainer component={Paper} elevation={0}>
+                <Table>
+                    <TableBody>
+                        {renderTableLoadingSkeleton({ length: 3 })}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        );
     }
 
     // Utils functions:
@@ -150,8 +209,8 @@ const TakeMedicationBySession = () => {
     }
 
     const getSessionDisplayText = (sessionIndex) => {
-        const sessionName = getSessionName(sessionIndex)
-        const sessionTime = getSessionTime(sessionIndex)
+        const sessionName = getSessionName(sessionIndex) // ex: "Morning Session"
+        const sessionTime = getSessionTime(sessionIndex) // ex: "09:30 - 10:00"
         
         if (sessionName && sessionTime) {
             return `${sessionName} - ${sessionTime}`
@@ -173,7 +232,7 @@ const TakeMedicationBySession = () => {
         
         // Define session time windows (when GIVEN button can be clicked)
         const sessionTimeWindows = [
-            { start: 9 * 60 + 30, end: 10 * 60 + 45 },   // Session 1: 9:30-10:45
+            { start: 9 * 60 + 30, end: 10 * 60 + 15}, // Session 1: 9:30-10:15
             { start: 10 * 60 + 30, end: 11 * 60 + 15 },  // Session 2: 10:30-11:15
             { start: 11 * 60 + 30, end: 12 * 60 + 15 }   // Session 3: 11:30-12:15
         ]
@@ -187,14 +246,14 @@ const TakeMedicationBySession = () => {
 
         // for test session 2:
         const sessionTimeWindows2 = [
-            { start: 9 * 60 + 30, end: 10 * 60 + 45 },   // Session 1: 9:30-10:45
+            { start: 9 * 60 + 30, end: 10 * 60 + 15},   // Session 1: 9:30-10:15
             { start: currentTotalMinutes - 30, end: currentTotalMinutes + 30 }, // Session 1: Current time ±30 min
             { start: 11 * 60 + 30, end: 12 * 60 + 15 }   // Session 3: 11:30-12:15
         ]
 
         // for test session 3:
         const sessionTimeWindows3 = [
-            { start: 9 * 60 + 30, end: 10 * 60 + 45 },   // Session 1: 9:30-10:45
+            { start: 9 * 60 + 30, end: 10 * 60 + 15},   // Session 1: 9:30-10:15
             { start: 10 * 60 + 30, end: 11 * 60 + 15 },  // Session 2: 10:30-11:15
             { start: currentTotalMinutes - 30, end: currentTotalMinutes + 30 }, // Session 1: Current time ±30 min
         ]
@@ -208,7 +267,7 @@ const TakeMedicationBySession = () => {
     // Get session time window text for display
     const getSessionTimeWindow = (sessionIndex) => {
         const timeWindows = [
-            "9:30-10:45",   // Session 1
+            "9:30-10:15",   // Session 1
             "10:30-11:15",  // Session 2  
             "11:30-12:15"   // Session 3
         ]
@@ -239,6 +298,44 @@ const TakeMedicationBySession = () => {
     }
 
     const handleGradeCardClick = (grade, sessionIndex) => {
+
+        // debug:
+        console.log("handleGradeCardClick called!!!!");
+
+        if (currentSessionInfor()[`session1`] === true) {
+            const listGiven = localStorage.getItem("givenPrescriptionSession1");
+            if (listGiven === null) {
+                localStorage.setItem("givenPrescriptionSession1", "[]");
+            }
+            setGivenPrescriptionBySession(JSON.parse(listGiven) || []);
+            // remove other given sessiosn from localStorage
+            localStorage.removeItem("givenPrescriptionSession2");
+            localStorage.removeItem("givenPrescriptionSession3");
+        }
+        else if (currentSessionInfor()[`session2`] === true) {
+            const listGiven = localStorage.getItem("givenPrescriptionSession2");
+            if (listGiven === null) {
+                localStorage.setItem("givenPrescriptionSession2", "[]");
+            }
+            setGivenPrescriptionBySession(JSON.parse(listGiven) || []);
+            // remove other given sessiosn from localStorage
+            localStorage.removeItem("givenPrescriptionSession1");
+            localStorage.removeItem("givenPrescriptionSession3");
+        }
+        else if (currentSessionInfor()[`session3`] === true) {
+            const listGiven = localStorage.getItem("givenPrescriptionSession3");
+            if (listGiven === null) {
+                localStorage.setItem("givenPrescriptionSession3", "[]");
+            }
+            setGivenPrescriptionBySession(JSON.parse(listGiven) || []);
+            // remove other given sessiosn from localStorage
+            localStorage.removeItem("givenPrescriptionSession1");
+            localStorage.removeItem("givenPrescriptionSession2");
+        } else {
+            showErrorToast("No active session available for now.")
+            // return
+        }
+
         setSelectedGrade(grade)
         setSelectedSession(sessionIndex) 
         setPupilListOpen(true)
@@ -306,6 +403,36 @@ const TakeMedicationBySession = () => {
 
     // Add new function for handling Given button click
     const handleGivenButtonClick = async (request) => {
+
+        if (request == null || request.medicationItems == null || request.medicationItems.length === 0) {
+            showErrorToast("No medications available for this request.")
+            return
+        }
+
+        // append pupilId to the "givenPrescriptionSession":
+        setGivenPrescriptionBySession(prev => {
+            const updatedGiven = [...prev]  // clone previous state
+            const pupilId = request.pupilId
+            // check if already exists
+            if ((updatedGiven || []).some(item => item.pupilId === pupilId)) {
+                return updatedGiven // already exists, no need to add again
+            }
+            // if not exists, add new object
+            updatedGiven.push(pupilId);
+            // save to localStorage
+            if (currentSessionInfor()[`session1`] === true) {
+                localStorage.setItem("givenPrescriptionSession1", JSON.stringify(updatedGiven));
+            }
+            else if (currentSessionInfor()[`session2`] === true) {
+                localStorage.setItem("givenPrescriptionSession2", JSON.stringify(updatedGiven));
+            }
+            else if (currentSessionInfor()[`session3`] === true) {
+                localStorage.setItem("givenPrescriptionSession3", JSON.stringify(updatedGiven));
+            }
+            return updatedGiven
+        })
+
+
         // Check if current time is within session window
         if (!isCurrentTimeInSession(selectedSession)) {
             const sessionTime = getSessionTimeWindow(selectedSession)
@@ -436,10 +563,17 @@ const TakeMedicationBySession = () => {
         return `${day}/${month}/${year}`
     }
 
-    // Filter pupilsInfor by grade
+    // getupilsInfor by grade
     const getPupilsByGrade = (grade) => {
         if (!pupilsInfor || !Array.isArray(pupilsInfor)) return []
-        return pupilsInfor.filter((pupil) => pupil.gradeId === grade)
+
+        // debug:
+        // console.log("--");
+        // console.log("Filtering pupils by grade:", grade) // ✅ Shows actual data
+        // console.log("Pupils information:", pupilsInfor) // ✅ Shows actual data
+        // console.log("--");
+
+        return pupilsInfor;
     }
 
     return (
@@ -727,46 +861,54 @@ const TakeMedicationBySession = () => {
                                 {
                                     pupilsLoading ? (
                                         // show skeletons while loading pupils
-                                        <>{renderLoadingSkeleton({ length: 3 })}</>
+                                        <>{renderTableLoadingSkeleton({ length: 3 })}</>
                                     ) : (
-                                        getPupilsByGrade(selectedGrade)?.map((pupil) => (
-                                            <TableRow key={pupil.pupilId}>
-                                                <TableCell>
-                                                    <Typography variant="body2" fontWeight="bold">
-                                                        {pupil.pupilId}
-                                                    </Typography>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Typography variant="body2">
-                                                        {pupil.lastName} {pupil.firstName}
-                                                    </Typography>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Chip
-                                                        label={pupil.gender === "M" ? "Male" : "Female"}
-                                                        color={getGenderColor(pupil.gender)}
-                                                        size="small"
-                                                        variant="outlined"
-                                                    />
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Typography variant="body2">{pupil.gradeName}</Typography>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Typography variant="body2">{formatDate(pupil.birthDate)}</Typography>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Button
-                                                        variant="contained"
-                                                        size="small"
-                                                        startIcon={<Assignment />}
-                                                        onClick={() => handlePupilDetailClick(pupil)}
-                                                    >
-                                                        Detail
-                                                    </Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))
+                                        getPupilsByGrade(selectedGrade)?.map((pupil) => {
+
+                                            return (
+                                                <TableRow key={pupil.pupilId}>
+                                                    <TableCell>
+                                                        <Typography variant="body2" fontWeight="bold">
+                                                            {pupil.pupilId}
+                                                        </Typography>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Typography variant="body2">
+                                                            {pupil.lastName} {pupil.firstName}
+                                                        </Typography>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Chip
+                                                            label={pupil.gender === "M" ? "Male" : "Female"}
+                                                            color={getGenderColor(pupil.gender)}
+                                                            size="small"
+                                                            variant="outlined"
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Typography variant="body2">{pupil.gradeName}</Typography>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Typography variant="body2">{formatDate(pupil.birthDate)}</Typography>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Button
+                                                            variant="contained"
+                                                            size="small"
+                                                            startIcon={<Assignment />}
+                                                            onClick={() => handlePupilDetailClick(pupil)}
+                                                            disabled={
+                                                                (currentSessionInfor()[`session${selectedSession + 1}`] === true &&  // in prescription session time
+                                                                localStorage.getItem(`givenPrescriptionSession${selectedSession + 1}`) &&  // has givenPrescriptionSession
+                                                                JSON.parse(localStorage.getItem(`givenPrescriptionSession${selectedSession + 1}`)).includes(pupil.pupilId)) // but already given
+                                                            }
+                                                        >
+                                                            DETAIL
+                                                        </Button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            )
+                                        })
                                     )
                                 }
                             </TableBody>
@@ -802,6 +944,8 @@ const TakeMedicationBySession = () => {
                         </IconButton>
                     </Box>
                 </DialogTitle>
+
+                {/* Presctiption details */}
                 <DialogContent>
                     <Box sx={{ mb: 3 }}>
                         <Paper sx={{ p: 2, bgcolor: "primary.50" }}>
@@ -826,175 +970,207 @@ const TakeMedicationBySession = () => {
                     ) : (
                         <>
                             {/* Render each disease as a separate section */}
-                            {getPupilMedicationRequests().map((request, diseaseIndex) => (
-                        <Box key={request.sendMedicationId} sx={{ mb: 4 }}>
-                            {/* Disease Header */}
-                            <Paper sx={{ p: 2, mb: 2, bgcolor: isDiseaseAlreadyGiven(request) ? "success.50" : "warning.50" }}>
-                                <Typography variant="subtitle1" fontWeight="bold" color={isDiseaseAlreadyGiven(request) ? "success.main" : "warning.main"} sx={{ mb: 1 }}>
-                                    Disease #{diseaseIndex + 1}: {request.diseaseName}
-                                    {isDiseaseAlreadyGiven(request) && (
-                                        <Chip 
-                                            label={`GIVEN (SESSION ${selectedSession + 1})`}
-                                            color="success" 
-                                            size="small" 
-                                            sx={{ ml: 2, fontWeight: "bold" }}
-                                        />
-                                    )}
-                                </Typography>
-                                
-                                {/* Show current session time window */}
-                                <Typography variant="body2" color="text.secondary">
-                                    <strong>Time for session {selectedSession + 1}:</strong> 
-                                    {!isCurrentTimeInSession(selectedSession) && (
-                                        <Chip 
-                                            label={getSessionTimeWindow(selectedSession)}
-                                            color="warning" 
-                                            size="small" 
-                                            sx={{ ml: 1 }}
-                                        />
-                                    )}
-                                </Typography>
-                                
-                                <Typography variant="body2" color="text.secondary">
-                                    <strong>Treatment Period:</strong> {request.startDate} to {request.endDate}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    <strong>Note:</strong> {request.note}
-                                </Typography>
-                                {isDiseaseAlreadyGiven(request) && (
-                                    <Typography variant="body2" color="success.main" sx={{ mt: 1, fontWeight: "bold" }}>
-                                        <strong>Given Time (Session {selectedSession + 1}):</strong> {request.medicationLogs.find(log => log.status === "GIVEN")?.givenTime}
-                                    </Typography>
-                                )}
-                            </Paper>
+                            {getPupilMedicationRequests().map((request, diseaseIndex) => {
 
-                            {/* Medications Table for this disease */}
-                            {request.medicationItems && request.medicationItems.length > 0 ? (
-                                <TableContainer component={Paper} elevation={0} sx={{ mb: 2 }}>
-                                    <Table>
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell>
-                                                    <Typography variant="subtitle2" fontWeight="bold">
-                                                        Medication Name
-                                                    </Typography>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Typography variant="subtitle2" fontWeight="bold">
-                                                        Unit & Usage
-                                                    </Typography>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Typography variant="subtitle2" fontWeight="bold">
-                                                        Schedule
-                                                    </Typography>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Typography variant="subtitle2" fontWeight="bold">
-                                                        Mark As Given
-                                                    </Typography>
-                                                </TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {request.medicationItems.map((medication) => {
-                                                // each log message contains medication name, unit and usage, schedule, and mark as given status
-                                                const logMessage = `+ Disease: ${request.diseaseName}; Medication: ${medication.medicationName}; Unit & Usage: ${medication.unitAndUsage}; Schedule: ${medication.medicationSchedule}; Given: Yes; Given Time: ${new Date().toLocaleTimeString()}`;
+                                // debug:
+                                // console.log("Rendering disease request:", request) // ✅ Shows actual data
 
-                                                return (
-                                                    <TableRow key={medication.medicationId}>
-                                                        <TableCell>
-                                                            <Typography variant="body2" fontWeight="bold">
-                                                                {medication.medicationName}
-                                                            </Typography>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <Typography variant="body2">{medication.unitAndUsage}</Typography>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <Typography variant="body2">{medication.medicationSchedule}</Typography>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <FormControlLabel
-                                                                control={
-                                                                    <Checkbox
-                                                                        checked={isDiseaseAlreadyGiven(request) ? true : (medicationChecks[medication.medicationId] || false)}
-                                                                        onChange={(e) => !isDiseaseAlreadyGiven(request) && handleMedicationCheck(medication.medicationId, e.target.checked, logMessage)}
-                                                                        color="success"
-                                                                        disabled={isDiseaseAlreadyGiven(request)}
-                                                                    />
-                                                                }
-                                                                label={isDiseaseAlreadyGiven(request) ? "Already Given" : "Given"}
-                                                            />
-                                                        </TableCell>
-                                                    </TableRow>
-                                                )
-                                            })}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                            ) : (
-                                <Paper sx={{ p: 2, textAlign: "center", bgcolor: "grey.50" }}>
-                                    <Typography variant="body2" color="text.secondary">
-                                        No medications specified for this disease
-                                    </Typography>
-                                </Paper>
-                            )}
+                                const startDate = request.startDate ? getDateFromDDMMYYYY(request.startDate) : null;
+                                const endDate = request.endDate ? getDateFromDDMMYYYY(request.endDate) : null;
+                                const currrentDate = new Date();
 
-                            {/* Log Messages Section for this disease */}
-                            <Box sx={{ mt: 2 }}>
-                                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                                    This note will be notified to the pupil's parents.
-                                </Typography>
-                                <textarea
-                                    value={getDiseaseLogMessages(request)}
-                                    readOnly
-                                    style={{
-                                        width: '100%',
-                                        height: '120px',
-                                        border: '1px solid #ccc',
-                                        borderRadius: '4px',
-                                        padding: '12px',
-                                        fontSize: '14px',
-                                        fontFamily: 'inherit',
-                                        resize: 'none',
-                                        backgroundColor: isDiseaseAlreadyGiven(request) ? '#e8f5e8' : '#f9f9f9',
-                                        marginBottom: '12px'
-                                    }}
-                                />
-                                {/* Given Button for each disease - positioned under the notes */}
-                                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                                    {isDiseaseAlreadyGiven(request) ? (
-                                        <Button
-                                            variant="contained"
-                                            color="success"
-                                            size="medium"
-                                            startIcon={<CheckCircle />}
-                                            disabled={true}
-                                            sx={{ minWidth: 180 }}
-                                        >
-                                            Given (Session {selectedSession + 1})
-                                        </Button>
-                                    ) : (
-                                        <Button
-                                            variant="contained"
-                                            color={isCurrentTimeInSession(selectedSession) ? "success" : "warning"}
-                                            size="medium"
-                                            startIcon={<CheckCircle />}
-                                            disabled={!hasCheckedMedications(request)}
-                                            onClick={() => handleGivenButtonClick(request)}
-                                            sx={{ minWidth: 180 }}
-                                        >
-                                            {!isCurrentTimeInSession(selectedSession)
-                                                ? `Available ${getSessionTimeWindow(selectedSession)}`
-                                                : `Give (Session ${selectedSession + 1})`
-                                            }
-                                        </Button>
-                                    )}
-                                </Box>
-                            </Box>
-                        </Box>
-                    ))}
+                                if (startDate && endDate && (currrentDate < startDate || currrentDate > endDate)) {
+                                    // Skip this disease if current date is outside treatment period
+                                    return <Box key={request.sendMedicationId} sx={{ mb: 4 }}>
+                                        <Paper sx={{ p: 2, mb: 2, bgcolor: "grey.50" }}>
+                                            <Typography variant="subtitle1" fontWeight="bold" color={isDiseaseAlreadyGiven(request) ? "success.main" : "warning.main"} sx={{ mb: 1 }}>
+                                                Disease #{diseaseIndex + 1}: {request.diseaseName}
+                                                {isDiseaseAlreadyGiven(request) && (
+                                                    <Chip
+                                                        label={`GIVEN (SESSION ${selectedSession + 1})`}
+                                                        color="success"
+                                                        size="small"
+                                                        sx={{ ml: 2, fontWeight: "bold" }}
+                                                    />
+                                                )}
+                                            </Typography>
+                                            <Typography variant="body2" color="text.secondary">
+                                                This disease is not currently in the treatment period (from {request.startDate} to {request.endDate}).
+                                            </Typography>
+                                        </Paper>
+                                    </Box>
+                                }
+
+                                return (
+                                    <Box key={request.sendMedicationId} sx={{ mb: 4 }}>
+                                        {/* Disease Header */}
+                                        <Paper sx={{ p: 2, mb: 2, bgcolor: isDiseaseAlreadyGiven(request) ? "success.50" : "warning.50" }}>
+                                            <Typography variant="subtitle1" fontWeight="bold" color={isDiseaseAlreadyGiven(request) ? "success.main" : "warning.main"} sx={{ mb: 1 }}>
+                                                Disease #{diseaseIndex + 1}: {request.diseaseName}
+                                                {isDiseaseAlreadyGiven(request) && (
+                                                    <Chip
+                                                        label={`GIVEN (SESSION ${selectedSession + 1})`}
+                                                        color="success"
+                                                        size="small"
+                                                        sx={{ ml: 2, fontWeight: "bold" }}
+                                                    />
+                                                )}
+                                            </Typography>
+
+                                            {/* Show current session time window */}
+                                            <Typography variant="body2" color="text.secondary">
+                                                <strong>Time for session {selectedSession + 1}:</strong>
+                                                {!isCurrentTimeInSession(selectedSession) && (
+                                                    <Chip
+                                                        label={getSessionTimeWindow(selectedSession)}
+                                                        color="warning"
+                                                        size="small"
+                                                        sx={{ ml: 1 }}
+                                                    />
+                                                )}
+                                            </Typography>
+
+                                            <Typography variant="body2" color="text.secondary">
+                                                <strong>Treatment Period:</strong> {request.startDate} to {request.endDate}
+                                            </Typography>
+                                            <Typography variant="body2" color="text.secondary">
+                                                <strong>Note:</strong> {request.note}
+                                            </Typography>
+                                            {isDiseaseAlreadyGiven(request) && (
+                                                <Typography variant="body2" color="success.main" sx={{ mt: 1, fontWeight: "bold" }}>
+                                                    <strong>Given Time (Session {selectedSession + 1}):</strong> {request.medicationLogs.find(log => log.status === "GIVEN")?.givenTime}
+                                                </Typography>
+                                            )}
+                                        </Paper>
+
+                                        {/* Medications Table for this disease */}
+                                        {request.medicationItems && request.medicationItems.length > 0 ? (
+                                            <TableContainer component={Paper} elevation={0} sx={{ mb: 2 }}>
+                                                <Table>
+                                                    <TableHead>
+                                                        <TableRow>
+                                                            <TableCell>
+                                                                <Typography variant="subtitle2" fontWeight="bold">
+                                                                    Medication Name
+                                                                </Typography>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <Typography variant="subtitle2" fontWeight="bold">
+                                                                    Unit & Usage
+                                                                </Typography>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <Typography variant="subtitle2" fontWeight="bold">
+                                                                    Schedule
+                                                                </Typography>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <Typography variant="subtitle2" fontWeight="bold">
+                                                                    Mark As Given
+                                                                </Typography>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    </TableHead>
+                                                    <TableBody>
+                                                        {request.medicationItems.map((medication) => {
+                                                            // each log message contains medication name, unit and usage, schedule, and mark as given status
+                                                            const logMessage = `+ Disease: ${request.diseaseName}; Medication: ${medication.medicationName}; Unit & Usage: ${medication.unitAndUsage}; Schedule: ${medication.medicationSchedule}; Given: Yes; Given Time: ${new Date().toLocaleTimeString()}`;
+
+                                                            return (
+                                                                <TableRow key={medication.medicationId}>
+                                                                    <TableCell>
+                                                                        <Typography variant="body2" fontWeight="bold">
+                                                                            {medication.medicationName}
+                                                                        </Typography>
+                                                                    </TableCell>
+                                                                    <TableCell>
+                                                                        <Typography variant="body2">{medication.unitAndUsage}</Typography>
+                                                                    </TableCell>
+                                                                    <TableCell>
+                                                                        <Typography variant="body2">{medication.medicationSchedule}</Typography>
+                                                                    </TableCell>
+                                                                    <TableCell>
+                                                                        <FormControlLabel
+                                                                            control={
+                                                                                <Checkbox
+                                                                                    checked={isDiseaseAlreadyGiven(request) ? true : (medicationChecks[medication.medicationId] || false)}
+                                                                                    onChange={(e) => !isDiseaseAlreadyGiven(request) && handleMedicationCheck(medication.medicationId, e.target.checked, logMessage)}
+                                                                                    color="success"
+                                                                                    disabled={isDiseaseAlreadyGiven(request)}
+                                                                                />
+                                                                            }
+                                                                            label={isDiseaseAlreadyGiven(request) ? "Already Given" : "Given"}
+                                                                        />
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                            )
+                                                        })}
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
+                                        ) : (
+                                            <Paper sx={{ p: 2, textAlign: "center", bgcolor: "grey.50" }}>
+                                                <Typography variant="body2" color="text.secondary">
+                                                    No medications specified for this disease
+                                                </Typography>
+                                            </Paper>
+                                        )}
+
+                                        {/* Log Messages Section for this disease */}
+                                        <Box sx={{ mt: 2 }}>
+                                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                                This note will be notified to the pupil's parents.
+                                            </Typography>
+                                            <textarea
+                                                value={getDiseaseLogMessages(request)}
+                                                readOnly
+                                                style={{
+                                                    width: '100%',
+                                                    height: '120px',
+                                                    border: '1px solid #ccc',
+                                                    borderRadius: '4px',
+                                                    padding: '12px',
+                                                    fontSize: '14px',
+                                                    fontFamily: 'inherit',
+                                                    resize: 'none',
+                                                    backgroundColor: isDiseaseAlreadyGiven(request) ? '#e8f5e8' : '#f9f9f9',
+                                                    marginBottom: '12px'
+                                                }}
+                                            />
+                                            {/* Given Button for each disease - positioned under the notes */}
+                                            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                                {isDiseaseAlreadyGiven(request) ? (
+                                                    <Button
+                                                        variant="contained"
+                                                        color="success"
+                                                        size="medium"
+                                                        startIcon={<CheckCircle />}
+                                                        disabled={true}
+                                                        sx={{ minWidth: 180 }}
+                                                    >
+                                                        Given (Session {selectedSession + 1})
+                                                    </Button>
+                                                ) : (
+                                                    <Button
+                                                        variant="contained"
+                                                        color={isCurrentTimeInSession(selectedSession) ? "success" : "warning"}
+                                                        size="medium"
+                                                        startIcon={<CheckCircle />}
+                                                        disabled={!hasCheckedMedications(request)}
+                                                        onClick={() => handleGivenButtonClick(request)}
+                                                        sx={{ minWidth: 180 }}
+                                                    >
+                                                        {!isCurrentTimeInSession(selectedSession)
+                                                            ? `Available ${getSessionTimeWindow(selectedSession)}`
+                                                            : `Give (Session ${selectedSession + 1})`
+                                                        }
+                                                    </Button>
+                                                )}
+                                            </Box>
+                                        </Box>
+                                    </Box>
+                                )
+                            })}
 
                     {/* Show message if no approved requests */}
                     {!medicationDetailsLoading && getPupilMedicationRequests().length === 0 && (
@@ -1035,5 +1211,17 @@ const renderLoadingSkeleton = ({ length: length  }) => (
         ))}
     </Container>
 )
+
+const renderTableLoadingSkeleton = ({ length }) => (
+    <>
+        {Array.from({ length }, (_, i) => (
+            <TableRow key={i}>
+                <TableCell colSpan={6}>
+                    <Skeleton variant="rectangular" width="100%" height={40} />
+                </TableCell>
+            </TableRow>
+        ))}
+    </>
+);
 
 export default TakeMedicationBySession

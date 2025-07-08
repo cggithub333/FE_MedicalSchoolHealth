@@ -11,6 +11,7 @@
       "@api/*": ["api/*"],
       "@config/*": ["config/*"],
       "@controllers/*": ["controllers/*"],
+      "@store/*": ["store/*"],
       // "@services/*": ["services/*"],
       // "@styles/*": ["styles/*"],
       // "@types/*": ["types/*"],
