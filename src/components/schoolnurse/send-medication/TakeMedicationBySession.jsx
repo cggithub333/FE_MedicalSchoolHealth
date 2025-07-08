@@ -69,6 +69,54 @@ const DigitalClock = () => {
     )
 }
 
+const currentSessionInfor = () => {
+    const now = new Date()
+    const currentHour = now.getHours()
+    const currentMinute = now.getMinutes()
+    return {
+        "session1": (currentHour === 9 && currentMinute >= 30) || (currentHour === 10 && currentMinute < 15),
+        "session2": (currentHour === 10 && currentMinute >= 30) || (currentHour === 11 && currentMinute < 15),
+        "session3": (currentHour === 11 && currentMinute >= 30) || (currentHour === 12 && currentMinute < 15)
+    }
+}
+
+// for testing:
+const currentSessionInfor1 = () => {
+    const now = new Date()
+    const currentHour = now.getHours()
+    const currentMinute = now.getMinutes()
+    return {
+        "session1": true,
+        "session2": (currentHour === 10 && currentMinute >= 30) || (currentHour === 11 && currentMinute < 15),
+        "session3": (currentHour === 11 && currentMinute >= 30) || (currentHour === 12 && currentMinute < 15)
+    }
+}
+
+
+const currentSessionInfor2 = () => {
+    const now = new Date()
+    const currentHour = now.getHours()
+    const currentMinute = now.getMinutes()
+    return {
+        "session1": (currentHour === 9 && currentMinute >= 30) || (currentHour === 10 && currentMinute < 15),
+        "session2": true,
+        "session3": (currentHour === 11 && currentMinute >= 30) || (currentHour === 12 && currentMinute < 15)
+    }
+}
+
+
+const currentSessionInfor3 = () => {
+    const now = new Date()
+    const currentHour = now.getHours()
+    const currentMinute = now.getMinutes()
+    return {
+        "session1": (currentHour === 9 && currentMinute >= 30) || (currentHour === 10 && currentMinute < 15),
+        "session2": (currentHour === 10 && currentMinute >= 30) || (currentHour === 11 && currentMinute < 15),
+        "session3": true
+    }
+}
+
+
 const TakeMedicationBySession = () => {
 
     const { createTakeMedicationLogs, loading: createLogsLoading, error: createLogsError } = useCreateTakeMedicationLogs()
@@ -85,6 +133,7 @@ const TakeMedicationBySession = () => {
     const [selectedMedicationDetails, setSelectedMedicationDetails] = useState(null);
 
     const [value, setValue] = useState("1")
+    const [givenPrescriptionBySession, setGivenPrescriptionBySession] = useState([]);
     const [pupilListOpen, setPupilListOpen] = useState(false)
     const [prescriptionDetailOpen, setPrescriptionDetailOpen] = useState(false)
     const [selectedGrade, setSelectedGrade] = useState(null)
@@ -138,7 +187,15 @@ const TakeMedicationBySession = () => {
 
     // render skeletions of waiting fetch data:
     if (sessionsLoading) {
-        return renderLoadingSkeleton({ length: 3 }) // Show 3 skeletons for 3 sessions
+        return (
+            <TableContainer component={Paper} elevation={0}>
+                <Table>
+                    <TableBody>
+                        {renderTableLoadingSkeleton({ length: 3 })}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        );
     }
 
     // Utils functions:
@@ -152,8 +209,8 @@ const TakeMedicationBySession = () => {
     }
 
     const getSessionDisplayText = (sessionIndex) => {
-        const sessionName = getSessionName(sessionIndex)
-        const sessionTime = getSessionTime(sessionIndex)
+        const sessionName = getSessionName(sessionIndex) // ex: "Morning Session"
+        const sessionTime = getSessionTime(sessionIndex) // ex: "09:30 - 10:00"
         
         if (sessionName && sessionTime) {
             return `${sessionName} - ${sessionTime}`
@@ -241,6 +298,44 @@ const TakeMedicationBySession = () => {
     }
 
     const handleGradeCardClick = (grade, sessionIndex) => {
+
+        // debug:
+        console.log("handleGradeCardClick called!!!!");
+
+        if (currentSessionInfor()[`session1`] === true) {
+            const listGiven = localStorage.getItem("givenPrescriptionSession1");
+            if (listGiven === null) {
+                localStorage.setItem("givenPrescriptionSession1", "[]");
+            }
+            setGivenPrescriptionBySession(JSON.parse(listGiven) || []);
+            // remove other given sessiosn from localStorage
+            localStorage.removeItem("givenPrescriptionSession2");
+            localStorage.removeItem("givenPrescriptionSession3");
+        }
+        else if (currentSessionInfor()[`session2`] === true) {
+            const listGiven = localStorage.getItem("givenPrescriptionSession2");
+            if (listGiven === null) {
+                localStorage.setItem("givenPrescriptionSession2", "[]");
+            }
+            setGivenPrescriptionBySession(JSON.parse(listGiven) || []);
+            // remove other given sessiosn from localStorage
+            localStorage.removeItem("givenPrescriptionSession1");
+            localStorage.removeItem("givenPrescriptionSession3");
+        }
+        else if (currentSessionInfor()[`session3`] === true) {
+            const listGiven = localStorage.getItem("givenPrescriptionSession3");
+            if (listGiven === null) {
+                localStorage.setItem("givenPrescriptionSession3", "[]");
+            }
+            setGivenPrescriptionBySession(JSON.parse(listGiven) || []);
+            // remove other given sessiosn from localStorage
+            localStorage.removeItem("givenPrescriptionSession1");
+            localStorage.removeItem("givenPrescriptionSession2");
+        } else {
+            showErrorToast("No active session available for now.")
+            // return
+        }
+
         setSelectedGrade(grade)
         setSelectedSession(sessionIndex) 
         setPupilListOpen(true)
@@ -308,6 +403,36 @@ const TakeMedicationBySession = () => {
 
     // Add new function for handling Given button click
     const handleGivenButtonClick = async (request) => {
+
+        if (request == null || request.medicationItems == null || request.medicationItems.length === 0) {
+            showErrorToast("No medications available for this request.")
+            return
+        }
+
+        // append pupilId to the "givenPrescriptionSession":
+        setGivenPrescriptionBySession(prev => {
+            const updatedGiven = [...prev]  // clone previous state
+            const pupilId = request.pupilId
+            // check if already exists
+            if ((updatedGiven || []).some(item => item.pupilId === pupilId)) {
+                return updatedGiven // already exists, no need to add again
+            }
+            // if not exists, add new object
+            updatedGiven.push(pupilId);
+            // save to localStorage
+            if (currentSessionInfor()[`session1`] === true) {
+                localStorage.setItem("givenPrescriptionSession1", JSON.stringify(updatedGiven));
+            }
+            else if (currentSessionInfor()[`session2`] === true) {
+                localStorage.setItem("givenPrescriptionSession2", JSON.stringify(updatedGiven));
+            }
+            else if (currentSessionInfor()[`session3`] === true) {
+                localStorage.setItem("givenPrescriptionSession3", JSON.stringify(updatedGiven));
+            }
+            return updatedGiven
+        })
+
+
         // Check if current time is within session window
         if (!isCurrentTimeInSession(selectedSession)) {
             const sessionTime = getSessionTimeWindow(selectedSession)
@@ -736,7 +861,7 @@ const TakeMedicationBySession = () => {
                                 {
                                     pupilsLoading ? (
                                         // show skeletons while loading pupils
-                                        <>{renderLoadingSkeleton({ length: 3 })}</>
+                                        <>{renderTableLoadingSkeleton({ length: 3 })}</>
                                     ) : (
                                         getPupilsByGrade(selectedGrade)?.map((pupil) => {
 
@@ -772,8 +897,13 @@ const TakeMedicationBySession = () => {
                                                             size="small"
                                                             startIcon={<Assignment />}
                                                             onClick={() => handlePupilDetailClick(pupil)}
+                                                            disabled={
+                                                                (currentSessionInfor()[`session${selectedSession + 1}`] === true &&  // in prescription session time
+                                                                localStorage.getItem(`givenPrescriptionSession${selectedSession + 1}`) &&  // has givenPrescriptionSession
+                                                                JSON.parse(localStorage.getItem(`givenPrescriptionSession${selectedSession + 1}`)).includes(pupil.pupilId)) // but already given
+                                                            }
                                                         >
-                                                            Detail
+                                                            DETAIL
                                                         </Button>
                                                     </TableCell>
                                                 </TableRow>
@@ -841,6 +971,9 @@ const TakeMedicationBySession = () => {
                         <>
                             {/* Render each disease as a separate section */}
                             {getPupilMedicationRequests().map((request, diseaseIndex) => {
+
+                                // debug:
+                                // console.log("Rendering disease request:", request) // ✅ Shows actual data
 
                                 const startDate = request.startDate ? getDateFromDDMMYYYY(request.startDate) : null;
                                 const endDate = request.endDate ? getDateFromDDMMYYYY(request.endDate) : null;
@@ -1078,5 +1211,17 @@ const renderLoadingSkeleton = ({ length: length  }) => (
         ))}
     </Container>
 )
+
+const renderTableLoadingSkeleton = ({ length }) => (
+    <>
+        {Array.from({ length }, (_, i) => (
+            <TableRow key={i}>
+                <TableCell colSpan={6}>
+                    <Skeleton variant="rectangular" width="100%" height={40} />
+                </TableCell>
+            </TableRow>
+        ))}
+    </>
+);
 
 export default TakeMedicationBySession

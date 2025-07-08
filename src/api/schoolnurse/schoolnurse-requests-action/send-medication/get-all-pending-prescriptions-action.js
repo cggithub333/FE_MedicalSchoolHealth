@@ -16,7 +16,6 @@ export const getAllPendingPrescriptionsAction = async () => {
     return pendingMedicationRequests
 
   } catch(error) {
-    console.error("Error in getAllPendingPrescriptionsAction: ", error);
     throw error; // Re-throw the error to be handled by the caller
   }
 }
