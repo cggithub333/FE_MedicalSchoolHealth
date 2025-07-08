@@ -47,3 +47,10 @@ export function convertDDMMYYYYToYYYYMMDD(dateStr) {
   if (!year || !month || !day) return dateStr;
   return `${year}-${month}-${day}`;
 }
+
+export function getDateFromDDMMYYYY(dateStr) {
+  // Converts 'dd-mm-yyyy' to a Date object
+  if (!dateStr) return null;
+  const [day, month, year] = dateStr.split("-");
+  return new Date(Number(year), Number(month) - 1, Number(day));
+}
