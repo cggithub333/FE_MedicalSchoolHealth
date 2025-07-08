@@ -34,6 +34,8 @@ import {
 } from "@mui/icons-material"
 import LoginModal from "./login-modal.jsx"
 
+import SchoolHealthIcon from '@mui/icons-material/School';
+
 export default function Homepage() {
   const [servicesAnchor, setServicesAnchor] = useState(null)
   const [blogsAnchor, setBlogsAnchor] = useState(null)
@@ -57,10 +59,8 @@ export default function Homepage() {
       <AppBar position="static" sx={{ bgcolor: "white", color: "text.primary", boxShadow: 1 }}>
         <Toolbar>
           <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
-            <Favorite sx={{ color: "error.main", mr: 1 }} />
-            <Typography variant="h6" sx={{ fontWeight: "bold", color: "text.primary" }}>
-              SchoolHealth+
-            </Typography>
+            <img  src={'/assets/images/blue_logo.png'} alt={'medical health logo'}
+                  style={{ width: "12vw", height: "auto" }}/>
           </Box>
           <LoginModal />
         </Toolbar>
@@ -112,7 +112,7 @@ export default function Homepage() {
       {/* Hero Section */}
       <Box
         sx={{
-          background: "linear-gradient(135deg, #e8f5e8 0%, #e3f2fd 100%)",
+          background: "#ccdde5",
           py: 10,
         }}
       >
@@ -145,8 +145,8 @@ export default function Homepage() {
               variant="contained"
               size="large"
               sx={{
-                bgcolor: "success.main",
-                "&:hover": { bgcolor: "success.dark" },
+                bgcolor: "#5ba8e5",
+                "&:hover": { bgcolor: "#0189f4" },
                 px: 4,
                 py: 1.5,
                 fontSize: "1.1rem",
@@ -331,10 +331,10 @@ export default function Homepage() {
           <Grid container spacing={4}>
             {/* Company Info */}
             <Grid size={{ xs: 12, md: 6 }}>
-              <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                <Favorite sx={{ color: "error.main", mr: 1 }} />
+              <Box sx={{ display: "flex", alignItems: "center", mb: 2, gap: 1 }}>
+                <SchoolHealthIcon sx={{ color: "#fff", mr: 1, fontSize: 25}} />
                 <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                  SchoolHealth+
+                  Medical Health
                 </Typography>
               </Box>
               <Typography variant="body2" sx={{ color: "grey.300", mb: 3 }}>
@@ -383,7 +383,7 @@ export default function Homepage() {
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <Phone sx={{ color: "grey.400", mr: 1, fontSize: 20 }} />
                   <Typography variant="body2" sx={{ color: "grey.300" }}>
-                    +1 (555) 123-4567
+                    +84 234 123 567
                   </Typography>
                 </Box>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -406,7 +406,7 @@ export default function Homepage() {
           <Divider sx={{ my: 4, borderColor: "grey.700" }} />
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap" }}>
             <Typography variant="body2" sx={{ color: "grey.400" }}>
-              © 2024 SchoolHealth+. All rights reserved.
+              © {(new Date().getFullYear())} Medical Health. All rights reserved.
             </Typography>
             <Box sx={{ display: "flex", gap: 3, mt: { xs: 2, md: 0 } }}>
               <Button sx={{ color: "grey.400", p: 0 }}>Privacy Policy</Button>

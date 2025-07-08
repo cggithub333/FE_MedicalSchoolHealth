@@ -136,8 +136,8 @@ export default function LoginModal() {
   return (
     <>
       <Button
-        variant="contained"
-        sx={{ bgcolor: "success.main", "&:hover": { bgcolor: "success.dark" } }}
+        variant="contained" //5ba8e5 0189f4
+        sx={{ bgcolor: "#5ba8e5", "&:hover": { bgcolor: "#0189f4" } }}
         onClick={() => setOpen(true)}
       >
         Login
