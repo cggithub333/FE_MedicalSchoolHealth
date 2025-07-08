@@ -235,6 +235,15 @@ const PrescriptionTrackingLogs = () => {
                         </Card>
                     )
                 })}
+                {
+                    (prescriptionLogs || []).length === 0 && !loadingLogs && (
+                        <Box sx={{ textAlign: "center", p: 2, color: "text.secondary" }}>
+                            <Typography variant="body2">
+                                No prescription logs found for this date.
+                            </Typography>
+                        </Box>
+                    )
+                }
             </Box>
             <Grid container justifyContent="center" sx={{ mt: 3 }}>
                 <Pagination count = {
