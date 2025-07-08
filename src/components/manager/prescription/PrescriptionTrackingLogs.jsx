@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect  } from "react"
 import {
     Box,
     Card,
@@ -32,74 +32,50 @@ import {
 
 import { FaChild as ChildIcon } from "react-icons/fa";
 
-// Fake data for prescription tracking logs
-const prescriptionLogs = [
-    {
-        logId: 4,
-        givenTime: "04-07-2025 19:01:36",
-        note: "+ School Nurse's name: Vy Thủy\n\n+ Disease: Common cold with dry throat; Medication: Honey syrup; Unit & Usage: 5ml to soothe dry throat and suppress cough; Schedule: After breakfast: 9h00-9h30; Given: Yes; Given Time: 7:01:26 PM",
-        status: "GIVEN",
-    },
-    {
-        logId: 5,
-        givenTime: "04-07-2025 19:17:45",
-        note: "+ School Nurse's name: Vy Thủy\n\n+ Disease: Common cold with dry throat; Medication: Honey syrup; Unit & Usage: 5ml to soothe dry throat and suppress cough; Schedule: After breakfast: 9h00-9h30; Given: Yes; Given Time: 7:17:43 PM; Session: 1",
-        status: "GIVEN",
-    },
-    {
-        logId: 6,
-        givenTime: "04-07-2025 19:17:47",
-        note: "+ School Nurse's name: Vy Thủy\n\n+ Disease: Common cold with dry throat; Medication: Honey syrup; Unit & Usage: 5ml to soothe dry throat and suppress cough; Schedule: After breakfast: 9h00-9h30; Given: Yes; Given Time: 7:17:43 PM; Session: 1",
-        status: "GIVEN",
-    },
-    {
-        logId: 7,
-        givenTime: "04-07-2025 19:17:47",
-        note: "+ School Nurse's name: Vy Thủy\n\n+ Disease: Common cold with dry throat; Medication: Honey syrup; Unit & Usage: 5ml to soothe dry throat and suppress cough; Schedule: After breakfast: 9h00-9h30; Given: Yes; Given Time: 7:17:43 PM; Session: 1",
-        status: "GIVEN",
-    },
-    {
-        logId: 8,
-        givenTime: "04-07-2025 19:17:47",
-        note: "+ School Nurse's name: Vy Thủy\n\n+ Disease: Common cold with dry throat; Medication: Honey syrup; Unit & Usage: 5ml to soothe dry throat and suppress cough; Schedule: After breakfast: 9h00-9h30; Given: Yes; Given Time: 7:17:43 PM; Session: 1",
-        status: "GIVEN",
-    },
-    {
-        logId: 9,
-        givenTime: "04-07-2025 19:17:47",
-        note: "+ School Nurse's name: Vy Thủy\n\n+ Disease: Common cold with dry throat; Medication: Honey syrup; Unit & Usage: 5ml to soothe dry throat and suppress cough; Schedule: After breakfast: 9h00-9h30; Given: Yes; Given Time: 7:17:43 PM; Session: 1",
-        status: "GIVEN",
-    },
-    {
-        logId: 10,
-        givenTime: "04-07-2025 19:17:47",
-        note: "+ School Nurse's name: Vy Thủy\n\n+ Disease: Common cold with dry throat; Medication: Honey syrup; Unit & Usage: 5ml to soothe dry throat and suppress cough; Schedule: After breakfast: 9h00-9h30; Given: Yes; Given Time: 7:17:43 PM; Session: 1",
-        status: "GIVEN",
-    },
-    {
-        logId: 11,
-        givenTime: "04-07-2025 19:17:47",
-        note: "+ School Nurse's name: Vy Thủy\n\n+ Disease: Common cold with dry throat; Medication: Honey syrup; Unit & Usage: 5ml to soothe dry throat and suppress cough; Schedule: After breakfast: 9h00-9h30; Given: Yes; Given Time: 7:17:43 PM; Session: 1",
-        status: "GIVEN",
-    },
-    {
-        logId: 12,
-        givenTime: "04-07-2025 19:17:47",
-        note: "+ School Nurse's name: Vy Thủy\n\n+ Disease: Common cold with dry throat; Medication: Honey syrup; Unit & Usage: 5ml to soothe dry throat and suppress cough; Schedule: After breakfast: 9h00-9h30; Given: Yes; Given Time: 7:17:43 PM; Session: 1",
-        status: "GIVEN",
-    },
-    {
-        logId:13,
-        givenTime: "04-07-2025 19:17:47",
-        note: "+ School Nurse's name: Vy Thủy\n\n+ Disease: Common cold with dry throat; Medication: Honey syrup; Unit & Usage: 5ml to soothe dry throat and suppress cough; Schedule: After breakfast: 9h00-9h30; Given: Yes; Given Time: 7:17:43 PM; Session: 1",
-        status: "GIVEN",
-    },
-]
+import useStoredPrescription from '@hooks/store-hooks/useStoredPrescription';
+import useDatePicker from '@hooks/store-hooks/useDatePicker';
+
+import useAllLogsByMedicationIdAndDate from "@hooks/manager/prescription/useAllLogsByMedicationIdAndDate"
 
 import { parseMedicalInfo } from "@utils/parseLogsObject"
 
 const rowsPerPage = 4 // Number of logs to display per page
 const PrescriptionTrackingLogs = () => {
+
+    // store states:
+    const datePicker = useDatePicker();
+    const storedPrescription = useStoredPrescription();
+
+    // local states:
+    const [pickedDate, setPickedDate] = useState(datePicker?.value || new Date());
+    const [selectedPrescription, setSelectedPrescription] = useState(storedPrescription?.selectedPrescription || null);
+
+
+    const { prescriptionLogs, loading: loadingLogs, error: errorLogs, fetchLogs } = useAllLogsByMedicationIdAndDate(selectedPrescription, pickedDate)
+
+    // refetch if datePicker or storedPrescription changes
+    useEffect(() => {
+
+        // debug:
+        // console.log("Picked Date:", pickedDate);
+        // console.log("Selected Prescription:", selectedPrescription);
+
+        // If datePicker or storedPrescription changes, update local states and fetch logs
+        if (datePicker?.value && datePicker.value !== pickedDate) {
+            setPickedDate(datePicker.value);
+        }
+        // If storedPrescription changes, update selectedPrescription
+        if (storedPrescription?.selectedPrescription && storedPrescription.selectedPrescription !== selectedPrescription) {
+            setSelectedPrescription(storedPrescription.selectedPrescription);
+        }
+        // Fetch logs with the current medicationId and date
+        // Only call fetchLogs if the dependencies actually changed
+        if (storedPrescription?.selectedPrescription?.sendMedicationId && (datePicker?.value || pickedDate)) {
+            fetchLogs(storedPrescription.selectedPrescription.sendMedicationId, datePicker?.value || pickedDate
+        );
+        }
+    }, [datePicker, storedPrescription, pickedDate, selectedPrescription, fetchLogs]);
+
     const [selectedLog, setSelectedLog] = useState(null)
     const [dialogOpen, setDialogOpen] = useState(false)
     const [pageIndex, setPageIndex] = useState(1)
@@ -161,12 +137,12 @@ const PrescriptionTrackingLogs = () => {
                 <Typography variant="h6" fontWeight="bold">
                     Prescription Logs
                 </Typography>
-                <Chip label={prescriptionLogs.length} size="small" color="primary" sx={{ ml: "auto" }} />
+                <Chip label={(prescriptionLogs || []).length} size="small" color="primary" sx={{ ml: "auto" }} />
             </Box>
 
             {/* Compact Log Cards */}
             <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
-                {prescriptionLogs.map((log, idx) => {
+                {(prescriptionLogs || []).map((log, idx) => {
 
                     const startIdx = (pageIndex - 1) * rowsPerPage;
                     const endIdx = startIdx + rowsPerPage;
@@ -231,8 +207,8 @@ const PrescriptionTrackingLogs = () => {
             </Box>
             <Grid container justifyContent="center" sx={{ mt: 3 }}>
                 <Pagination count = {
-                                    prescriptionLogs.length > 0 ? 
-                                        Math.ceil(prescriptionLogs.length / rowsPerPage)  : 1
+                                    (prescriptionLogs || []).length > 0 ? 
+                                        Math.ceil((prescriptionLogs || []).length / rowsPerPage)  : 1
                                 }    
                             variant="outlined" 
                             color="primary" 
@@ -406,5 +382,6 @@ const PrescriptionTrackingLogs = () => {
         </Paper>
     )
 }
+
 
 export default PrescriptionTrackingLogs

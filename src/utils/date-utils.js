@@ -54,3 +54,19 @@ export function getDateFromDDMMYYYY(dateStr) {
   const [day, month, year] = dateStr.split("-");
   return new Date(Number(year), Number(month) - 1, Number(day));
 }
+
+export function getYYYYMMDDFromDate(date) {
+  // Converts a Date object to 'yyyy-mm-dd'
+  if (!(date instanceof Date)) return '';
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+export function getYYYYMMDDFromISOString(isoString) {
+  // Converts an ISO date string to 'yyyy-mm-dd'
+  const date = new Date(isoString);
+  if (isNaN(date.getTime())) return '';
+  return getYYYYMMDDFromDate(date);
+}

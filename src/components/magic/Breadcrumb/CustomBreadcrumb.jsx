@@ -7,7 +7,8 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 export default function CustomSeparator({ breadcrumbPairs }) {
 
-  console.log(breadcrumbPairs);
+  // debug:
+  // console.log(breadcrumbPairs);
 
   const breadcrumbs = [];
 

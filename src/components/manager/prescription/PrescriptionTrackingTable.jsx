@@ -71,33 +71,33 @@ const PrescriptionTrackingTable = () => {
 
     // refetched new value for storedPrescription:
     useEffect(() => {
-        console.log("-------useEffect code -------");
+        // console.log("-------useEffect code -------");
         if (storedPrescription?.selectedPrescription) {
             // debug:
-            console.log("Redux updated state: ", storedPrescription.selectedPrescription);
+            // console.log("Redux updated state: ", storedPrescription.selectedPrescription);
         } else{
             // debug:
-            console.log("No selected prescription in Redux state.");
+            // console.log("No selected prescription in Redux state.");
         }
-        console.log("-----End useEffect code -----");
+        // console.log("-----End useEffect code -----");
     }, [storedPrescription]); // catch the changes of prescription inside the  storedPrescription for debugging
 
     // refetch prescriptions when datePickerData changes
     useEffect(() => {
-        console.log("-------useEffect code -------");
+        // console.log("-------useEffect code -------");
         if (datePickerData) {
             // debug:
-            console.log("DatePickerData available, filtering prescriptions by date...");
+            // console.log("DatePickerData available, filtering prescriptions by date...");
 
             setFilterAllPrescriptionsByDate(filterPrescriptionsByDate(allPrescriptions))
             setFilterInProgressPrescriptionsByDate(filterPrescriptionsByDate(inProgressPrescriptions))
             setFilterCompletedPrescriptionsByDate(filterPrescriptionsByDate(completedPrescriptions))
         } else{
             // debug:
-            console.log("No datePickerData available, skipping filter.");
+            // console.log("No datePickerData available, skipping filter.");
         }
-        console.log("------End useEffect code -----");
-    }, [datePickerData])
+        // console.log("------End useEffect code -----");
+    }, [datePickerData, allPrescriptions, inProgressPrescriptions, completedPrescriptions])
 
     // Separate page states for each tab
     const [pageIndexes, setPageIndexes] = useState({
@@ -134,9 +134,9 @@ const PrescriptionTrackingTable = () => {
             }
 
             // debug:
-            console.log("convertedDatePickerValue:", convertedDatePickerValue);
-            console.log("Start Date:", startDate);
-            console.log("End Date:", endDate);
+            // console.log("convertedDatePickerValue:", convertedDatePickerValue);
+            // console.log("Start Date:", startDate);
+            // console.log("End Date:", endDate);
 
             return convertedDatePickerValue && (
                         convertedDatePickerValue.localeCompare(startDate) >= 0 
@@ -193,15 +193,15 @@ const PrescriptionTrackingTable = () => {
         }
 
         // debug:
-        console.log("----Handel Row Click----")
+        // console.log("----Handel Row Click----")
 
         // console pupil id, name:
-        console.log("Pupil ID:", prescription.pupilId)
-        console.log("Pupil Name:", prescription.pupilLastName, prescription.pupilFirstName)
+        // console.log("Pupil ID:", prescription.pupilId)
+        // console.log("Pupil Name:", prescription.pupilLastName, prescription.pupilFirstName)
 
         // debug: test filter function
         const  filteredPrescriptions = filterPrescriptionsByDate(allPrescriptions);
-        console.log("Filtered from ALl Prescriptions by Date:", filteredPrescriptions);
+        // console.log("Filtered from ALl Prescriptions by Date:", filteredPrescriptions);
     }
 
     const PrescriptionTable = ({ prescriptions, option }) => {
@@ -339,7 +339,7 @@ const PrescriptionTrackingTable = () => {
                         onChange={(event, page) => { 
                             
                             // debug:
-                            console.log("Page number:" , page);
+                            // console.log("Page number:" , page);
 
                             setPageIndexes(prev => ({ 
                                 ...prev, 
