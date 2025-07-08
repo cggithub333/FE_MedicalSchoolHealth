@@ -38,304 +38,16 @@ import PrescriptionDatePicker from "./PrescriptionDatePicker"
 
 import useDatePicker from "../../../hooks/store-hooks/useDatePicker"
 
-// Fake prescriptions data:
-const allPrescriptions = [
-    {
-        pupilId: "PP0006",
-        pupilFirstName: "Em",
-        pupilLastName: "Hoàng",
-        senderName: "AnhQuốc",
-        sendMedicationId: 1,
-        diseaseName: "Common cold with cough",
-        startDate: "05-07-2025",
-        endDate: "09-07-2025",
-        requestedDate: "04-07-2025 18:10:43",
-        prescriptionImage:
-            "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751627439623-thuoc-tay-2.jpg?alt=media&token=728206e9-054f-4d20-8fb8-1d4dcd1e0ab9",
-        note: "Child has persistent dry cough due to allergy. Needs antihistamine and cough suppressant.",
-        status: "APPROVED",
-        medicationItems: [
-            {
-                medicationId: 15,
-                medicationName: "Betadine gargle",
-                unitAndUsage: "Gargle for 30 seconds",
-                medicationSchedule: "After breakfast: 9h00-9h30",
-            },
-        ],
-    },
-    {
-        pupilId: "PP0006",
-        pupilFirstName: "Em",
-        pupilLastName: "Hoàng",
-        senderName: "AnhQuốc",
-        sendMedicationId: 2,
-        diseaseName: "Allergic cough",
-        startDate: "04-07-2025",
-        endDate: "15-07-2025",
-        requestedDate: "04-07-2025 18:11:46",
-        prescriptionImage:
-            "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751627504653-thuoc-tay-3.jpeg?alt=media&token=bd7153ef-7b49-4582-be0d-0b8465ae1b42",
-        note: "Child has persistent dry cough due to allergy. Needs antihistamine and cough suppressant.",
-        status: "COMPLETED",
-        medicationItems: [
-            {
-                medicationId: 15,
-                medicationName: "Betadine gargle",
-                unitAndUsage: "Gargle for 30 seconds",
-                medicationSchedule: "After breakfast: 9h00-9h30",
-            },
-        ],
-    },
-    {
-        pupilId: "PP0007",
-        pupilFirstName: "Lan",
-        pupilLastName: "Võ",
-        senderName: "AnhQuốc",
-        sendMedicationId: 3,
-        diseaseName: "Mild cold and throat irritation",
-        startDate: "04-07-2025",
-        endDate: "10-07-2025",
-        requestedDate: "04-07-2025 18:13:06",
-        prescriptionImage:
-            "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751627585773-thuoc-tay-4.jpg?alt=media&token=87fa66f2-7cd9-4d03-a663-9ffad8b143cf",
-        note: "Child has slight cold symptoms, no fever. Needs throat lozenges and warm fluids.",
-        status: "APPROVED",
-        medicationItems: [
-            {
-                medicationId: 15,
-                medicationName: "Betadine gargle",
-                unitAndUsage: "Gargle for 30 seconds",
-                medicationSchedule: "After breakfast: 9h00-9h30",
-            },
-        ],
-    },
-    {
-        pupilId: "PP0007",
-        pupilFirstName: "Lan",
-        pupilLastName: "Võ",
-        senderName: "AnhQuốc",
-        sendMedicationId: 4,
-        diseaseName: "Mild cold and throat irritation",
-        startDate: "04-07-2025",
-        endDate: "10-07-2025",
-        requestedDate: "04-07-2025 18:13:06",
-        prescriptionImage:
-            "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751627585773-thuoc-tay-4.jpg?alt=media&token=87fa66f2-7cd9-4d03-a663-9ffad8b143cf",
-        note: "Child has slight cold symptoms, no fever. Needs throat lozenges and warm fluids.",
-        status: "APPROVED",
-        medicationItems: [
-            {
-                medicationId: 15,
-                medicationName: "Betadine gargle",
-                unitAndUsage: "Gargle for 30 seconds",
-                medicationSchedule: "After breakfast: 9h00-9h30",
-            },
-        ],
-    },
-    {
-        pupilId: "PP0007",
-        pupilFirstName: "Lan",
-        pupilLastName: "Võ",
-        senderName: "AnhQuốc",
-        sendMedicationId: 5,
-        diseaseName: "Mild cold and throat irritation",
-        startDate: "04-07-2025",
-        endDate: "10-07-2025",
-        requestedDate: "04-07-2025 18:13:06",
-        prescriptionImage:
-            "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751627585773-thuoc-tay-4.jpg?alt=media&token=87fa66f2-7cd9-4d03-a663-9ffad8b143cf",
-        note: "Child has slight cold symptoms, no fever. Needs throat lozenges and warm fluids.",
-        status: "APPROVED",
-        medicationItems: [
-            {
-                medicationId: 15,
-                medicationName: "Betadine gargle",
-                unitAndUsage: "Gargle for 30 seconds",
-                medicationSchedule: "After breakfast: 9h00-9h30",
-            },
-        ],
-    },
-    {
-        pupilId: "PP0007",
-        pupilFirstName: "Lan",
-        pupilLastName: "Võ",
-        senderName: "AnhQuốc",
-        sendMedicationId: 6,
-        diseaseName: "Mild cold and throat irritation",
-        startDate: "04-07-2025",
-        endDate: "10-07-2025",
-        requestedDate: "04-07-2025 18:13:06",
-        prescriptionImage:
-            "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751627585773-thuoc-tay-4.jpg?alt=media&token=87fa66f2-7cd9-4d03-a663-9ffad8b143cf",
-        note: "Child has slight cold symptoms, no fever. Needs throat lozenges and warm fluids.",
-        status: "APPROVED",
-        medicationItems: [
-            {
-                medicationId: 15,
-                medicationName: "Betadine gargle",
-                unitAndUsage: "Gargle for 30 seconds",
-                medicationSchedule: "After breakfast: 9h00-9h30",
-            },
-        ],
-    },
-    {
-        pupilId: "PP0007",
-        pupilFirstName: "Lan",
-        pupilLastName: "Võ",
-        senderName: "AnhQuốc",
-        sendMedicationId:7,
-        diseaseName: "Mild cold and throat irritation",
-        startDate: "04-07-2025",
-        endDate: "10-07-2025",
-        requestedDate: "04-07-2025 18:13:06",
-        prescriptionImage:
-            "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751627585773-thuoc-tay-4.jpg?alt=media&token=87fa66f2-7cd9-4d03-a663-9ffad8b143cf",
-        note: "Child has slight cold symptoms, no fever. Needs throat lozenges and warm fluids.",
-        status: "APPROVED",
-        medicationItems: [
-            {
-                medicationId: 15,
-                medicationName: "Betadine gargle",
-                unitAndUsage: "Gargle for 30 seconds",
-                medicationSchedule: "After breakfast: 9h00-9h30",
-            },
-        ],
-    },
-]
-
-const inProgressPrescriptions = [
-    {
-        pupilId: "PP0006",
-        pupilFirstName: "Em",
-        pupilLastName: "Hoàng",
-        senderName: "AnhQuốc",
-        sendMedicationId: 1,
-        diseaseName: "Common cold with cough",
-        startDate: "05-07-2025",
-        endDate: "09-07-2025",
-        requestedDate: "04-07-2025 18:10:43",
-        prescriptionImage:
-            "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751627439623-thuoc-tay-2.jpg?alt=media&token=728206e9-054f-4d20-8fb8-1d4dcd1e0ab9",
-        note: "Child has persistent dry cough due to allergy. Needs antihistamine and cough suppressant.",
-        status: "APPROVED",
-        medicationItems: [
-            {
-                medicationId: 15,
-                medicationName: "Betadine gargle",
-                unitAndUsage: "Gargle for 30 seconds",
-                medicationSchedule: "After breakfast: 9h00-9h30",
-            },
-        ],
-    },
-    {
-        pupilId: "PP0006",
-        pupilFirstName: "Em",
-        pupilLastName: "Hoàng",
-        senderName: "AnhQuốc",
-        sendMedicationId: 2,
-        diseaseName: "Allergic cough",
-        startDate: "04-07-2025",
-        endDate: "15-07-2025",
-        requestedDate: "04-07-2025 18:11:46",
-        prescriptionImage:
-            "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751627504653-thuoc-tay-3.jpeg?alt=media&token=bd7153ef-7b49-4582-be0d-0b8465ae1b42",
-        note: "Child has persistent dry cough due to allergy. Needs antihistamine and cough suppressant.",
-        status: "APPROVED",
-        medicationItems: [
-            {
-                medicationId: 15,
-                medicationName: "Betadine gargle",
-                unitAndUsage: "Gargle for 30 seconds",
-                medicationSchedule: "After breakfast: 9h00-9h30",
-            },
-        ],
-    },
-    {
-        pupilId: "PP0007",
-        pupilFirstName: "Lan",
-        pupilLastName: "Võ",
-        senderName: "AnhQuốc",
-        sendMedicationId: 3,
-        diseaseName: "Mild cold and throat irritation",
-        startDate: "04-07-2025",
-        endDate: "10-07-2025",
-        requestedDate: "04-07-2025 18:13:06",
-        prescriptionImage:
-            "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751627585773-thuoc-tay-4.jpg?alt=media&token=87fa66f2-7cd9-4d03-a663-9ffad8b143cf",
-        note: "Child has slight cold symptoms, no fever. Needs throat lozenges and warm fluids.",
-        status: "APPROVED",
-        medicationItems: [
-            {
-                medicationId: 15,
-                medicationName: "Betadine gargle",
-                unitAndUsage: "Gargle for 30 seconds",
-                medicationSchedule: "After breakfast: 9h00-9h30",
-            },
-        ],
-    },
-]
-
-const completedPrescriptions = [
-    {
-        pupilId: "PP0007",
-        pupilFirstName: "Lan",
-        pupilLastName: "Võ",
-        senderName: "AnhQuốc",
-        sendMedicationId: 7,
-        diseaseName: "Common cold with dry throat",
-        startDate: "04-07-2025",
-        endDate: "05-07-2025",
-        requestedDate: "04-07-2025 20:48:55",
-        prescriptionImage:
-            "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751636931778-thuoc-tay-2.jpg?alt=media&token=a783bf40-30ef-4b0f-a86f-61e810a5762c",
-        note: "Just mild cold, no fever. Took honey-based syrup for throat relief.",
-        status: "COMPLETED",
-        medicationItems: [
-            {
-                medicationId: 12,
-                medicationName: "Honey syrup",
-                unitAndUsage: "5ml to soothe dry throat and suppress cough",
-                medicationSchedule: "After breakfast: 9h00-9h30",
-            },
-            {
-                medicationId: 13,
-                medicationName: "Honey syrup 2",
-                unitAndUsage: "5ml to soothe dry throat and suppress cough",
-                medicationSchedule: "Before lunch: 10h30-11h00",
-            },
-            {
-                medicationId: 14,
-                medicationName: "Honey syrup 3",
-                unitAndUsage: "5ml to soothe dry throat and suppress cough",
-                medicationSchedule: "After lunch: 11h30-12h00",
-            },
-        ],
-    },
-    {
-        pupilId: "PP0006",
-        pupilFirstName: "Em",
-        pupilLastName: "Hoàng",
-        senderName: "AnhQuốc",
-        sendMedicationId: 8,
-        diseaseName: "New disease",
-        startDate: "18-07-2025",
-        endDate: "22-07-2025",
-        requestedDate: "05-07-2025 16:19:52",
-        prescriptionImage: "https://anh.24h.com.vn/upload/4-2014/images/2014-10-24/1414124020-toa-thuoc.jpg",
-        note: "asdasdasd",
-        status: "COMPLETED",
-        medicationItems: [
-            {
-                medicationId: 15,
-                medicationName: "Betadine gargle",
-                unitAndUsage: "Gargle for 30 seconds",
-                medicationSchedule: "After breakfast: 9h00-9h30",
-            },
-        ],
-    },
-]
+import useGetInProgressPrescriptions from "@hooks/manager/prescription/useGetInProgressPrescriptions"
+import useGetAllPrescriptions from "@hooks/manager/prescription/useGetAllPrescriptions"
+import useGetCompletedPrescriptions from "@hooks/manager/prescription/useCompletedPrescriptions"
 
 const PrescriptionTrackingTable = () => {
+
+    const { allPrescriptions, loading: allLoading, error: allError, refetch: allRefetch } = useGetAllPrescriptions()
+    const { inProgressPrescriptions, loading: inProgressLoading, error: inProgressError, refetch: inProgressRefetch } = useGetInProgressPrescriptions()
+    const { completedPrescriptions, loading: completedLoading, error: completedError, refetch: completedRefetch } = useGetCompletedPrescriptions()
+
     const [value, setValue] = useState("1")
     const [selectedPrescription, setSelectedPrescription] = useState(null)
     const [dialogOpen, setDialogOpen] = useState(false)
@@ -520,6 +232,15 @@ const PrescriptionTrackingTable = () => {
                                     </TableRow>
                                 )
                             })}
+                            {prescriptions.length === 0 && (
+                                <TableRow>
+                                    <TableCell colSpan={7} align="center">
+                                        <Typography variant="body2" color="text.secondary">
+                                            No prescriptions found.
+                                        </Typography>
+                                    </TableCell>
+                                </TableRow>
+                            )}
                         </TableBody>
 
                     </Table>
@@ -571,7 +292,7 @@ const PrescriptionTrackingTable = () => {
                             label={
                                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                                     <LocalPharmacy fontSize="small" />
-                                    All ({allPrescriptions.length})
+                                    All ({allPrescriptions?.length})
                                 </Box>
                             }
                             value="1"
@@ -580,7 +301,7 @@ const PrescriptionTrackingTable = () => {
                             label={
                                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                                     <CalendarToday fontSize="small" />
-                                    In Progress ({inProgressPrescriptions.length})
+                                    In Progress ({inProgressPrescriptions?.length})
                                 </Box>
                             }
                             value="2"
@@ -589,7 +310,7 @@ const PrescriptionTrackingTable = () => {
                             label={
                                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                                     <Medication fontSize="small" />
-                                    Completed ({completedPrescriptions.length})
+                                    Completed ({completedPrescriptions?.length})
                                 </Box>
                             }
                             value="3"
