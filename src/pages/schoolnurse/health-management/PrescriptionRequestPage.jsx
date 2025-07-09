@@ -12,7 +12,8 @@ const PrescriptionRequestPage = () => {
     <div style={{ background: "#E6F8F9", height: "100vh", paddingBottom: "50px", paddingTop: "10px", position: "relative" }}>
       <Grid container>
         <Grid item size={{ xs: 6 }}>
-          <Breadcrumb breadcrumbPairs={breadcrumbPairs} />
+          <Breadcrumb
+            crumb breadcrumbPairs={breadcrumbPairs} />
         </Grid>
       </Grid>
       <Grid container>

@@ -20,6 +20,7 @@ import {
 import { CalendarToday, Person, Phone, Email, Warning, LocalHospital, Print, Clear, Save } from "@mui/icons-material"
 import { Autocomplete } from '@mui/material';
 import "./MedicalEventForm.scss"
+import { showSuccessToast, showErrorToast } from '../../../../utils/toast-utils';
 
 //custom hooks
 import { useGetPupilsInformation } from "../../../../hooks/schoolnurse/new-event/useGetPupilsInformation"
@@ -52,6 +53,7 @@ const MedicalEventForm = ({ onCancel, onSuccess }) => {
     const [showPupilDetails, setShowPupilDetails] = useState(false)
     const [selectedMedications, setSelectedMedications] = useState([])
     const [selectedEquipment, setSelectedEquipment] = useState([])
+    const [confirmSubmit, setConfirmSubmit] = useState(false)
 
     // Use custom hooks for real data
     const { pupilsList: pupils = [], loading: pupilsLoading } = useGetPupilsInformation();
@@ -72,7 +74,7 @@ const MedicalEventForm = ({ onCancel, onSuccess }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!selectedPupil) {
-            alert('Please select a pupil.');
+            showErrorToast('Please select a pupil.');
             return;
         }
         await createNewMedicalEvent({
@@ -85,7 +87,10 @@ const MedicalEventForm = ({ onCancel, onSuccess }) => {
             medicationIds: selectedMedications.map(m => m.medicationId),
         });
         if (!createError) {
+            // showSuccessToast('Medical event created successfully');
             if (onSuccess) onSuccess();
+        } else {
+            showErrorToast('Failed to create medical event');
         }
     }
 
@@ -155,6 +160,9 @@ const MedicalEventForm = ({ onCancel, onSuccess }) => {
                         </Fade>
 
                         <form onSubmit={handleSubmit}>
+                            {/* Confirmation Checkbox */}
+
+
                             <Box sx={{ mt: 4, display: "flex", flexDirection: "column", gap: 4 }}>
                                 {/* Student Information */}
                                 <Slide direction="up" in timeout={600}>
@@ -202,10 +210,10 @@ const MedicalEventForm = ({ onCancel, onSuccess }) => {
                                                         type="datetime-local"
                                                         label="Date & Time"
                                                         value={formData.dateTime}
-                                                        onChange={(e) => handleInputChange("dateTime", e.target.value)}
                                                         InputLabelProps={{ shrink: true }}
                                                         InputProps={{
                                                             startAdornment: <CalendarToday sx={{ mr: 1, color: "action.active" }} />,
+                                                            readOnly: true
                                                         }}
                                                     />
                                                 </Grid>
@@ -413,6 +421,26 @@ const MedicalEventForm = ({ onCancel, onSuccess }) => {
                                     <Card className="action-buttons-card" elevation={4}>
                                         <Box sx={{ p: 3 }}>
                                             <Grid container spacing={2}>
+
+                                                <Grid item size={12}>
+                                                    <Box sx={{ mb: 2 }}>
+                                                        <FormControl required component="fieldset">
+                                                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                                <input
+                                                                    type="checkbox"
+                                                                    id="confirm-submit"
+                                                                    checked={confirmSubmit}
+                                                                    onChange={e => setConfirmSubmit(e.target.checked)}
+                                                                    style={{ marginRight: 8 }}
+                                                                />
+                                                                <label htmlFor="confirm-submit" style={{ fontWeight: 500 }}>
+                                                                    I confirm that the information provided is accurate and complete.
+                                                                </label>
+                                                            </Box>
+                                                        </FormControl>
+                                                    </Box>
+                                                </Grid>
+
                                                 <Grid item xs={12} sm={6} md={4}>
                                                     <Button
                                                         type="submit"
@@ -421,6 +449,7 @@ const MedicalEventForm = ({ onCancel, onSuccess }) => {
                                                         fullWidth
                                                         className="submit-button"
                                                         startIcon={<Save />}
+                                                        disabled={!confirmSubmit}
                                                     >
                                                         Submit Report
                                                     </Button>

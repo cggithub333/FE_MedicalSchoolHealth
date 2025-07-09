@@ -53,12 +53,19 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
 import { useGetAllConsentFormByStatus } from "../../../../../hooks/schoolnurse/vaccination/vaccination/useGetAllConsentFormByStatus";
+import { showSuccessToast, showErrorToast } from '../../../../../utils/toast-utils';
 
 const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
     const injectedResult = useGetAllConsentFormByStatus(campaign.campaignId, "INJECTED");
     const noShowResult = useGetAllConsentFormByStatus(campaign.campaignId, "NO_SHOW");
-    const notYetResult = useGetAllConsentFormByStatus(campaign.campaignId, "");
-    const allResult = useGetAllConsentFormByStatus(campaign.campaignId, "");
+    const notYetResult = useGetAllConsentFormByStatus(campaign.campaignId, "APPROVED");
+    const allResult = useGetAllConsentFormByStatus(campaign.campaignId, "APPROVED");
+
+    console.log("Injected Result:", injectedResult);
+    console.log("No Show Result:", noShowResult);
+    console.log("Not Yet Result:", notYetResult);
+    console.log("All Result:", allResult);
+
 
     const isLoading = injectedResult.isLoading || noShowResult.isLoading || allResult.isLoading;
 
@@ -223,6 +230,7 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
         const consentFormId = student.consentFormId;
 
         if (!consentFormId) {
+            showErrorToast("Consent Form ID missing!");
             setSnackbar({ open: true, message: "Consent Form ID missing!", severity: "error" });
             setSavingIndex(null);
             return;
@@ -232,6 +240,7 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
             const success = await saveResultOfVaccinationCampaign(consentFormId, status, notes);
 
             if (success) {
+                showSuccessToast(`Status saved as ${status} for ${student.firstName} ${student.lastName}.`);
                 // Update local state optimistically
                 const updated = [...students];
                 if (status === 'INJECTED') {
@@ -261,10 +270,12 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
                     allResult.refetch?.();
                 }, 500);
             } else {
+                showErrorToast("Failed to save status.");
                 setSnackbar({ open: true, message: "Failed to save status.", severity: "error" });
             }
         } catch (error) {
             console.error("Error saving vaccination result:", error);
+            showErrorToast("Error saving status.");
             setSnackbar({ open: true, message: "Error saving status.", severity: "error" });
         } finally {
             setSavingIndex(null);

@@ -49,6 +49,7 @@ import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import { useGetAllMedicalEventByPupilsId } from "../../../../hooks/schoolnurse/new-event/useGetAllMedicalEventByPupilsId"
 import { useGetVaccinationHistoryByPupilId } from "../../../../hooks/schoolnurse/new-event/useGetVaccinationByPupilId"
 import { useGetAllHealthCheckByPupilID } from "../../../../hooks/schoolnurse/new-event/useGetAllHealthCheckByPupilID"
+import useSearchPupilInforByPupilId from "../../../../hooks/schoolnurse/useSearchPupilInforByPupilId";
 
 import MedicalEventDetails from "./medical-event-details/EventFormResult.jsx";
 import ScheduleResult from "./healthcheck-schedule-management-result/ScheduleResult.jsx";
@@ -95,51 +96,7 @@ const Item = styled(Paper)(({ theme }) => ({
     },
 }));
 
-// Add StyledCard definition for consistent card styling
-const StyledCard = styled(Card)(({ theme }) => ({
-    borderRadius: theme.spacing(2),
-    boxShadow: theme.shadows[1],
-    background: theme.palette.background.paper,
-    marginBottom: theme.spacing(2),
-    transition: "all 0.3s ease",
-    '&:hover': {
-        boxShadow: theme.shadows[3],
-        transform: 'translateY(-2px)',
-    },
-    '& .MuiCardContent-root': {
-        padding: theme.spacing(3),
-    },
-    '& .MuiTypography-root': {
-        color: theme.palette.text.primary,
-    },
-    alignItems: "center",
-    display: "flex",
 
-}));
-
-const InfoBox = styled(Paper)(({ theme }) => ({
-    padding: theme.spacing(3),
-    borderRadius: "12px",
-    background: "linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.9))",
-    border: "1px solid rgba(0, 0, 0, 0.06)",
-    transition: "all 0.3s ease",
-    "&:hover": {
-        background: "linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.95))",
-        transform: "translateY(-1px)",
-        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-    },
-}))
-
-const SectionHeader = styled(Box)(({ theme }) => ({
-    display: "flex",
-    alignItems: "center",
-    gap: theme.spacing(2),
-    marginBottom: theme.spacing(3),
-    padding: theme.spacing(2),
-    background: "linear-gradient(135deg, rgba(25, 118, 210, 0.05), rgba(21, 101, 192, 0.05))",
-    borderRadius: "12px",
-    border: "1px solid rgba(25, 118, 210, 0.1)",
-}))
 
 const MedicalEventResultForm = ({ pupilId, onBack }) => {
     const [tabValue, setTabValue] = useState(0)
@@ -172,25 +129,28 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
         loading: isVaccinationLoading,
         error: vaccinationError
     } = useGetVaccinationHistoryByPupilId(pupilId);
-    console.log("Vaccination History2:", vaccinationHistory);
 
     // Fetch health check history for the selected pupil
     const {
-        healthCheckCampaigns = [],
+        healthCheckList: rawHealthCheckList = [],
         loading: isHealthCheckLoading,
         error: healthCheckError
     } = useGetAllHealthCheckByPupilID(pupilId) || {};
     // Defensive: ensure array
-    const healthCheckList = Array.isArray(healthCheckCampaigns) ? healthCheckCampaigns : (Array.isArray(healthCheckCampaigns?.data) ? healthCheckCampaigns.data : []);
+    const healthCheckList = Array.isArray(rawHealthCheckList) ? rawHealthCheckList : (Array.isArray(rawHealthCheckList?.data) ? rawHealthCheckList.data : []);
+
+    // Fetch full pupil info by pupilId
+    const { pupilInfo, isLoading: isPupilLoading, error: pupilError } = useSearchPupilInforByPupilId(pupilId);
 
     const event = medicalEvents[0]; // or any event in the array
 
     // Defensive checks to avoid TypeError if event or event.pupil is undefined
-    const pupilName = event && event.pupil ? `${event.pupil.firstName} ${event.pupil.lastName}` : "";
-    const grade = event && event.pupil ? (event.pupil.gradeName || event.pupil.gradeLevel || "") : "";
-    const gender = event && event.pupil ? event.pupil.gender : "";
-
-    const parent = event && event.pupil && Array.isArray(event.pupil.parents) && event.pupil.parents.length > 0 ? event.pupil.parents[0] : null;
+    // Use pupilInfo for details if available, fallback to event.pupil
+    const pupil = pupilInfo || (event && event.pupil) || {};
+    const pupilName = pupil.firstName && pupil.lastName ? `${pupil.firstName} ${pupil.lastName}` : "";
+    const grade = pupil.gradeName || pupil.gradeLevel || "";
+    const gender = pupil.gender || "";
+    const parent = Array.isArray(pupil.parents) && pupil.parents.length > 0 ? pupil.parents[0] : null;
     const parentName = parent ? `${parent.firstName} ${parent.lastName}` : "";
     const parentPhone = parent ? parent.phoneNumber : "";
 
@@ -209,6 +169,28 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
                 return "default"
         }
     }
+
+    // Get the most recent health check result (by createdAt)
+    let latestHealthCheck = null;
+    if (healthCheckList.length > 0) {
+        // Defensive: consentForms may be array or object
+        const getHistory = (campaign) => {
+            const consentForm = Array.isArray(campaign.consentForms) ? campaign.consentForms[0] : campaign.consentForms;
+            return consentForm?.healthCheckHistoryRes || null;
+        };
+        latestHealthCheck = healthCheckList
+            .map(getHistory)
+            .filter(Boolean)
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0] || null;
+    }
+    const Height = latestHealthCheck?.height || '-';
+    const Weight = latestHealthCheck?.weight || '-';
+    const BMI = latestHealthCheck && latestHealthCheck.height && latestHealthCheck.weight ? (latestHealthCheck.weight / ((latestHealthCheck.height / 100) ** 2)).toFixed(2) : '-';
+    const Lefteye = latestHealthCheck?.leftEyeVision || '-';
+    const Righteye = latestHealthCheck?.rightEyeVision || '-';
+    const BloodPressure = latestHealthCheck?.bloodPressure || '-';
+    const DentalCheck = latestHealthCheck?.dentalCheck || '-';
+    const Notes = latestHealthCheck?.additionalNotes || '-';
 
     if (isMedicalEventsLoading) {
         return <Box p={4}><Typography>Loading medical events...</Typography></Box>;
@@ -325,7 +307,7 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
                                         <Typography variant="h6" sx={{ alignItems: 'center', gap: 1, color: '#1976d2' }}>
                                             Height
                                         </Typography>
-                                        {/* <span>{Height}</span> */}
+                                        <span>{Height}</span>
                                     </Item>
                                 </Grid>
                                 <Grid size={4}>
@@ -333,7 +315,7 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
                                         <Typography variant="h6" sx={{ alignItems: 'center', gap: 1, color: '#1976d2' }}>
                                             Weight
                                         </Typography>
-                                        {/* <span>{Weight}</span> */}
+                                        <span>{Weight}</span>
                                     </Item>
                                 </Grid>
                                 <Grid size={4}>
@@ -341,7 +323,7 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
                                         <Typography variant="h6" sx={{ alignItems: 'center', gap: 1, color: '#1976d2' }}>
                                             BMI
                                         </Typography>
-                                        {/* <span>{BMI}</span> */}
+                                        <span>{BMI}</span>
                                     </Item>
                                 </Grid>
                                 <Grid size={6}>
@@ -349,7 +331,7 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
                                         <Typography variant="h6" sx={{ alignItems: 'center', gap: 1, color: '#1976d2' }}>
                                             Left eye
                                         </Typography>
-                                        {/* <span>{Lefteye}</span> */}
+                                        <span>{Lefteye}</span>
                                     </Item>
                                 </Grid>
                                 <Grid size={6}>
@@ -357,7 +339,7 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
                                         <Typography variant="h6" sx={{ alignItems: 'center', gap: 1, color: '#1976d2' }}>
                                             Right eye
                                         </Typography>
-                                        {/* <span>{Righteye}</span> */}
+                                        <span>{Righteye}</span>
                                     </Item>
                                 </Grid>
                                 <Grid size={6}>
@@ -365,7 +347,7 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
                                         <Typography variant="h6" sx={{ alignItems: 'center', gap: 1, color: '#1976d2' }}>
                                             Blood Pressure
                                         </Typography>
-                                        {/* <span>{BloodPressure}</span> */}
+                                        <span>{BloodPressure}</span>
                                     </Item>
                                 </Grid>
                                 <Grid size={6}>
@@ -373,7 +355,7 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
                                         <Typography variant="h6" sx={{ alignItems: 'center', gap: 1, color: '#1976d2' }}>
                                             Dental Check
                                         </Typography>
-                                        {/* <span>{DentalCheck}</span> */}
+                                        <span>{DentalCheck}</span>
                                     </Item>
                                 </Grid>
                                 <Grid size={12}>
@@ -381,7 +363,7 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
                                         <Typography variant="h6" sx={{ alignItems: 'center', gap: 1, color: '#1976d2' }}>
                                             Notes
                                         </Typography>
-                                        {/* <span>{Notes}</span> */}
+                                        <span>{Notes}</span>
                                     </Item>
                                 </Grid>
                             </Grid>
@@ -418,7 +400,7 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
                                 {/* Header */}
                                 <Grid item size={12}>
                                     <Item>
-                                        <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#1976d2' }}>
+                                        <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#1976d2', marginX: 30 }}>
                                             <ShieldIcon />Vaccination History
                                         </Typography>
                                     </Item>
@@ -509,7 +491,7 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
                                     {/* Header */}
                                     <Grid item size={12}>
                                         <Item>
-                                            <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#1976d2' }}>
+                                            <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#1976d2', marginX: 30 }}>
                                                 <CalendarIcon />  Health Check History
                                             </Typography>
                                         </Item>
@@ -550,9 +532,14 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
                                                         </TableHead>
                                                         <TableBody>
                                                             {healthCheckList.map((campaign, idx) => {
-                                                                const history = campaign.healthCheckHistoryRes;
-                                                                // Find the consentFormId for this campaign (if available)
-                                                                const consentFormId = campaign.consentFormId || (history && history.consentFormId);
+                                                                // Defensive: consentForms may be an array or object
+                                                                const consentForm = Array.isArray(campaign.consentForms)
+                                                                    ? campaign.consentForms[0]
+                                                                    : campaign.consentForms;
+                                                                const history = consentForm?.healthCheckHistoryRes;
+                                                                const consentFormId = consentForm?.consentFormId;
+                                                                // Use campaign.statusHealthCampaign for status
+                                                                // Use history?.createdAt for date
                                                                 return (
                                                                     <TableRow key={campaign.campaignId || idx} className="table-row">
                                                                         <TableCell>{campaign.title}</TableCell>
@@ -560,8 +547,8 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
                                                                         <TableCell>{history?.createdAt ? new Date(history.createdAt).toLocaleDateString() : '-'}</TableCell>
                                                                         <TableCell>
                                                                             <Chip
-                                                                                label={history ? 'Complete' : 'Pending'}
-                                                                                color={history ? 'success' : 'warning'}
+                                                                                label={campaign.statusHealthCampaign || (history ? 'Complete' : 'Pending')}
+                                                                                color={campaign.statusHealthCampaign === 'COMPLETED' ? 'success' : campaign.statusHealthCampaign === 'IN_PROGRESS' ? 'info' : 'warning'}
                                                                                 size="small"
                                                                                 className="status-chip"
                                                                             />
@@ -604,11 +591,11 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
                         <Grid size={12} sx={{ bgcolor: '#fff', px: 10, borderRadius: 2, width: '100%' }}>
                             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                                 {/* basic infor */}
-                                <Grid container spacing={2} sx={{ bgcolor: '#fff', p: 2, borderRadius: 2 }} size={12}>
+                                <Grid container spacing={2} sx={{ bgcolor: '#fff', p: 2, borderRadius: 2, }} size={12}>
                                     {/* Header */}
-                                    <Grid item size={12}>
-                                        <Item>
-                                            <Typography variant="h6" className="section-title">
+                                    <Grid item size={12} >
+                                        <Item >
+                                            <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#1976d2', marginX: 30 }}>
                                                 <FileIcon /> Medical Events
                                             </Typography>
                                         </Item>
@@ -685,7 +672,8 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
                             </Grid>
                         </Grid>
                     </Grid>
-                )}
+                )
+                }
             </TabPanel >
 
 

@@ -57,8 +57,8 @@ import { useGetAllConsentFormByStatus } from "../../../../../hooks/schoolnurse/v
 const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
     const injectedResult = useGetAllConsentFormByStatus(campaign.campaignId, "INJECTED");
     const noShowResult = useGetAllConsentFormByStatus(campaign.campaignId, "NO_SHOW");
-    const notYetResult = useGetAllConsentFormByStatus(campaign.campaignId, "");
-    const allResult = useGetAllConsentFormByStatus(campaign.campaignId, "");
+    const notYetResult = useGetAllConsentFormByStatus(campaign.campaignId, "APPROVED");
+    const allResult = useGetAllConsentFormByStatus(campaign.campaignId, "APPROVED");
 
     const isLoading = injectedResult.isLoading || noShowResult.isLoading || allResult.isLoading;
 

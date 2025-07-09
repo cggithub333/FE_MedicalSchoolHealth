@@ -45,7 +45,6 @@ import { useNavigate } from "react-router-dom"
 
 const ScheduleDetails = ({ consentFormId, pupilData, pupilId, onBack }) => {
     // Debug: log incoming props
-    console.log('ScheduleDetails props:', { consentFormId, pupilData, pupilId });
     const navigate = useNavigate();
     const { vaccinationHistory, loading: vaccinationLoading, error: vaccinationError } = useGetVaccinationHistoryByPupilId(pupilData?.pupilId || pupilId);
 

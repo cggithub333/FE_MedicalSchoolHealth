@@ -102,7 +102,6 @@ function calculateScheduleDates(campaign) {
 const VaccinationScheduleForm = () => {
     const navigate = useNavigate();
     const { newestVaccinationCampaign, isLoading, error } = useNewestVaccinationCampaign()
-    console.log('newestVaccinationCampaign:', newestVaccinationCampaign)
     const [showInjectionList, setShowInjectionList] = useState(false)
     const [selectedShift, setSelectedShift] = useState(null)
     const [refresh, setRefresh] = useState(0)
@@ -154,17 +153,12 @@ const VaccinationScheduleForm = () => {
             scheduleDate: scheduleDate?.date || `Day ${grade}`,
         }
 
-        console.log("Navigating to grade:", grade)
-        console.log("Shift data:", shift)
-        console.log("Available pupils for grade:", gradePupils.length)
-
         setSelectedShift(shift)
         setShowInjectionList(true)
     }
 
     // Handle back navigation from student list
     const handleBackFromStudentList = () => {
-        console.log("Returning from student list")
         setShowInjectionList(false)
         setSelectedShift(null)
         setRefresh((r) => r + 1) // Force refresh to update progress
@@ -274,9 +268,6 @@ const VaccinationScheduleForm = () => {
         )
     }
 
-    console.log("Active campaign:", activeCampaign)
-    console.log("All pupils:", allPupils?.length || 0)
-    console.log("Pupils by grade:", pupilsByGrade)
 
     if ((!activeCampaign) && Array.isArray(newestVaccinationCampaign) && newestVaccinationCampaign.length > 0) {
         // Fallback: show all campaigns for debugging
