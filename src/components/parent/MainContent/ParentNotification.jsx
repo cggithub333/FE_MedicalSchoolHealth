@@ -32,7 +32,6 @@ import { GiMedicinePills as SendMedicationIcon } from "react-icons/gi";
 import { LuBriefcaseMedical as MedicalEventIcon } from "react-icons/lu";
 
 import useAllNotifications from "@hooks/parent/health-check/useAllNotifications"
-import useNotifyNewMedicalEvents from "@hooks/parent/medical-events/useNotifyNewMedicalEvents"
 
 const ITEMS_PER_PAGE = 5;
 
@@ -81,8 +80,6 @@ const ParentNotifications = () => {
   }, [location])
 
   const { notifications, loading, error, refetch } = useAllNotifications()
-
-  const { notiNewEventOfPupils, loading: eventsLoading, error: eventsError, refetch: eventsRefetch } = useNotifyNewMedicalEvents()
 
   {
     const [pageIndex, setPageIndex] = useState(
