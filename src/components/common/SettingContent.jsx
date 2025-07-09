@@ -1,6 +1,7 @@
+
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   Box,
   Card,
@@ -42,6 +43,8 @@ import {
   Security as SecurityIcon
 } from "@mui/icons-material"
 import { Link } from "react-router-dom"
+import { passwordValidation } from "@utils/validate-utils"
+import { showErrorToast, showSuccessToast } from "@utils/toast-utils"
 
 const SettingContent = () => {
   const [selectedLanguage, setSelectedLanguage] = useState("english")
@@ -50,6 +53,35 @@ const SettingContent = () => {
   const [otpSent, setOtpSent] = useState(false)
   const [phoneNumber, setPhoneNumber] = useState("")
   const [otp, setOtp] = useState("")
+
+  const [currentPwd, setCurrentPwd] = useState("")
+  const [newPwd, setNewPwd] = useState("")
+  const [confirmPwd, setConfirmPwd] = useState("")
+
+  // const [currentPwdValidateMssg, setCurrentPwdValidateMssg] = useState("")
+  const [newPwdValidateMssg, setNewPwdValidateMssg] = useState("")
+  const [confirmPwdValidateMssg, setConfirmPwdValidateMssg] = useState("")
+
+  useEffect(() => {
+
+    // Reset states when dialogs are closed
+    if (!changePasswordOpen) {
+      setCurrentPwd("")
+      setNewPwd("")
+      setConfirmPwd("")
+      // setCurrentPwdValidateMssg("")
+      setNewPwdValidateMssg("")
+      setConfirmPwdValidateMssg("")
+    }
+
+    if (!recoveryPasswordOpen) {
+      setPhoneNumber("")
+      setOtp("")
+      setOtpSent(false)
+    }
+
+  }, [changePasswordOpen, recoveryPasswordOpen, otpSent])
+
 
   const handleLanguageChange = (event) => {
     setSelectedLanguage(event.target.value)
@@ -64,6 +96,89 @@ const SettingContent = () => {
     // Handle password recovery
     setRecoveryPasswordOpen(false)
     setOtpSent(false)
+  }
+
+  const handleCurrentPasswordChange = (e) => {
+    // debug:
+    const currentPassword = e.target.value;
+    setCurrentPwd(currentPassword); // always set the current password value
+    // console.log("Current Password 2:", currentPassword);
+
+    // if (!currentPassword) {
+    //   setCurrentPwdValidateMssg("");
+    //   return;
+    // }
+
+    // const validatedResult = passwordValidation(currentPassword);
+    // if (!validatedResult.isValid) {
+    //   setCurrentPwdValidateMssg(validatedResult.message);
+    // } else {
+    //   // reset validation message
+    //   setCurrentPwdValidateMssg(""); //reset
+    // }
+  }
+
+  const handleNewPasswordChange = (e) => {
+    // debug:
+    const newPassword = e.target.value;
+    setNewPwd(newPassword); // always set the new password value
+    // console.log("New Password 2:", newPassword);
+
+    if (!newPassword) {
+      setNewPwdValidateMssg("");
+      return;
+    }
+
+    const validatedResult = passwordValidation(newPassword);
+    if (!validatedResult.isValid) {
+      setNewPwdValidateMssg(validatedResult.message);
+    } else {
+      // reset validation message
+      setNewPwdValidateMssg(""); //reset
+    }
+  }
+  
+  const handleConfirmPwdChange = (e) => {
+    
+    // debug:
+    const confirmPassword = e.target.value;
+    setConfirmPwd(confirmPassword); // always set the confirm password value
+    // console.log("Confirm Password 2:", confirmPassword);
+
+    if (!confirmPassword) {
+      setConfirmPwdValidateMssg("");
+      return;
+    }
+
+    if (newPwdValidateMssg) {
+      setConfirmPwdValidateMssg("New password must be valid to continue");
+      return;
+    } 
+
+    if (confirmPassword !== newPwd) {
+      setConfirmPwdValidateMssg("Passwords do not match");
+    } else {
+      // reset validation message
+      setConfirmPwdValidateMssg(""); //reset
+    }
+  }
+
+  const allowChangePassword = () => {
+    // no error and all fields are filled
+    // return !currentPwdValidateMssg && !newPwdValidateMssg && !confirmPwdValidateMssg && currentPwd && newPwd && confirmPwd;
+    return !newPwdValidateMssg && !confirmPwdValidateMssg && currentPwd && newPwd && confirmPwd;
+  }
+
+  const handleSubmitNewPassword = (e) => {
+    e.preventDefault(); // harmless, defensive code
+    if (!allowChangePassword()) {
+      // debug:
+      showErrorToast("Please fill in all fields correctly before submitting.");
+      return;
+    }
+    // else:
+    showSuccessToast("Password changed successfully!");
+    setChangePasswordOpen(false);
   }
 
   return (
@@ -119,11 +234,9 @@ const SettingContent = () => {
                     primary="Change Password"
                     secondary="Update your account password for better security"
                   />
-                  <ListItemSecondaryAction>
-                    <IconButton edge="end">
-                      <ChevronRight />
-                    </IconButton>
-                  </ListItemSecondaryAction>
+                  <IconButton edge="end">
+                    <ChevronRight />
+                  </IconButton>
                 </ListItem>
 
                 <Divider sx={{ my: 1 }} />
@@ -140,11 +253,9 @@ const SettingContent = () => {
                     <RestoreFromTrash sx={{ color: "#ff9800" }} />
                   </ListItemIcon>
                   <ListItemText primary="Password Recovery" secondary="Reset your password using phone verification" />
-                  <ListItemSecondaryAction>
-                    <IconButton edge="end">
-                      <ChevronRight />
-                    </IconButton>
-                  </ListItemSecondaryAction>
+                  <IconButton edge="end">
+                    <ChevronRight />
+                  </IconButton>
                 </ListItem>
               </List>
             </CardContent>
@@ -259,18 +370,27 @@ const SettingContent = () => {
         </DialogTitle>
         <DialogContent>
           <Box sx={{ pt: 2 }}>
-            <TextField fullWidth label="Current Password" type="password" variant="outlined" sx={{ mb: 2 }} />
-            <TextField fullWidth label="New Password" type="password" variant="outlined" sx={{ mb: 2 }} />
-            <TextField fullWidth label="Confirm New Password" type="password" variant="outlined" sx={{ mb: 2 }} />
-            <Alert severity="info" sx={{ mt: 2 }}>
+            <TextField fullWidth label="Current Password" onChange={handleCurrentPasswordChange} type="password" variant="outlined" sx={{ mb: 2 }} />
+            {/* {currentPwdValidateMssg && (<Alert style={{marginBottom: 10}} severity="error">{currentPwdValidateMssg}</Alert>)} */}
+            <TextField fullWidth label="New Password" onChange={handleNewPasswordChange} type="password" variant="outlined" sx={{ mb: 2 }} />
+            {newPwdValidateMssg && (<Alert style={{ marginBottom: 10 }} severity="error">{newPwdValidateMssg}</Alert>)}
+            <TextField fullWidth label="Confirm New Password" onChange={handleConfirmPwdChange} type="password" variant="outlined" sx={{ mb: 2 }} />
+            {confirmPwdValidateMssg && (<Alert severity="error">{confirmPwdValidateMssg}</Alert>)}
+            {!allowChangePassword() && <Alert severity="info" sx={{ mt: 2 }}>
               Password must be at least 8 characters long and contain uppercase, lowercase, numbers, and special
-              characters.
-            </Alert>
+              characters (@$!%*?&).
+            </Alert>}
           </Box>
         </DialogContent>
         <DialogActions sx={{ p: 3, pt: 1 }}>
           <Button onClick={() => setChangePasswordOpen(false)}>Cancel</Button>
-          <Button variant="contained" sx={{ borderRadius: 2 }}>
+          <Button variant="contained"
+                  onClick={handleSubmitNewPassword}
+                  sx={{ 
+                    borderRadius: 2,
+                    bgcolor: (allowChangePassword()) ? "#1976d2" : "#ccc",
+                    cursor: (allowChangePassword()) ? "pointer" : "no-drop",
+                  }}>
             Update Password
           </Button>
         </DialogActions>
