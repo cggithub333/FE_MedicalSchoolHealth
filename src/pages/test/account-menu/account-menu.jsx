@@ -63,6 +63,17 @@ const AccountMenu = ({
             backgroundColor: "rgba(0, 0, 0, 0.04)",
           },
         }}
+        // Add accessibility props
+        role="button"
+        tabIndex={0}
+        aria-expanded={open}
+        aria-haspopup="menu"
+        aria-label={`Account menu for ${username}`}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            handleClick(event)
+          }
+        }}
       >
         <Avatar
           {...getAvatarProps()}
@@ -100,6 +111,14 @@ const AccountMenu = ({
         open={open}
         onClose={handleClose}
         onClick={handleClose}
+        // Add these accessibility props to fix the aria-hidden warning
+        aria-labelledby="account-menu-button"
+        role="menu"
+        disableAutoFocusItem={false}
+        disableEnforceFocus={false}
+        disablePortal={false}
+        // Keep focus management proper
+        autoFocus={true}
         PaperProps={{
           elevation: 3,
           sx: {
@@ -153,22 +172,31 @@ const AccountMenu = ({
           </Box>
         </Box>
 
-        {/* Menu Items */}
-        <MenuItem onClick={() => handleMenuItemClick(onDashboard)}>
+        {/* Menu Items - Add role="menuitem" for better accessibility */}
+        <MenuItem 
+          onClick={() => handleMenuItemClick(onDashboard)}
+          role="menuitem"
+        >
           <ListItemIcon>
             <Dashboard fontSize="small" />
           </ListItemIcon>
           <ListItemText>Dashboard</ListItemText>
         </MenuItem>
 
-        <MenuItem onClick={() => handleMenuItemClick(onProfile)}>
+        <MenuItem 
+          onClick={() => handleMenuItemClick(onProfile)}
+          role="menuitem"
+        >
           <ListItemIcon>
             <Person fontSize="small" />
           </ListItemIcon>
           <ListItemText>Profile</ListItemText>
         </MenuItem>
 
-        <MenuItem onClick={() => handleMenuItemClick(onLanguages)}>
+        <MenuItem 
+          onClick={() => handleMenuItemClick(onLanguages)}
+          role="menuitem"
+        >
           <ListItemIcon>
             <Language fontSize="small" />
           </ListItemIcon>
@@ -179,6 +207,7 @@ const AccountMenu = ({
 
         <MenuItem
           onClick={() => handleMenuItemClick(onLogout)}
+          role="menuitem"
           sx={{
             color: "error.main",
             "&:hover": {   
