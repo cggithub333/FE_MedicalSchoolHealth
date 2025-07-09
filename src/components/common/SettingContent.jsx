@@ -46,6 +46,8 @@ import { Link } from "react-router-dom"
 import { passwordValidation } from "@utils/validate-utils"
 import { showErrorToast, showSuccessToast } from "@utils/toast-utils"
 
+import useUpdatePassword from "@hooks/common/useUpdatePassword"
+
 const SettingContent = () => {
   const [selectedLanguage, setSelectedLanguage] = useState("english")
   const [changePasswordOpen, setChangePasswordOpen] = useState(false)
@@ -53,6 +55,8 @@ const SettingContent = () => {
   const [otpSent, setOtpSent] = useState(false)
   const [phoneNumber, setPhoneNumber] = useState("")
   const [otp, setOtp] = useState("")
+
+  const { updatePassword, isSuccess: updateSuccess, error: updateError } = useUpdatePassword()
 
   const [currentPwd, setCurrentPwd] = useState("")
   const [newPwd, setNewPwd] = useState("")
@@ -129,6 +133,12 @@ const SettingContent = () => {
       return;
     }
 
+    // for test:
+    if (newPassword === "123456") {
+      setNewPwdValidateMssg("");
+      return;
+    }
+
     const validatedResult = passwordValidation(newPassword);
     if (!validatedResult.isValid) {
       setNewPwdValidateMssg(validatedResult.message);
@@ -169,16 +179,40 @@ const SettingContent = () => {
     return !newPwdValidateMssg && !confirmPwdValidateMssg && currentPwd && newPwd && confirmPwd;
   }
 
-  const handleSubmitNewPassword = (e) => {
+  const handleSubmitNewPassword = async (e) => {
     e.preventDefault(); // harmless, defensive code
     if (!allowChangePassword()) {
       // debug:
       showErrorToast("Please fill in all fields correctly before submitting.");
       return;
     }
+
+    // debug:
+    console.log("requestData:", {
+      currentPassword: currentPwd,
+      newPassword: newPwd,
+      confirmPassword: confirmPwd,
+    })
+
     // else:
-    showSuccessToast("Password changed successfully!");
-    setChangePasswordOpen(false);
+    try {
+
+      if (currentPwd === newPwd) {
+        throw new Error("New password must be different from current password");
+      }
+
+      await updatePassword({
+        currentPassword: currentPwd,
+        newPassword: newPwd,
+        confirmPassword: confirmPwd,
+      });
+
+      showSuccessToast("Password updated successfully!");
+      setChangePasswordOpen(false);
+    } catch (error) {
+      // debug:
+      showErrorToast(error.message || "An error occurred while updating password");
+    }
   }
 
   return (
