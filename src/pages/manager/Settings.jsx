@@ -1,10 +1,15 @@
+import { Grid } from "@mui/material";
+
+import SettingContent from "@components/common/SettingContent";
 
 const Settings = () => {
   return (
     <div>
-      <h1>Settings Page</h1>
-      <p>This is the settings page for Manager.</p>
-      {/* Add your settings components here */}
+      <Grid container justifyContent={"center"}>
+        <Grid item size={{xs: 11}}>
+          <SettingContent />
+        </Grid>
+      </Grid>
     </div>
   );
 }
