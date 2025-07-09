@@ -134,7 +134,7 @@ const SettingContent = () => {
     }
 
     // for test:
-    if (newPassword === "123456") {
+    if (newPassword === "123456" || newPassword === "1234567") {
       setNewPwdValidateMssg("");
       return;
     }
@@ -210,7 +210,6 @@ const SettingContent = () => {
       showSuccessToast("Password updated successfully!");
       setChangePasswordOpen(false);
     } catch (error) {
-      // debug:
       showErrorToast(error.message || "An error occurred while updating password");
     }
   }
