@@ -24,7 +24,7 @@ const NotificationBell = ({ totalNotificationQuantity, toLink }) => {
       to={toLink || '/parent/dashboard'}
       sx={{ textDecoration: 'none', color: 'inherit' }}
     >
-      <IconButton color="inherit" sx={{ mr: 1 }}>
+      <IconButton color="inherit" sx={{ mr: 1, mt: 0.5 }}>
         <Badge color="secondary" badgeContent={totalNotificationQuantity} max={10}>
           <motion.div animate={controls}>
             <NotificationsActiveIcon />

@@ -28,6 +28,7 @@ import NavbarTheme from './navbar-theme';
 import MaleFaceIcon from '@mui/icons-material/Face';
 import FemaleFaceIcon from '@mui/icons-material/Face3';
 import StarIcon from '@mui/icons-material/Star';
+import HomeIcon from '@mui/icons-material/Home';
 
 // import custom hooks here..
 import usePupils from '../../../hooks/parent/usePupils';
@@ -185,6 +186,18 @@ function ToolbarActionsUtility() {
         </IconButton>
       </Box> */}
 
+      {/* Homepage icon */}
+      <Box component={Link} to="/homepage" sx={{ textDecoration: 'none', color: 'inherit' }}>
+        <IconButton
+          color="inherit"
+          sx={{ mr: 1, position: 'relative' }}
+        ><HomeIcon fontSize={"23px"} />
+        </IconButton>
+      </Box>
+        
+
+
+        
       {/* Switch mode */}
       {/* <ThemeSwitcher /> */}
       {/* Account */}
@@ -197,9 +210,9 @@ function SidebarFooter({ mini }) {
   return (
     <Typography
       variant="caption"
-      sx={{ m: 1, whiteSpace: 'nowrap', overflow: 'hidden', marginLeft: "20px" }}
+      sx={{ mb: 1, whiteSpace: 'nowrap', overflow: 'hidden', marginLeft: "20px" }}
     >
-      {mini ? '© MUI' : `© ${new Date().getFullYear()} Healthcare System`}
+      {mini ? '© Medical' : `© ${new Date().getFullYear()} Medical Health System`}
     </Typography>
   );
 }

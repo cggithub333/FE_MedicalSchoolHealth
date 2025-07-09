@@ -27,6 +27,9 @@ const SchoolNurseDashboardRoutes = () => {
                 <Route path="prescription/prescription-requests" element={<SchoolNurseComponentPagePackages.PrescriptionRequestPage />} />
                 {/* Add more routes as needed */}
 
+                {/* Settings */}
+                <Route path="settings" element={<SchoolNurseComponentPagePackages.Settings />} />
+
                 {/* fallback */}
                 <Route path="*" element={<Navigate to="/schoolnurse/dashboard" replace />} />
             </Route>

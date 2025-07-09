@@ -20,6 +20,8 @@ import PupilsManagement from './pupils-management/PupilsManagement.jsx';
 import Prescriptions from './pupils-management/Prescriptions.jsx';
 import PrescriptionTracking from './pupils-management/PrescriptionTracking.jsx';
 
+import Settings from './Settings.jsx';
+
 const ManagerComponentPagePackages = {
   DashboardHome,
   Notification,
@@ -36,7 +38,8 @@ const ManagerComponentPagePackages = {
   MedicalEvents,
   PupilsManagement,
   Prescriptions,
-  PrescriptionTracking
+  PrescriptionTracking,
+  Settings
 };
 
 export default ManagerComponentPagePackages;

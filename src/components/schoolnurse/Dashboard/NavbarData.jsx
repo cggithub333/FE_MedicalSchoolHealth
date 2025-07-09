@@ -7,11 +7,13 @@ import MedicalEventIcon from "@mui/icons-material/Accessible";
 import VaccinesIcon from "@mui/icons-material/Vaccines";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import HealthCheckIcon from "@mui/icons-material/MedicationLiquid";
+import SettingsIcon from '@mui/icons-material/SettingsSuggest';
+import ManIcon from '@mui/icons-material/Man';
+
 import { GiMedicines as Prescriptionicon } from "react-icons/gi";
 import { MdCampaign as Campaign } from "react-icons/md";
 import { AiOutlineSchedule as ScheduleIcon } from "react-icons/ai";
 import { IoAddCircleSharp as NewCampaignIcon } from "react-icons/io5";
-import ManIcon from '@mui/icons-material/Man';
 
 const NavbarData = [
     //----------------part 1--------------------//
@@ -99,6 +101,14 @@ const NavbarData = [
                 icon: <ScheduleIcon />,
             },
         ],
+    },
+    {
+        kind: "divider",
+    }, 
+    {
+        segment: 'schoolnurse/settings',
+        title: 'Settings',
+        icon: <SettingsIcon />
     },
 ];
 

@@ -12,9 +12,9 @@ import CampaignsIcon from '@mui/icons-material/ReceiptLong';
 import VaccinationHistoryInforIcon from '@mui/icons-material/YoutubeSearchedFor';
 import HealthCheckHistoryInforIcon from '@mui/icons-material/YoutubeSearchedFor';
 import ScheduleIcon from '@mui/icons-material/CalendarMonth';
+import SettingsIcon from '@mui/icons-material/SettingsSuggest';
 
 import { GiMedicines as PrescriptionIcon } from "react-icons/gi";
-
 import { RiSurveyFill as SurveyIcon } from "react-icons/ri";
 
 const NavbarData = [
@@ -129,7 +129,15 @@ const NavbarData = [
     segment: 'parent/campaign-schedule',
     title: 'Campaign Schedule',
     icon: <ScheduleIcon />
-  }
+  },
+  {
+    kind: 'divider',
+  },
+  {
+    segment: 'parent/settings',
+    title: 'Settings',
+    icon: <SettingsIcon />
+  },
 ];
 
 export default NavbarData;

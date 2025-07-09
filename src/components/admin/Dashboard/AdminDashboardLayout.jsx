@@ -89,9 +89,9 @@ function SidebarFooter({ mini }) {
     return (
         <Typography
             variant="caption"
-            sx={{ m: 1, whiteSpace: 'nowrap', overflow: 'hidden' }}
+            sx={{ mb: 1, ml: 1.5, whiteSpace: 'nowrap', overflow: 'hidden' }}
         >
-            {mini ? '© MUI' : `© ${new Date().getFullYear()} Made with love by MUI`}
+            {mini ? '© Medical' : `© ${new Date().getFullYear()} Medical Health System`}
         </Typography>
     );
 }

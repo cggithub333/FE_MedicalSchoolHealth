@@ -6,12 +6,13 @@ import ProfileIcon from "@mui/icons-material/AssignmentInd";
 import VaccinesIcon from "@mui/icons-material/Vaccines";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import HealthCheckIcon from "@mui/icons-material/MedicationLiquid";
+import MedicalEventIcon from "@mui/icons-material/Accessible";
+import ManIcon from '@mui/icons-material/Man';
+import SettingsIcon from '@mui/icons-material/SettingsSuggest';
+import { GiMedicinePills as PrescriptionIcon } from "react-icons/gi";
 import { MdCampaign as Campaign } from "react-icons/md";
 import { AiOutlineSchedule as ScheduleIcon } from "react-icons/ai";
 import { IoAddCircleSharp as NewCampaignIcon } from "react-icons/io5";
-import MedicalEventIcon from "@mui/icons-material/Accessible";
-import ManIcon from '@mui/icons-material/Man';
-import { GiMedicinePills as PrescriptionIcon } from "react-icons/gi";
 
 const NavbarData = [
     //----------------part 1--------------------//
@@ -142,6 +143,14 @@ const NavbarData = [
         segment: "manager/integration",
         title: "Integrations",
         icon: <LayersIcon />,
+    },
+    {
+        kind: "divider",
+    },
+    {
+        segment: 'manager/settings',
+        title: 'Settings',
+        icon: <SettingsIcon />
     },
 ];
 

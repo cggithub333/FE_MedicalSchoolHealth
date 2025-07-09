@@ -39,6 +39,9 @@ const ParentDashboardRoutes = () => {
         {/* campaign schedule */}
         <Route path={"campaign-schedule"} element={<ParentComponentPagePackages.CampaignSchedule/>} />
 
+        {/* for settings */}
+        <Route path="settings" element={<ParentComponentPagePackages.Settings />} />
+
         {/* Fallback route - invalid route -> navigate to dashboard */}
         <Route path="*" element={<Navigate to="/parent/dashboard" replace />} />
       </Route>

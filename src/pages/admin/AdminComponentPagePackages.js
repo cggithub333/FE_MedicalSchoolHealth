@@ -7,6 +7,8 @@ import Notification from './main-contents/Notification.jsx';
 import DashboardHome from './main-contents/DashboardHome.jsx';
 import MedicalEvents from './pupils-management/MedicalEvents.jsx';
 import PupilsManagement from './pupils-management/PupilsManagement.jsx';
+import Settings from './Settings.jsx';
+
 const AdminComponentPagePackages = {
   ReportsA,
   ReportsB,
@@ -16,7 +18,8 @@ const AdminComponentPagePackages = {
   Notification,
   DashboardHome,
   MedicalEvents,
-  PupilsManagement
+  PupilsManagement,
+  Settings
 };
 
 export default AdminComponentPagePackages; 

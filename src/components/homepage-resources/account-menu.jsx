@@ -2,16 +2,17 @@
 
 import { use, useState } from "react"
 import { Avatar, Menu, MenuItem, ListItemIcon, ListItemText, Divider, Box, Typography, Chip } from "@mui/material"
-import { Dashboard, Person, Language, Logout, KeyboardArrowDown } from "@mui/icons-material"
-
+import { Dashboard, Person, Language, Logout, KeyboardArrowDown, SettingsSuggest as SettingsIcon } from "@mui/icons-material"
 import { useNavigate } from "react-router-dom"
 
 const AccountMenu = ({
   username = "John Doe",
   avatarSrc,
   gender = "male",
-  onDashboard,
+  // add callbacks from parent component
+  onDashboard, 
   onProfile,
+  onSettings,
   onLanguages,
   onLogout,
 }) => {
@@ -23,6 +24,7 @@ const AccountMenu = ({
   const defaultHandlers = {
     dashboard: () => navigate("/dashboard"),
     profile: () => navigate("/profile"),
+    settings: () => navigate("/settings"),
     languages: () => console.log("Languages clicked"),
     logout: () => navigate("/logout"),
   }
@@ -30,6 +32,7 @@ const AccountMenu = ({
   const handlers = {
     dashboard: onDashboard || defaultHandlers.dashboard,
     profile: onProfile || defaultHandlers.profile,
+    settings: onSettings || defaultHandlers.settings,
     languages: onLanguages || defaultHandlers.languages,
     logout: onLogout || defaultHandlers.logout,
   }
@@ -186,7 +189,14 @@ const AccountMenu = ({
           <ListItemText>Profile</ListItemText>
         </MenuItem>
 
-        <MenuItem onClick={() => handleMenuItemClick(onLanguages || handlers.languages)}>
+        <MenuItem onClick={() => handleMenuItemClick(handlers.settings)}>
+          <ListItemIcon>
+            <SettingsIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Settings</ListItemText>
+        </MenuItem>
+
+        <MenuItem onClick={() => handleMenuItemClick(handlers.languages)}>
           <ListItemIcon>
             <Language fontSize="small" />
           </ListItemIcon>
@@ -196,7 +206,7 @@ const AccountMenu = ({
         <Divider />
 
         <MenuItem
-          onClick={() => handleMenuItemClick(onLogout || handlers.logout)}
+          onClick={() => handleMenuItemClick(handlers.logout)}
           sx={{
             color: "error.main",
             "&:hover": {   
