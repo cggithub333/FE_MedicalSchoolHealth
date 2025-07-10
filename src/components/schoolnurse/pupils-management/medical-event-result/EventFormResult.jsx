@@ -380,7 +380,7 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
                                 <Box className="contact-list" sx={{ mt: 1 }}>
                                     <Grid container spacing={5}>
                                         <Grid item xs={12}>
-                                            <Typography variant="body1" fontWeight={600}>Parent'Name : {parentName}</Typography>
+                                            <Typography variant="body1" fontWeight={600}>Name : {parentName}</Typography>
                                             <Typography variant="body1" fontWeight={600}>Phone Number : 0{parentPhone}</Typography>
                                         </Grid>
                                     </Grid>

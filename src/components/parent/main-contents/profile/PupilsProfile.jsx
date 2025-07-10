@@ -40,23 +40,22 @@ import {
 import "./StyleProfile.scss"
 import { useGetInformation } from "@hooks/schoolnurse/main-contents/useGetInformation"
 import { useGetAllPupilsOfEachParent } from "@hooks/schoolnurse/main-contents/useGetAllPupilsOfEachParent"
-import { useNavigate } from "react-router-dom"
 
 const ProfileComponent = () => {
     const { information, loading, error } = useGetInformation();
     const { pupils } = useGetAllPupilsOfEachParent(); // Destructure pupils from the hook
-    console.log("Pupils data:", pupils); // Log pupils data for debugging
+    const pupil = Array.isArray(pupils) ? pupils.find(p => p.pupilId === "PP0006") : null;
+    console.log("Pupils data:", pupil); // Log pupils data for debugging
     const formData = {
-        userId: information?.userId || "",
-        firstName: information?.firstName || "",
-        lastName: information?.lastName || "",
-        email: information?.email || "", // Not present in API, fallback to empty
-        phone: information?.phoneNumber || "",
-        birthDate: information?.birthDate || "",
-        role: information?.role ? information.role.toLowerCase() : "parent",
-        isActive: true, // Not present in API, default to true
+        userId: pupil?.pupilId || "",
+        firstName: pupil?.firstName || "",
+        lastName: pupil?.lastName || "",
+        gender: pupil?.gender || "",
+        gradeName: pupil?.gradeName || "",
+        birthDate: pupil?.birthDate || "",
+        role: "Pupils",
         avatar: information?.avatar || "",
-        createAt: information?.createdAt || new Date().toISOString().split("T")[0],
+        createAt: pupil?.startYear
     }
 
     const roles = [
@@ -110,48 +109,34 @@ const ProfileComponent = () => {
             icon: <AccountCircle />,
             label: "User ID",
             value: formData.userId || "Not specified",
-            field: "userId",
         },
         {
             icon: <Person />,
             label: "First Name",
             value: formData.firstName || "Not specified",
-            field: "firstName",
         },
         {
             icon: <Person />,
             label: "Last Name",
             value: formData.lastName || "Not specified",
-            field: "lastName",
         },
         {
             icon: <Email />,
-            label: "Email",
-            value: formData.email || "Not specified",
-            field: "email",
-            type: "email",
+            label: "Grade Name",
+            value: formData.gradeName || "Not specified",
         },
         {
             icon: <Phone />,
-            label: "Phone",
-            value: formData.phone || "Not specified",
-            field: "phone",
-            type: "tel",
+            label: "Gender",
+            value: formData.gender || "Not specified",
         },
         {
             icon: <CalendarToday />,
             label: "Birth Date",
             value: formatDate(formData.birthDate),
-            field: "birthDate",
-            type: "date",
         },
     ]
 
-    const [selectedPupil, setSelectedPupil] = useState(null);
-
-    const handlePupilDetails = (pupil) => {
-        setSelectedPupil(pupil);
-    }
 
     return (
         <Grid container className="profile-container" spacing={3}>
@@ -178,16 +163,16 @@ const ProfileComponent = () => {
                                             size="medium"
                                             className="role-chip"
                                         />
-                                        <Chip
+                                        {/* <Chip
                                             icon={formData.isActive ? <CheckCircle /> : <CancelIcon />}
                                             label={formData.isActive ? "Active" : "Inactive"}
                                             color={formData.isActive ? "success" : "error"}
                                             size="medium"
                                             className="status-chip"
-                                        />
+                                        /> */}
                                     </Box>
                                     <Typography variant="body2" className="member-since">
-                                        Member since: {formatDate(formData.createAt)}
+                                        Member since: {formData.createAt}
                                     </Typography>
                                 </Box>
                             </Grid>
@@ -219,48 +204,31 @@ const ProfileComponent = () => {
                         </Card>
                     </Grid>
 
-                    {/* Pupils Profile */}
                     <Grid item size={6} md={4}>
                         <Card className="summary-card">
                             <CardContent>
                                 <Typography variant="h6" gutterBottom className="section-title">
-                                    Pupils Profile
+                                    Parent's Contact
                                 </Typography>
                                 <Divider sx={{ mb: 2 }} />
 
                                 <Box className="summary-content">
                                     <Paper className="summary-item" elevation={1}>
                                         <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-                                            Pupils List
+                                            Emergency Contact
                                         </Typography>
-                                        {Array.isArray(pupils) && pupils.length > 0 ? (
-                                            pupils.map((pupil) => (
-                                                <Box key={pupil.pupilId} sx={{ display: "flex", alignItems: "center", mb: 1, p: 1, border: '1px solid #e0e0e0', borderRadius: 2, background: '#fafafa' }}>
-                                                    <Typography variant="body1" sx={{ mr: 2 }}>
-                                                        {pupil.lastName} {pupil.firstName} - {pupil.pupilId}
-                                                    </Typography>
-                                                    <Button variant="outlined" size="small" sx={{ ml: 'auto' }} onClick={() => handlePupilDetails(pupil)}>
-                                                        Details
-                                                    </Button>
-                                                </Box>
-                                            ))
-                                        ) : (
-                                            <Typography variant="body2" color="textSecondary">
-                                                No pupils found.
-                                            </Typography>
-                                        )}
-                                    </Paper>
-
-                                    {selectedPupil && (
-                                        <Box sx={{ mt: 2, p: 2, border: '1px solid #1976d2', borderRadius: 2, background: '#e3f2fd' }}>
-                                            <Typography variant="h6">Pupil Details</Typography>
-                                            <Typography><b>Name:</b> {selectedPupil.lastName} {selectedPupil.firstName}</Typography>
-                                            <Typography><b>ID:</b> {selectedPupil.pupilId}</Typography>
-                                            <Typography><b>Birth Date:</b> {formatDate(selectedPupil.birthDate)}</Typography>
-                                            <Typography><b>Gender:</b> {selectedPupil.gender}</Typography>
-                                            <Typography><b>Grade:</b> {selectedPupil.gradeName} ({selectedPupil.gradeLevel})</Typography>
+                                        <Box sx={{ display: "flex", alignItems: "center", mb: 1, p: 1, border: '1px solid #e0e0e0', borderRadius: 2, background: '#fafafa' }}>
+                                            <Grid container spacing={5}>
+                                                <Grid item size={12}>
+                                                    <Typography variant="body1" fontWeight={600}>Name : {information.firstName} {information.lastName}</Typography>
+                                                </Grid>
+                                                <Grid item size={12}>
+                                                    <Typography variant="body1" fontWeight={600}>Phone Number : {information.phoneNumber}</Typography>
+                                                </Grid>
+                                            </Grid>
                                         </Box>
-                                    )}
+
+                                    </Paper>
                                 </Box>
                             </CardContent>
                         </Card>
