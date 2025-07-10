@@ -244,7 +244,7 @@ const PrescriptionSearching = ({ pupil, userFullName }) => {
   return (
     <Container maxWidth="lg" sx={{ py: 3 }}>
       {/* Header */}
-      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 2, mb: 4 }}>
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 2, mb: 2 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <Avatar sx={{ bgcolor: "primary.main", width: 48, height: 48 }}>
             <LocalPharmacy />
@@ -258,6 +258,12 @@ const PrescriptionSearching = ({ pupil, userFullName }) => {
             </Typography>
           </Box>
         </Box>
+      </Box>
+
+      <Box mb={2}>
+        <Alert severity="info" sx={{ fontSize: "0.875rem" }}>
+          You can watch other pupil's prescription logs by clicking on the <ChildIcon /> icon near the notification bell.
+        </Alert>
       </Box>
 
       {/* Pupil Information */}
@@ -297,15 +303,6 @@ const PrescriptionSearching = ({ pupil, userFullName }) => {
             <Chip label={pupil.gradeName} color="primary" variant="outlined" />
           </Grid>
         </Grid>
-        <Paper>
-          <Alert severity="info" sx={{ marginTop: "20px", fontSize: "16px"}}>
-            <span>Notes: You can change schedule for other child by lick on</span>
-              {" "}
-              <ChildIcon />
-              {" "}
-            <span>icon near the search bar.</span>
-          </Alert>
-        </Paper>
       </Paper>
 
       {/* Search and Filter Section */}

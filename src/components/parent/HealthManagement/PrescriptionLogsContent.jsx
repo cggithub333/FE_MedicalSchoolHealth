@@ -22,6 +22,7 @@ import {
   Chip,
   Avatar,
   IconButton,
+  Alert
 } from "@mui/material"
 import {
   Person,
@@ -33,7 +34,7 @@ import {
   Schedule,
   AccessTime,
 } from "@mui/icons-material"
-
+import { FaChildReaching as ChildIcon } from "react-icons/fa6";
 
 import usePrescriptionByPupil from "@hooks/parent/send-medication/usePrescriptionByPupil";
 import { parseMedicalInfo } from "@utils/parseLogsObject"
@@ -231,13 +232,18 @@ const PrescriptionLogsContent = () => {
   return (
     <Container maxWidth="lg" sx={{ py: 3 }}>
       {/* Header */}
-      <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 4 }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
         <Avatar sx={{ bgcolor: "primary.main", width: 48, height: 48 }}>
           <Assignment />
         </Avatar>
         <Typography variant="h4" fontWeight="bold">
           Prescription Logs
         </Typography>
+      </Box>
+      <Box mb={2}>
+        <Alert severity="info" sx={{ fontSize: "0.875rem" }}>
+          You can watch other pupil's prescription logs by clicking on the <ChildIcon/> icon near the notification bell.
+        </Alert>
       </Box>
 
       {/* Pupil Information */}
