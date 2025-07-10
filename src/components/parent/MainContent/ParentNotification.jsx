@@ -92,7 +92,7 @@ const ParentNotifications = () => {
     );
 
     // Debug log
-    console.log("Notifications:\n", JSON.stringify(notifications))
+    // console.log("Notifications:\n", JSON.stringify(notifications))
 
     const getNotificationIcon = (type) => {
       switch (type) {
@@ -127,7 +127,7 @@ const ParentNotifications = () => {
     const getPaginationBtnColor = (type) => {
 
       //debug log:
-      console.log("getPaginationColor called with type:", type);
+      // console.log("getPaginationColor called with type:", type);
 
       switch (type) {
         case "VACCINATION_CAMPAIGN":
@@ -241,7 +241,7 @@ const ParentNotifications = () => {
         {/* Header */}
         {/* Summary Cards */}
         <Grid container spacing={2} sx={{ mb: 4 }}>
-          <Grid item size={{ xs: 12, md: 3 }}>
+          <Grid size={{ xs: 12, md: 3 }}>
             <Link to="#vaccination-campaign" style={{ textDecoration: "none" }}>
               <Paper sx={{ p: 2, textAlign: "center", bgcolor: "success.50", ...hoverPaper, cursor: "pointer" }}>
                 <Typography variant="h4" fontWeight="bold" color="success.main">
@@ -253,7 +253,7 @@ const ParentNotifications = () => {
               </Paper>
             </Link>
           </Grid>
-          <Grid item size={{ xs: 12, md: 3 }}>
+          <Grid size={{ xs: 12, md: 3 }}>
             <Link to="#health-check-campaign" style={{ textDecoration: "none" }}>
               <Paper sx={{ p: 2, textAlign: "center", bgcolor: "primary.50", ...hoverPaper, cursor: "pointer" }}>
                 <Typography variant="h4" fontWeight="bold" color="primary.main">
@@ -265,7 +265,7 @@ const ParentNotifications = () => {
               </Paper>
             </Link>
           </Grid>
-          <Grid item size={{ xs: 12, md: 3 }}>
+          <Grid size={{ xs: 12, md: 3 }}>
             <Link to="#medical-events" style={{ textDecoration: "none" }}>
               <Paper sx={{ p: 2, textAlign: "center", bgcolor: "primary.50", ...hoverPaper, cursor: "pointer" }}>
                 <Typography variant="h4" fontWeight="bold" color="red">
@@ -277,7 +277,7 @@ const ParentNotifications = () => {
               </Paper>
             </Link>
           </Grid>
-          <Grid item size={{ xs: 12, md: 3 }}>
+          <Grid size={{ xs: 12, md: 3 }}>
             <Link to="#send-medication" style={{ textDecoration: "none" }}>
               <Paper sx={{ p: 2, textAlign: "center", bgcolor: "primary.50", ...hoverPaper, cursor: "pointer" }}>
                 <Typography variant="h4" fontWeight="bold" color="orange">
@@ -400,7 +400,7 @@ const ParentNotifications = () => {
                 )}
 
                 <Grid container justifyContent={'center'} py={1}>
-                  <Grid item size={{ xs: 10, md: 10 }} sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+                  <Grid size={{ xs: 10, md: 10 }} sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
                     <Pagination
                       count={typeNotifications.length > 0 ? Math.ceil(typeNotifications.length / 5) : 1}
                       size={'large'}

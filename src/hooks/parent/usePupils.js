@@ -19,7 +19,7 @@ const usePupils = () => {
         const data = await fetchAllPupils();
 
         // debug:
-        console.log("Pupils: " + JSON.stringify(data, null, 2));
+        // console.log("Pupils: " + JSON.stringify(data, null, 2));
 
         if (!data) {
           // empty, null, undefined;

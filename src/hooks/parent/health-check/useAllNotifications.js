@@ -14,7 +14,7 @@ export const useAllNotifications = () => {
       const data = await getAllNotificationAction();
 
       // debug:
-      console.log("Fetched notifications:", data);
+      // console.log("Fetched notifications:", data);
 
       setNotifications(data);
     } catch (err) {

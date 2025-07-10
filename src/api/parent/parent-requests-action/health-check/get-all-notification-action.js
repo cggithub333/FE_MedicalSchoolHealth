@@ -9,7 +9,7 @@ export const getAllNotificationAction = async () => {
       const response = await fetchResponse(callback);
 
       //debug:
-      console.log("getAllNotificationAction response: ", response);
+      // console.log("getAllNotificationAction response: ", response);
 
       const notifications = await response.data;
 

@@ -7,7 +7,6 @@ import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import SearchIcon from '@mui/icons-material/Search';
-import { AppProvider } from '@toolpad/core/AppProvider';
 import { ReactRouterAppProvider } from '@toolpad/core/react-router';
 import { DashboardLayout, ThemeSwitcher } from '@toolpad/core/DashboardLayout';
 import { Account } from '@toolpad/core/Account';
@@ -93,6 +92,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { useTheme } from "@mui/material/styles";
 import Logout from '../../Logout';
+import useMyInformation from '@hooks/common/useMyInformation';
 
 function CustomNavItem({ icon, title, active, ...props }) {
     const theme = useTheme();
@@ -147,8 +147,18 @@ function CustomAppTitle() {
 
 function DashboardLayoutSlots(props) {
 
+    const { personalInforState, error: personalInforError, loading: personalInforLoading } = useMyInformation();
+
+    // debug:
+    if (personalInforLoading)
+        console.log("Loading personal information...");
+    else if (personalInforError)
+        console.error("Error loading personal information:", personalInforError);
+    else
+        console.log("Personal information loaded:", personalInforState);
+
+
     const [isLogout, setIsLogout] = React.useState(false);
-    const { window } = props;
 
     const [session, setSession] = React.useState({
         user: {
@@ -175,6 +185,19 @@ function DashboardLayoutSlots(props) {
             },
         };
     }, []);
+
+    // refetch session data when personal information changes (avoid the null value at first time render);
+    React.useEffect(() => {
+        if (personalInforState) {
+            setSession({
+                user: {
+                    name: localStorage.getItem('userFullName') ? localStorage.getItem('userFullName') : (personalInforState?.lastName + " " + personalInforState?.firstName),
+                    email: personalInforState?.email ? personalInforState?.email : 'Email has not updated yet',
+                    image: '/assets/images/user_avatar.jpg', // UserAvatarImage
+                },
+            });
+        }
+    }, [personalInforState]);
 
     if (isLogout) {
         return <Logout />

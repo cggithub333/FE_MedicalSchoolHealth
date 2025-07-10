@@ -6,15 +6,11 @@ import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import SearchIcon from '@mui/icons-material/Search';
-import { AppProvider } from '@toolpad/core/AppProvider';
 import { ReactRouterAppProvider } from '@toolpad/core/react-router';
 import { DashboardLayout, ThemeSwitcher } from '@toolpad/core/DashboardLayout';
 import { Account } from '@toolpad/core/Account';
 import { Outlet } from 'react-router-dom';
 import LogoBranchImg from '../../../assets/images/health_education_img2.png';
-import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
-import Badge from '@mui/material/Badge';
 import { FaChildReaching as ChildIcon } from "react-icons/fa6";
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -41,11 +37,11 @@ import useAllNotifications from '@hooks/parent/health-check/useAllNotifications'
 import { stylePupilBtn, styleChildItem } from './parent-dashboard-layout-custom-css.js';
 import Logout from '../../Logout.jsx';
 import { getPayloadResources } from '../../../utils/jwt-utils.js';
-import UserAvatarImage from '../../../assets/images/user_avatar.jpg'
 import { Box } from '@mui/material';
 
-function ToolbarActionsUtility() {
+import useMyInformation from '@hooks/common/useMyInformation.js';
 
+function ToolbarActionsUtility() {
   // load pupil information from localStorage:
   const { pupils, isLoading } = usePupils();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -231,16 +227,21 @@ function CustomAppTitle() {
 
 function DashboardLayoutSlots(props) {
 
-  const [ isLogout, setIsLogout ] = React.useState(false);
-  const { window } = props;
+  // load personal information of the user from state:
+  const { personalInforState, error: errorPersonalInfor, loading: loadingPersonalInfor} = useMyInformation();
+  // debug:
+  // if (loadingPersonalInfor)
+  //   console.log("Loading personal infor...");
+  // else 
+  //   console.log("personalInfor: ", personalInforState);
 
-  const { sub } = getPayloadResources(); // phone number;
+  const [ isLogout, setIsLogout ] = React.useState(false);
 
   const [session, setSession] = React.useState({
     user: {
       name: localStorage.getItem('userFullName') ? localStorage.getItem('userFullName') : "",
-      email: 'bharatkashyap@outlook.com',
-      image: UserAvatarImage,
+      email: personalInforState?.email ? personalInforState?.email : 'Email has not updated yet',
+      image: '/assets/images/user_avatar.jpg',
     },
   });
 
@@ -250,8 +251,8 @@ function DashboardLayoutSlots(props) {
         setSession({
           user: {
             name: localStorage.getItem('userFullName') ? localStorage.getItem('userFullName') : "",
-            email: 'bharatkashyap@outlook.com',
-            image: UserAvatarImage,
+            email: personalInforState?.email ? personalInforState?.email : 'Email has not updated yet',
+            image: '/assets/images/user_avatar.jpg',
           },
         });
       },
@@ -261,6 +262,21 @@ function DashboardLayoutSlots(props) {
       },
     };
   }, []);
+
+  // update session when personal information changes (avoid the null value at first time render);
+  React.useEffect(() => {
+
+    if (personalInforState) {
+      setSession({
+        user: {
+          name: localStorage.getItem('userFullName') ? localStorage.getItem('userFullName') : "",
+          email: personalInforState?.email ? personalInforState?.email : 'Email has not updated yet',
+          image: '/assets/images/user_avatar.jpg',
+        },
+      });
+    }
+
+  }, [personalInforState])
 
   if (isLogout) {
     return <Logout/>;
