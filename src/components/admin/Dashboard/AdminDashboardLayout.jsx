@@ -20,6 +20,7 @@ import NavbarTheme from './navbar-theme';
 import { Link, Outlet } from 'react-router-dom';
 
 import Logout from '../../Logout';
+import useMyInformation from '@hooks/common/useMyInformation';
 
 function ToolbarActionsUtility() {
     return (
@@ -112,14 +113,23 @@ function CustomAppTitle() {
 
 function DashboardLayoutSlots(props) {
 
+    const { personalInforState, error: personalInforError, loading: personalInforLoading } = useMyInformation();
+
+    // debug:
+    if (personalInforLoading)
+        console.log("Loading personal information...");
+    else if (personalInforError)
+        console.error("Error loading personal information:", personalInforError);
+    else
+        console.log("Personal information loaded:", personalInforState);
+
     const [isSignOut, setIsSignOut] = React.useState(false);
-    const { window } = props;
 
     const [session, setSession] = React.useState({
         user: {
-            name: 'Ha Hai Cuong',
-            email: 'hhc9104@gmail.com',
-            image: AvatarImg,
+            name: localStorage.getItem('userFullName') ? localStorage.getItem('userFullName') : (personalInforState?.lastName + " " + personalInforState?.firstName),
+            email: personalInforState?.email ? personalInforState?.email : 'Email has not updated yet',
+            image: '/assets/images/user_avatar.jpg', // UserAvatarImage
         },
     });
 
@@ -128,9 +138,9 @@ function DashboardLayoutSlots(props) {
             signIn: () => {
                 setSession({
                     user: {
-                        name: 'Bharat Kashyap',
-                        email: 'bharatkashyap@outlook.com',
-                        image: AvatarImg,
+                        name: localStorage.getItem('userFullName') ? localStorage.getItem('userFullName') : (personalInforState?.lastName + " " + personalInforState?.firstName),
+                        email: personalInforState?.email ? personalInforState?.email : 'Email has not updated yet',
+                        image: '/assets/images/user_avatar.jpg', // UserAvatarImage
                     },
                 });
             },
@@ -140,6 +150,19 @@ function DashboardLayoutSlots(props) {
             },
         };
     }, []);
+
+    // refetch session when personal information changes, especially first render:
+    React.useEffect(() => {
+        if (personalInforState) {
+            setSession({
+                user: {
+                    name: localStorage.getItem('userFullName') ? localStorage.getItem('userFullName') : (personalInforState?.lastName + " " + personalInforState?.firstName),
+                    email: personalInforState?.email ? personalInforState?.email : 'Email has not updated yet',
+                    image: '/assets/images/user_avatar.jpg', // UserAvatarImage
+                },
+            });
+        }
+    }, [personalInforState]);
 
 
     if (isSignOut) {
