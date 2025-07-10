@@ -10,6 +10,7 @@ import { Base64 } from "js-base64";
 import InstructChooseChild from '@assets/images/instruct_choose_child.png';
 
 import { AddBox } from "@mui/icons-material";
+import HistoryLogsIcon from '@mui/icons-material/HistoryEdu';
 
 const Prescription = () => {
 
@@ -52,7 +53,14 @@ const Prescription = () => {
               iconForAvatar={AddBox}
               navigateLink={'./new-prescription'}
               backgroundColor={"yellowgreen"} 
+              customSpaceBottom={"90px"}
               textContent="New"/>
+          <FloatingNavigateButton
+            iconForAvatar={HistoryLogsIcon}
+            navigateLink={'./prescription-logs'}
+            backgroundColor={"orange"}
+            textContent="Medication Taking" 
+            customMaxWidth={"170px"}/>
     </div>
   )
 }

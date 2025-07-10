@@ -150,7 +150,7 @@ const ParentNotifications = () => {
         case "HEALTH_CHECK_CAMPAIGN":
           return "../health-check-campaign/surveys"
         case "SEND_MEDICAL":
-          return "../prescription"
+          return "../prescription/prescription-logs"
         case "MED_EVENT":
           return "../medical-events"
         default:

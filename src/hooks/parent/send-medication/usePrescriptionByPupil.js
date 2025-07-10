@@ -4,6 +4,9 @@ import { useState, useEffect, useCallback } from "react";
 
 const usePrescriptionByPupil = (pupilId) => {
 
+  // debug:
+  console.log("PupilId in usePrescriptionByPupil:", pupilId);
+
   const [prescriptionArr, setPrescriptionArr] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -14,6 +17,11 @@ const usePrescriptionByPupil = (pupilId) => {
     setError(null);
 
     try {
+
+      if (!localPupilId) {
+        throw new Error("Pupil ID is required to fetch prescriptions.");
+      }
+
       const fetchedPrescriptionArr = await getPrescriptionByPupilIdAction(localPupilId);
 
       setPrescriptionArr(fetchedPrescriptionArr);

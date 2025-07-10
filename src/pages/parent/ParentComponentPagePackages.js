@@ -9,6 +9,7 @@ import SurveysVaccination from './vaccination-campaign/Surveys.jsx';
 import HealthDeclaration from './health-management/declaration/HealthDeclaration.jsx';
 import VaccinationDeclaration from './health-management/declaration/VaccinationDeclaration.jsx';
 import Prescription from './health-management/Prescription.jsx';
+import PrescriptionLogs from './health-management/PrescriptionLogs.jsx';
 import MedicalEvents from './health-management/MedicalEvents.jsx';
 
 import Notification from './main-contents/Notification.jsx';
@@ -30,6 +31,7 @@ const ParentComponentPagePackages = {
   HealthDeclaration,
   VaccinationDeclaration,
   Prescription,
+  PrescriptionLogs,
   MedicalEvents,
   Notification,
   DashboardHome,

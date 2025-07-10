@@ -15,7 +15,7 @@ const bellRing = keyframes`
   70% { transform: rotate(0deg); }
 `;
 
-const FloatingNavigateButton = ({ navigateLink, iconForAvatar, backgroundColor, textContent }) => {
+const FloatingNavigateButton = ({ navigateLink, iconForAvatar, backgroundColor, textContent, customSpaceBottom, customMaxWidth }) => {
 
   const navigate = useNavigate();
 
@@ -26,7 +26,7 @@ const FloatingNavigateButton = ({ navigateLink, iconForAvatar, backgroundColor, 
   }
 
   return (
-    <Box sx={{ position: "fixed", bottom: "20px", right: "30px" }}>
+    <Box sx={{ position: "fixed", bottom: (customSpaceBottom || "20px"), right: "30px" }}>
       <Box  sx={styleFloatNewButton}
             onMouseEnter={() => setShowContent(true)}
             onMouseLeave={() => setShowContent(false)}
@@ -57,7 +57,7 @@ const FloatingNavigateButton = ({ navigateLink, iconForAvatar, backgroundColor, 
             fontFamily: "Open Sans, sans-serif",
             textTransform: 'uppercase',
             overflow: 'hidden',
-            maxWidth: showContent ? '100px' : '0px',
+            maxWidth: showContent ? (customMaxWidth || '100px') : '0px', // Adjust max-width for full content visibility
           }}
         >
           <Typography  fontSize={'17px'} variant="h4" fontWeight="bold" sx={{ whiteSpace: 'nowrap' }}>
