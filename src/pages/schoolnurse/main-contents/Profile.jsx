@@ -1,9 +1,9 @@
+import ProfileComponent from "../../../components/schoolnurse/main-contents/profile/Profile.jsx";
+
 const Profile = () => {
 
   return (
-    <>
-      Schoolnurse - Profile
-    </>
+    <ProfileComponent />
   );
 }
 
