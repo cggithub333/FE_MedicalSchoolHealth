@@ -20,6 +20,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom';
 
+import NotificationBell from '@components/magic/NotificationBell/NotificationBell';
 
 import NavbarData from './NavbarData';
 import NavbarTheme from './navbar-theme';
@@ -27,17 +28,21 @@ import NavbarTheme from './navbar-theme';
 import MaleFaceIcon from '@mui/icons-material/Face';
 import FemaleFaceIcon from '@mui/icons-material/Face3';
 import StarIcon from '@mui/icons-material/Star';
+import HomeIcon from '@mui/icons-material/Home';
 
 // import custom hooks here..
 import usePupils from '../../../hooks/parent/usePupils';
 
 // encode/decode service:
 import { Base64 } from 'js-base64';
+import { useNavigate } from 'react-router-dom';
+import useAllNotifications from '@hooks/parent/health-check/useAllNotifications';
 
 import { stylePupilBtn, styleChildItem } from './parent-dashboard-layout-custom-css.js';
 import Logout from '../../Logout.jsx';
 import { getPayloadResources } from '../../../utils/jwt-utils.js';
 import UserAvatarImage from '../../../assets/images/user_avatar.jpg'
+import { Box } from '@mui/material';
 
 function ToolbarActionsUtility() {
 
@@ -45,6 +50,9 @@ function ToolbarActionsUtility() {
   const { pupils, isLoading } = usePupils();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+
+  const navigate = useNavigate();
+  const { quantity: totalNotificationQuantity } = useAllNotifications();
 
   // if pupils is defined, store first pupil's information in localStorage:
   React.useEffect(() => {
@@ -168,13 +176,30 @@ function ToolbarActionsUtility() {
         )}
       </Menu>
       {/* Notification icon to the right of the search bar */}
-      <IconButton color="inherit" sx={{ mr: 1 }}>
-        <Badge color="secondary" badgeContent={100}>
-          <NotificationsActiveIcon />
-        </Badge>
-      </IconButton>
+      <NotificationBell totalNotificationQuantity={totalNotificationQuantity} toLink={'/parent/notification'}/>
+
+      {/* <Box component={Link} to="/parent/notification" sx={{ textDecoration: 'none', color: 'inherit' }}>
+        <IconButton color="inherit" sx={{ mr: 1 }}>
+          <Badge color="secondary" badgeContent={totalNotificationQuantity} max={10}>
+            <NotificationsActiveIcon />
+          </Badge>
+        </IconButton>
+      </Box> */}
+
+      {/* Homepage icon */}
+      <Box component={Link} to="/homepage" sx={{ textDecoration: 'none', color: 'inherit' }}>
+        <IconButton
+          color="inherit"
+          sx={{ mr: 1, position: 'relative' }}
+        ><HomeIcon fontSize={"23px"} />
+        </IconButton>
+      </Box>
+        
+
+
+        
       {/* Switch mode */}
-      <ThemeSwitcher />
+      {/* <ThemeSwitcher /> */}
       {/* Account */}
       <Account />
     </Stack>
@@ -185,9 +210,9 @@ function SidebarFooter({ mini }) {
   return (
     <Typography
       variant="caption"
-      sx={{ m: 1, whiteSpace: 'nowrap', overflow: 'hidden', marginLeft: "20px" }}
+      sx={{ mb: 1, whiteSpace: 'nowrap', overflow: 'hidden', marginLeft: "20px" }}
     >
-      {mini ? '© MUI' : `© ${new Date().getFullYear()} Healthcare System`}
+      {mini ? '© Medical' : `© ${new Date().getFullYear()} Medical Health System`}
     </Typography>
   );
 }

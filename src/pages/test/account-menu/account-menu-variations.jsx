@@ -9,7 +9,7 @@ const DemoVariations = () => {
       </Typography>
 
       <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
+        <Grid  size={{xs:12, md:6}}>
           <Paper sx={{ p: 2 }}>
             <Typography variant="h6" gutterBottom>
               Male User (Default)
@@ -18,7 +18,7 @@ const DemoVariations = () => {
           </Paper>
         </Grid>
 
-        <Grid item xs={12} md={6}>
+        <Grid  size={{xs:12, md:6}}>
           <Paper sx={{ p: 2 }}>
             <Typography variant="h6" gutterBottom>
               Female User
@@ -27,7 +27,7 @@ const DemoVariations = () => {
           </Paper>
         </Grid>
 
-        <Grid item xs={12} md={6}>
+        <Grid  size={{xs:12, md:6}}>
           <Paper sx={{ p: 2 }}>
             <Typography variant="h6" gutterBottom>
               With Custom Avatar
@@ -36,7 +36,7 @@ const DemoVariations = () => {
           </Paper>
         </Grid>
 
-        <Grid item xs={12} md={6}>
+        <Grid  size={{xs:12, md:6}}>
           <Paper sx={{ p: 2 }}>
             <Typography variant="h6" gutterBottom>
               Long Username

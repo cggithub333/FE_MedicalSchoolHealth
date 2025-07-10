@@ -16,8 +16,9 @@ import DashboardHome from './main-contents/DashboardHome.jsx';
 import Profile from './main-contents/Profile.jsx';
 
 import CampaignSchedule from './main-contents/CampaignSchedule.jsx';
-
 import NewPrescription from './health-management/NewPrescription.jsx';
+
+import Settings from './Settings.jsx';
 
 const ParentComponentPagePackages = {
   CampaignsHealthCheck,
@@ -34,7 +35,8 @@ const ParentComponentPagePackages = {
   DashboardHome,
   Profile,
   CampaignSchedule,
-  NewPrescription
+  NewPrescription,
+  Settings
 };
 
 export default ParentComponentPagePackages; 

@@ -14,7 +14,7 @@ import { Account } from '@toolpad/core/Account';
 import LogoBranchImg from '../../../assets/images/health_education_img2.png';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import Badge from '@mui/material/Badge';
-
+import HomeIcon from '@mui/icons-material/Home';
 
 import NavbarData from './NavbarData';
 import NavbarTheme from './navbar-theme';
@@ -68,10 +68,19 @@ function ToolbarActionsUtility() {
                 </Badge>
             </IconButton>
 
+            {/* Homepage icon */}
+            <Box component={Link} to="/homepage" sx={{ textDecoration: 'none', color: 'inherit' }}>
+                <IconButton
+                    color="inherit"
+                    sx={{ mr: 1, position: 'relative' }}
+                ><HomeIcon fontSize={"23px"} />
+                </IconButton>
+            </Box>
+
 
 
             {/* Switch mode */}
-            <ThemeSwitcher />
+            {/* <ThemeSwitcher /> */}
 
             {/* Account */}
             <Account />
@@ -117,9 +126,9 @@ function SidebarFooter({ mini }) {
     return (
         <Typography
             variant="caption"
-            sx={{ m: 1, whiteSpace: 'nowrap', overflow: 'hidden' }}
+            sx={{ mb: 1, whiteSpace: 'nowrap', overflow: 'hidden' }}
         >
-            {mini ? '© MUI' : `© ${new Date().getFullYear()} Made with love by MUI`}
+            {mini ? '© Medical' : `© ${new Date().getFullYear()} Medical Health System`}
         </Typography>
     );
 }
@@ -138,7 +147,7 @@ function CustomAppTitle() {
 
 function DashboardLayoutSlots(props) {
 
-    const [ isLogout, setIsLogout ] = React.useState(false);
+    const [isLogout, setIsLogout] = React.useState(false);
     const { window } = props;
 
     const [session, setSession] = React.useState({
@@ -168,7 +177,7 @@ function DashboardLayoutSlots(props) {
     }, []);
 
     if (isLogout) {
-        return <Logout/>
+        return <Logout />
     }
     return (
         // Remove this provider when copying and pasting into your project.

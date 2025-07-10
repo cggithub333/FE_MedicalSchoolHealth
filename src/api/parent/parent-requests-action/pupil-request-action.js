@@ -14,7 +14,7 @@ export const fetchAllPupils = async () => {
     const resp = await fetchResponse(getAllPupils);
 
     // debug:
-    console.log("pupilRequestAction.js: fetchAllPupils response: ", resp);
+    // console.log("pupilRequestAction.js: fetchAllPupils response: ", resp);
 
     if (resp.status === false)
       throw new Error("pupilRequestAction.js: Can't fetch pupils!");
@@ -24,7 +24,7 @@ export const fetchAllPupils = async () => {
     return pupils;
 
   } catch (error) {
-    console.error("pupilRequestAction.js: Can't fetch pupils!");
+    // console.error("pupilRequestAction.js: Can't fetch pupils!");
     console.error("details: " + error);
     throw error; // throw for far processing in other components;
   }

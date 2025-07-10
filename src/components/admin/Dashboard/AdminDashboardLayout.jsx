@@ -7,19 +7,14 @@ import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import SearchIcon from '@mui/icons-material/Search';
-import { AppProvider } from '@toolpad/core/AppProvider';
 import { ReactRouterAppProvider } from '@toolpad/core/react-router';
 import { DashboardLayout, ThemeSwitcher } from '@toolpad/core/DashboardLayout';
 import { Account } from '@toolpad/core/Account';
-
 import LogoBranchImg from '../../../assets/images/health_education_img2.png';
 import AvatarImg from '../../../assets/images/avatar.png';
-
+import HomeIcon from '@mui/icons-material/Home';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import Badge from '@mui/material/Badge';
-import { FaChildReaching as ChildIcon } from "react-icons/fa6";
-
 import NavbarData from './NavbarData';
 import NavbarTheme from './navbar-theme';
 import { Link, Outlet } from 'react-router-dom';
@@ -73,10 +68,17 @@ function ToolbarActionsUtility() {
                 </Badge>
             </IconButton>
 
-
+            {/* Home icon */}
+            <Box component={Link} to="/homepage" sx={{ textDecoration: 'none', color: 'inherit' }}>
+                <IconButton
+                    color="inherit"
+                    sx={{ mr: 1, position: 'relative' }}
+                ><HomeIcon fontSize={"23px"} />
+                </IconButton>
+            </Box>
 
             {/* Switch mode */}
-            <ThemeSwitcher />
+            {/* <ThemeSwitcher /> */}
 
             {/* Account */}
             <Account />
@@ -89,9 +91,9 @@ function SidebarFooter({ mini }) {
     return (
         <Typography
             variant="caption"
-            sx={{ m: 1, whiteSpace: 'nowrap', overflow: 'hidden' }}
+            sx={{ mb: 1, ml: 1.5, whiteSpace: 'nowrap', overflow: 'hidden' }}
         >
-            {mini ? '© MUI' : `© ${new Date().getFullYear()} Made with love by MUI`}
+            {mini ? '© Medical' : `© ${new Date().getFullYear()} Medical Health System`}
         </Typography>
     );
 }
@@ -110,7 +112,7 @@ function CustomAppTitle() {
 
 function DashboardLayoutSlots(props) {
 
-    const [ isSignOut, setIsSignOut ] = React.useState(false);
+    const [isSignOut, setIsSignOut] = React.useState(false);
     const { window } = props;
 
     const [session, setSession] = React.useState({

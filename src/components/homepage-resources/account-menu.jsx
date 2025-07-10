@@ -2,16 +2,17 @@
 
 import { use, useState } from "react"
 import { Avatar, Menu, MenuItem, ListItemIcon, ListItemText, Divider, Box, Typography, Chip } from "@mui/material"
-import { Dashboard, Person, Language, Logout, KeyboardArrowDown } from "@mui/icons-material"
-
+import { Dashboard, Person, Language, Logout, KeyboardArrowDown, SettingsSuggest as SettingsIcon } from "@mui/icons-material"
 import { useNavigate } from "react-router-dom"
 
 const AccountMenu = ({
   username = "John Doe",
   avatarSrc,
   gender = "male",
-  onDashboard,
+  // add callbacks from parent component
+  onDashboard, 
   onProfile,
+  onSettings,
   onLanguages,
   onLogout,
 }) => {
@@ -23,6 +24,7 @@ const AccountMenu = ({
   const defaultHandlers = {
     dashboard: () => navigate("/dashboard"),
     profile: () => navigate("/profile"),
+    settings: () => navigate("/settings"),
     languages: () => console.log("Languages clicked"),
     logout: () => navigate("/logout"),
   }
@@ -30,6 +32,7 @@ const AccountMenu = ({
   const handlers = {
     dashboard: onDashboard || defaultHandlers.dashboard,
     profile: onProfile || defaultHandlers.profile,
+    settings: onSettings || defaultHandlers.settings,
     languages: onLanguages || defaultHandlers.languages,
     logout: onLogout || defaultHandlers.logout,
   }
@@ -81,6 +84,17 @@ const AccountMenu = ({
             backgroundColor: "rgba(0, 0, 0, 0.04)",
           },
         }}
+        // Add accessibility props
+        role="button"
+        tabIndex={0}
+        aria-expanded={open}
+        aria-haspopup="menu"
+        aria-label={`Account menu for ${username}`}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            handleClick(event)
+          }
+        }}
       >
         <Avatar
           {...getAvatarProps()}
@@ -118,6 +132,13 @@ const AccountMenu = ({
         open={open}
         onClose={handleClose}
         onClick={handleClose}
+        // Add these accessibility props to fix the aria-hidden warning
+        aria-labelledby="account-menu-button"
+        role="menu"
+        disableAutoFocusItem={false}
+        disableEnforceFocus={false}
+        disablePortal={false}
+        autoFocus={true}
         PaperProps={{
           elevation: 3,
           sx: {
@@ -171,22 +192,41 @@ const AccountMenu = ({
           </Box>
         </Box>
 
-        {/* Menu Items */}
-        <MenuItem onClick={() => handleMenuItemClick(handlers.dashboard)}>
+        {/* Menu Items - Add role="menuitem" for better accessibility */}
+        <MenuItem 
+          onClick={() => handleMenuItemClick(handlers.dashboard)}
+          role="menuitem"
+        >
           <ListItemIcon>
             <Dashboard fontSize="small" />
           </ListItemIcon>
           <ListItemText>Dashboard</ListItemText>
         </MenuItem>
 
-        <MenuItem onClick={() => handleMenuItemClick(handlers.profile)}>
+        <MenuItem 
+          onClick={() => handleMenuItemClick(handlers.profile)}
+          role="menuitem"
+        >
           <ListItemIcon>
             <Person fontSize="small" />
           </ListItemIcon>
           <ListItemText>Profile</ListItemText>
         </MenuItem>
 
-        <MenuItem onClick={() => handleMenuItemClick(onLanguages || handlers.languages)}>
+        <MenuItem 
+          onClick={() => handleMenuItemClick(handlers.settings)}
+          role="menuitem"
+        >
+          <ListItemIcon>
+            <SettingsIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Settings</ListItemText>
+        </MenuItem>
+
+        <MenuItem 
+          onClick={() => handleMenuItemClick(handlers.languages)}
+          role="menuitem"
+        >
           <ListItemIcon>
             <Language fontSize="small" />
           </ListItemIcon>
@@ -196,7 +236,8 @@ const AccountMenu = ({
         <Divider />
 
         <MenuItem
-          onClick={() => handleMenuItemClick(onLogout || handlers.logout)}
+          onClick={() => handleMenuItemClick(handlers.logout)}
+          role="menuitem"
           sx={{
             color: "error.main",
             "&:hover": {   

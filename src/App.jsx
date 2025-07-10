@@ -20,38 +20,28 @@ import { isContained } from './utils/string-utils';
 import Test from '@pages/test/Test';
 import LogoutAction from '@components/Logout';
 
-const DashboardRedirect = () => {
-    const { role } = getPayloadResources() || {};
-    
-    switch (role) {
-        case "ADMIN":
-            return <Navigate to={"/admin/dashboard"} replace />;
-        case "MANAGER":
-            return <Navigate to={"/manager/dashboard"} replace />;
-        case "SCHOOL_NURSE":
-            return <Navigate to={"/schoolnurse/dashboard"} replace />;
-        case "PARENT":
-            return <Navigate to={"/parent/dashboard"} replace />;
-        default:
-            return <Navigate to={"/homepage"} replace />;
-    }
-};
+const TargetRedirect = ({ target }) => {
 
-const ProfileRedirect = () => {
+    if (target === "logout") {
+        // if the target is logout, we will call the LogoutAction component
+        return <LogoutAction />;
+    }
+
     const { role } = getPayloadResources() || {};
+
     switch (role) {
         case "ADMIN":
-            return <Navigate to={"/admin/profile"} replace />;
+            return <Navigate to={`/admin/${target}`} replace />;
         case "MANAGER":
-            return <Navigate to={"/manager/profile"} replace />;
+            return <Navigate to={`/manager/${target}`} replace />;
         case "SCHOOL_NURSE":
-            return <Navigate to={"/schoolnurse/profile"} replace />;
+            return <Navigate to={`/schoolnurse/${target}`} replace />;
         case "PARENT":
-            return <Navigate to={"/parent/profile"} replace />;
+            return <Navigate to={`/parent/${target}`} replace />;
         default:
             return <Navigate to={"/homepage"} replace />;
     }
-};
+}
 
 function App() {
 
@@ -78,9 +68,10 @@ function App() {
                     <Route path="/" element={<Navigate to={"/homepage"} />} /> {/* entry point of the application */}
                     <Route path="/homepage" element={<Homepage />} />
                     <Route path="/test" element={<Test />} />
-                    <Route path="/dashboard" element={<DashboardRedirect />} />
-                    <Route path="/profile" element={<ProfileRedirect />} />
-                    <Route path="/logout" element={<LogoutAction />} />
+                    <Route path="/dashboard" element={<TargetRedirect target="dashboard" />} />
+                    <Route path="/profile" element={<TargetRedirect target="profile"/>} />
+                    <Route path="/settings" element={<TargetRedirect target="settings" />} />
+                    <Route path="/logout" element={<TargetRedirect target="logout" />} />
                     <Route element={<RouteProtecter.forAll />}>
 
                         <Route path="/admin/*" element={<RouteProtecter.forAdmin>

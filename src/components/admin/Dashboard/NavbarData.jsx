@@ -8,7 +8,7 @@ import ManIcon from '@mui/icons-material/Man';
 import ProfileIcon from '@mui/icons-material/AssignmentInd';
 import AccountManagementIcon from '@mui/icons-material/SwitchAccount';
 import NotificationIcon from '@mui/icons-material/NotificationsActive';
-
+import SettingsIcon from '@mui/icons-material/SettingsSuggest';
 
 const NavbarData = [
   //----------------part 1--------------------//
@@ -94,6 +94,14 @@ const NavbarData = [
     segment: 'admin/integration',
     title: 'Integration',
     icon: <LayersIcon />,
+  },
+  {
+    kind: "divider",
+  },
+  {
+    segment: 'admin/settings',
+    title: 'Settings',
+    icon: <SettingsIcon />
   },
 ];
 

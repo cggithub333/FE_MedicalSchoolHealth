@@ -29,7 +29,7 @@ export const useAllNotifications = () => {
     fetchNotifications();
   }, [fetchNotifications]);
 
-  return { notifications, loading, error, refetch: fetchNotifications  };
+  return { notifications, loading, error, refetch: fetchNotifications, quantity: (notifications.length || 0) };
 }
 
 export default useAllNotifications;
