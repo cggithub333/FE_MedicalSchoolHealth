@@ -2,6 +2,7 @@
 import { Grid } from "@mui/material";
 import CustomTittle from '@components/magic/CustomTittle/CustomTitle';
 import Breadcrumb from '@components/magic/Breadcrumb/CustomBreadcrumb';
+import ProfileComponent from "@components/parent/main-contents/profile/Profile";
 
 
 const Profile = () => {
@@ -18,9 +19,10 @@ const Profile = () => {
           <CustomTittle title={"Parent's Profile"} />
         </Grid>
       </Grid>
-      <Grid container justifyContent={'center'} sx={{ marginTop: "20px", backgroundColor: "#E6F8F9", pb: "50px" }}>
-        <Grid item size={{ xs: 10 }}>
-        </Grid>
+      <Grid container justifyContent={'center'} sx={{ backgroundColor: "#E6F8F9" }}>
+        {/* <Grid item size={{ xs: 10 }}> */}
+        <ProfileComponent />
+        {/* </Grid> */}
       </Grid>
     </div>
   )
