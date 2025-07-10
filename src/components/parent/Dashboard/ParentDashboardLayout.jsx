@@ -230,10 +230,10 @@ function DashboardLayoutSlots(props) {
   // load personal information of the user from state:
   const { personalInforState, error: errorPersonalInfor, loading: loadingPersonalInfor} = useMyInformation();
   // debug:
-  if (loadingPersonalInfor)
-    console.log("Loading personal infor...");
-  else 
-    console.log("personalInfor: ", personalInforState);
+  // if (loadingPersonalInfor)
+  //   console.log("Loading personal infor...");
+  // else 
+  //   console.log("personalInfor: ", personalInforState);
 
   const [ isLogout, setIsLogout ] = React.useState(false);
 
@@ -266,13 +266,15 @@ function DashboardLayoutSlots(props) {
   // update session when personal information changes (avoid the null value at first time render);
   React.useEffect(() => {
 
-    setSession({
-      user: {
-        name: localStorage.getItem('userFullName') ? localStorage.getItem('userFullName') : "",
-        email: personalInforState?.email ? personalInforState?.email : 'Email has not updated yet',
-        image: '/assets/images/user_avatar.jpg',
-      },
-    });
+    if (personalInforState) {
+      setSession({
+        user: {
+          name: localStorage.getItem('userFullName') ? localStorage.getItem('userFullName') : "",
+          email: personalInforState?.email ? personalInforState?.email : 'Email has not updated yet',
+          image: '/assets/images/user_avatar.jpg',
+        },
+      });
+    }
 
   }, [personalInforState])
 

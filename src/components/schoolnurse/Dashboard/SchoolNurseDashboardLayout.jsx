@@ -15,14 +15,12 @@ import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import Badge from '@mui/material/Badge';
 import HomeIcon from '@mui/icons-material/Home';
 
-import { FaChildReaching as ChildIcon } from "react-icons/fa6";
-
 import NavbarData from './NavbarData';
 import NavbarTheme from './navbar-theme';
 import { Link, Outlet } from 'react-router-dom';
 import Logout from '@components/Logout';
 
-import { useSelector } from 'react-redux';
+import useMyInformation from '@hooks/common/useMyInformation';
 
 function ToolbarActionsUtility() {
     return (
@@ -115,18 +113,23 @@ function CustomAppTitle() {
 
 function DashboardLayoutSlots(props) {
 
-    // load personal information of the user from state:
-    const personalInfor = useSelector((state) => state.personalInfor.information);
-      // debug:
-    console.log("personalInfor: ", personalInfor);
+    // get personal information:
+    const { personalInforState, error: personalInforError, loading: personalInforLoading } = useMyInformation();
+
+    // debug:
+    // if (personalInforLoading)
+    //     console.log("Loading personal information...");
+    // else if (personalInforError)
+    //     console.error("Error loading personal information:", personalInforError);
+    // else
+    //     console.log("Personal information loaded:", personalInforState);
 
     const [isLogout, setIsLogout] = React.useState(false);
-    const { window } = props;
 
     const [session, setSession] = React.useState({
         user: {
-            name: localStorage.getItem('userFullName') ? localStorage.getItem('userFullName') : "",
-            email: personalInfor.email ? personalInfor.email : 'Email has not updated yet',
+            name: localStorage.getItem('userFullName') ? localStorage.getItem('userFullName') : (personalInforState?.lastName + " " + personalInforState?.firstName),
+            email: personalInforState?.email ? personalInforState?.email : 'Email has not updated yet',
             image: '/assets/images/user_avatar.jpg', // UserAvatarImage
         },
     });
@@ -136,8 +139,8 @@ function DashboardLayoutSlots(props) {
             signIn: () => {
                 setSession({
                     user: {
-                        name: localStorage.getItem('userFullName') ? localStorage.getItem('userFullName') : "",
-                        email: personalInfor.email ? personalInfor.email : 'Email has not updated yet',
+                        name: localStorage.getItem('userFullName') ? localStorage.getItem('userFullName') : (personalInforState?.lastName + " " + personalInforState?.firstName),
+                        email: personalInforState?.email ? personalInforState?.email : 'Email has not updated yet',
                         image: '/assets/images/user_avatar.jpg', // UserAvatarImage
                     },
                 });
@@ -148,6 +151,21 @@ function DashboardLayoutSlots(props) {
             },
         };
     }, []);
+
+    // refetch session when personal information changes (avoid the null value at first time render);
+    React.useEffect(() => {
+
+        if (personalInforState) {
+            setSession({
+                user: {
+                    name: localStorage.getItem('userFullName') ? localStorage.getItem('userFullName') : (personalInforState?.lastName + " " + personalInforState?.firstName),
+                    email: personalInforState?.email ? personalInforState?.email : 'Email has not updated yet',
+                    image: '/assets/images/user_avatar.jpg', // UserAvatarImage
+                },
+            });
+        }
+
+    }, [personalInforState]);
 
     if (isLogout) {
         return <Logout />
