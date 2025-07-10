@@ -10,7 +10,7 @@ export const getMyInformation = async () => {
     const response = await fetchResponse(() => callback());
 
     // debug:
-    console.log("getMyInformation response:", response);
+    // console.log("getMyInformation response:", response);
 
     const personalInfo = await response.data;
     

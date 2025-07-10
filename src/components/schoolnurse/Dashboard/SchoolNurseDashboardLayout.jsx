@@ -22,6 +22,7 @@ import NavbarTheme from './navbar-theme';
 import { Link, Outlet } from 'react-router-dom';
 import Logout from '@components/Logout';
 
+import { useSelector } from 'react-redux';
 
 function ToolbarActionsUtility() {
     return (
@@ -114,14 +115,19 @@ function CustomAppTitle() {
 
 function DashboardLayoutSlots(props) {
 
+    // load personal information of the user from state:
+    const personalInfor = useSelector((state) => state.personalInfor.information);
+      // debug:
+    console.log("personalInfor: ", personalInfor);
+
     const [isLogout, setIsLogout] = React.useState(false);
     const { window } = props;
 
     const [session, setSession] = React.useState({
         user: {
-            name: 'Bharat Kashyap',
-            email: 'bharatkashyap@outlook.com',
-            image: 'https://avatars.githubusercontent.com/u/19550456',
+            name: localStorage.getItem('userFullName') ? localStorage.getItem('userFullName') : "",
+            email: personalInfor.email ? personalInfor.email : 'Email has not updated yet',
+            image: '/assets/images/user_avatar.jpg', // UserAvatarImage
         },
     });
 
@@ -130,9 +136,9 @@ function DashboardLayoutSlots(props) {
             signIn: () => {
                 setSession({
                     user: {
-                        name: 'Bharat Kashyap',
-                        email: 'bharatkashyap@outlook.com',
-                        image: 'https://avatars.githubusercontent.com/u/19550456',
+                        name: localStorage.getItem('userFullName') ? localStorage.getItem('userFullName') : "",
+                        email: personalInfor.email ? personalInfor.email : 'Email has not updated yet',
+                        image: '/assets/images/user_avatar.jpg', // UserAvatarImage
                     },
                 });
             },

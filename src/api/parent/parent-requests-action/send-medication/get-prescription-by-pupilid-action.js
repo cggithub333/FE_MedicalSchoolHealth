@@ -10,14 +10,14 @@ export const getPrescriptionByPupilIdAction = async (pupilId) => {
     const response = await fetchResponse(callback);
 
     // debug:
-    console.log('getPrescriptionByPupilIdAction response:', response);
+    // console.log('getPrescriptionByPupilIdAction response:', response);
 
     const prescriptionArr = await response?.data || [];
     
     return prescriptionArr;
   
   } catch (error) {
-    console.error('Error in getPrescriptionByPupilIdAction:', error);
+    // console.error('Error in getPrescriptionByPupilIdAction:', error);
     throw error; // Re-throw the error for further handling if needed
   }
 }

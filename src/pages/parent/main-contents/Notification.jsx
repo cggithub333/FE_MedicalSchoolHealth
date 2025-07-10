@@ -9,17 +9,17 @@ const Notification = () => {
   return (
     <div style={{ background: "#e6f8f9", width: "100%", height: "100vh" }}>
       <Grid container>
-        <Grid item size={{ xs: 6 }}>
+        <Grid size={{ xs: 6 }}>
           <Breadcrumbs breadcrumbPairs={breadcrumbPairs} />
         </Grid>
       </Grid>
       <Grid container>
-        <Grid item sx={{ marginLeft: "20px", marginTop: "25px" }} size={{ xs: 12 }}>
+        <Grid sx={{ marginLeft: "20px", marginTop: "25px" }} size={{ xs: 12 }}>
           <CustomTittle title={"Parent's Notifications"} />
         </Grid>
       </Grid>
       <Grid container justifyContent={'center'} backgroundColor={'#e6f8f9'} >
-        <Grid item size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}>
           <ParentNotifications />
         </Grid>
       </Grid>
