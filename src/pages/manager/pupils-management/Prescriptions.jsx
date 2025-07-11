@@ -5,7 +5,7 @@ import CustomTittle from '@components/magic/CustomTittle/CustomTitle';
 
 import FloatingNavigateButton from "@components/magic/FloatingNavigateButton/FloatingNavigateButton";
 import { IoDocumentAttachSharp as LogsIcon } from "react-icons/io5";
-// import { IoDocumentAttachOutline as LogsIcon } from "react-icons/io5";
+import PrescriptionManagementByStatus from "./PrescriptionManagementByStatus";
 
 const Prescriptions = () => {
     return (
@@ -21,8 +21,9 @@ const Prescriptions = () => {
                 </Grid>
             </Grid>
             <Grid container justifyContent={'center'} sx={{ marginTop: "20px", backgroundColor: "#E6F8F9", pb: "50px" }}>
-                <Grid item size={{ xs: 10 }}>
-                    </Grid>
+                <Grid item size={{ xs: 11 }}>
+                    <PrescriptionManagementByStatus />
+                </Grid>
             </Grid>
             <FloatingNavigateButton 
                         iconForAvatar={LogsIcon}
@@ -41,6 +42,6 @@ const breadcrumbPairs = [
     {
         title: 'Prescriptions Management',
     }
-  ]
+]
 
 export default Prescriptions;
