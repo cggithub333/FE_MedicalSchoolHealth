@@ -25,7 +25,8 @@ import Person from "@mui/icons-material/Person"
 import usePupils from "@hooks/parent/usePupils";
 import { useCreateNewHealthRecords } from "@hooks/parent/new-event/useCreateNewHealthRecords"
 import { showSuccessToast, showErrorToast } from "@utils/toast-utils";
-
+import { useGetAllHealthRecordByPupilId } from "../../../../hooks/parent/new-event/useGetAllHealthrecordByPupilId";
+import ImageIcon from "@mui/icons-material/Image";
 // Styled components
 const MainContainer = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(4),
@@ -97,14 +98,6 @@ const HealthDeclarationContent = () => {
     return gender === "M" ? "#1976d2" : "#e91e63"
   }
 
-  const handleViewDetails = (pupilId) => {
-    console.log(`View details for pupil: ${pupilId}`)
-    // Add your logic here
-  }
-
-  const { pupils, isLoading: pupilsLoading } = usePupils();
-  const { createNewHealthRecords, isLoading: createLoading, error: createError } = useCreateNewHealthRecords();
-
   const [dialogOpen, setDialogOpen] = useState(false)
   const [form, setForm] = useState({
     name: "",
@@ -115,6 +108,13 @@ const HealthDeclarationContent = () => {
     isActive: true,
   })
   const [selectedPupilId, setSelectedPupilId] = useState(form.pupilId || "")
+  const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+  const [detailPupilId, setDetailPupilId] = useState(null);
+
+  const { pupils, isLoading: pupilsLoading } = usePupils();
+  const { createNewHealthRecords, isLoading: createLoading, error: createError } = useCreateNewHealthRecords();
+  const { healthRecords = [], loading, error } = useGetAllHealthRecordByPupilId(detailPupilId);
+  console.log("Health Records:", healthRecords);
   const selectedPupil = pupils.find((p) => p.pupilId === selectedPupilId)
 
   // Get selected pupilId from localStorage (set by VaccinationDeclarationContent)
@@ -148,6 +148,15 @@ const HealthDeclarationContent = () => {
       showErrorToast("Failed to create health record. Please try again.");
     }
   }
+
+  const handleViewDetails = (pupilId) => {
+    setDetailPupilId(pupilId);
+    setDetailDialogOpen(true);
+  };
+  const handleDetailDialogClose = () => {
+    setDetailDialogOpen(false);
+    setDetailPupilId(null);
+  };
 
   return (
     <Box
@@ -314,6 +323,93 @@ const HealthDeclarationContent = () => {
                 </DialogActions>
               </form>
             </Dialog>
+            {/* Health Details Dialog */}
+            {detailDialogOpen && (
+              <Dialog open={detailDialogOpen} onClose={handleDetailDialogClose} maxWidth="md" fullWidth>
+                <DialogTitle>
+                  Health Details for Pupil {detailPupilId}
+                </DialogTitle>
+                <DialogContent>
+                  <Box sx={{ flexDirection: { xs: 'column', md: 'row' }, minHeight: 320 }}>
+                    {/* ALLERGY Section */}
+                    <Paper elevation={1} sx={{ flex: 1, minWidth: 320, padding: 3, margin: 1, bgcolor: 'primary.50', borderRadius: 3, boxShadow: 4 }}>
+                      <Typography variant="h6" color="primary" gutterBottom sx={{ fontWeight: 'bold', letterSpacing: 1 }}>ALLERGY</Typography>
+                      {loading ? (
+                        <Typography variant="body2" color="text.secondary">Loading...</Typography>
+                      ) : (
+                        (healthRecords.filter(r => r.typeHistory === 'ALLERGY').length === 0) ? (
+                          <Typography variant="body2" color="text.secondary">No allergy records.</Typography>
+                        ) : (
+                          <Box component="table" sx={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0 }}>
+                            <Box component="thead">
+                              <Box component="tr" sx={{ bgcolor: 'primary.light' }}>
+                                <Box component="th" sx={{ textAlign: 'left', p: 1, fontWeight: 700, color: 'primary.main', borderRadius: '8px 0 0 0' }}>Name</Box>
+                                <Box component="th" sx={{ textAlign: 'left', p: 1, fontWeight: 700, color: 'primary.main' }}>Reaction/Note</Box>
+                                <Box component="th" sx={{ textAlign: 'center', p: 1, fontWeight: 700, color: 'primary.main', borderRadius: '0 8px 0 0' }}>Image</Box>
+                              </Box>
+                            </Box>
+                            <Box component="tbody">
+                              {healthRecords.filter(r => r.typeHistory === 'ALLERGY').map((record, idx, arr) => (
+                                <Box component="tr" key={record.conditionId} sx={{ bgcolor: idx % 2 === 0 ? 'white' : 'primary.100', borderRadius: 2 }}>
+                                  <Box component="td" sx={{ p: 1, borderBottom: idx === arr.length - 1 ? 'none' : '1px solid #e0e0e0' }}>{record.name}</Box>
+                                  <Box component="td" sx={{ p: 1, borderBottom: idx === arr.length - 1 ? 'none' : '1px solid #e0e0e0' }}>{record.reactionOrNote}</Box>
+                                  <Box component="td" sx={{ p: 1, textAlign: 'center', borderBottom: idx === arr.length - 1 ? 'none' : '1px solid #e0e0e0' }}>
+                                    {record.imageUrl ? (
+                                      <Button size="small" variant="outlined" color="primary" startIcon={<ImageIcon />} onClick={() => window.open(record.imageUrl, '_blank')}>See</Button>
+                                    ) : (
+                                      <Typography variant="caption" color="text.secondary">No image</Typography>
+                                    )}
+                                  </Box>
+                                </Box>
+                              ))}
+                            </Box>
+                          </Box>
+                        )
+                      )}
+                    </Paper>
+                    {/* MEDICAL_HISTORY Section */}
+                    <Paper elevation={1} sx={{ flex: 1, minWidth: 320, padding: 3, margin: 1, bgcolor: 'secondary.50', borderRadius: 3, boxShadow: 4 }}>
+                      <Typography variant="h6" color="secondary" gutterBottom sx={{ fontWeight: 'bold', letterSpacing: 1 }}>MEDICAL HISTORY</Typography>
+                      {loading ? (
+                        <Typography variant="body2" color="text.secondary">Loading...</Typography>
+                      ) : (
+                        (healthRecords.filter(r => r.typeHistory === 'MEDICAL_HISTORY').length === 0) ? (
+                          <Typography variant="body2" color="text.secondary">No medical history records.</Typography>
+                        ) : (
+                          <Box component="table" sx={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0 }}>
+                            <Box component="thead">
+                              <Box component="tr" sx={{ bgcolor: 'secondary.light' }}>
+                                <Box component="th" sx={{ textAlign: 'left', p: 1, fontWeight: 700, color: 'secondary.main', borderRadius: '8px 0 0 0' }}>Name</Box>
+                                <Box component="th" sx={{ textAlign: 'left', p: 1, fontWeight: 700, color: 'secondary.main' }}>Reaction/Note</Box>
+                                <Box component="th" sx={{ textAlign: 'center', p: 1, fontWeight: 700, color: 'secondary.main', borderRadius: '0 8px 0 0' }}>Image</Box>
+                              </Box>
+                            </Box>
+                            <Box component="tbody">
+                              {healthRecords.filter(r => r.typeHistory === 'MEDICAL_HISTORY').map((record, idx, arr) => (
+                                <Box component="tr" key={record.conditionId} sx={{ bgcolor: idx % 2 === 0 ? 'white' : 'secondary.100', borderRadius: 2 }}>
+                                  <Box component="td" sx={{ p: 1, borderBottom: idx === arr.length - 1 ? 'none' : '1px solid #e0e0e0' }}>{record.name}</Box>
+                                  <Box component="td" sx={{ p: 1, borderBottom: idx === arr.length - 1 ? 'none' : '1px solid #e0e0e0' }}>{record.reactionOrNote}</Box>
+                                  <Box component="td" sx={{ p: 1, textAlign: 'center', borderBottom: idx === arr.length - 1 ? 'none' : '1px solid #e0e0e0' }}>
+                                    {record.imageUrl ? (
+                                      <Button size="small" variant="outlined" color="secondary" startIcon={<ImageIcon />} onClick={() => window.open(record.imageUrl, '_blank')}>See</Button>
+                                    ) : (
+                                      <Typography variant="caption" color="text.secondary">No image</Typography>
+                                    )}
+                                  </Box>
+                                </Box>
+                              ))}
+                            </Box>
+                          </Box>
+                        )
+                      )}
+                    </Paper>
+                  </Box>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleDetailDialogClose}>Close</Button>
+                </DialogActions>
+              </Dialog>
+            )}
 
           </CardActions>
 
