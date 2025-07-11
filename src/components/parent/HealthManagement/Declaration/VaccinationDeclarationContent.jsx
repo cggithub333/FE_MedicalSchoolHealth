@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import {
   Container,
@@ -38,8 +36,8 @@ const formatDateForSubmission = (dateString) => {
 
 const VaccinationDeclarationFormContent = () => {
 
-  const {pupils, isLoading: loadingPupils} = usePupils();
-  const { diseaseVaccineMap , loading: diseasesVaccinesLoading, error: diseasesVaccinesError, refetch: diseasesVaccinesRefetch } = useAllDiseasesVaccines();
+  const { pupils, isLoading: loadingPupils } = usePupils();
+  const { diseaseVaccineMap, loading: diseasesVaccinesLoading, error: diseasesVaccinesError, refetch: diseasesVaccinesRefetch } = useAllDiseasesVaccines();
   const { createBulkVaccinationHistory, loading: createLoading, errror: createError } = useCreateBulkVaccinationHistoryForEachPupil();
 
   const [selectedPupilId, setSelectedPupilId] = useState("")
@@ -154,7 +152,7 @@ const VaccinationDeclarationFormContent = () => {
     }
 
     // Check if at least one disease is selected (vaccine and dose info are optional)
-    const validDiseases = diseases.filter((disease) => 
+    const validDiseases = diseases.filter((disease) =>
       disease.selectedDiseaseId
     )
 
@@ -187,17 +185,17 @@ const VaccinationDeclarationFormContent = () => {
               notes: dose.notes,
               doseNumber: index + 1,
             })),
-        })),    
+        })),
     }
 
     // debug:
     console.log("Form Data to be submitted:", JSON.stringify(formData, null, 2))
-    
+
     if (!formData) {
       showErrorToast("Something went wrong, please try again later.")
       return
     }
-    
+
     // Submit the form
     await createBulkVaccinationHistory(formData);
     if (!createError) {
@@ -259,22 +257,22 @@ const VaccinationDeclarationFormContent = () => {
                   Selected Child Information
                 </Typography>
                 <Grid container spacing={2}>
-                  <Grid item size={{ xs: 6, md: 3}}>
+                  <Grid item size={{ xs: 6, md: 3 }}>
                     <Typography variant="body2">
                       <strong>Name:</strong> {selectedPupil.lastName} {selectedPupil.firstName}
                     </Typography>
                   </Grid>
-                  <Grid item size={{ xs: 6, md: 3}}>
+                  <Grid item size={{ xs: 6, md: 3 }}>
                     <Typography variant="body2">
                       <strong>Birth Date:</strong> {selectedPupil.birthDate}
                     </Typography>
                   </Grid>
-                  <Grid item size={{ xs: 6, md: 3}}>
+                  <Grid item size={{ xs: 6, md: 3 }}>
                     <Typography variant="body2">
                       <strong>Gender:</strong> {selectedPupil.gender === "M" ? "Male" : "Female"}
                     </Typography>
                   </Grid>
-                  <Grid item size={{ xs: 6, md: 3}}>
+                  <Grid item size={{ xs: 6, md: 3 }}>
                     <Typography variant="body2">
                       <strong>Class:</strong> {selectedPupil.gradeName}
                     </Typography>
@@ -303,7 +301,7 @@ const VaccinationDeclarationFormContent = () => {
 
               <Grid container spacing={3}>
                 {/* Disease Selection */}
-                <Grid item size={{ xs: 12, md: 6}}>
+                <Grid item size={{ xs: 12, md: 6 }}>
                   <FormControl fullWidth>
                     <InputLabel>Select Disease</InputLabel>
                     <Select
@@ -372,7 +370,7 @@ const VaccinationDeclarationFormContent = () => {
                         )}
                       </Box>
                       <Grid container spacing={2} display="flex" flexDirection={'column'}>
-                        <Grid item size={{ xs: 12, md: 4}}>
+                        <Grid item size={{ xs: 12, md: 4 }}>
                           <TextField
                             fullWidth
                             label="Vaccination Date"
