@@ -22,6 +22,9 @@ import {
     ListItemIcon,
     ListItemText,
     Paper,
+    Dialog,
+    DialogTitle,
+    DialogContent,
 } from "@mui/material"
 import {
     PhotoCamera,
@@ -37,10 +40,12 @@ import {
     Cancel as CancelIcon,
     AccountCircle,
 } from "@mui/icons-material"
+import CloseIcon from '@mui/icons-material/Close';
 import "./StyleProfile.scss"
 import { useGetInformation } from "@hooks/schoolnurse/main-contents/useGetInformation"
 import { useGetAllPupilsOfEachParent } from "@hooks/schoolnurse/main-contents/useGetAllPupilsOfEachParent"
 import { useNavigate } from "react-router-dom"
+import MedicalEventResultForm from "../medical-event-result/EventFormResult"
 
 const ProfileComponent = () => {
     const { information, loading, error } = useGetInformation();
@@ -147,10 +152,16 @@ const ProfileComponent = () => {
         },
     ]
 
-    const [selectedPupil, setSelectedPupil] = useState(null);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [selectedPupilId, setSelectedPupilId] = useState(null);
 
     const handlePupilDetails = (pupil) => {
-        setSelectedPupil(pupil);
+        setSelectedPupilId(pupil.pupilId);
+        setOpenDialog(true);
+    }
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+        setSelectedPupilId(null);
     }
 
     return (
@@ -227,8 +238,8 @@ const ProfileComponent = () => {
                                     Pupils Profile
                                 </Typography>
                                 <Divider sx={{ mb: 2 }} />
-
                                 <Box className="summary-content">
+
                                     <Paper className="summary-item" elevation={1}>
                                         <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
                                             Pupils List
@@ -250,17 +261,6 @@ const ProfileComponent = () => {
                                             </Typography>
                                         )}
                                     </Paper>
-
-                                    {selectedPupil && (
-                                        <Box sx={{ mt: 2, p: 2, border: '1px solid #1976d2', borderRadius: 2, background: '#e3f2fd' }}>
-                                            <Typography variant="h6">Pupil Details</Typography>
-                                            <Typography><b>Name:</b> {selectedPupil.lastName} {selectedPupil.firstName}</Typography>
-                                            <Typography><b>ID:</b> {selectedPupil.pupilId}</Typography>
-                                            <Typography><b>Birth Date:</b> {formatDate(selectedPupil.birthDate)}</Typography>
-                                            <Typography><b>Gender:</b> {selectedPupil.gender}</Typography>
-                                            <Typography><b>Grade:</b> {selectedPupil.gradeName} ({selectedPupil.gradeLevel})</Typography>
-                                        </Box>
-                                    )}
                                 </Box>
                             </CardContent>
                         </Card>
@@ -268,6 +268,29 @@ const ProfileComponent = () => {
                     </Grid>
                 </Grid>
             </Grid>
+
+            <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="lg" fullWidth PaperProps={{ sx: { minHeight: '50vh' } }}>
+                <DialogTitle sx={{ m: 0, p: 2 }}>
+                    Medical Event Result
+                    <IconButton
+                        aria-label="close"
+                        onClick={handleCloseDialog}
+                        sx={{
+                            position: 'absolute',
+                            right: 8,
+                            top: 8,
+                            color: (theme) => theme.palette.grey[500],
+                        }}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent dividers>
+                    {selectedPupilId && (
+                        <MedicalEventResultForm pupilId={selectedPupilId} onBack={handleCloseDialog} />
+                    )}
+                </DialogContent>
+            </Dialog>
         </Grid >
     )
 }
