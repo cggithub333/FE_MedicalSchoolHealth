@@ -56,6 +56,9 @@ const PrescriptionTrackingTable = () => {
     const { inProgressPrescriptions, loading: inProgressLoading, error: inProgressError, refetch: inProgressRefetch } = useGetInProgressPrescriptions()
     const { completedPrescriptions, loading: completedLoading, error: completedError, refetch: completedRefetch } = useGetCompletedPrescriptions()
 
+    // debug:
+    // console.log("All Prescriptions:", JSON.stringify(allPrescriptions, null, 2));
+
     const [value, setValue] = useState("1")
     const [selectedPrescription, setSelectedPrescription] = useState(null)
     const [dialogOpen, setDialogOpen] = useState(false)

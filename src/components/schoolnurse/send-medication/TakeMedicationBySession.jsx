@@ -80,7 +80,7 @@ const currentSessionInfor = () => {
     }
 }
 
-// for testing:
+// for testing sesion 1:
 const currentSessionInfor1 = () => {
     const now = new Date()
     const currentHour = now.getHours()
@@ -92,7 +92,7 @@ const currentSessionInfor1 = () => {
     }
 }
 
-
+// for testing sesion 2:
 const currentSessionInfor2 = () => {
     const now = new Date()
     const currentHour = now.getHours()
@@ -104,7 +104,7 @@ const currentSessionInfor2 = () => {
     }
 }
 
-
+//for testing sesion 3:
 const currentSessionInfor3 = () => {
     const now = new Date()
     const currentHour = now.getHours()
@@ -143,6 +143,12 @@ const TakeMedicationBySession = () => {
     const [logMessages, setLogMessages] = useState({ "schoolNurseName": "+ School Nurse's name: " + localStorage.getItem("userFullName") }) 
     // manage log message of each pupil's detail, will be removed if submit for current pupil complete to continue with the next pupil;
     // fill school nurse's name to know which school nurse is taking medication for which pupil
+
+    // debug:
+    // console.log("Current session information:", JSON.stringify(sessionsInfor, null, 2)) // ✅ Shows actual data
+    // console.log("Pupils information:", JSON.stringify(pupilsInfor, null, 2)) // ✅ Shows actual data
+    // console.log("Medication details by pupil:", JSON.stringify(medicationDetailsByPupil, null, 2)) // ✅ Shows actual data
+
 
     // handle re-fetch pupils when selectedGrade or selectedSession changes:
     useEffect(() => {
@@ -577,619 +583,621 @@ const TakeMedicationBySession = () => {
     }
 
     return (
-        <Grid
-            container
-            sx={{
-                width: "100%",
-                height: "100%",
-                padding: "15px",
-                backgroundColor: "#fff",
-                boxShadow: 1,
-                borderRadius: 2,
-            }}
-        >
-            {/* Header with Digital Clock */}
-            <Grid item size={{ xs: 12 }} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                    <Avatar sx={{ bgcolor: "primary.main", width: 40, height: 40 }}>
-                        <Medication />
-                    </Avatar>
-                    <Typography variant="h5" fontWeight="bold">
-                        Medication Sessions
-                    </Typography>
-                </Box>
-                <DigitalClock />
-            </Grid>
+        <>
+            <Grid
+                container
+                sx={{
+                    width: "100%",
+                    height: "100%",
+                    padding: "15px",
+                    backgroundColor: "#fff",
+                    boxShadow: 1,
+                    borderRadius: 2,
+                }}
+            >
+                {/* Header with Digital Clock */}
+                <Grid item size={{ xs: 12 }} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                        <Avatar sx={{ bgcolor: "primary.main", width: 40, height: 40 }}>
+                            <Medication />
+                        </Avatar>
+                        <Typography variant="h5" fontWeight="bold">
+                            Medication Sessions
+                        </Typography>
+                    </Box>
+                    <DigitalClock />
+                </Grid>
 
-            {/* Tabs Section */}
-            <Grid item size={{ xs: 12 }} sx={{ marginTop: "0px" }}>
-                <Box sx={{ width: "100%", typography: "body1" }}>
-                    <TabContext value={value}>
-                        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                            <Tabs value={value} onChange={handleChange} aria-label="medication sessions">
-                                <Tab
-                                    label={
-                                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                            <AccessTime fontSize="small" />
-                                            Session 1
-                                        </Box>
-                                    }
-                                    value="1"
-                                />
-                                <Tab
-                                    label={
-                                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                            <AccessTime fontSize="small" />
-                                            Session 2
-                                        </Box>
-                                    }
-                                    value="2"
-                                />
-                                <Tab
-                                    label={
-                                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                            <AccessTime fontSize="small" />
-                                            Session 3
-                                        </Box>
-                                    }
-                                    value="3"
-                                />
-                            </Tabs>
-                        </Box>
+                {/* Tabs Section */}
+                <Grid item size={{ xs: 12 }} sx={{ marginTop: "0px" }}>
+                    <Box sx={{ width: "100%", typography: "body1" }}>
+                        <TabContext value={value}>
+                            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                                <Tabs value={value} onChange={handleChange} aria-label="medication sessions">
+                                    <Tab
+                                        label={
+                                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                                <AccessTime fontSize="small" />
+                                                Session 1
+                                            </Box>
+                                        }
+                                        value="1"
+                                    />
+                                    <Tab
+                                        label={
+                                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                                <AccessTime fontSize="small" />
+                                                Session 2
+                                            </Box>
+                                        }
+                                        value="2"
+                                    />
+                                    <Tab
+                                        label={
+                                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                                <AccessTime fontSize="small" />
+                                                Session 3
+                                            </Box>
+                                        }
+                                        value="3"
+                                    />
+                                </Tabs>
+                            </Box>
 
-                        {/* Session 1 */}
-                        <TabPanel value="1">
-                            <Box sx={{ mb: 3 }}>
-                                <Typography variant="h6" fontWeight="bold" sx={{ mb: 1 }}>
-                                    {getSessionDisplayText(0)}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    Pupils scheduled for medication during this session
+                            {/* Session 1 */}
+                            <TabPanel value="1">
+                                <Box sx={{ mb: 3 }}>
+                                    <Typography variant="h6" fontWeight="bold" sx={{ mb: 1 }}>
+                                        {getSessionDisplayText(0)}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        Pupils scheduled for medication during this session
+                                    </Typography>
+                                </Box>
+                                <Grid container spacing={3}>
+                                    {sessionsInfor?.[0]?.quantityPupilByGrade?.map((gradeData) => (
+                                        <Grid item size={{ xs: 6 }} key={gradeData.grade}>
+                                            <Card
+                                                sx={{
+                                                    cursor: "pointer",
+                                                    transition: "all 0.3s ease",
+                                                    "&:hover": {
+                                                        transform: "translateY(-4px)",
+                                                        boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
+                                                    },
+                                                }}
+                                                onClick={() => handleGradeCardClick(gradeData.grade, 0)}
+                                            >
+                                                <CardContent sx={{ textAlign: "center", p: 3 }}>
+                                                    <Avatar
+                                                        sx={{
+                                                            bgcolor: `${getGradeColor(gradeData.grade)}.main`,
+                                                            width: 56,
+                                                            height: 56,
+                                                            mx: "auto",
+                                                            mb: 2,
+                                                        }}
+                                                    >
+                                                        <School fontSize="large" />
+                                                    </Avatar>
+                                                    <Typography variant="h5" fontWeight="bold" sx={{ mb: 1 }}>
+                                                        Grade {gradeData.grade}
+                                                    </Typography>
+                                                    <Chip
+                                                        label={`${gradeData.quantity} Pupil${gradeData.quantity > 1 ? "s" : ""}`}
+                                                        color={getGradeColor(gradeData.grade)}
+                                                        variant="filled"
+                                                        sx={{ fontWeight: "bold" }}
+                                                    />
+                                                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                                                        Click to view details
+                                                    </Typography>
+                                                </CardContent>
+                                            </Card>
+                                        </Grid>
+                                    ))}
+                                </Grid>
+                            </TabPanel>
+
+                            {/* Session 2 */}
+                            <TabPanel value="2">
+                                <Box sx={{ mb: 3 }}>
+                                    <Typography variant="h6" fontWeight="bold" sx={{ mb: 1 }}>
+                                        {getSessionDisplayText(1)}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        Pupils scheduled for medication during this session
+                                    </Typography>
+                                </Box>
+                                <Grid container spacing={3}>
+                                    {sessionsInfor?.[1]?.quantityPupilByGrade?.map((gradeData) => (
+                                        <Grid item size={{ xs: 6 }} key={gradeData.grade}>
+                                            <Card
+                                                sx={{
+                                                    cursor: "pointer",
+                                                    transition: "all 0.3s ease",
+                                                    "&:hover": {
+                                                        transform: "translateY(-4px)",
+                                                        boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
+                                                    },
+                                                }}
+                                                onClick={() => handleGradeCardClick(gradeData.grade, 1)}
+                                            >
+                                                <CardContent sx={{ textAlign: "center", p: 3 }}>
+                                                    <Avatar
+                                                        sx={{
+                                                            bgcolor: `${getGradeColor(gradeData.grade)}.main`,
+                                                            width: 56,
+                                                            height: 56,
+                                                            mx: "auto",
+                                                            mb: 2,
+                                                        }}
+                                                    >
+                                                        <School fontSize="large" />
+                                                    </Avatar>
+                                                    <Typography variant="h5" fontWeight="bold" sx={{ mb: 1 }}>
+                                                        Grade {gradeData.grade}
+                                                    </Typography>
+                                                    <Chip
+                                                        label={`${gradeData.quantity} Pupil${gradeData.quantity > 1 ? "s" : ""}`}
+                                                        color={getGradeColor(gradeData.grade)}
+                                                        variant="filled"
+                                                        sx={{ fontWeight: "bold" }}
+                                                    />
+                                                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                                                        Click to view details
+                                                    </Typography>
+                                                </CardContent>
+                                            </Card>
+                                        </Grid>
+                                    ))}
+                                </Grid>
+                            </TabPanel>
+
+                            {/* Session 3 */}
+                            <TabPanel value="3">
+                                <Box sx={{ mb: 3 }}>
+                                    <Typography variant="h6" fontWeight="bold" sx={{ mb: 1 }}>
+                                        {getSessionDisplayText(2)}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        Pupils scheduled for medication during this session
+                                    </Typography>
+                                </Box>
+                                <Grid container spacing={3}>
+                                    {sessionsInfor?.[2]?.quantityPupilByGrade?.map((gradeData) => (
+                                        <Grid item size={{ xs: 6 }} key={gradeData.grade}>
+                                            <Card
+                                                sx={{
+                                                    cursor: "pointer",
+                                                    transition: "all 0.3s ease",
+                                                    "&:hover": {
+                                                        transform: "translateY(-4px)",
+                                                        boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
+                                                    },
+                                                }}
+                                                onClick={() => handleGradeCardClick(gradeData.grade, 2)}
+                                            >
+                                                <CardContent sx={{ textAlign: "center", p: 3 }}>
+                                                    <Avatar
+                                                        sx={{
+                                                            bgcolor: `${getGradeColor(gradeData.grade)}.main`,
+                                                            width: 56,
+                                                            height: 56,
+                                                            mx: "auto",
+                                                            mb: 2,
+                                                        }}
+                                                    >
+                                                        <School fontSize="large" />
+                                                    </Avatar>
+                                                    <Typography variant="h5" fontWeight="bold" sx={{ mb: 1 }}>
+                                                        Grade {gradeData.grade}
+                                                    </Typography>
+                                                    <Chip
+                                                        label={`${gradeData.quantity} Pupil${gradeData.quantity > 1 ? "s" : ""}`}
+                                                        color={getGradeColor(gradeData.grade)}
+                                                        variant="filled"
+                                                        sx={{ fontWeight: "bold" }}
+                                                    />
+                                                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                                                        Click to view details
+                                                    </Typography>
+                                                </CardContent>
+                                            </Card>
+                                        </Grid>
+                                    ))}
+                                </Grid>
+                            </TabPanel>
+                        </TabContext>
+                    </Box>
+                </Grid>
+
+                {/* Pupil List Modal */}
+                <Dialog open={pupilListOpen} onClose={() => setPupilListOpen(false)} maxWidth="md" fullWidth>
+                    <DialogTitle>
+                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                <Groups color="primary" />
+                                <Typography variant="h6" fontWeight="bold">
+                                    Grade {selectedGrade} Pupils - {getSessionDisplayText(selectedSession)}
                                 </Typography>
                             </Box>
-                            <Grid container spacing={3}>
-                                {sessionsInfor?.[0]?.quantityPupilByGrade?.map((gradeData) => (
-                                    <Grid item size={{ xs: 6 }} key={gradeData.grade}>
-                                        <Card
-                                            sx={{
-                                                cursor: "pointer",
-                                                transition: "all 0.3s ease",
-                                                "&:hover": {
-                                                    transform: "translateY(-4px)",
-                                                    boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
-                                                },
-                                            }}
-                                            onClick={() => handleGradeCardClick(gradeData.grade, 0)}
-                                        >
-                                            <CardContent sx={{ textAlign: "center", p: 3 }}>
-                                                <Avatar
-                                                    sx={{
-                                                        bgcolor: `${getGradeColor(gradeData.grade)}.main`,
-                                                        width: 56,
-                                                        height: 56,
-                                                        mx: "auto",
-                                                        mb: 2,
-                                                    }}
-                                                >
-                                                    <School fontSize="large" />
-                                                </Avatar>
-                                                <Typography variant="h5" fontWeight="bold" sx={{ mb: 1 }}>
-                                                    Grade {gradeData.grade}
-                                                </Typography>
-                                                <Chip
-                                                    label={`${gradeData.quantity} Pupil${gradeData.quantity > 1 ? "s" : ""}`}
-                                                    color={getGradeColor(gradeData.grade)}
-                                                    variant="filled"
-                                                    sx={{ fontWeight: "bold" }}
-                                                />
-                                                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                                                    Click to view details
-                                                </Typography>
-                                            </CardContent>
-                                        </Card>
-                                    </Grid>
-                                ))}
-                            </Grid>
-                        </TabPanel>
-
-                        {/* Session 2 */}
-                        <TabPanel value="2">
-                            <Box sx={{ mb: 3 }}>
-                                <Typography variant="h6" fontWeight="bold" sx={{ mb: 1 }}>
-                                    {getSessionDisplayText(1)}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    Pupils scheduled for medication during this session
-                                </Typography>
-                            </Box>
-                            <Grid container spacing={3}>
-                                {sessionsInfor?.[1]?.quantityPupilByGrade?.map((gradeData) => (
-                                    <Grid item size={{ xs: 6 }} key={gradeData.grade}>
-                                        <Card
-                                            sx={{
-                                                cursor: "pointer",
-                                                transition: "all 0.3s ease",
-                                                "&:hover": {
-                                                    transform: "translateY(-4px)",
-                                                    boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
-                                                },
-                                            }}
-                                            onClick={() => handleGradeCardClick(gradeData.grade, 1)}
-                                        >
-                                            <CardContent sx={{ textAlign: "center", p: 3 }}>
-                                                <Avatar
-                                                    sx={{
-                                                        bgcolor: `${getGradeColor(gradeData.grade)}.main`,
-                                                        width: 56,
-                                                        height: 56,
-                                                        mx: "auto",
-                                                        mb: 2,
-                                                    }}
-                                                >
-                                                    <School fontSize="large" />
-                                                </Avatar>
-                                                <Typography variant="h5" fontWeight="bold" sx={{ mb: 1 }}>
-                                                    Grade {gradeData.grade}
-                                                </Typography>
-                                                <Chip
-                                                    label={`${gradeData.quantity} Pupil${gradeData.quantity > 1 ? "s" : ""}`}
-                                                    color={getGradeColor(gradeData.grade)}
-                                                    variant="filled"
-                                                    sx={{ fontWeight: "bold" }}
-                                                />
-                                                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                                                    Click to view details
-                                                </Typography>
-                                            </CardContent>
-                                        </Card>
-                                    </Grid>
-                                ))}
-                            </Grid>
-                        </TabPanel>
-
-                        {/* Session 3 */}
-                        <TabPanel value="3">
-                            <Box sx={{ mb: 3 }}>
-                                <Typography variant="h6" fontWeight="bold" sx={{ mb: 1 }}>
-                                    {getSessionDisplayText(2)}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    Pupils scheduled for medication during this session
-                                </Typography>
-                            </Box>
-                            <Grid container spacing={3}>
-                                {sessionsInfor?.[2]?.quantityPupilByGrade?.map((gradeData) => (
-                                    <Grid item size={{ xs: 6 }} key={gradeData.grade}>
-                                        <Card
-                                            sx={{
-                                                cursor: "pointer",
-                                                transition: "all 0.3s ease",
-                                                "&:hover": {
-                                                    transform: "translateY(-4px)",
-                                                    boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
-                                                },
-                                            }}
-                                            onClick={() => handleGradeCardClick(gradeData.grade, 2)}
-                                        >
-                                            <CardContent sx={{ textAlign: "center", p: 3 }}>
-                                                <Avatar
-                                                    sx={{
-                                                        bgcolor: `${getGradeColor(gradeData.grade)}.main`,
-                                                        width: 56,
-                                                        height: 56,
-                                                        mx: "auto",
-                                                        mb: 2,
-                                                    }}
-                                                >
-                                                    <School fontSize="large" />
-                                                </Avatar>
-                                                <Typography variant="h5" fontWeight="bold" sx={{ mb: 1 }}>
-                                                    Grade {gradeData.grade}
-                                                </Typography>
-                                                <Chip
-                                                    label={`${gradeData.quantity} Pupil${gradeData.quantity > 1 ? "s" : ""}`}
-                                                    color={getGradeColor(gradeData.grade)}
-                                                    variant="filled"
-                                                    sx={{ fontWeight: "bold" }}
-                                                />
-                                                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                                                    Click to view details
-                                                </Typography>
-                                            </CardContent>
-                                        </Card>
-                                    </Grid>
-                                ))}
-                            </Grid>
-                        </TabPanel>
-                    </TabContext>
-                </Box>
-            </Grid>
-
-            {/* Pupil List Modal */}
-            <Dialog open={pupilListOpen} onClose={() => setPupilListOpen(false)} maxWidth="md" fullWidth>
-                <DialogTitle>
-                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                            <Groups color="primary" />
-                            <Typography variant="h6" fontWeight="bold">
-                                Grade {selectedGrade} Pupils - {getSessionDisplayText(selectedSession)}
-                            </Typography>
+                            <IconButton onClick={() => setPupilListOpen(false)} size="small">
+                                <Close />
+                            </IconButton>
                         </Box>
-                        <IconButton onClick={() => setPupilListOpen(false)} size="small">
-                            <Close />
-                        </IconButton>
-                    </Box>
-                </DialogTitle>
-                <DialogContent>
-                    <TableContainer component={Paper} elevation={0}>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>
-                                        <Typography variant="subtitle2" fontWeight="bold">
-                                            Pupil ID
-                                        </Typography>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Typography variant="subtitle2" fontWeight="bold">
-                                            Name
-                                        </Typography>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Typography variant="subtitle2" fontWeight="bold">
-                                            Gender
-                                        </Typography>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Typography variant="subtitle2" fontWeight="bold">
-                                            Class
-                                        </Typography>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Typography variant="subtitle2" fontWeight="bold">
-                                            Birth Date
-                                        </Typography>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Typography variant="subtitle2" fontWeight="bold">
-                                            Action
-                                        </Typography>
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {
-                                    pupilsLoading ? (
-                                        // show skeletons while loading pupils
-                                        <>{renderTableLoadingSkeleton({ length: 3 })}</>
-                                    ) : (
-                                        getPupilsByGrade(selectedGrade)?.map((pupil) => {
-
-                                            return (
-                                                <TableRow key={pupil.pupilId}>
-                                                    <TableCell>
-                                                        <Typography variant="body2" fontWeight="bold">
-                                                            {pupil.pupilId}
-                                                        </Typography>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Typography variant="body2">
-                                                            {pupil.lastName} {pupil.firstName}
-                                                        </Typography>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Chip
-                                                            label={pupil.gender === "M" ? "Male" : "Female"}
-                                                            color={getGenderColor(pupil.gender)}
-                                                            size="small"
-                                                            variant="outlined"
-                                                        />
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Typography variant="body2">{pupil.gradeName}</Typography>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Typography variant="body2">{formatDate(pupil.birthDate)}</Typography>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Button
-                                                            variant="contained"
-                                                            size="small"
-                                                            startIcon={<Assignment />}
-                                                            onClick={() => handlePupilDetailClick(pupil)}
-                                                            disabled={
-                                                                (currentSessionInfor()[`session${selectedSession + 1}`] === true &&  // in prescription session time
-                                                                localStorage.getItem(`givenPrescriptionSession${selectedSession + 1}`) &&  // has givenPrescriptionSession
-                                                                JSON.parse(localStorage.getItem(`givenPrescriptionSession${selectedSession + 1}`)).includes(pupil.pupilId)) // but already given
-                                                            }
-                                                        >
-                                                            DETAIL
-                                                        </Button>
-                                                    </TableCell>
-                                                </TableRow>
-                                            )
-                                        })
-                                    )
-                                }
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setPupilListOpen(false)}>Close</Button>
-                </DialogActions>
-            </Dialog>
-
-            {/* Prescription Detail Modal */}
-            <Dialog open={prescriptionDetailOpen} onClose={() => {
-                                                                setPrescriptionDetailOpen(false)
-                                                                setSelectedMedicationDetails(null); // Reset selected medication details
-                                                                setSelectedPupil(null); // Reset selected pupil
-                                                            }
-            } maxWidth="md" fullWidth>
-                <DialogTitle>
-                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                            <Medication color="primary" />
-                            <Typography variant="h6" fontWeight="bold">
-                                Medication Details - {selectedPupil?.lastName} {selectedPupil?.firstName}
-                            </Typography>
-                        </Box>
-                        <IconButton onClick={() => {
-                            setPrescriptionDetailOpen(false);
-                            setSelectedMedicationDetails(null); // Reset selected medication details
-                            setSelectedPupil(null); // Reset selected pupil
-                        }} size="small">
-                            <Close />
-                        </IconButton>
-                    </Box>
-                </DialogTitle>
-
-                {/* Presctiption details */}
-                <DialogContent>
-                    <Box sx={{ mb: 3 }}>
-                        <Paper sx={{ p: 2, bgcolor: "primary.50" }}>
-                            <Typography variant="subtitle1" fontWeight="bold" color="primary.main" sx={{ mb: 1 }}>
-                                Pupil Information
-                            </Typography>
-                            <Typography variant="body2">
-                                <strong>ID:</strong> {selectedPupil?.pupilId} | <strong>Class:</strong> {selectedPupil?.gradeName}
-                            </Typography>
-                        </Paper>
-                    </Box>
-
-                    <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
-                        Take Medication by Disease
-                    </Typography>
-
-                    {/* Show loading state for medication details */}
-                    {medicationDetailsLoading ? (
-                        <Box sx={{ mb: 4 }}>
-                            {renderLoadingSkeleton({ length: 2 })}
-                        </Box>
-                    ) : (
-                        <>
-                            {/* Render each disease as a separate section */}
-                            {getPupilMedicationRequests().map((request, diseaseIndex) => {
-
-                                // debug:
-                                // console.log("Rendering disease request:", request) // ✅ Shows actual data
-
-                                const startDate = request.startDate ? getDateFromDDMMYYYY(request.startDate) : null;
-                                const endDate = request.endDate ? getDateFromDDMMYYYY(request.endDate) : null;
-                                const currrentDate = new Date();
-
-                                if (startDate && endDate && (currrentDate < startDate || currrentDate > endDate)) {
-                                    // Skip this disease if current date is outside treatment period
-                                    return <Box key={request.sendMedicationId} sx={{ mb: 4 }}>
-                                        <Paper sx={{ p: 2, mb: 2, bgcolor: "grey.50" }}>
-                                            <Typography variant="subtitle1" fontWeight="bold" color={isDiseaseAlreadyGiven(request) ? "success.main" : "warning.main"} sx={{ mb: 1 }}>
-                                                Disease #{diseaseIndex + 1}: {request.diseaseName}
-                                                {isDiseaseAlreadyGiven(request) && (
-                                                    <Chip
-                                                        label={`GIVEN (SESSION ${selectedSession + 1})`}
-                                                        color="success"
-                                                        size="small"
-                                                        sx={{ ml: 2, fontWeight: "bold" }}
-                                                    />
-                                                )}
+                    </DialogTitle>
+                    <DialogContent>
+                        <TableContainer component={Paper} elevation={0}>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>
+                                            <Typography variant="subtitle2" fontWeight="bold">
+                                                Pupil ID
                                             </Typography>
-                                            <Typography variant="body2" color="text.secondary">
-                                                This disease is not currently in the treatment period (from {request.startDate} to {request.endDate}).
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography variant="subtitle2" fontWeight="bold">
+                                                Name
                                             </Typography>
-                                        </Paper>
-                                    </Box>
-                                }
-
-                                return (
-                                    <Box key={request.sendMedicationId} sx={{ mb: 4 }}>
-                                        {/* Disease Header */}
-                                        <Paper sx={{ p: 2, mb: 2, bgcolor: isDiseaseAlreadyGiven(request) ? "success.50" : "warning.50" }}>
-                                            <Typography variant="subtitle1" fontWeight="bold" color={isDiseaseAlreadyGiven(request) ? "success.main" : "warning.main"} sx={{ mb: 1 }}>
-                                                Disease #{diseaseIndex + 1}: {request.diseaseName}
-                                                {isDiseaseAlreadyGiven(request) && (
-                                                    <Chip
-                                                        label={`GIVEN (SESSION ${selectedSession + 1})`}
-                                                        color="success"
-                                                        size="small"
-                                                        sx={{ ml: 2, fontWeight: "bold" }}
-                                                    />
-                                                )}
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography variant="subtitle2" fontWeight="bold">
+                                                Gender
                                             </Typography>
-
-                                            {/* Show current session time window */}
-                                            <Typography variant="body2" color="text.secondary">
-                                                <strong>Time for session {selectedSession + 1}:</strong>
-                                                {!isCurrentTimeInSession(selectedSession) && (
-                                                    <Chip
-                                                        label={getSessionTimeWindow(selectedSession)}
-                                                        color="warning"
-                                                        size="small"
-                                                        sx={{ ml: 1 }}
-                                                    />
-                                                )}
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography variant="subtitle2" fontWeight="bold">
+                                                Class
                                             </Typography>
-
-                                            <Typography variant="body2" color="text.secondary">
-                                                <strong>Treatment Period:</strong> {request.startDate} to {request.endDate}
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography variant="subtitle2" fontWeight="bold">
+                                                Birth Date
                                             </Typography>
-                                            <Typography variant="body2" color="text.secondary">
-                                                <strong>Note:</strong> {request.note}
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography variant="subtitle2" fontWeight="bold">
+                                                Action
                                             </Typography>
-                                            {isDiseaseAlreadyGiven(request) && (
-                                                <Typography variant="body2" color="success.main" sx={{ mt: 1, fontWeight: "bold" }}>
-                                                    <strong>Given Time (Session {selectedSession + 1}):</strong> {request.medicationLogs.find(log => log.status === "GIVEN")?.givenTime}
-                                                </Typography>
-                                            )}
-                                        </Paper>
-
-                                        {/* Medications Table for this disease */}
-                                        {request.medicationItems && request.medicationItems.length > 0 ? (
-                                            <TableContainer component={Paper} elevation={0} sx={{ mb: 2 }}>
-                                                <Table>
-                                                    <TableHead>
-                                                        <TableRow>
-                                                            <TableCell>
-                                                                <Typography variant="subtitle2" fontWeight="bold">
-                                                                    Medication Name
-                                                                </Typography>
-                                                            </TableCell>
-                                                            <TableCell>
-                                                                <Typography variant="subtitle2" fontWeight="bold">
-                                                                    Unit & Usage
-                                                                </Typography>
-                                                            </TableCell>
-                                                            <TableCell>
-                                                                <Typography variant="subtitle2" fontWeight="bold">
-                                                                    Schedule
-                                                                </Typography>
-                                                            </TableCell>
-                                                            <TableCell>
-                                                                <Typography variant="subtitle2" fontWeight="bold">
-                                                                    Mark As Given
-                                                                </Typography>
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    </TableHead>
-                                                    <TableBody>
-                                                        {request.medicationItems.map((medication) => {
-                                                            // each log message contains medication name, unit and usage, schedule, and mark as given status
-                                                            const logMessage = `+ Disease: ${request.diseaseName}; Medication: ${medication.medicationName}; Unit & Usage: ${medication.unitAndUsage}; Schedule: ${medication.medicationSchedule}; Given: Yes; Given Time: ${new Date().toLocaleTimeString()}`;
-
-                                                            return (
-                                                                <TableRow key={medication.medicationId}>
-                                                                    <TableCell>
-                                                                        <Typography variant="body2" fontWeight="bold">
-                                                                            {medication.medicationName}
-                                                                        </Typography>
-                                                                    </TableCell>
-                                                                    <TableCell>
-                                                                        <Typography variant="body2">{medication.unitAndUsage}</Typography>
-                                                                    </TableCell>
-                                                                    <TableCell>
-                                                                        <Typography variant="body2">{medication.medicationSchedule}</Typography>
-                                                                    </TableCell>
-                                                                    <TableCell>
-                                                                        <FormControlLabel
-                                                                            control={
-                                                                                <Checkbox
-                                                                                    checked={isDiseaseAlreadyGiven(request) ? true : (medicationChecks[medication.medicationId] || false)}
-                                                                                    onChange={(e) => !isDiseaseAlreadyGiven(request) && handleMedicationCheck(medication.medicationId, e.target.checked, logMessage)}
-                                                                                    color="success"
-                                                                                    disabled={isDiseaseAlreadyGiven(request)}
-                                                                                />
-                                                                            }
-                                                                            label={isDiseaseAlreadyGiven(request) ? "Already Given" : "Given"}
-                                                                        />
-                                                                    </TableCell>
-                                                                </TableRow>
-                                                            )
-                                                        })}
-                                                    </TableBody>
-                                                </Table>
-                                            </TableContainer>
+                                        </TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {
+                                        pupilsLoading ? (
+                                            // show skeletons while loading pupils
+                                            <>{renderTableLoadingSkeleton({ length: 3 })}</>
                                         ) : (
-                                            <Paper sx={{ p: 2, textAlign: "center", bgcolor: "grey.50" }}>
+                                            getPupilsByGrade(selectedGrade)?.map((pupil) => {
+
+                                                return (
+                                                    <TableRow key={pupil.pupilId}>
+                                                        <TableCell>
+                                                            <Typography variant="body2" fontWeight="bold">
+                                                                {pupil.pupilId}
+                                                            </Typography>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Typography variant="body2">
+                                                                {pupil.lastName} {pupil.firstName}
+                                                            </Typography>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Chip
+                                                                label={pupil.gender === "M" ? "Male" : "Female"}
+                                                                color={getGenderColor(pupil.gender)}
+                                                                size="small"
+                                                                variant="outlined"
+                                                            />
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Typography variant="body2">{pupil.gradeName}</Typography>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Typography variant="body2">{formatDate(pupil.birthDate)}</Typography>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Button
+                                                                variant="contained"
+                                                                size="small"
+                                                                startIcon={<Assignment />}
+                                                                onClick={() => handlePupilDetailClick(pupil)}
+                                                                disabled={
+                                                                    (currentSessionInfor()[`session${selectedSession + 1}`] === true &&  // in prescription session time
+                                                                    localStorage.getItem(`givenPrescriptionSession${selectedSession + 1}`) &&  // has givenPrescriptionSession
+                                                                    JSON.parse(localStorage.getItem(`givenPrescriptionSession${selectedSession + 1}`)).includes(pupil.pupilId)) // but already given
+                                                                }
+                                                            >
+                                                                DETAIL
+                                                            </Button>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                )
+                                            })
+                                        )
+                                    }
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setPupilListOpen(false)}>Close</Button>
+                    </DialogActions>
+                </Dialog>
+
+                {/* Prescription Detail Modal */}
+                <Dialog open={prescriptionDetailOpen} onClose={() => {
+                                                                    setPrescriptionDetailOpen(false)
+                                                                    setSelectedMedicationDetails(null); // Reset selected medication details
+                                                                    setSelectedPupil(null); // Reset selected pupil
+                                                                }
+                } maxWidth="md" fullWidth>
+                    <DialogTitle>
+                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                <Medication color="primary" />
+                                <Typography variant="h6" fontWeight="bold">
+                                    Medication Details - {selectedPupil?.lastName} {selectedPupil?.firstName}
+                                </Typography>
+                            </Box>
+                            <IconButton onClick={() => {
+                                setPrescriptionDetailOpen(false);
+                                setSelectedMedicationDetails(null); // Reset selected medication details
+                                setSelectedPupil(null); // Reset selected pupil
+                            }} size="small">
+                                <Close />
+                            </IconButton>
+                        </Box>
+                    </DialogTitle>
+
+                    {/* Presctiption details */}
+                    <DialogContent>
+                        <Box sx={{ mb: 3 }}>
+                            <Paper sx={{ p: 2, bgcolor: "primary.50" }}>
+                                <Typography variant="subtitle1" fontWeight="bold" color="primary.main" sx={{ mb: 1 }}>
+                                    Pupil Information
+                                </Typography>
+                                <Typography variant="body2">
+                                    <strong>ID:</strong> {selectedPupil?.pupilId} | <strong>Class:</strong> {selectedPupil?.gradeName}
+                                </Typography>
+                            </Paper>
+                        </Box>
+
+                        <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
+                            Take Medication by Disease
+                        </Typography>
+
+                        {/* Show loading state for medication details */}
+                        {medicationDetailsLoading ? (
+                            <Box sx={{ mb: 4 }}>
+                                {renderLoadingSkeleton({ length: 2 })}
+                            </Box>
+                        ) : (
+                            <>
+                                {/* Render each disease as a separate section */}
+                                {getPupilMedicationRequests().map((request, diseaseIndex) => {
+
+                                    // debug:
+                                    // console.log("Rendering disease request:", request) // ✅ Shows actual data
+
+                                    const startDate = request.startDate ? getDateFromDDMMYYYY(request.startDate) : null;
+                                    const endDate = request.endDate ? getDateFromDDMMYYYY(request.endDate) : null;
+                                    const currrentDate = new Date();
+
+                                    if (startDate && endDate && (currrentDate < startDate || currrentDate > endDate)) {
+                                        // Skip this disease if current date is outside treatment period
+                                        return <Box key={request.sendMedicationId} sx={{ mb: 4 }}>
+                                            <Paper sx={{ p: 2, mb: 2, bgcolor: "grey.50" }}>
+                                                <Typography variant="subtitle1" fontWeight="bold" color={isDiseaseAlreadyGiven(request) ? "success.main" : "warning.main"} sx={{ mb: 1 }}>
+                                                    Disease #{diseaseIndex + 1}: {request.diseaseName}
+                                                    {isDiseaseAlreadyGiven(request) && (
+                                                        <Chip
+                                                            label={`GIVEN (SESSION ${selectedSession + 1})`}
+                                                            color="success"
+                                                            size="small"
+                                                            sx={{ ml: 2, fontWeight: "bold" }}
+                                                        />
+                                                    )}
+                                                </Typography>
                                                 <Typography variant="body2" color="text.secondary">
-                                                    No medications specified for this disease
+                                                    This disease is not currently in the treatment period (from {request.startDate} to {request.endDate}).
                                                 </Typography>
                                             </Paper>
-                                        )}
+                                        </Box>
+                                    }
 
-                                        {/* Log Messages Section for this disease */}
-                                        <Box sx={{ mt: 2 }}>
-                                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                                                This note will be notified to the pupil's parents.
-                                            </Typography>
-                                            <textarea
-                                                value={getDiseaseLogMessages(request)}
-                                                readOnly
-                                                style={{
-                                                    width: '100%',
-                                                    height: '120px',
-                                                    border: '1px solid #ccc',
-                                                    borderRadius: '4px',
-                                                    padding: '12px',
-                                                    fontSize: '14px',
-                                                    fontFamily: 'inherit',
-                                                    resize: 'none',
-                                                    backgroundColor: isDiseaseAlreadyGiven(request) ? '#e8f5e8' : '#f9f9f9',
-                                                    marginBottom: '12px'
-                                                }}
-                                            />
-                                            {/* Given Button for each disease - positioned under the notes */}
-                                            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                                                {isDiseaseAlreadyGiven(request) ? (
-                                                    <Button
-                                                        variant="contained"
-                                                        color="success"
-                                                        size="medium"
-                                                        startIcon={<CheckCircle />}
-                                                        disabled={true}
-                                                        sx={{ minWidth: 180 }}
-                                                    >
-                                                        Given (Session {selectedSession + 1})
-                                                    </Button>
-                                                ) : (
-                                                    <Button
-                                                        variant="contained"
-                                                        color={isCurrentTimeInSession(selectedSession) ? "success" : "warning"}
-                                                        size="medium"
-                                                        startIcon={<CheckCircle />}
-                                                        disabled={!hasCheckedMedications(request)}
-                                                        onClick={() => handleGivenButtonClick(request)}
-                                                        sx={{ minWidth: 180 }}
-                                                    >
-                                                        {!isCurrentTimeInSession(selectedSession)
-                                                            ? `Available ${getSessionTimeWindow(selectedSession)}`
-                                                            : `Give (Session ${selectedSession + 1})`
-                                                        }
-                                                    </Button>
+                                    return (
+                                        <Box key={request.sendMedicationId} sx={{ mb: 4 }}>
+                                            {/* Disease Header */}
+                                            <Paper sx={{ p: 2, mb: 2, bgcolor: isDiseaseAlreadyGiven(request) ? "success.50" : "warning.50" }}>
+                                                <Typography variant="subtitle1" fontWeight="bold" color={isDiseaseAlreadyGiven(request) ? "success.main" : "warning.main"} sx={{ mb: 1 }}>
+                                                    Disease #{diseaseIndex + 1}: {request.diseaseName}
+                                                    {isDiseaseAlreadyGiven(request) && (
+                                                        <Chip
+                                                            label={`GIVEN (SESSION ${selectedSession + 1})`}
+                                                            color="success"
+                                                            size="small"
+                                                            sx={{ ml: 2, fontWeight: "bold" }}
+                                                        />
+                                                    )}
+                                                </Typography>
+
+                                                {/* Show current session time window */}
+                                                <Typography variant="body2" color="text.secondary">
+                                                    <strong>Time for session {selectedSession + 1}:</strong>
+                                                    {!isCurrentTimeInSession(selectedSession) && (
+                                                        <Chip
+                                                            label={getSessionTimeWindow(selectedSession)}
+                                                            color="warning"
+                                                            size="small"
+                                                            sx={{ ml: 1 }}
+                                                        />
+                                                    )}
+                                                </Typography>
+
+                                                <Typography variant="body2" color="text.secondary">
+                                                    <strong>Treatment Period:</strong> {request.startDate} to {request.endDate}
+                                                </Typography>
+                                                <Typography variant="body2" color="text.secondary">
+                                                    <strong>Note:</strong> {request.note}
+                                                </Typography>
+                                                {isDiseaseAlreadyGiven(request) && (
+                                                    <Typography variant="body2" color="success.main" sx={{ mt: 1, fontWeight: "bold" }}>
+                                                        <strong>Given Time (Session {selectedSession + 1}):</strong> {request.medicationLogs.find(log => log.status === "GIVEN")?.givenTime}
+                                                    </Typography>
                                                 )}
+                                            </Paper>
+
+                                            {/* Medications Table for this disease */}
+                                            {request.medicationItems && request.medicationItems.length > 0 ? (
+                                                <TableContainer component={Paper} elevation={0} sx={{ mb: 2 }}>
+                                                    <Table>
+                                                        <TableHead>
+                                                            <TableRow>
+                                                                <TableCell>
+                                                                    <Typography variant="subtitle2" fontWeight="bold">
+                                                                        Medication Name
+                                                                    </Typography>
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                    <Typography variant="subtitle2" fontWeight="bold">
+                                                                        Unit & Usage
+                                                                    </Typography>
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                    <Typography variant="subtitle2" fontWeight="bold">
+                                                                        Schedule
+                                                                    </Typography>
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                    <Typography variant="subtitle2" fontWeight="bold">
+                                                                        Mark As Given
+                                                                    </Typography>
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        </TableHead>
+                                                        <TableBody>
+                                                            {request.medicationItems.map((medication) => {
+                                                                // each log message contains medication name, unit and usage, schedule, and mark as given status
+                                                                const logMessage = `+ Disease: ${request.diseaseName}; Medication: ${medication.medicationName}; Unit & Usage: ${medication.unitAndUsage}; Schedule: ${medication.medicationSchedule}; Given: Yes; Given Time: ${new Date().toLocaleTimeString()}`;
+
+                                                                return (
+                                                                    <TableRow key={medication.medicationId}>
+                                                                        <TableCell>
+                                                                            <Typography variant="body2" fontWeight="bold">
+                                                                                {medication.medicationName}
+                                                                            </Typography>
+                                                                        </TableCell>
+                                                                        <TableCell>
+                                                                            <Typography variant="body2">{medication.unitAndUsage}</Typography>
+                                                                        </TableCell>
+                                                                        <TableCell>
+                                                                            <Typography variant="body2">{medication.medicationSchedule}</Typography>
+                                                                        </TableCell>
+                                                                        <TableCell>
+                                                                            <FormControlLabel
+                                                                                control={
+                                                                                    <Checkbox
+                                                                                        checked={isDiseaseAlreadyGiven(request) ? true : (medicationChecks[medication.medicationId] || false)}
+                                                                                        onChange={(e) => !isDiseaseAlreadyGiven(request) && handleMedicationCheck(medication.medicationId, e.target.checked, logMessage)}
+                                                                                        color="success"
+                                                                                        disabled={isDiseaseAlreadyGiven(request)}
+                                                                                    />
+                                                                                }
+                                                                                label={isDiseaseAlreadyGiven(request) ? "Already Given" : "Given"}
+                                                                            />
+                                                                        </TableCell>
+                                                                    </TableRow>
+                                                                )
+                                                            })}
+                                                        </TableBody>
+                                                    </Table>
+                                                </TableContainer>
+                                            ) : (
+                                                <Paper sx={{ p: 2, textAlign: "center", bgcolor: "grey.50" }}>
+                                                    <Typography variant="body2" color="text.secondary">
+                                                        No medications specified for this disease
+                                                    </Typography>
+                                                </Paper>
+                                            )}
+
+                                            {/* Log Messages Section for this disease */}
+                                            <Box sx={{ mt: 2 }}>
+                                                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                                    This note will be notified to the pupil's parents.
+                                                </Typography>
+                                                <textarea
+                                                    value={getDiseaseLogMessages(request)}
+                                                    readOnly
+                                                    style={{
+                                                        width: '100%',
+                                                        height: '120px',
+                                                        border: '1px solid #ccc',
+                                                        borderRadius: '4px',
+                                                        padding: '12px',
+                                                        fontSize: '14px',
+                                                        fontFamily: 'inherit',
+                                                        resize: 'none',
+                                                        backgroundColor: isDiseaseAlreadyGiven(request) ? '#e8f5e8' : '#f9f9f9',
+                                                        marginBottom: '12px'
+                                                    }}
+                                                />
+                                                {/* Given Button for each disease - positioned under the notes */}
+                                                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                                    {isDiseaseAlreadyGiven(request) ? (
+                                                        <Button
+                                                            variant="contained"
+                                                            color="success"
+                                                            size="medium"
+                                                            startIcon={<CheckCircle />}
+                                                            disabled={true}
+                                                            sx={{ minWidth: 180 }}
+                                                        >
+                                                            Given (Session {selectedSession + 1})
+                                                        </Button>
+                                                    ) : (
+                                                        <Button
+                                                            variant="contained"
+                                                            color={isCurrentTimeInSession(selectedSession) ? "success" : "warning"}
+                                                            size="medium"
+                                                            startIcon={<CheckCircle />}
+                                                            disabled={!hasCheckedMedications(request)}
+                                                            onClick={() => handleGivenButtonClick(request)}
+                                                            sx={{ minWidth: 180 }}
+                                                        >
+                                                            {!isCurrentTimeInSession(selectedSession)
+                                                                ? `Available ${getSessionTimeWindow(selectedSession)}`
+                                                                : `Give (Session ${selectedSession + 1})`
+                                                            }
+                                                        </Button>
+                                                    )}
+                                                </Box>
                                             </Box>
                                         </Box>
-                                    </Box>
-                                )
-                            })}
+                                    )
+                                })}
 
-                    {/* Show message if no approved requests */}
-                    {!medicationDetailsLoading && getPupilMedicationRequests().length === 0 && (
-                        <Paper sx={{ p: 3, textAlign: "center", bgcolor: "grey.50" }}>
-                            <Typography variant="body1" color="text.secondary">
-                                No approved medication requests found for this pupil
-                            </Typography>
-                        </Paper>
-                    )}
-                        </>
-                    )}
-                </DialogContent>
-                <DialogActions sx={{ p: 3 }}>
-                    <Button onClick={handleCloseDialog} variant="contained" color="primary">
-                        Close
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </Grid>
+                        {/* Show message if no approved requests */}
+                        {!medicationDetailsLoading && getPupilMedicationRequests().length === 0 && (
+                            <Paper sx={{ p: 3, textAlign: "center", bgcolor: "grey.50" }}>
+                                <Typography variant="body1" color="text.secondary">
+                                    No approved medication requests found for this pupil
+                                </Typography>
+                            </Paper>
+                        )}
+                            </>
+                        )}
+                    </DialogContent>
+                    <DialogActions sx={{ p: 3 }}>
+                        <Button onClick={handleCloseDialog} variant="contained" color="primary">
+                            Close
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </Grid>
+        </>
     )
 }
 
