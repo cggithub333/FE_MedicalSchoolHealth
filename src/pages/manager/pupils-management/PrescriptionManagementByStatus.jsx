@@ -28,6 +28,7 @@ import {
   MenuItem,
   TextField,
   Divider,
+  Pagination
 } from "@mui/material"
 import {
   Assignment,
@@ -189,12 +190,19 @@ const allPrescriptions = [
   },
 ]
 
+import useGetAllPrescriptions from "@hooks/manager/prescription/useGetAllPrescriptions"
+
+const ITEMS_PER_PAGE = 6;
 const PrescriptionManagementByStatus = () => {
+
+  // const { allPrescriptions, loading: allPrescriptionsLoading, error: allPrescriptionsError, refetch: allPrescriptions } = useGetAllPrescriptions()
+
   // State for dialogs
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false)
   const [imageDialogOpen, setImageDialogOpen] = useState(false)
   const [selectedPrescription, setSelectedPrescription] = useState(null)
   const [selectedImage, setSelectedImage] = useState("")
+  const [currPage, setCurrPage] = useState(1)
 
   // State for filters
   const [statusFilter, setStatusFilter] = useState("ALL")
@@ -389,7 +397,7 @@ const PrescriptionManagementByStatus = () => {
           {/* Table Header */}
           <Box sx={{ p: 3, pb: 0 }}>
             <Typography variant="h6" fontWeight="bold">
-              Prescription Records ({filteredPrescriptions.length} of {allPrescriptions.length})
+              Prescription Records ({filteredPrescriptions?.length} of {allPrescriptions.length})
             </Typography>
           </Box>
 
@@ -431,46 +439,57 @@ const PrescriptionManagementByStatus = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filteredPrescriptions.map((prescription) => (
-                  <TableRow key={prescription.sendMedicationId} sx={{ "&:hover": { bgcolor: "grey.50" } }}>
-                    <TableCell>
-                      <Typography variant="body2" fontWeight="bold">
-                        {prescription.pupilId}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="body2" fontWeight="bold">
-                        {prescription.pupilLastName} {prescription.pupilFirstName}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="body2">{prescription.diseaseName}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="body2">{formatDateTime(prescription.requestedDate)}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Chip
-                        label={prescription.status}
-                        color={getStatusColor(prescription.status)}
-                        size="small"
-                        variant="filled"
-                      />
-                    </TableCell>
-                    <TableCell align="center">
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        startIcon={<Visibility />}
-                        onClick={() => handleDetailsClick(prescription)}
-                        sx={{ minWidth: 100 }}
-                      >
-                        Details
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-                {filteredPrescriptions.length === 0 && (
+                {filteredPrescriptions?.map((prescription, idx) => {
+
+                  //pagenation logic
+                  const startIndex = (currPage - 1) * ITEMS_PER_PAGE;
+                  const endIndex = startIndex + ITEMS_PER_PAGE;
+
+                  if (idx < startIndex || idx >= endIndex) {
+                    return null; // skip render
+                  }
+
+                  return (
+                    <TableRow key={prescription.sendMedicationId} sx={{ "&:hover": { bgcolor: "grey.50" } }}>
+                      <TableCell>
+                        <Typography variant="body2" fontWeight="bold">
+                          {prescription.pupilId}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2" fontWeight="bold">
+                          {prescription.pupilLastName} {prescription.pupilFirstName}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2">{prescription.diseaseName}</Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2">{formatDateTime(prescription.requestedDate)}</Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Chip
+                          label={prescription.status}
+                          color={getStatusColor(prescription.status)}
+                          size="small"
+                          variant="filled"
+                        />
+                      </TableCell>
+                      <TableCell align="center">
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          startIcon={<Visibility />}
+                          onClick={() => handleDetailsClick(prescription)}
+                          sx={{ minWidth: 100 }}
+                        >
+                          Details
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
+                {filteredPrescriptions?.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={6} align="center" sx={{ py: 4 }}>
                       <Typography variant="body1" color="text.secondary">
@@ -481,6 +500,16 @@ const PrescriptionManagementByStatus = () => {
                 )}
               </TableBody>
             </Table>
+            <Grid container sx={{ display: "flex", justifyContent: "center", py: 2, pt: 4 }}>
+              <Grid item size={{ xs: 12}}>
+                <Pagination count={Math.ceil((filteredPrescriptions?.length / ITEMS_PER_PAGE)) || 1} 
+                            variant="outlined" 
+                            color="primary"
+                            onChange={(event, page) => {
+                              setCurrPage(page);
+                            }}/>
+              </Grid>
+            </Grid>
           </TableContainer>
         </CardContent>
       </Card>
