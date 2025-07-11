@@ -43,159 +43,15 @@ import {
   ZoomIn,
 } from "@mui/icons-material"
 
-const allPrescriptions = [
-  {
-    pupilId: "PP0006",
-    pupilFirstName: "Em",
-    pupilLastName: "Hoàng",
-    senderName: "AnhQuốc",
-    sendMedicationId: 1,
-    diseaseName: "Common cold with cough",
-    startDate: "09-07-2025",
-    endDate: "22-07-2025",
-    requestedDate: "08-07-2025 16:49:33",
-    prescriptionImage:
-      "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751968169499-thuoc-tay-2.jpg?alt=media&token=7b080e82-2746-4bf5-a094-ea3177a8be39",
-    note: "Child has persistent dry cough due to allergy. Needs antihistamine and cough suppressant.",
-    status: "APPROVED",
-    medicationItems: [
-      {
-        medicationId: 1,
-        medicationName: "Guaifenesin",
-        unitAndUsage: "1 tablet taken to loosen mucus and ease chest congestion",
-        medicationSchedule: "Before lunch: 10h30-11h00",
-      },
-    ],
-  },
-  {
-    pupilId: "PP0007",
-    pupilFirstName: "Lan",
-    pupilLastName: "Võ",
-    senderName: "AnhQuốc",
-    sendMedicationId: 2,
-    diseaseName: "Mild cold and throat irritation",
-    startDate: "10-07-2025",
-    endDate: "23-07-2025",
-    requestedDate: "08-07-2025 16:51:07",
-    prescriptionImage:
-      "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751968266926-thuoc-tay-3.jpeg?alt=media&token=4a570e39-e026-4732-bfba-ae447c2d553f",
-    note: "Child has slight cold symptoms, no fever. Needs throat lozenges and warm fluids.",
-    status: "PENDING",
-    medicationItems: [
-      {
-        medicationId: 2,
-        medicationName: "Paracetamol",
-        unitAndUsage: "1 tablet if child experiences mild discomfort",
-        medicationSchedule: "Before lunch: 10h30-11h00",
-      },
-    ],
-  },
-  {
-    pupilId: "PP0008",
-    pupilFirstName: "Phát",
-    pupilLastName: "Phan",
-    senderName: "Ha NguyenBao Khang",
-    sendMedicationId: 3,
-    diseaseName: "Common cold with dry throat",
-    startDate: "08-07-2025",
-    endDate: "16-07-2025",
-    requestedDate: "08-07-2025 17:41:19",
-    prescriptionImage:
-      "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751971278112-thuoc-tay-4.jpg?alt=media&token=61562c39-c297-412f-b53e-13c3f3dc7094",
-    note: "Just mild cold, no fever. Took honey-based syrup for throat relief.",
-    status: "REJECTED",
-    medicationItems: [
-      {
-        medicationId: 3,
-        medicationName: "Honey syrup",
-        unitAndUsage: "5ml to soothe dry throat and suppress cough",
-        medicationSchedule: "After breakfast: 9h00-9h30",
-      },
-    ],
-  },
-  {
-    pupilId: "PP0008",
-    pupilFirstName: "Phát",
-    pupilLastName: "Phan",
-    senderName: "Ha NguyenBao Khang",
-    sendMedicationId: 4,
-    diseaseName: "Mild cold and throat irritation",
-    startDate: "08-07-2025",
-    endDate: "15-07-2025",
-    requestedDate: "08-07-2025 18:02:28",
-    prescriptionImage:
-      "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751972546961-thuoc-tay-temp.jpg?alt=media&token=4e9e56dd-0774-4c98-8997-f8923c529788",
-    note: "Child has slight cold symptoms, no fever. Needs throat lozenges and warm fluids.",
-    status: "APPROVED",
-    medicationItems: [
-      {
-        medicationId: 4,
-        medicationName: "Paracetamol",
-        unitAndUsage: "1 tablet if child experiences mild discomfort",
-        medicationSchedule: "Before lunch: 10h30-11h00",
-      },
-      {
-        medicationId: 5,
-        medicationName: "Paracetamol 2",
-        unitAndUsage: "1.5 tablet if child experiences mild discomfort",
-        medicationSchedule: "After lunch: 11h30-12h00",
-      },
-    ],
-  },
-  {
-    pupilId: "PP0006",
-    pupilFirstName: "Em",
-    pupilLastName: "Hoàng",
-    senderName: "AnhQuốc",
-    sendMedicationId: 5,
-    diseaseName: "Seasonal allergies with sneezing",
-    startDate: "08-07-2025",
-    endDate: "17-07-2025",
-    requestedDate: "08-07-2025 21:48:31",
-    prescriptionImage:
-      "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751986107358-thuoc-tay-2.jpg?alt=media&token=46dee6d7-03ab-4aab-b4bd-ba4dd10e0174",
-    note: "Student experiences sneezing and watery eyes in the morning. Needs antihistamines and to avoid allergens.",
-    status: "APPROVED",
-    medicationItems: [
-      {
-        medicationId: 6,
-        medicationName: "Loratadine",
-        unitAndUsage: "1 tablet daily in the morning",
-        medicationSchedule: "After lunch: 11h30-12h00",
-      },
-    ],
-  },
-  {
-    pupilId: "PP0007",
-    pupilFirstName: "Lan",
-    pupilLastName: "Võ",
-    senderName: "AnhQuốc",
-    sendMedicationId: 6,
-    diseaseName: "Upset stomach and mild diarrhea",
-    startDate: "08-07-2025",
-    endDate: "20-07-2025",
-    requestedDate: "08-07-2025 21:49:35",
-    prescriptionImage:
-      "https://firebasestorage.googleapis.com/v0/b/school-medical-health-system.firebasestorage.app/o/images%2F1751986173965-thuoc-tay-3.jpeg?alt=media&token=9383ed53-64b3-4bce-9e1d-dd8347bb85d2",
-    note: "Mild digestive discomfort. Provide electrolyte solution and light meals.",
-    status: "PENDING",
-    medicationItems: [
-      {
-        medicationId: 7,
-        medicationName: "Oral Rehydration Salts",
-        unitAndUsage: "Mix 1 sachet with 200ml water after each loose stool",
-        medicationSchedule: "Before lunch: 10h30-11h00",
-      },
-    ],
-  },
-]
-
 import useGetAllPrescriptions from "@hooks/manager/prescription/useGetAllPrescriptions"
 
 const ITEMS_PER_PAGE = 6;
 const PrescriptionManagementByStatus = () => {
 
-  // const { allPrescriptions, loading: allPrescriptionsLoading, error: allPrescriptionsError, refetch: allPrescriptions } = useGetAllPrescriptions()
+  const { allPrescriptions, loading: allPrescriptionsLoading, error: allPrescriptionsError, refetch: allPrescriptionsRefetch } = useGetAllPrescriptions()
+
+  // debug:
+  // console.log("allPrescriptions", JSON.stringify(allPrescriptions, null, 2))
 
   // State for dialogs
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false)
@@ -239,15 +95,15 @@ const PrescriptionManagementByStatus = () => {
   // Calculate prescription counts by status
   const prescriptionCounts = useMemo(() => {
     const counts = { APPROVED: 0, PENDING: 0, REJECTED: 0 }
-    allPrescriptions.forEach((prescription) => {
+    allPrescriptions?.forEach((prescription) => {
       counts[prescription.status] = (counts[prescription.status] || 0) + 1
     })
     return counts
-  }, [])
+  }, [allPrescriptions])
 
   // Filter prescriptions
   const filteredPrescriptions = useMemo(() => {
-    return allPrescriptions.filter((prescription) => {
+    return allPrescriptions?.filter((prescription) => {
       // Status filter
       if (statusFilter !== "ALL" && prescription.status !== statusFilter) {
         return false
@@ -397,7 +253,7 @@ const PrescriptionManagementByStatus = () => {
           {/* Table Header */}
           <Box sx={{ p: 3, pb: 0 }}>
             <Typography variant="h6" fontWeight="bold">
-              Prescription Records ({filteredPrescriptions?.length} of {allPrescriptions.length})
+              Prescription Records ({filteredPrescriptions?.length} of {allPrescriptions?.length})
             </Typography>
           </Box>
 
