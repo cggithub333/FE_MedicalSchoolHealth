@@ -5,6 +5,7 @@ import CustomTittle from '@components/magic/CustomTittle/CustomTitle';
 
 import TakeMedicationBySession from '@components/schoolnurse/send-medication/TakeMedicationBySession';
 import PrescriptionRequest from '@components/schoolnurse/send-medication/PrescriptionRequest';
+import MedicationPreparation from '@components/schoolnurse/send-medication/MedicationPreparation.jsx';
 
 const Prescription = () => {
 
@@ -20,7 +21,7 @@ const Prescription = () => {
                     <CustomTittle title={"Prescription Information"} />
                 </Grid>
             </Grid>
-            <Grid container justifyContent={'center'} sx={{ marginTop: "40px", marginBottom: "40px", backgroundColor: "#E6F8F9", pb: "50px" }}>
+            <Grid container justifyContent={'center'} sx={{ marginTop: "40px", marginBottom: "40px", backgroundColor: "#E6F8F9", pb: "0px" }}>
                 <Grid item size={{ xs: 11 }}>
                     <Grid container spacing={2} >
                         <Grid item size={{ xs: 7 }} backgroundColor="#fff9ea" display={'flex'} justifyContent={'center'} padding="10px">
@@ -30,6 +31,11 @@ const Prescription = () => {
                             <PrescriptionRequest linkPrescriptionRequestPage={'./prescription-requests'} />
                         </Grid>
                     </Grid>
+                </Grid>
+            </Grid>
+            <Grid container justifyContent={'center'} sx={{ marginTop: "40px", marginBottom: "40px", backgroundColor: "#E6F8F9", pb: "50px" }}>
+                <Grid item size={{ xs: 11 }} backgroundColor="#fff9ea" display={'flex'} justifyContent={'center'} padding="10px">
+                    <MedicationPreparation />
                 </Grid>
             </Grid>
         </div>
