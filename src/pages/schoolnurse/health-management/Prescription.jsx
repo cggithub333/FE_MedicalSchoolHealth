@@ -5,7 +5,8 @@ import CustomTittle from '@components/magic/CustomTittle/CustomTitle';
 
 import TakeMedicationBySession from '@components/schoolnurse/send-medication/TakeMedicationBySession';
 import PrescriptionRequest from '@components/schoolnurse/send-medication/PrescriptionRequest';
-import MedicationPreparation from '@components/schoolnurse/send-medication/MedicationPreparation.jsx';
+import FloatingNavigateButton from '@components/magic/FloatingNavigateButton/FloatingNavigateButton';
+import { MdOutlineMedication as MedicationPreparationIcon } from "react-icons/md";
 
 const Prescription = () => {
 
@@ -33,11 +34,12 @@ const Prescription = () => {
                     </Grid>
                 </Grid>
             </Grid>
-            <Grid container justifyContent={'center'} sx={{ marginTop: "40px", marginBottom: "40px", backgroundColor: "#E6F8F9", pb: "50px" }}>
-                <Grid item size={{ xs: 11 }} backgroundColor="#fff9ea" display={'flex'} justifyContent={'center'} padding="10px">
-                    <MedicationPreparation />
-                </Grid>
-            </Grid>
+            <FloatingNavigateButton
+                iconForAvatar={MedicationPreparationIcon}
+                navigateLink={`/schoolnurse/prescription/medication-preparations`}
+                backgroundColor={"purple"}
+                textContent="Preparations" 
+                customMaxWidth={"150px"}/>
         </div>
     );
 }
@@ -45,7 +47,7 @@ const Prescription = () => {
 const breadcrumbPairs = [
     {
         title: 'Dashboard',
-        link: '/parent/dashboard'
+        link: '/schoolnurse/dashboard'
     },
     {
         title: 'Prescription Information',

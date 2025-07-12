@@ -25,6 +25,7 @@ const SchoolNurseDashboardRoutes = () => {
                 <Route path="pupils-management" element={<SchoolNurseComponentPagePackages.PupilsManagement />} />
                 <Route path="prescription" element={<SchoolNurseComponentPagePackages.Prescription />} />
                 <Route path="prescription/prescription-requests" element={<SchoolNurseComponentPagePackages.PrescriptionRequestPage />} />
+                <Route path="prescription/medication-preparations" element={<SchoolNurseComponentPagePackages.MedicationPreparationsPage />} />
                 {/* Add more routes as needed */}
 
                 {/* Settings */}

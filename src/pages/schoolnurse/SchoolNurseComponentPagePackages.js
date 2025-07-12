@@ -10,6 +10,7 @@ import HealthCheckCampaign from './health-check-campaign/HealthCheckCampaign.jsx
 
 import MedicalEvents from './health-management/MedicalEvents.jsx';
 import Prescription from './health-management/Prescription.jsx';
+import MedicationPreparationsPage from './health-management/MedicationPreparationsPage.jsx';
 
 import PrescriptionRequestPage from './health-management/PrescriptionRequestPage.jsx';
 import PupilsManagement from './health-management/PupilsManagement.jsx';
@@ -28,7 +29,8 @@ const SchoolNurseComponentPagePackages = {
     MedicalEvents,
     PrescriptionRequestPage,
     PupilsManagement,
-    Settings
+    Settings,
+    MedicationPreparationsPage
 };
 
 export default SchoolNurseComponentPagePackages;
