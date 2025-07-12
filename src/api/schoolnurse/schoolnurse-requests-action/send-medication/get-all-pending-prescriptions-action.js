@@ -10,7 +10,7 @@ export const getAllPendingPrescriptionsAction = async () => {
     const response = await fetchResponse(callback);
 
     // debug:
-    console.log("getAllPendingPrescriptionsAction response: ", response);
+    // console.log("getAllPendingPrescriptionsAction response: ", response);
 
     const pendingMedicationRequests = await response.data || []; 
     return pendingMedicationRequests

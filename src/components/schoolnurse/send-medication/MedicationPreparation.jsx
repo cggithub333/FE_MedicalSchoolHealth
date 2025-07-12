@@ -25,68 +25,78 @@ import {
 import { Medication, Search, FilterList } from "@mui/icons-material"
 import { TypographyInheritContext } from "@mui/joy/Typography/Typography"
 
-const medicationPreparations = [
-    {
-        pupilId: "PP0006",
-        className: "1A",
-        sendMedicationId: 101,
-        medicationName: "Paracetamol",
-        diseaseName: "Fever and mild pain",
-        unitMedicationAndUsage: "1 tablet every 6 hours",
-    },
-    {
-        pupilId: "PP0006",
-        className: "1A",
-        sendMedicationId: 101,
-        medicationName: "Paracetamol type 2",
-        diseaseName: "Fever and mild pain",
-        unitMedicationAndUsage: "1 tablet every 6 hours",
-    },
-    {
-        pupilId: "PP0007",
-        className: "2C",
-        sendMedicationId: 102,
-        medicationName: "Ibuprofen type 2",
-        diseaseName: "Inflammation and pain",
-        unitMedicationAndUsage: "1 tablet every 8 hours after meals",
-    },
-    {
-        pupilId: "PP0007",
-        className: "2C",
-        sendMedicationId: 102,
-        medicationName: "Ibuprofen",
-        diseaseName: "Inflammation and pain",
-        unitMedicationAndUsage: "1 tablet every 8 hours after meals",
-    },
-    {
-        pupilId: "PP0008",
-        className: "5B",
-        sendMedicationId: 103,
-        medicationName: "Loratadine",
-        diseaseName: "Allergic rhinitis",
-        unitMedicationAndUsage: "1 tablet once daily",
-    },
-]
+// const medicationPreparations = [
+//     {
+//         pupilId: "PP0006",
+//         className: "1A",
+//         sendMedicationId: 101,
+//         medicationName: "Paracetamol",
+//         diseaseName: "Fever and mild pain",
+//         unitMedicationAndUsage: "1 tablet every 6 hours",
+//     },
+//     {
+//         pupilId: "PP0006",
+//         className: "1A",
+//         sendMedicationId: 101,
+//         medicationName: "Paracetamol type 2",
+//         diseaseName: "Fever and mild pain",
+//         unitMedicationAndUsage: "1 tablet every 6 hours",
+//     },
+//     {
+//         pupilId: "PP0007",
+//         className: "2C",
+//         sendMedicationId: 102,
+//         medicationName: "Ibuprofen type 2",
+//         diseaseName: "Inflammation and pain",
+//         unitMedicationAndUsage: "1 tablet every 8 hours after meals",
+//     },
+//     {
+//         pupilId: "PP0007",
+//         className: "2C",
+//         sendMedicationId: 102,
+//         medicationName: "Ibuprofen",
+//         diseaseName: "Inflammation and pain",
+//         unitMedicationAndUsage: "1 tablet every 8 hours after meals",
+//     },
+//     {
+//         pupilId: "PP0008",
+//         className: "5B",
+//         sendMedicationId: 103,
+//         medicationName: "Loratadine",
+//         diseaseName: "Allergic rhinitis",
+//         unitMedicationAndUsage: "1 tablet once daily",
+//     },
+// ]
 
+
+import useMedicationPreparation from "@hooks/schoolnurse/send-medication/useMedicationPreparation"
 
 const ITEMS_EACH_PAGE = 10;
 const MedicationPreparation = () => {
+
+    // run custom hook to fetch medication preparations
+    const { medicationPreparations, loading, error, refetch } = useMedicationPreparation(5, 1) // (grade, session)
+
+    // debug:
+    console.log("medicationPreparations:", JSON.stringify(medicationPreparations, null, 2))
+
     // State for filters
     const [selectedGrade, setSelectedGrade] = useState(1)
     const [selectedSession, setSelectedSession] = useState(1)
     const [currPage, setCurrPage] = useState(1)
+    const [filteredMssgNoRecords, setFilteredMssgNoRecords] = useState("")
 
     // Sort medications by className
-    const sortedMedications = [...medicationPreparations].sort((a, b) => {
+    const sortedMedications = [...(medicationPreparations || [])].sort((a, b) => {
         // Extract grade number and class letter for proper sorting
-        const getGradeAndClass = (className) => {
-            const grade = Number.parseInt(className.charAt(0))
-            const classLetter = className.charAt(1)
+        const getGradeAndClass = (gradeName) => {
+            const grade = Number.parseInt((gradeName).charAt(0))
+            const classLetter = gradeName.charAt(1)
             return { grade, classLetter }
         }
 
-        const aData = getGradeAndClass(a.className)
-        const bData = getGradeAndClass(b.className)
+        const aData = getGradeAndClass(a.gradeName)
+        const bData = getGradeAndClass(b.gradeName)
 
         // First sort by grade number
         if (aData.grade !== bData.grade) {
@@ -98,9 +108,17 @@ const MedicationPreparation = () => {
 
     // Handle search button click
     const handleSearchClick = () => {
-        console.log(`Searching for Grade: ${selectedGrade}, Session: ${selectedSession}`)
-        // TODO: Add logic for fetching data from server
-        // This will be implemented later when connecting to the backend
+        // debug:
+        setFilteredMssgNoRecords(`No results for searching medications of Grade: ${selectedGrade}, Session: ${selectedSession}`)
+
+        if (!selectedGrade || !selectedSession || (selectedGrade < 1 || selectedGrade > 5) || (selectedSession < 1 || selectedSession > 3)) {
+            console.error("Invalid grade or session selected")
+            return
+        }
+        else {
+            refetch(selectedGrade, selectedSession) // Refetch with selected filters
+            setCurrPage(1) // Reset to first page after search
+        }
     }
 
     return (
@@ -162,6 +180,10 @@ const MedicationPreparation = () => {
                             <TableBody>
                                 {sortedMedications.map((medication, index) => {
 
+                                    if (!medication) {
+                                        return null; // Skip rendering if medication is undefined
+                                    }
+
                                     // pagination logic:
                                     const startIndex = (currPage - 1) * ITEMS_EACH_PAGE;
                                     const endIndex = startIndex + ITEMS_EACH_PAGE;
@@ -169,16 +191,19 @@ const MedicationPreparation = () => {
                                         return null; // Skip rendering this row
                                     }
 
+                                    const className = medication.gradeName;
+                                    let realClassName = className.split(" ")[1]; 
+
                                     return (
                                         <TableRow key={`${medication.sendMedicationId}-${index}`} sx={{ "&:hover": { bgcolor: "grey.50" } }}>
                                             <TableCell>
                                                 <Typography variant="body2" fontWeight="bold" color="primary.main" textAlign={'center'}>
-                                                    {medication.className}
+                                                    {realClassName}
                                                 </Typography>
                                             </TableCell>
                                             <TableCell>
                                                 <Typography variant="body2" fontWeight="bold">
-                                                    {'Pupil name here'}
+                                                    {`${medication.pupilLastName} ${medication.pupilFirstName}`}
                                                 </Typography>
                                             </TableCell>
                                             <TableCell>
@@ -190,7 +215,7 @@ const MedicationPreparation = () => {
                                                 <Typography variant="body2">{medication.diseaseName}</Typography>
                                             </TableCell>
                                             <TableCell>
-                                                <Typography variant="body2">{medication.unitMedicationAndUsage}</Typography>
+                                                <Typography variant="body2">{medication.unitAndUsage}</Typography>
                                             </TableCell>
                                         </TableRow>
                                     )
@@ -199,7 +224,7 @@ const MedicationPreparation = () => {
                                     <TableRow>
                                         <TableCell colSpan={4} align="center" sx={{ py: 4 }}>
                                             <Typography variant="body1" color="text.secondary">
-                                                No medications found for the selected criteria.
+                                                {filteredMssgNoRecords || "No records found. Please adjust your filters."}
                                             </Typography>
                                         </TableCell>
                                     </TableRow>

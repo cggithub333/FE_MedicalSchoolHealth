@@ -15,7 +15,7 @@ export const getAllPrescriptionsAction = async () => {
     return await response.data || [];
 
   } catch (error) {
-    console.error("Error in getAllPrescriptionsAction:", error);
+    // console.error("Error in getAllPrescriptionsAction:", error);
     throw error; // Re-throw the error for further handling if needed
   }
 }
