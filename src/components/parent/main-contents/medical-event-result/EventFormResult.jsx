@@ -46,9 +46,9 @@ import {
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 
 //custom hooks
-import { useGetAllMedicalEventByPupilsId } from "../../../../hooks/schoolnurse/new-event/useGetAllMedicalEventByPupilsId"
-import { useGetVaccinationHistoryByPupilId } from "../../../../hooks/schoolnurse/new-event/useGetVaccinationByPupilId"
-import { useGetAllHealthCheckByPupilID } from "../../../../hooks/schoolnurse/new-event/useGetAllHealthCheckByPupilID"
+import { useGetAllMedicalEventByPupilsId } from "../../../../hooks/schoolnurse/new-event/useGetAllMedicalEventByPupilsId";
+import { useGetVaccinationHistoryByPupilId } from "../../../../hooks/schoolnurse/new-event/useGetVaccinationByPupilId";
+import { useGetAllHealthCheckByPupilID } from "../../../../hooks/schoolnurse/new-event/useGetAllHealthCheckByPupilID";
 import useSearchPupilInforByPupilId from "../../../../hooks/schoolnurse/useSearchPupilInforByPupilId";
 
 import MedicalEventDetails from "./medical-event-details/EventFormResult.jsx";
@@ -114,12 +114,12 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
         loading: isMedicalEventsLoading,
         error: medicalEventsError
     } = useGetAllMedicalEventByPupilsId(pupilId);
-    // Fix: support both array and object with data property
     const medicalEvents = Array.isArray(medicalEventList)
         ? medicalEventList
         : Array.isArray(medicalEventList?.data)
             ? medicalEventList.data
             : [];
+    const firstMedicalEvent = medicalEvents[0] || null;
 
     // Fetch vaccination history for the selected pupil
     const {
@@ -127,6 +127,7 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
         loading: isVaccinationLoading,
         error: vaccinationError
     } = useGetVaccinationHistoryByPupilId(pupilId);
+    const firstVaccination = Array.isArray(vaccinationHistory) ? vaccinationHistory[0] : (vaccinationHistory?.[0] || null);
 
     // Fetch health check history for the selected pupil
     const {
@@ -134,8 +135,8 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
         loading: isHealthCheckLoading,
         error: healthCheckError
     } = useGetAllHealthCheckByPupilID(pupilId) || {};
-    // Defensive: ensure array
     const healthCheckList = Array.isArray(rawHealthCheckList) ? rawHealthCheckList : (Array.isArray(rawHealthCheckList?.data) ? rawHealthCheckList.data : []);
+    const firstHealthCheck = healthCheckList[0] || null;
 
     // Fetch full pupil info by pupilId
     const { pupilInfo, isLoading: isPupilLoading, error: pupilError } = useSearchPupilInforByPupilId(pupilId);
@@ -145,7 +146,7 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
     // Defensive checks to avoid TypeError if event or event.pupil is undefined
     // Use pupilInfo for details if available, fallback to event.pupil
     const pupil = pupilInfo || (event && event.pupil) || {};
-    const pupilName = pupil.firstName && pupil.lastName ? `${pupil.firstName} ${pupil.lastName}` : "";
+    const pupilName = pupil.firstName && pupil.lastName ? `${pupil.lastName} ${pupil.firstName}` : "";
     const grade = pupil.gradeName || pupil.gradeLevel || "";
     const gender = pupil.gender || "";
     const parent = Array.isArray(pupil.parents) && pupil.parents.length > 0 ? pupil.parents[0] : null;
@@ -214,11 +215,11 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
                         </Typography>
                     </Box>
                 </Grid>
-                <Grid item size={3} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                {/* <Grid item size={3} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                     <IconButton className="close-button" sx={{ borderRadius: 2, bgcolor: '#f5f5f5', ml: 1, top: 0, right: 0 }} onClick={onBack}>
                         <CloseIcon />
                     </IconButton>
-                </Grid>
+                </Grid> */}
             </Grid>
 
             <Grid item size={12} >
