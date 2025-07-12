@@ -150,12 +150,12 @@ function DashboardLayoutSlots(props) {
     const { personalInforState, error: personalInforError, loading: personalInforLoading } = useMyInformation();
 
     // debug:
-    if (personalInforLoading)
-        console.log("Loading personal information...");
-    else if (personalInforError)
-        console.error("Error loading personal information:", personalInforError);
-    else
-        console.log("Personal information loaded:", personalInforState);
+    // if (personalInforLoading)
+    //     console.log("Loading personal information...");
+    // else if (personalInforError)
+    //     console.error("Error loading personal information:", personalInforError);
+    // else
+    //     console.log("Personal information loaded:", personalInforState);
 
 
     const [isLogout, setIsLogout] = React.useState(false);
