@@ -7,6 +7,7 @@ import TakeMedicationBySession from '@components/schoolnurse/send-medication/Tak
 import PrescriptionRequest from '@components/schoolnurse/send-medication/PrescriptionRequest';
 import FloatingNavigateButton from '@components/magic/FloatingNavigateButton/FloatingNavigateButton';
 import { MdOutlineMedication as MedicationPreparationIcon } from "react-icons/md";
+import NewRequestsIcon from '@mui/icons-material/Article';
 
 const Prescription = () => {
 
@@ -40,6 +41,13 @@ const Prescription = () => {
                 backgroundColor={"purple"}
                 textContent="Preparations" 
                 customMaxWidth={"150px"}/>
+            <FloatingNavigateButton
+                iconForAvatar={NewRequestsIcon}
+                navigateLink={'/schoolnurse/prescription/prescription-requests'}
+                backgroundColor={"#1976d2"}
+                textContent="New Requests"
+                customSpaceBottom={'90px'}
+                customMaxWidth={'130px'}/>
         </div>
     );
 }
