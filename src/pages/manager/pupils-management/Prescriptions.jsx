@@ -21,14 +21,15 @@ const Prescriptions = () => {
                 </Grid>
             </Grid>
             <Grid container justifyContent={'center'} sx={{ marginTop: "20px", backgroundColor: "#E6F8F9", pb: "50px" }}>
-                <Grid item size={{ xs: 10 }}>
+                <Grid item size={{ xs: 11 }}>
+                    <PrescriptionManagementByStatus />
                 </Grid>
             </Grid>
-            <FloatingNavigateButton
-                iconForAvatar={LogsIcon}
-                navigateLink={'./tracking'}
-                backgroundColor={"#5c00c2"}
-                textContent="Tracking" />
+            <FloatingNavigateButton 
+                        iconForAvatar={LogsIcon}
+                        navigateLink={'./tracking'}
+                        backgroundColor={"#5c00c2"} 
+                        textContent="Tracking"/>
         </div>
     );
 }

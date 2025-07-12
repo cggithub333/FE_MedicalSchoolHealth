@@ -67,7 +67,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Navigate to={"/homepage"} />} /> {/* entry point of the application */}
                     <Route path="/homepage" element={<Homepage />} />
-                    <Route path="/test" element={<Test />} />
+                    {/* <Route path="/test" element={<Test />} /> */}
                     <Route path="/dashboard" element={<TargetRedirect target="dashboard" />} />
                     <Route path="/profile" element={<TargetRedirect target="profile"/>} />
                     <Route path="/settings" element={<TargetRedirect target="settings" />} />
