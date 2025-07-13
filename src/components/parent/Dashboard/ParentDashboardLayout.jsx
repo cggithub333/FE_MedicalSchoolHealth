@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import IconButton from '@mui/material/IconButton';
@@ -9,7 +10,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { ReactRouterAppProvider } from '@toolpad/core/react-router';
 import { DashboardLayout, ThemeSwitcher } from '@toolpad/core/DashboardLayout';
 import { Account } from '@toolpad/core/Account';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import LogoBranchImg from '../../../assets/images/health_education_img2.png';
 import { FaChildReaching as ChildIcon } from "react-icons/fa6";
 import Menu from '@mui/material/Menu';
@@ -42,6 +43,9 @@ import { Box } from '@mui/material';
 import useMyInformation from '@hooks/common/useMyInformation.js';
 
 function ToolbarActionsUtility() {
+
+  const location = useLocation();
+
   // load pupil information from localStorage:
   const { pupils, isLoading } = usePupils();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -78,8 +82,18 @@ function ToolbarActionsUtility() {
     const encodedStudentInfor = Base64.encode(JSON.stringify(child));
     window.localStorage.setItem("pupilInfor", encodedStudentInfor);
     handleMenuClose();
-    location.reload();
+    window.location.reload();
   };
+
+  useEffect (() => {
+    console.log("Current location:", location.pathname);
+  }, [location]); // reset for each location change
+
+  const forAllChildrenLink = [
+    "/parent/declaration/health-declaration",
+    "/parent/profile",
+    "/parent/notification"
+  ]
 
   return (
     <Stack direction="row" alignItems="center" spacing={3} sx={{ flexGrow: 1 }}>
@@ -88,15 +102,31 @@ function ToolbarActionsUtility() {
       <IconButton
         sx={stylePupilBtn(window.localStorage.getItem("pupilGender"))}
       >
-        {window.localStorage.getItem("pupilGender") && 
-          <span style={{ paddingLeft: "10px" }}>
-            {window.localStorage.getItem("pupilGender") === "M" ? <MaleFaceIcon/> : <FemaleFaceIcon/>}
+        {((forAllChildrenLink || []).some(item => location.pathname.includes(item))) ?
+          <span style={{ paddingLeft: "10px", fontSize: "20px" }}>
+            <ChildIcon />
           </span>
+          :
+          <>
+            {window.localStorage.getItem("pupilGender") &&
+              <span style={{ paddingLeft: "10px", fontSize: "20px" }}>
+                {window.localStorage.getItem("pupilGender") === "M" ? <MaleFaceIcon /> : <FemaleFaceIcon />}
+              </span>
+            }
+          </>
         }
-        {window.localStorage.getItem("pupilName") && window.localStorage.getItem("pupilGender") &&
+        {((forAllChildrenLink || []).some(item => location.pathname.includes(item))) ?
           <span style={{ fontSize: "20px", marginLeft: "10px", padding: "2px", paddingRight: "10px" }}>
-            {window.localStorage.getItem("pupilName")}
+            All Children
           </span>
+          :
+          <>
+            {window.localStorage.getItem("pupilName") && window.localStorage.getItem("pupilGender") &&
+              <span style={{ fontSize: "20px", marginLeft: "10px", padding: "2px", paddingRight: "10px" }}>
+                {window.localStorage.getItem("pupilName")}
+              </span>
+            }
+          </>
         }
       </IconButton>
 
