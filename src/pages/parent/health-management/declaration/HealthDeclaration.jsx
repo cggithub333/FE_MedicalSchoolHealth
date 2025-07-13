@@ -18,7 +18,7 @@ const HealthDeclaration = () => {
           <CustomTittle title={"Health Declaration"} />
         </Grid>
       </Grid>
-      <Grid container justifyContent={'center'} sx={{ background: "#e6f8f9" }} s>
+      <Grid container justifyContent={'center'} sx={{ background: "#e6f8f9" }}>
         <Grid item size={{ xs: 11 }}>
           <HealthDeclarationContent />
         </Grid>

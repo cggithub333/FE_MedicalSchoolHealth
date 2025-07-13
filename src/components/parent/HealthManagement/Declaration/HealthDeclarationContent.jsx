@@ -1,31 +1,47 @@
 import {
-  Grid,
+  Container,
+  Typography,
   Card,
   CardContent,
-  CardActions,
-  Avatar,
-  Typography,
-  Button,
   Box,
-  Container,
-  Paper,
+  Grid,
+  Select,
   FormControl,
   InputLabel,
-  Select,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  FormLabel,
+  Paper,
+  Avatar,
+  Divider,
+  Alert,
+  IconButton,
+  LinearProgress,
+  CircularProgress,
+  MenuItem,
+  TextField,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Dialog,
+  CardActions,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import Dialog from "@mui/material/Dialog"
-import DialogTitle from "@mui/material/DialogTitle"
-import DialogContent from "@mui/material/DialogContent"
-import DialogActions from "@mui/material/DialogActions"
-import MenuItem from "@mui/material/MenuItem"
-import TextField from "@mui/material/TextField"
+import { AttachFile, CloudUpload, Person } from '@mui/icons-material';
 import { useState, useEffect } from "react"
-import Person from "@mui/icons-material/Person"
+
 import usePupils from "@hooks/parent/usePupils";
+import useUploadImage from "@hooks/magic-hooks/useUploadImage"
+import { useGetAllHealthRecordByPupilId } from "@hooks/parent/new-event/useGetAllHealthrecordByPupilId";
 import { useCreateNewHealthRecords } from "@hooks/parent/new-event/useCreateNewHealthRecords"
+
 import { showSuccessToast, showErrorToast } from "@utils/toast-utils";
-import { useGetAllHealthRecordByPupilId } from "../../../../hooks/parent/new-event/useGetAllHealthrecordByPupilId";
+import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
+import NewHealthDeclareIcon from '@mui/icons-material/NoteAdd';
+
 import ImageIcon from "@mui/icons-material/Image";
 // Styled components
 const MainContainer = styled(Paper)(({ theme }) => ({
@@ -88,6 +104,22 @@ const GradeName = styled(Typography)(({ theme }) => ({
 
 
 const HealthDeclarationContent = () => {
+
+  const {
+      selectedFile,
+      preview,
+      uploading,
+      uploadProgress,
+      imageUrl,
+      error: uploadError,
+      fileInputRef,
+      handleFileSelect,
+      handleDrop,
+      handleDragOver,
+      handleUpload,
+      handleReset
+    } = useUploadImage();
+
   // Function to generate avatar initials
   const getAvatarInitials = (firstName, lastName) => {
     return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase()
@@ -114,7 +146,7 @@ const HealthDeclarationContent = () => {
   const { pupils, isLoading: pupilsLoading } = usePupils();
   const { createNewHealthRecords, isLoading: createLoading, error: createError } = useCreateNewHealthRecords();
   const { healthRecords = [], loading, error } = useGetAllHealthRecordByPupilId(detailPupilId);
-  console.log("Health Records:", healthRecords);
+  // console.log("Health Records:", healthRecords);
   const selectedPupil = pupils.find((p) => p.pupilId === selectedPupilId)
 
   // Get selected pupilId from localStorage (set by VaccinationDeclarationContent)
@@ -138,13 +170,61 @@ const HealthDeclarationContent = () => {
     setForm((prev) => ({ ...prev, [name]: value }))
   }
 
+  const handleImageAttach = () => {
+    fileInputRef.current?.click();
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // debug:
+    // console.log("Form data before submission:", JSON.stringify(form, null, 2));
+
     try {
-      await createNewHealthRecords(form);
+
+      let finalImageUrl = imageUrl;
+
+      // debug:
+      console.log("Image URL before upload:", finalImageUrl);
+
+      if (selectedFile && !imageUrl) {
+        // If user selected an image but hasn't uploaded it yet, upload it first
+        finalImageUrl = await handleUpload();  // Store the returned URL directly
+
+        // debug:
+        console.log("Image URL before upload:", finalImageUrl);
+      }
+
+      // Prepare the form data
+      const formData = {
+        ...form,
+        imageUrl: finalImageUrl, // Use the final image URL after upload
+      }
+
+      // debug:
+      console.log("Final form data to submit:", JSON.stringify(formData, null, 2));
+
+      // submit the form data
+      await createNewHealthRecords(formData);
       showSuccessToast("Health declaration submitted successfully!");
+
+      // reset form data:
+      setForm({
+        name: "",
+        reactionOrNote: "",
+        imageUrl: "",
+        typeHistory: "",
+        pupilId: selectedPupilId,
+        isActive: true,
+      });
+
+      // Reset the image upload state as well
+      handleReset();
+
       handleDialogClose();
+
     } catch (err) {
+      // console.error("Error creating health record:", err);
       showErrorToast("Failed to create health record. Please try again.");
     }
   }
@@ -168,22 +248,27 @@ const HealthDeclarationContent = () => {
       <Container maxWidth="lg">
         <MainContainer elevation={3}>
           {/* title */}
-          <Typography
-            variant="h4"
-            component="h1"
-            gutterBottom
-            sx={{
-              textAlign: "center",
-              mb: 4,
-              fontWeight: "bold",
-              color: "primary.main",
-              fontSize: { xs: "1.75rem", md: "2.125rem" },
-            }}
-          >
-            Health Declaration for Pupils
-          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", justifyContent: 'center',mb: 3, gap: 2 }}>
+            <Avatar sx={{ bgcolor: "#1976d2" }}>
+              <MedicalInformationIcon />
+            </Avatar>
+            <Typography
+              variant="h4"
+              component="h1"
+              gutterBottom
+              sx={{
+                textAlign: "center",
+                fontWeight: "bold",
+                color: "primary.main",
+                fontSize: { xs: "1.75rem", md: "2.125rem" },
+                mt: 1
+              }}
+            >
+              Health Declaration for Pupils
+            </Typography>
+          </Box>
           {/* Request Body */}
-          <CardActions sx={{ p: 2, pt: 0, justifyContent: "center" }}>
+          <CardActions sx={{ p: 2, pt: 0, justifyContent: "center" , mb: 3}}>
             <Button
               variant="contained"
               color="primary"
@@ -204,7 +289,8 @@ const HealthDeclarationContent = () => {
                 left: 300,
               }}
             >
-              New Health Declaration
+              <NewHealthDeclareIcon sx={{ mr: 1 }} />
+              <span>New Health Declaration</span>
             </Button>
             {/* New Health Records Form */}
             <Dialog open={dialogOpen} onClose={handleDialogClose} maxWidth="sm" fullWidth>
@@ -250,23 +336,23 @@ const HealthDeclarationContent = () => {
                           Selected Child Information
                         </Typography>
                         <Grid container spacing={2}>
-                          <Grid item xs={6} md={3}>
+                          <Grid item size={{xs:6, md:3}}>
                             <Typography variant="body2">
                               <strong>Name:</strong> {selectedPupil.lastName}{" "}
                               {selectedPupil.firstName}
                             </Typography>
                           </Grid>
-                          <Grid item xs={6} md={3}>
+                          <Grid item size={{xs:6, md:3}}>
                             <Typography variant="body2">
                               <strong>Birth Date:</strong> {selectedPupil.birthDate}
                             </Typography>
                           </Grid>
-                          <Grid item xs={6} md={3}>
+                          <Grid item size={{xs:6, md:3}}>
                             <Typography variant="body2">
                               <strong>Gender:</strong> {selectedPupil.gender === "M" ? "Male" : "Female"}
                             </Typography>
                           </Grid>
-                          <Grid item xs={6} md={3}>
+                          <Grid item size={{xs:6, md:3}}>
                             <Typography variant="body2">
                               <strong>Class:</strong> {selectedPupil.gradeName}
                             </Typography>
@@ -293,14 +379,132 @@ const HealthDeclarationContent = () => {
                     onChange={handleFormChange}
                     required
                   />
-                  <TextField
-                    fullWidth
-                    margin="normal"
-                    label="Image URL"
-                    name="imageUrl"
-                    value={form.imageUrl}
-                    onChange={handleFormChange}
-                  />
+                  <Paper sx={{ p: 3, mb: 3, bgcolor: "success.50", mt: 2 }}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+                      <AttachFile color="success" />
+                      <Typography variant="h7" textTransform={'uppercase'} fontWeight="bold" color="success.main">
+                        Upload image for declaration (optional)
+                      </Typography>
+                    </Box>
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleFileSelect}
+                      accept="image/*"
+                      style={{ display: 'none' }}
+                    />
+        
+                    {/* Image upload logic: Drag and drop upload area */}
+                    <Box
+                      onDrop={handleDrop}
+                      onDragOver={handleDragOver}
+                      sx={{
+                        border: '2px dashed',
+                        borderColor: selectedFile ? 'success.main' : 'grey.300',
+                        borderRadius: 2,
+                        p: 3,
+                        textAlign: 'center',
+                        cursor: 'pointer',
+                        bgcolor: selectedFile ? 'success.50' : 'grey.50',
+                        transition: 'all 0.3s ease',
+                        '&:hover': {
+                          borderColor: 'success.main',
+                          bgcolor: 'success.50'
+                        }
+                      }}
+                      onClick={handleImageAttach}
+                    >
+                      {preview ? (
+                        <Box>
+                          {/* Image upload logic: Show preview of selected image */}
+                          <img
+                            src={preview}
+                            alt="Preview"
+                            style={{
+                              maxWidth: '200px',
+                              maxHeight: '200px',
+                              objectFit: 'contain',
+                              borderRadius: '8px'
+                            }}
+                          />
+                          <Typography variant="body2" sx={{ mt: 1 }}>
+                            {selectedFile?.name}
+                          </Typography>
+                          {/* Image upload logic: Button to remove selected image */}
+                          <Button
+                            size="small"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleReset();
+                            }}
+                            sx={{ mt: 1 }}
+                          >
+                            Remove
+                          </Button>
+                        </Box>
+                      ) : (
+                        <Box>
+                          {/* Image upload logic: Default drag and drop UI */}
+                          <CloudUpload sx={{ fontSize: 48, color: 'grey.500', mb: 1 }} />
+                          <Typography variant="h6" gutterBottom>
+                            Drop image here or click to browse
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Supports: JPG, PNG, GIF (Max 10MB)
+                          </Typography>
+                        </Box>
+                      )}
+                    </Box>
+        
+                    {/* Image upload logic: Show upload progress when uploading */}
+                    {uploading && (
+                      <Box sx={{ mt: 2 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                          <CircularProgress size={20} />
+                          <Typography variant="body2">Uploading... {uploadProgress}%</Typography>
+                        </Box>
+                        <LinearProgress variant="determinate" value={uploadProgress} />
+                      </Box>
+                    )}
+        
+                    {/* Image upload logic: Show success message when upload completes */}
+                    {imageUrl && (
+                      <Alert severity="success" sx={{ mt: 2 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <ImageIcon />
+                          <Typography variant="body2">
+                            Image uploaded successfully! Ready to submit.
+                          </Typography>
+                        </Box>
+                      </Alert>
+                    )}
+        
+                    {/* Image upload logic: Show error message if upload fails */}
+                    {uploadError && (
+                      <Alert severity="error" sx={{ mt: 2 }}>
+                        Upload Error: {uploadError}
+                      </Alert>
+                    )}
+        
+                    {/* Image upload logic: Manual upload button for immediate upload */}
+                    {/* {selectedFile && !imageUrl && !uploading && (
+                      <Box sx={{ mt: 2 }}>
+                        <Button
+                          variant="contained"
+                          color="success"
+                          startIcon={<CloudUpload />}
+                          onClick={handleUpload}
+                          fullWidth
+                        >
+                          Upload Image Now
+                        </Button>
+                      </Box>
+                    )} */}
+        
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+                      Uploaded image will be attached to the health declaration of your child.
+                    </Typography>
+                  </Paper>
                   <TextField
                     select
                     fullWidth
@@ -342,10 +546,10 @@ const HealthDeclarationContent = () => {
                         ) : (
                           <Box component="table" sx={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0 }}>
                             <Box component="thead">
-                              <Box component="tr" sx={{ bgcolor: 'primary.light' }}>
-                                <Box component="th" sx={{ textAlign: 'left', p: 1, fontWeight: 700, color: 'primary.main', borderRadius: '8px 0 0 0' }}>Name</Box>
-                                <Box component="th" sx={{ textAlign: 'left', p: 1, fontWeight: 700, color: 'primary.main' }}>Reaction/Note</Box>
-                                <Box component="th" sx={{ textAlign: 'center', p: 1, fontWeight: 700, color: 'primary.main', borderRadius: '0 8px 0 0' }}>Image</Box>
+                              <Box component="tr" sx={{ bgcolor: 'primary.light'}}>
+                                  <Box component="th" sx={{ textAlign: 'left', p: 1, fontWeight: 700, color: 'primary.main', borderRadius: '8px 0 0 0', color: "#fff" }}>Name</Box>
+                                  <Box component="th" sx={{ textAlign: 'left', p: 1, fontWeight: 700, color: 'primary.main', color: "#fff" }}>Reaction/Note</Box>
+                                  <Box component="th" sx={{ textAlign: 'center', p: 1, fontWeight: 700, color: 'primary.main', borderRadius: '0 8px 0 0', color: "#fff" }}>Image</Box>
                               </Box>
                             </Box>
                             <Box component="tbody">
@@ -379,25 +583,31 @@ const HealthDeclarationContent = () => {
                           <Box component="table" sx={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0 }}>
                             <Box component="thead">
                               <Box component="tr" sx={{ bgcolor: 'secondary.light' }}>
-                                <Box component="th" sx={{ textAlign: 'left', p: 1, fontWeight: 700, color: 'secondary.main', borderRadius: '8px 0 0 0' }}>Name</Box>
-                                <Box component="th" sx={{ textAlign: 'left', p: 1, fontWeight: 700, color: 'secondary.main' }}>Reaction/Note</Box>
-                                <Box component="th" sx={{ textAlign: 'center', p: 1, fontWeight: 700, color: 'secondary.main', borderRadius: '0 8px 0 0' }}>Image</Box>
+                                <Box component="th" sx={{ textAlign: 'left', p: 1, fontWeight: 700, color: 'secondary.main', borderRadius: '8px 0 0 0', color: "#fff" }}>Name</Box>
+                                <Box component="th" sx={{ textAlign: 'left', p: 1, fontWeight: 700, color: 'secondary.main', color: "#fff" }}>Reaction/Note</Box>
+                                <Box component="th" sx={{ textAlign: 'center', p: 1, fontWeight: 700, color: 'secondary.main', borderRadius: '0 8px 0 0', color: "#fff" }}>Image</Box>
                               </Box>
                             </Box>
                             <Box component="tbody">
-                              {healthRecords.filter(r => r.typeHistory === 'MEDICAL_HISTORY').map((record, idx, arr) => (
-                                <Box component="tr" key={record.conditionId} sx={{ bgcolor: idx % 2 === 0 ? 'white' : 'secondary.100', borderRadius: 2 }}>
-                                  <Box component="td" sx={{ p: 1, borderBottom: idx === arr.length - 1 ? 'none' : '1px solid #e0e0e0' }}>{record.name}</Box>
-                                  <Box component="td" sx={{ p: 1, borderBottom: idx === arr.length - 1 ? 'none' : '1px solid #e0e0e0' }}>{record.reactionOrNote}</Box>
-                                  <Box component="td" sx={{ p: 1, textAlign: 'center', borderBottom: idx === arr.length - 1 ? 'none' : '1px solid #e0e0e0' }}>
-                                    {record.imageUrl ? (
-                                      <Button size="small" variant="outlined" color="secondary" startIcon={<ImageIcon />} onClick={() => window.open(record.imageUrl, '_blank')}>See</Button>
-                                    ) : (
-                                      <Typography variant="caption" color="text.secondary">No image</Typography>
-                                    )}
+                              {healthRecords.filter(r => r.typeHistory === 'MEDICAL_HISTORY').map((record, idx, arr) => {
+                                
+                                // debug:
+                                // console.log("Medical Record:", record);
+
+                                return (
+                                  <Box component="tr" key={record.conditionId} sx={{ bgcolor: idx % 2 === 0 ? 'white' : 'secondary.100', borderRadius: 2 }}>
+                                    <Box component="td" sx={{ p: 1, borderBottom: idx === arr.length - 1 ? 'none' : '1px solid #e0e0e0' }}>{record.name}</Box>
+                                    <Box component="td" sx={{ p: 1, borderBottom: idx === arr.length - 1 ? 'none' : '1px solid #e0e0e0' }}>{record.reactionOrNote}</Box>
+                                    <Box component="td" sx={{ p: 1, textAlign: 'center', borderBottom: idx === arr.length - 1 ? 'none' : '1px solid #e0e0e0' }}>
+                                      {record.imageUrl ? (
+                                        <Button size="small" variant="outlined" color="secondary" startIcon={<ImageIcon />} onClick={() => window.open(record.imageUrl, '_blank')}>See</Button>
+                                      ) : (
+                                        <Typography variant="caption" color="text.secondary">No image</Typography>
+                                      )}
+                                    </Box>
                                   </Box>
-                                </Box>
-                              ))}
+                                )
+                              })}
                             </Box>
                           </Box>
                         )
@@ -415,7 +625,7 @@ const HealthDeclarationContent = () => {
 
           <Grid container spacing={3}>
             {pupils.map((pupil) => (
-              <Grid item size={6} sm={6} key={pupil.pupilId}>
+              <Grid item size={{xs: 6, md: 6}} key={pupil.pupilId}>
                 <StyledCard>
                   <CardContent sx={{ p: 3 }}>
                     <PupilInfo>
