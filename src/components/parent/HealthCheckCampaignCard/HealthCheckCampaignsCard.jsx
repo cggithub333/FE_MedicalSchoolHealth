@@ -1,6 +1,6 @@
 "use client"
 
-import { Typography, Chip, Box, Grid, Paper, Avatar, Button, Container, Alert } from "@mui/material"
+import { Typography, Chip, Box, Grid, Paper, Avatar, Button, Container, Alert, Card, CardContent } from "@mui/material"
 
 import {
   LocalHospital,
@@ -13,9 +13,9 @@ import {
   Summarize,
 } from "@mui/icons-material"
 
+import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
 import { createTheme, ThemeProvider } from "@mui/material/styles"
 import { Link } from "react-router-dom"
-
 import useLatestHealthCheckCampaign from "@hooks/parent/useLatestHealthCheckCampaign"
 
 
@@ -83,16 +83,17 @@ export default function HealthCampaignPage() {
 
   if (campaignData == null || Object.keys(campaignData).length === 0) {
     return (
-      <ThemeProvider theme={theme}>
-        <Container maxWidth="lg" sx={{ py: 4 }}>
-          <Alert severity="info" icon={<Info />}>
-            <Typography variant="h6" fontWeight="bold">
-              No Ongoing Campaign
+      <Container maxWidth="lg" sx={{ py: 0 }}>
+        <Card>
+          <CardContent sx={{ textAlign: "center", py: 4 }}>
+            <MedicalInformationIcon sx={{ fontSize: 48, color: "text.secondary", mb: 2 }} />
+            <Typography variant="h6" fontWeight="bold" sx={{ mb: 1 }}>
+              No Health Check Campaign Available
             </Typography>
-            <Typography>There is no ongoing health check campaign at the moment.</Typography>
-          </Alert>
-        </Container>
-      </ThemeProvider>
+            <Typography color="text.secondary">Currently, there are no health check campaigns published</Typography>
+          </CardContent>
+        </Card>
+      </Container>
     )
   }
 
