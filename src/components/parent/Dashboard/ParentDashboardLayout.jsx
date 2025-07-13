@@ -85,9 +85,10 @@ function ToolbarActionsUtility() {
     window.location.reload();
   };
 
-  useEffect (() => {
-    console.log("Current location:", location.pathname);
-  }, [location]); // reset for each location change
+  // for debug:
+  // useEffect (() => {
+  //   // console.log("Current location:", location.pathname);
+  // }, [location]); // reset for each location change
 
   const forAllChildrenLink = [
     "/parent/declaration/health-declaration",
