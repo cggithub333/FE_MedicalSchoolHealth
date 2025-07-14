@@ -54,8 +54,12 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
     // Fetch campaign details
     const { campaignDetails, isLoading, refetch } = useGetDetailsOfCampaignByID(campaignId)
     // Extract pupils for this grade from consentForms
+    const gradePrefix = gradeName ? gradeName.replace("Grade", "Class").trim() : "";
     const pupils = (campaignDetails?.data?.consentForms || campaignDetails?.consentForms || [])
-        .filter(form => (form.pupilRes?.gradeName || form.pupilRes?.Grade) === gradeName)
+        .filter(form => {
+            const pupilGrade = form.pupilRes?.gradeName || form.pupilRes?.Grade || "";
+            return pupilGrade.startsWith(gradePrefix);
+        })
         .map(form => ({
             consentFormId: form.consentFormId, // <-- add consentFormId for ScheduleDetails
             pupilId: form.pupilRes.pupilId,

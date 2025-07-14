@@ -470,7 +470,7 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
                                                             color: "#43a047",
                                                         },
                                                     }}
-                                                    disabled={savingIndex === idx || isSaving || selectedTab !== 2}
+                                                    disabled
                                                 />
                                             </TableCell>
                                             <TableCell>
@@ -568,7 +568,7 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
                                                             },
                                                             marginLeft: 3,
                                                         }}
-                                                        disabled={savingIndex === idx || isSaving}
+                                                        disabled
                                                     >
                                                         Absent
                                                     </Button>

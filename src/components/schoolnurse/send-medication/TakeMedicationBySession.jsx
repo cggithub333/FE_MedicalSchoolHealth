@@ -69,7 +69,7 @@ const DigitalClock = () => {
     )
 }
 
-const currentSessionInfor = () => {
+const currentSessionInfor0 = () => {
     const now = new Date()
     const currentHour = now.getHours()
     const currentMinute = now.getMinutes()
@@ -81,7 +81,7 @@ const currentSessionInfor = () => {
 }
 
 // for testing sesion 1:
-const currentSessionInfor1 = () => {
+const currentSessionInfor = () => {
     const now = new Date()
     const currentHour = now.getHours()
     const currentMinute = now.getMinutes()
@@ -125,7 +125,7 @@ const TakeMedicationBySession = () => {
     const { medicationDetailsByPupil, loading: medicationDetailsLoading, error: medicationDetailsError, refetch: medicationDetailsRefetch } = useTakeMedicationsByEachPupilEachSession();
 
     // state for manage insert new medication logs:
-    const [ isCreatedLogs, setIsCreatedLogs ] = useState(false)
+    const [isCreatedLogs, setIsCreatedLogs] = useState(false)
     // Session tracking state for time-based control
     const [givenSessions, setGivenSessions] = useState({}) // Track which sessions are given for each disease
 
@@ -140,7 +140,7 @@ const TakeMedicationBySession = () => {
     const [selectedSession, setSelectedSession] = useState(null)
     const [selectedPupil, setSelectedPupil] = useState(null)
     const [medicationChecks, setMedicationChecks] = useState({})
-    const [logMessages, setLogMessages] = useState({ "schoolNurseName": "+ School Nurse's name: " + localStorage.getItem("userFullName") }) 
+    const [logMessages, setLogMessages] = useState({ "schoolNurseName": "+ School Nurse's name: " + localStorage.getItem("userFullName") })
     // manage log message of each pupil's detail, will be removed if submit for current pupil complete to continue with the next pupil;
     // fill school nurse's name to know which school nurse is taking medication for which pupil
 
@@ -217,7 +217,7 @@ const TakeMedicationBySession = () => {
     const getSessionDisplayText = (sessionIndex) => {
         const sessionName = getSessionName(sessionIndex) // ex: "Morning Session"
         const sessionTime = getSessionTime(sessionIndex) // ex: "09:30 - 10:00"
-        
+
         if (sessionName && sessionTime) {
             return `${sessionName} - ${sessionTime}`
         } else if (sessionTime) {
@@ -235,16 +235,16 @@ const TakeMedicationBySession = () => {
         const currentHour = now.getHours()
         const currentMinute = now.getMinutes()
         const currentTotalMinutes = currentHour * 60 + currentMinute
-        
+
         // Define session time windows (when GIVEN button can be clicked)
-        const sessionTimeWindows = [
-            { start: 9 * 60 + 30, end: 10 * 60 + 15}, // Session 1: 9:30-10:15
+        const sessionTimeWindows0 = [
+            { start: 9 * 60 + 30, end: 10 * 60 + 15 }, // Session 1: 9:30-10:15
             { start: 10 * 60 + 30, end: 11 * 60 + 15 },  // Session 2: 10:30-11:15
             { start: 11 * 60 + 30, end: 12 * 60 + 15 }   // Session 3: 11:30-12:15
         ]
 
         // for test session 1:
-        const sessionTimeWindows1 = [
+        const sessionTimeWindows = [
             { start: currentTotalMinutes - 30, end: currentTotalMinutes + 30 }, // Session 1: Current time ±30 min
             { start: 10 * 60 + 30, end: 11 * 60 + 15 },  // Session 2: 10:30-11:15
             { start: 11 * 60 + 30, end: 12 * 60 + 15 }   // Session 3: 11:30-12:15
@@ -252,21 +252,21 @@ const TakeMedicationBySession = () => {
 
         // for test session 2:
         const sessionTimeWindows2 = [
-            { start: 9 * 60 + 30, end: 10 * 60 + 15},   // Session 1: 9:30-10:15
+            { start: 9 * 60 + 30, end: 10 * 60 + 15 },   // Session 1: 9:30-10:15
             { start: currentTotalMinutes - 30, end: currentTotalMinutes + 30 }, // Session 1: Current time ±30 min
             { start: 11 * 60 + 30, end: 12 * 60 + 15 }   // Session 3: 11:30-12:15
         ]
 
         // for test session 3:
         const sessionTimeWindows3 = [
-            { start: 9 * 60 + 30, end: 10 * 60 + 15},   // Session 1: 9:30-10:15
+            { start: 9 * 60 + 30, end: 10 * 60 + 15 },   // Session 1: 9:30-10:15
             { start: 10 * 60 + 30, end: 11 * 60 + 15 },  // Session 2: 10:30-11:15
             { start: currentTotalMinutes - 30, end: currentTotalMinutes + 30 }, // Session 1: Current time ±30 min
         ]
-        
+
         const sessionWindow = sessionTimeWindows[sessionIndex]
         if (!sessionWindow) return false
-        
+
         return currentTotalMinutes >= sessionWindow.start && currentTotalMinutes <= sessionWindow.end
     }
 
@@ -287,17 +287,17 @@ const TakeMedicationBySession = () => {
         if (localGivenSessions.includes(selectedSession + 1)) {
             return true
         }
-        
+
         // Check existing logs from API (if backend supports sessionNumber)
         if (request.medicationLogs && request.medicationLogs.length > 0) {
-            return request.medicationLogs.some(log => 
+            return request.medicationLogs.some(log =>
                 log.status === "GIVEN" && log.sessionNumber === (selectedSession + 1)
             )
         }
-        
+
         return false
     }
-    
+
     // Handle events functions:
     const handleChange = (event, newValue) => {
         setValue(newValue)
@@ -343,7 +343,7 @@ const TakeMedicationBySession = () => {
         }
 
         setSelectedGrade(grade)
-        setSelectedSession(sessionIndex) 
+        setSelectedSession(sessionIndex)
         setPupilListOpen(true)
     }
 
@@ -351,7 +351,7 @@ const TakeMedicationBySession = () => {
         setSelectedPupil(pupil)
 
         setSelectedMedicationDetails(null); // Reset selected medication details
-        
+
         // Get all approved medication requests for this pupil
         const pupilMedications = (medicationDetailsByPupil || []).filter(
             request => (request.pupilId === pupil.pupilId && request.status === "APPROVED" && request.medicationItems != null && request.medicationItems.length > 0) // Ensure medicationItems is not null or empty
@@ -362,8 +362,8 @@ const TakeMedicationBySession = () => {
         // debug, show selectedMedicationDetails and getPupilMedicationRequests:
         console.log("Selected pupil medication details:", pupilMedications) // ✅ Shows actual data
         console.log("Medication requests for pupil:", pupilMedications)      // ✅ Same data
-        
-        
+
+
         // Reset medication checks for all medications across all diseases
         const initialChecks = {}
         pupilMedications.forEach((request) => {
@@ -374,13 +374,13 @@ const TakeMedicationBySession = () => {
             }
         })
         setMedicationChecks(initialChecks)
-        
+
         // Reset log messages but keep school nurse name
         setLogMessages({ "schoolNurseName": "+ School Nurse's name: " + localStorage.getItem("userFullName") })
-        
+
         // Reset session tracking for new pupil
         setGivenSessions({})
-        
+
         setPrescriptionDetailOpen(true)
     }
 
@@ -445,7 +445,7 @@ const TakeMedicationBySession = () => {
             showErrorToast(`Medication can only be given during Session ${selectedSession + 1} time window: ${sessionTime}`)
             return
         }
-        
+
         // Check if already given for this session
         if (isGivenInCurrentSession(request)) {
             showWarningToast(`This medication has already been given for Session ${selectedSession + 1}!`)
@@ -462,7 +462,7 @@ const TakeMedicationBySession = () => {
         try {
             // insert logs into db;
             await createTakeMedicationLogs(medicationLogData)
-            
+
             // Track locally that this disease was given in this session
             setGivenSessions(prev => ({
                 ...prev,
@@ -471,7 +471,7 @@ const TakeMedicationBySession = () => {
                     selectedSession + 1
                 ]
             }))
-            
+
             setIsCreatedLogs(true) // This will trigger the useEffect
         } catch (error) {
             showErrorToast("Failed to create medication log. Please try again.")
@@ -482,12 +482,12 @@ const TakeMedicationBySession = () => {
     const hasCheckedMedications = (request) => {
         // If already given for current session, don't allow clicking
         if (isGivenInCurrentSession(request)) return false
-        
+
         // If not in session time window, don't allow clicking
         if (!isCurrentTimeInSession(selectedSession)) return false
-        
+
         if (!request.medicationItems) return false
-        return request.medicationItems.some(medication => 
+        return request.medicationItems.some(medication =>
             medicationChecks[medication.medicationId] === true
         )
     }
@@ -501,25 +501,25 @@ const TakeMedicationBySession = () => {
     const getDiseaseLogMessages = (request) => {
         // If disease already given for current session, show existing notes
         if (isGivenInCurrentSession(request)) {
-            const currentSessionLog = request.medicationLogs?.find(log => 
+            const currentSessionLog = request.medicationLogs?.find(log =>
                 log.status === "GIVEN" && log.sessionNumber === (selectedSession + 1)
             )
-            
+
             if (currentSessionLog) {
                 return currentSessionLog.note
             }
-            
+
             return `Medication already given for Session ${selectedSession + 1}`
         }
 
         // Otherwise, generate new log messages
         const diseaseMessages = []
-        
+
         // Add school nurse name
         if (logMessages["schoolNurseName"]) {
             diseaseMessages.push(logMessages["schoolNurseName"])
         }
-        
+
         // Add medication messages for this specific disease
         if (request.medicationItems) {
             request.medicationItems.forEach(medication => {
@@ -529,17 +529,17 @@ const TakeMedicationBySession = () => {
                 }
             })
         }
-        
+
         // Add session information
         diseaseMessages.push(`+ Session: ${selectedSession + 1} (${getSessionTimeWindow(selectedSession)})`)
-        
+
         return diseaseMessages.join("\n\n").trim() || `No medication given yet for Session ${selectedSession + 1}.`
     }
 
     // Modified close dialog function
     const handleCloseDialog = () => {
         showWarningToast("Please ensure all medication administration is complete before closing!")
-        
+
         if (window.confirm("Are you sure you want to close? Any unsaved changes will be lost.")) {
             setPrescriptionDetailOpen(false)
             setSelectedMedicationDetails(null) // Reset selected medication details
@@ -906,8 +906,8 @@ const TakeMedicationBySession = () => {
                                                                 onClick={() => handlePupilDetailClick(pupil)}
                                                                 disabled={
                                                                     (currentSessionInfor()[`session${selectedSession + 1}`] === true &&  // in prescription session time
-                                                                    localStorage.getItem(`givenPrescriptionSession${selectedSession + 1}`) &&  // has givenPrescriptionSession
-                                                                    JSON.parse(localStorage.getItem(`givenPrescriptionSession${selectedSession + 1}`)).includes(pupil.pupilId)) // but already given
+                                                                        localStorage.getItem(`givenPrescriptionSession${selectedSession + 1}`) &&  // has givenPrescriptionSession
+                                                                        JSON.parse(localStorage.getItem(`givenPrescriptionSession${selectedSession + 1}`)).includes(pupil.pupilId)) // but already given
                                                                 }
                                                             >
                                                                 DETAIL
@@ -929,10 +929,10 @@ const TakeMedicationBySession = () => {
 
                 {/* Prescription Detail Modal */}
                 <Dialog open={prescriptionDetailOpen} onClose={() => {
-                                                                    setPrescriptionDetailOpen(false)
-                                                                    setSelectedMedicationDetails(null); // Reset selected medication details
-                                                                    setSelectedPupil(null); // Reset selected pupil
-                                                                }
+                    setPrescriptionDetailOpen(false)
+                    setSelectedMedicationDetails(null); // Reset selected medication details
+                    setSelectedPupil(null); // Reset selected pupil
+                }
                 } maxWidth="md" fullWidth>
                     <DialogTitle>
                         <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -1179,14 +1179,14 @@ const TakeMedicationBySession = () => {
                                     )
                                 })}
 
-                        {/* Show message if no approved requests */}
-                        {!medicationDetailsLoading && getPupilMedicationRequests().length === 0 && (
-                            <Paper sx={{ p: 3, textAlign: "center", bgcolor: "grey.50" }}>
-                                <Typography variant="body1" color="text.secondary">
-                                    No approved medication requests found for this pupil
-                                </Typography>
-                            </Paper>
-                        )}
+                                {/* Show message if no approved requests */}
+                                {!medicationDetailsLoading && getPupilMedicationRequests().length === 0 && (
+                                    <Paper sx={{ p: 3, textAlign: "center", bgcolor: "grey.50" }}>
+                                        <Typography variant="body1" color="text.secondary">
+                                            No approved medication requests found for this pupil
+                                        </Typography>
+                                    </Paper>
+                                )}
                             </>
                         )}
                     </DialogContent>
@@ -1201,7 +1201,7 @@ const TakeMedicationBySession = () => {
     )
 }
 
-const renderLoadingSkeleton = ({ length: length  }) => (
+const renderLoadingSkeleton = ({ length: length }) => (
     <Container maxWidth="md" sx={{ py: 3 }}>
         {Array.from({ length: length }, (_, i) => i).map((index) => (
             <Card key={index} sx={{ mb: 2 }}>

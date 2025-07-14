@@ -3,8 +3,6 @@ import "./StyleScheduleInjectedList.scss"
 import { useGetDetailsOfCampaignByID } from "../../../../../hooks/manager/healthcheck/campaign/useGetDetaisOfCampaignByID"
 import ScheduleDetails from "../healthcheck-schedule-management-form/ScheduleDetails"
 import ScheduleResult from "../healthcheck-schedule-management-result/ScheduleResult"
-
-
 import {
     Table,
     TableBody,
@@ -56,8 +54,12 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
     // Fetch campaign details
     const { campaignDetails, isLoading, refetch } = useGetDetailsOfCampaignByID(campaignId)
     // Extract pupils for this grade from consentForms
+    const gradePrefix = gradeName ? gradeName.replace("Grade", "Class").trim() : "";
     const pupils = (campaignDetails?.data?.consentForms || campaignDetails?.consentForms || [])
-        .filter(form => (form.pupilRes?.gradeName || form.pupilRes?.Grade) === gradeName)
+        .filter(form => {
+            const pupilGrade = form.pupilRes?.gradeName || form.pupilRes?.Grade || "";
+            return pupilGrade.startsWith(gradePrefix);
+        })
         .map(form => ({
             consentFormId: form.consentFormId, // <-- add consentFormId for ScheduleDetails
             pupilId: form.pupilRes.pupilId,
@@ -75,6 +77,7 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
             additionalNotes: form.healthCheckHistoryRes?.additionalNotes || form.additionalNotes || "", // <-- get notes from API
             campaignId: campaignId, // Ensure campaignId is included for ScheduleDetails
         }))
+
     // Remove all local state for completion, only use API data
     const students = pupils
     const [selectedConsentFormId, setSelectedConsentFormId] = useState(null)
