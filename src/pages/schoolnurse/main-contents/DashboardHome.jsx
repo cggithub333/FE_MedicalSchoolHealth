@@ -1,9 +1,9 @@
+import DashboardOverview from "../../../components/schoolnurse/main-contents/dashboard/DashBoardoverview";
+
 const DashboardHome = () => {
 
   return (
-    <>
-      Schoolnurse - Dashboard Home
-    </>
+    <DashboardOverview />
   );
 }
 

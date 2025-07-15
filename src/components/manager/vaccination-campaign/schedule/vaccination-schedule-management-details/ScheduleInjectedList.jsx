@@ -123,7 +123,7 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
 
     const statusTabs = [
         { key: "INJECTED", label: "Injected" },
-        { key: "NO_SHOW", label: "NO_SHOW" },
+        { key: "NO_SHOW", label: "Absent" },
         { key: "NOT_YET", label: "Not Yet" },
     ]
 
