@@ -13,6 +13,7 @@ export const useNewestCampaignByStatus = () => {
         setError(null);
         try {
             const campaign = await fetchNewestCampaign();
+            console.log("Fetched newest campaign:", campaign);
             setNewestCampaign(campaign);
         } catch (err) {
             console.error("Error fetching newest campaign:", err);
