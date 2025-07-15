@@ -15,7 +15,7 @@ const Profile = () => {
       </Grid>
       <Grid container>
         <Grid item sx={{ marginLeft: "20px", marginTop: "25px" }} size={{ xs: 6 }}>
-          <CustomTittle title={"Parent's Profile"} />
+          <CustomTittle title={"Admin's Profile"} />
         </Grid>
       </Grid>
       <Grid container justifyContent={'center'} sx={{ backgroundColor: "#E6F8F9" }}>

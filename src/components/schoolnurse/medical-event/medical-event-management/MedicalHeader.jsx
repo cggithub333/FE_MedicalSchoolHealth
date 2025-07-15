@@ -155,6 +155,8 @@ const MedicalHeader = () => {
 
     const handleNewEventClick = () => {
         setShowForm(true); // Show the form
+        navigate('/schoolnurse/medical-event/news'); // Navigate to the new event form
+
     };
 
     const handleCancelForm = () => {

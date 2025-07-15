@@ -10,19 +10,9 @@ import {
     CalendarToday as CalendarIcon,
 } from "@mui/icons-material"
 import "./DashboardOverview.scss"
-import { styled } from '@mui/material/styles';
-import Paper from '@mui/material/Paper';
-const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: '#fff',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: (theme.vars ?? theme).palette.text.secondary,
-    ...theme.applyStyles('dark', {
-        backgroundColor: '#1A2027',
-    }),
-}));
-
+import VaccinesIcon from '@mui/icons-material/Vaccines';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import { Link } from "react-router-dom"
 const DashboardOverview = () => {
     // Mock data based on the database schema
     const dashboardStats = {
@@ -180,7 +170,6 @@ const DashboardOverview = () => {
         <Box className="dashboard-content" sx={{
             padding: { xs: 1, sm: 3 },
             background: "linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%)",
-            minHeight: "100vh",
             width: "100%",
             boxSizing: "border-box",
         }}>
@@ -203,7 +192,7 @@ const DashboardOverview = () => {
                     value: dashboardStats.totalPrescription,
                     icon: <FileTextIcon />, color: "purple"
                 }].map((stat, idx) => (
-                    <Grid item xs={12} sm={6} md={3} key={stat.label}>
+                    <Grid item size={{ xs: 12, sm: 6, md: 3 }} key={stat.label}>
                         <Card className={`stat-card stat-card--${stat.color}`}
                             sx={{
                                 borderRadius: 4,
@@ -232,10 +221,10 @@ const DashboardOverview = () => {
             {/* Main Content Grid */}
             <Grid container spacing={3} className="main-grid" sx={{ width: "100%" }}>
                 {/* Left Column - Recent Medical Events & Medication Schedule */}
-                <Grid item xs={12} md={8}>
+                <Grid item size={{ xs: 12, md: 8 }}>
                     <Box className="left-column" sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                         {/* Recent Medical Events */}
-                        <Card className="events-card glass-card" sx={{ borderRadius: 4, boxShadow: 2, mb: 2 }}>
+                        <Card className="events-card glass-card" sx={{ borderRadius: 4, boxShadow: 2 }}>
                             <CardHeader
                                 className="events-card__header"
                                 title={
@@ -244,6 +233,9 @@ const DashboardOverview = () => {
                                             <AlertTriangleIcon color="error" />
                                         </Box>
                                         <Typography variant="h6" sx={{ fontWeight: 600 }}>Recent Medical Events</Typography>
+                                        <Button size="small" className="view-all-button" sx={{ color: '#6366f1', fontWeight: 500, textTransform: 'none', display: 'flex', position: 'absolute', right: 16, top: 16 }}>
+                                            view all →
+                                        </Button>
                                     </Box>
                                 }
                             />
@@ -293,10 +285,24 @@ const DashboardOverview = () => {
                                         <Box className="card-title__icon card-title__icon--emerald" sx={{ bgcolor: 'rgba(16,185,129,0.12)', borderRadius: '50%', p: 1 }}>
                                             <PillIcon color="success" />
                                         </Box>
-                                        <Typography variant="h6" sx={{ fontWeight: 600 }}>Today's Medication Schedule</Typography>
+                                        <Typography variant="h6" sx={{ fontWeight: 600 }}>Today's Prescription Schedule</Typography>
+                                        <Button size="small" className="view-all-button" sx={{ color: '#6366f1', fontWeight: 500, textTransform: 'none', display: 'flex', position: 'absolute', right: 16, top: 16 }}>
+                                            view all →
+                                        </Button>
                                     </Box>
+
                                 }
                             />
+                            {/* <CardHeader
+                                className="requests-card__header"
+                                title={
+                                    <Box className="requests-header" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                        <Button size="small" className="view-all-button" sx={{ color: '#6366f1', fontWeight: 500, textTransform: 'none' }}>
+                                            view all →
+                                        </Button>
+                                    </Box>
+                                }
+                            /> */}
                             <CardContent className="medication-card__content" sx={{ p: 2 }}>
                                 {medicationSchedule.map((med, index) => (
                                     <Box
@@ -347,7 +353,7 @@ const DashboardOverview = () => {
                 </Grid>
 
                 {/* Right Column */}
-                <Grid item xs={12} md={4}>
+                <Grid item size={{ xs: 12, md: 4 }}>
                     <Box className="right-column" sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                         {/* Requests */}
                         <Card className="requests-card glass-card" sx={{ borderRadius: 4, boxShadow: 2 }}>
@@ -398,46 +404,57 @@ const DashboardOverview = () => {
                         <Card className="actions-card glass-card" sx={{ borderRadius: 4, boxShadow: 2 }}>
                             <CardHeader title={<Typography variant="h6" sx={{ fontWeight: 600 }}>Quick Actions</Typography>} />
                             <CardContent className="actions-card__content" sx={{ p: 2 }}>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={6}>
-                                        <Button className="action-button action-button--rose" fullWidth sx={{
-                                            bgcolor: 'linear-gradient(135deg, #f43f5e 0%, #fbbf24 100%)',
-                                            color: '#fff', borderRadius: 3, fontWeight: 600, py: 2, gap: 1, boxShadow: 2,
-                                            '&:hover': { bgcolor: '#f43f5e', opacity: 0.9 }, display: 'flex', flexDirection: 'column', alignItems: 'center',
-                                        }}>
-                                            <AlertTriangleIcon />
-                                            <Typography variant="caption">Report</Typography>
-                                        </Button>
+                                <Grid container spacing={1}>
+                                    <Grid item size={6}>
+                                        <Link to="/schoolnurse/vaccination-campaign/schedule" style={{ textDecoration: "none" }}>
+                                            <Button className="action-button action-button--rose" fullWidth sx={{
+                                                bgcolor: 'linear-gradient(135deg, #f43f5e 0%, #fbbf24 100%)',
+                                                color: '#fff', borderRadius: 3, fontWeight: 600, py: 2, gap: 1, boxShadow: 2,
+                                                '&:hover': { bgcolor: '#f43f5e', opacity: 0.9 }, display: 'flex', flexDirection: 'column', alignItems: 'center',
+                                            }}>
+                                                <VaccinesIcon />
+                                                <Typography variant="caption">Vaccination</Typography>
+                                            </Button>
+                                        </Link>
+
                                     </Grid>
-                                    <Grid item xs={6}>
-                                        <Button className="action-button action-button--emerald" fullWidth sx={{
-                                            bgcolor: 'linear-gradient(135deg, #10b981 0%, #06b6d4 100%)',
-                                            color: '#fff', borderRadius: 3, fontWeight: 600, py: 2, gap: 1, boxShadow: 2,
-                                            '&:hover': { bgcolor: '#10b981', opacity: 0.9 }, display: 'flex', flexDirection: 'column', alignItems: 'center',
-                                        }}>
-                                            <PillIcon />
-                                            <Typography variant="caption">Medication</Typography>
-                                        </Button>
+                                    <Grid item size={6}>
+                                        <Link to="/schoolnurse/health-check-campaign/schedule" style={{ textDecoration: "none" }}>
+                                            <Button className="action-button action-button--emerald" fullWidth sx={{
+                                                bgcolor: 'linear-gradient(135deg, #10b981 0%, #06b6d4 100%)',
+                                                color: '#fff', borderRadius: 3, fontWeight: 600, py: 2, gap: 1, boxShadow: 2,
+                                                '&:hover': { bgcolor: '#10b981', opacity: 0.9 }, display: 'flex', flexDirection: 'column', alignItems: 'center',
+                                            }}>
+                                                <PillIcon />
+                                                <Typography variant="caption">Health Check</Typography>
+                                            </Button>
+                                        </Link>
+
                                     </Grid>
-                                    <Grid item xs={6}>
-                                        <Button className="action-button action-button--blue" fullWidth sx={{
-                                            bgcolor: 'linear-gradient(135deg, #6366f1 0%, #60a5fa 100%)',
-                                            color: '#fff', borderRadius: 3, fontWeight: 600, py: 2, gap: 1, boxShadow: 2,
-                                            '&:hover': { bgcolor: '#6366f1', opacity: 0.9 }, display: 'flex', flexDirection: 'column', alignItems: 'center',
-                                        }}>
-                                            <UsersIcon />
-                                            <Typography variant="caption">Students</Typography>
-                                        </Button>
+                                    <Grid item size={6}>
+                                        <Link to="/schoolnurse/pupils-management" style={{ textDecoration: "none" }}>
+                                            <Button className="action-button action-button--blue" fullWidth sx={{
+                                                bgcolor: 'linear-gradient(135deg, #6366f1 0%, #60a5fa 100%)',
+                                                color: '#fff', borderRadius: 3, fontWeight: 600, py: 2, gap: 1, boxShadow: 2,
+                                                '&:hover': { bgcolor: '#6366f1', opacity: 0.9 }, display: 'flex', flexDirection: 'column', alignItems: 'center',
+                                            }}>
+                                                <UsersIcon />
+                                                <Typography variant="caption">Pupils</Typography>
+                                            </Button>
+                                        </Link>
+
                                     </Grid>
-                                    <Grid item xs={6}>
-                                        <Button className="action-button action-button--purple" fullWidth sx={{
-                                            bgcolor: 'linear-gradient(135deg, #a78bfa 0%, #6366f1 100%)',
-                                            color: '#fff', borderRadius: 3, fontWeight: 600, py: 2, gap: 1, boxShadow: 2,
-                                            '&:hover': { bgcolor: '#a78bfa', opacity: 0.9 }, display: 'flex', flexDirection: 'column', alignItems: 'center',
-                                        }}>
-                                            <CalendarIcon />
-                                            <Typography variant="caption">Schedule</Typography>
-                                        </Button>
+                                    <Grid item size={6}>
+                                        <Link to="/schoolnurse/profile" style={{ textDecoration: "none" }}>
+                                            <Button className="action-button action-button--purple" fullWidth sx={{
+                                                bgcolor: 'linear-gradient(135deg, #a78bfa 0%, #6366f1 100%)',
+                                                color: '#fff', borderRadius: 3, fontWeight: 600, py: 2, gap: 1, boxShadow: 2,
+                                                '&:hover': { bgcolor: '#a78bfa', opacity: 0.9 }, display: 'flex', flexDirection: 'column', alignItems: 'center',
+                                            }}>
+                                                <AssignmentIndIcon />
+                                                <Typography variant="caption">Profile</Typography>
+                                            </Button>
+                                        </Link>
                                     </Grid>
                                 </Grid>
                             </CardContent>
