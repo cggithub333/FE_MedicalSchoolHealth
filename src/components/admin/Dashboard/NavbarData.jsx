@@ -26,11 +26,11 @@ const NavbarData = [
     title: 'Profile',
     icon: <ProfileIcon />,
   },
-  {
-    segment: 'admin/notification',
-    title: 'Notification',
-    icon: <NotificationIcon />,
-  },
+  // {
+  //   segment: 'admin/notification',
+  //   title: 'Notification',
+  //   icon: <NotificationIcon />,
+  // },
   {
     kind: 'divider',
   },

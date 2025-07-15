@@ -9,7 +9,7 @@ const SchoolNurseDashboardRoutes = () => {
                 <Route index element={<Navigate to="dashboard" />} />
                 <Route path="dashboard" element={<SchoolNurseComponentPagePackages.DashboardHome />} />
                 <Route path="profile" element={<SchoolNurseComponentPagePackages.Profile />} />
-                <Route path="notification" element={<SchoolNurseComponentPagePackages.Notification />} />
+                {/* <Route path="notification" element={<SchoolNurseComponentPagePackages.Notification />} /> */}
 
                 <Route path="vaccination-campaign">
                     <Route path="schedule" element={<SchoolNurseComponentPagePackages.ScheduleVaccination />} />

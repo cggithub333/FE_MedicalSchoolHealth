@@ -13,7 +13,7 @@ const AdminDashboardRoutes = () => {
         <Route index element={<Navigate to="dashboard" />} /> {/* Navigate to dashboard right after login */}
         <Route path="dashboard" element={<AdminComponentPagePackages.DashboardHome />} />
         <Route path="profile" element={<AdminComponentPagePackages.Profile />} />
-        <Route path="notification" element={<AdminComponentPagePackages.Notification />} />
+        {/* <Route path="notification" element={<AdminComponentPagePackages.Notification />} /> */}
         {/* pupils-management */}
         <Route path={"pupils-management"} element={<AdminComponentPagePackages.PupilsManagement />} />
         <Route path={"medical-events"} element={<AdminComponentPagePackages.MedicalEvents />} />

@@ -342,8 +342,8 @@ const NewHealthCheckCampaign = () => {
                 <DialogContent>
                     <HealthCheckCampaignForm
                         onSuccess={() => {
-                            setCreateFormOpen(false)
-                            window.location.reload()
+                            setCreateFormOpen(false);
+                            refetch(); // Only refetch the campaign list, do not reload the page
                         }}
                         onCancel={() => setCreateFormOpen(false)}
                     />

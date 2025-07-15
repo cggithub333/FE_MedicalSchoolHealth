@@ -11,7 +11,7 @@ const ManagerDashboardRoutes = () => {
                 <Route index element={<Navigate to="dashboard" />} /> {/* Navigate to dashboard right after login */}
                 <Route path={"dashboard"} element={<ManagerComponentPagePackages.DashboardHome />} />
                 <Route path={"profile"} element={<ManagerComponentPagePackages.Profile />} />
-                <Route path={"notification"} element={<ManagerComponentPagePackages.Notification />} />
+                {/* <Route path={"notification"} element={<ManagerComponentPagePackages.Notification />} /> */}
                 {/* pupils-management */}
                 <Route path={"pupils-management"} element={<ManagerComponentPagePackages.PupilsManagement />} />
                 <Route path={"medical-events"} element={<ManagerComponentPagePackages.MedicalEvents />} />

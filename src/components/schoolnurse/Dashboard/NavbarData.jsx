@@ -31,11 +31,11 @@ const NavbarData = [
         title: "Profile",
         icon: <ProfileIcon />,
     },
-    {
-        segment: "schoolnurse/notification",
-        title: "Notification",
-        icon: <NotificationsActiveIcon />,
-    },
+    // {
+    //     segment: "schoolnurse/notification",
+    //     title: "Notification",
+    //     icon: <NotificationsActiveIcon />,
+    // },
     {
         kind: "divider",
     },
@@ -104,7 +104,7 @@ const NavbarData = [
     },
     {
         kind: "divider",
-    }, 
+    },
     {
         segment: 'schoolnurse/settings',
         title: 'Settings',

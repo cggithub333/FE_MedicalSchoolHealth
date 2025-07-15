@@ -1,5 +1,4 @@
 import DashboardHome from './main-contents/DashboardHome.jsx';
-import Notification from './main-contents/Notification.jsx';
 import Profile from './main-contents/Profile.jsx';
 
 import ScheduleVaccination from './vaccination-campaign/Schedule.jsx';

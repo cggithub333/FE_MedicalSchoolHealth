@@ -63,11 +63,11 @@ function ToolbarActionsUtility() {
             </IconButton> */}
 
             {/* Notification icon to the right of the search bar */}
-            <IconButton color="inherit" sx={{ mr: 1 }}>
+            {/* <IconButton color="inherit" sx={{ mr: 1 }}>
                 <Badge color="secondary" badgeContent={100}>
                     <NotificationsActiveIcon />
                 </Badge>
-            </IconButton>
+            </IconButton> */}
 
             {/* Home icon */}
             <Box component={Link} to="/homepage" sx={{ textDecoration: 'none', color: 'inherit' }}>
