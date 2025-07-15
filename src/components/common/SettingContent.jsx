@@ -274,7 +274,7 @@ const SettingContent = () => {
 
                 <Divider sx={{ my: 1 }} />
 
-                <ListItem
+                {/* <ListItem
                   sx={{
                     borderRadius: 1,
                     "&:hover": { backgroundColor: "#f5f5f5" },
@@ -289,7 +289,7 @@ const SettingContent = () => {
                   <IconButton edge="end">
                     <ChevronRight />
                   </IconButton>
-                </ListItem>
+                </ListItem> */}
               </List>
             </CardContent>
           </Card>
