@@ -62,7 +62,7 @@ const getStatusChip = (status) => {
   if (status === "APPROVED") {
     return (
       <Chip
-        label="Injected"
+        label="Approved"
         size="small"
         sx={{
           bgcolor: "success.main",
@@ -74,7 +74,7 @@ const getStatusChip = (status) => {
   } else if (status === "REJECTED") {
     return (
       <Chip
-        label="Injected"
+        label="Rejected"
         size="small"
         sx={{
           bgcolor: "error.main",
