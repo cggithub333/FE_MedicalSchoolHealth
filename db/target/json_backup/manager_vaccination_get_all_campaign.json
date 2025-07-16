@@ -1,0 +1,44 @@
+{
+    "getAllVaccinationCampaigns": [
+        {
+            "campaignId": 101,
+            "diseaseName": "Measles",
+            "vaccineName": "Measles Vaccine",
+            "stopDate": "2025-07-01",
+            "startDate": "2025-06-20",
+            "endDate": "2025-06-30",
+            "notes": "Annual measles vaccination campaign for all grades.",
+            "status": "Completed"
+        },
+        {
+            "campaignId": 102,
+            "diseaseName": "Mumps",
+            "vaccineName": "Mumps Vaccine",
+            "stopDate": "2025-08-01",
+            "startDate": "2025-07-15",
+            "endDate": "2025-07-25",
+            "notes": "Mumps vaccination campaign for grade 2.",
+            "status": "Completed"
+        },
+        {
+            "campaignId": 103,
+            "diseaseName": "Rubella",
+            "vaccineName": "Rubella Vaccine",
+            "stopDate": "2025-09-01",
+            "startDate": "2025-08-10",
+            "endDate": "2025-08-20",
+            "notes": "Rubella vaccination campaign for grade 3.",
+            "status": "Completed"
+        },
+        {
+            "campaignId": 104,
+            "diseaseName": "Hepatitis B",
+            "vaccineName": "Hepatitis B Vaccine",
+            "stopDate": "2025-10-01",
+            "startDate": "2025-09-15",
+            "endDate": "2025-09-25",
+            "notes": "Hepatitis B vaccination campaign for grade 4.",
+            "status": "Completed"
+        }
+    ]
+}

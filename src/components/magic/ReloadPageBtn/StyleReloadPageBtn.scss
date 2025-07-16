@@ -1,0 +1,44 @@
+
+.reload-button {
+
+  border-radius: 8px;
+  border: 0.1px #ddd solid;
+  box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+
+  // Hover effect:
+  &:hover {
+    background-color: #7bc8da;
+    color: #fff;
+    transform: scale(0.95);
+  }
+
+  &:hover &__icon {
+    transform: rotate(360deg);
+  }
+
+  &:hover &__letters {
+  }
+
+  // end hover effect:
+
+  &__wrapper {
+    display: flex;
+    align-items: center;
+    gap: 7px
+  }
+
+  &__letters {
+    font-size: 19px;
+    font-weight: 600;
+    transition: all 0.8s ease;
+  }
+
+  &__icon {
+    border-radius: 50%;
+    transition: all 0.8s ease;
+
+    .icon {
+    }
+  }
+}

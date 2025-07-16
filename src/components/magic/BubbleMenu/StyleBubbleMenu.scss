@@ -1,0 +1,144 @@
+html, body{
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+}
+
+/* fourinone styles */
+@keyframes open {
+	0%{
+		top: 0px;
+		left: 0px;
+		transform: scale(1);
+	}
+	20%{
+		top: -20px;
+		left: -20px;
+		transform: scale(.8);
+	}
+	45%{
+		top: -20px;
+		left: 20px;
+	}
+	68%{
+		top: 20px;
+		left: 20px;
+	}
+	85%{
+		top: 20px;
+		left: -20px;
+		transform: scale(.8);
+	}
+	100%{
+		top: 0px;
+		left: 0px;
+		transform: scale(1);
+	}
+}
+@keyframes close {
+	0%{
+		transform: scale(1);
+	}
+	
+	50%{
+		transform: scale(4);
+	}
+	
+	100%{
+		transform: scale(1);
+	}
+}
+
+
+.fourinone{
+	position: relative;
+    top: 100px;
+	width: 50px;
+	height: 50px;
+	margin: 80px auto;
+}
+.fourinone .trigger{
+	background: #5e94e7;
+	width: 50px;
+	height: 50px;
+	text-align: center;
+	line-height: 50px;
+	font-size: 20px;
+	color: #fff;
+	border: 1px solid #4383e3;
+	border-radius: 25px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	transition: background .2s;
+	cursor: pointer;
+	animation: close .5s;
+	box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.25);
+}
+.fourinone .trigger:hover{
+	background: #578ad6;
+}
+
+.fourinone.open .trigger{
+	animation: open 1s;
+}
+
+
+.fourinone .fourinone-btn{
+	width: 80px;
+	height: 80px;
+	display: block;
+	background: #cb6f6f;
+	background: #7ab77a;
+	text-align: center;
+	line-height: 80px;
+	font-size: 35px;
+	color: #fff;
+	border: 1px solid #79c079;
+	border-radius: 40px;
+	position: absolute;
+	top : -15px;
+	left: -15px;
+	transform: scale(0);
+	opacity: 0;
+	box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.25);
+	transition: all .5s cubic-bezier(0.31,-0.96, 0.58, 1.71);
+}
+
+.fourinone.open .fourinone-btn{
+	transform: scale(1);
+	opacity: 1;
+}
+
+.fourinone.open .fourinone-btn:nth-child(1){
+	top : -15px;
+	left: -200px;
+	transition-delay: 0s;
+}
+
+.fourinone.open .fourinone-btn:nth-child(2){
+	top : -15px;
+	left: -100px;
+	transition-delay: .2s;
+}
+.fourinone.open .fourinone-btn:nth-child(3){
+	top : -15px;
+	left: 68px;
+	transition-delay: .4s;
+}
+.fourinone.open .fourinone-btn:nth-child(4){
+	top : -15px;
+	left: 170px;
+	transition-delay: .6s;
+}
+.fourinone .fourinone-btn:hover{
+	background: #6cab6c;
+}
+
+.fourinone {
+	position: absolute;
+	left: 56%;
+	top: 75%;
+
+}

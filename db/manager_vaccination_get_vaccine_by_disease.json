@@ -1,0 +1,59 @@
+{
+    "GetVaccineByDisease": [
+        {
+            "diseaseId": 1,
+            "diseaseName": "Measles",
+            "doseQuantity": 2,
+            "vaccines": [
+                {
+                    "vaccineId": 101,
+                    "name": "Measles Vaccine"
+                }
+            ]
+        },
+        {
+            "diseaseId": 2,
+            "diseaseName": "Mumps",
+            "doseQuantity": 2,
+            "vaccines": [
+                {
+                    "vaccineId": 102,
+                    "name": "Mumps Vaccine"
+                }
+            ]
+        },
+        {
+            "diseaseId": 3,
+            "diseaseName": "Rubella",
+            "doseQuantity": 1,
+            "vaccines": [
+                {
+                    "vaccineId": 103,
+                    "name": "Rubella Vaccine"
+                }
+            ]
+        },
+        {
+            "diseaseId": 4,
+            "diseaseName": "Hepatitis B",
+            "doseQuantity": 3,
+            "vaccines": [
+                {
+                    "vaccineId": 104,
+                    "name": "Hepatitis B Vaccine"
+                }
+            ]
+        },
+        {
+            "diseaseId": 5,
+            "diseaseName": "Diphtheria",
+            "doseQuantity": 3,
+            "vaccines": [
+                {
+                    "vaccineId": 105,
+                    "name": "Diphtheria Vaccine"
+                }
+            ]
+        }
+    ]
+}

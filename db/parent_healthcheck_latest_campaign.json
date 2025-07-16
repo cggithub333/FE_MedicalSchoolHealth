@@ -1,0 +1,15 @@
+
+{
+  "latest_campaign": [
+    {
+      "id": 12,
+      "address": "123 Health St.",
+      "startExaminationDate": "2025-06-02",
+      "endExaminationDate": "2025-06-10",
+      "description": "Annual health check for grade 1-5.",
+      "created_at": "2025-04-01T10:00:00",
+      "status": "Published",
+      "isActive": true
+    }
+  ]
+}

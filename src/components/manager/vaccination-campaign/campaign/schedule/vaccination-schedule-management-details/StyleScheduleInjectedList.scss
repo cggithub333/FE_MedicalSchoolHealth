@@ -1,0 +1,431 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+.vaccine-injection-root {
+  font-family: 'Roboto', Arial, Helvetica, sans-serif;
+  background: #f8faff;
+  padding: 40px 0 32px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.vaccine-injection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background: #fff;
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 8px 32px 0 rgba(30, 136, 229, 0.10);
+  padding: 32px 8px 18px 36px;
+  width: 100%;
+  max-width: 1000px;
+  margin-bottom: 0;
+}
+
+.vaccine-injection-header h2 {
+  font-size: 1.7rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: #222b45;
+}
+
+.vaccine-injection-meta {
+  color: #7b809a;
+  font-size: 1.08rem;
+  margin-bottom: 6px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.vaccine-injection-header-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.mark-all-btn,
+.export-btn {
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 26px;
+  font-size: 1.08rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.mark-all-btn {
+  background: #f5f6fa;
+  color: #1976d2;
+}
+
+.export-btn {
+  background: #5c6bc0;
+  color: #fff;
+}
+
+.export-btn:hover {
+  background: #3949ab;
+}
+
+.vaccine-injection-progress {
+  background: #fff;
+  width: 100%;
+  max-width: 1000px;
+  padding: 18px 8px 30px 36px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0 0 0 0;
+  margin-bottom: 0;
+}
+
+.progress-bar {
+  background: #e3e8fd;
+  border-radius: 6px;
+  width: 100%;
+  height: 10px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.progress-bar-fill {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
+  border-radius: 6px;
+  transition: width 0.3s;
+}
+
+.progress-stats {
+  display: flex;
+  gap: 24px;
+  font-size: 1.13rem;
+  font-weight: 700;
+  color: #263238;
+}
+
+.completed {
+  color: #43a047;
+}
+
+.remaining {
+  color: #fbc02d;
+}
+
+.total {
+  color: #1976d2;
+}
+
+.vaccine-injection-table {
+  font-family: 'Roboto', Arial, Helvetica, sans-serif;
+  font-size: 1.09rem;
+  color: #263238;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px 0 rgba(30, 136, 229, 0.10);
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  margin-bottom: 0;
+  border: 1px solid #e3e8fd;
+}
+
+// Table header columns
+.vaccine-injection-table th {
+  background: #e3e8fd;
+  color: #3949ab;
+  font-size: 1.12rem;
+  font-weight: 900;
+  border-bottom: 2px solid #c5cae9;
+  letter-spacing: 0.5px;
+  padding: 18px 14px;
+  text-align: center;
+}
+
+.vaccine-injection-table th.status-th {
+  background: #f5f7fa;
+  color: #388e3c;
+  font-weight: 700;
+  font-size: 17px;
+  border-top-left-radius: 12px;
+}
+
+.vaccine-injection-table th.info-th,
+.vaccine-injection-table th.grade-th,
+.vaccine-injection-table th.time-th,
+.vaccine-injection-table th.notes-th {
+  background: #f5f7fa;
+  color: #1976d2;
+  font-weight: 700;
+  font-size: 17px;
+}
+
+.vaccine-injection-table th.details-th {
+  background: #f5f7fa;
+  color: #1976d2;
+  font-weight: 700;
+  font-size: 17px;
+  border-top-right-radius: 12px;
+  text-align: center;
+}
+
+// Table body columns
+.grade-td {
+  text-align: center;
+  font-weight: 500;
+  color: #1976d2;
+  font-size: 16px;
+}
+
+.notes-td {
+  text-align: center;
+}
+
+.details-td {
+  text-align: center;
+}
+
+.vaccine-injection-table td {
+  padding: 16px 14px;
+  font-size: 1.08rem;
+  border-bottom: 1px solid #f0f4fa;
+  background: #fff;
+  transition: background 0.2s;
+  position: relative;
+  vertical-align: middle;
+}
+
+.vaccine-injection-table tr.data-row {
+  transition: background 0.2s;
+}
+
+.vaccine-injection-table tr.data-row:nth-child(even) td {
+  background: #f9fbfd;
+}
+
+.vaccine-injection-table tr.data-row td {
+  vertical-align: middle;
+}
+
+.vaccine-injection-table tr:hover:not(.completed-row) td {
+  background: #e3e8fd;
+}
+
+.completed-row td {
+  background: #e8f5e9 !important;
+  color: #388e3c;
+}
+
+.avatar-green {
+  background: #43a047;
+}
+
+.avatar-yellow {
+  background: #fbc02d;
+  color: #222;
+}
+
+.avatar-blue {
+  background: #1976d2;
+}
+
+.avatar-gray {
+  background: #bdbdbd;
+}
+
+.avatar-teal {
+  background: #26a69a;
+}
+
+.avatar-orange {
+  background: #ffa726;
+  color: #222;
+}
+
+.student-info {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.student-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+// Student avatar
+.student-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid #e3eafc;
+  margin-right: 10px;
+  object-fit: cover;
+  background: #fff;
+}
+
+.student-name {
+  font-weight: 600;
+  font-size: 16px;
+  color: #222;
+}
+
+.student-id {
+  font-size: 13px;
+  color: #888;
+}
+
+.dose-badge {
+  font-size: 1.01rem;
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 6px 16px;
+  box-shadow: 0 1px 4px 0 rgba(30, 136, 229, 0.08);
+}
+
+.dose-1stdose {
+  background: #43a047;
+}
+
+.dose-2nddose {
+  background: #fbc02d;
+  color: #222;
+}
+
+.dose-booster {
+  background: #26a69a;
+}
+
+.alert-note {
+  color: #e53935;
+  font-weight: 700;
+}
+
+.warn-note {
+  color: #fbc02d;
+  font-weight: 700;
+}
+
+.time-completed {
+  text-align: center;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.time-completed.completed {
+  color: #43a047;
+}
+
+.vaccine-injection-footer {
+  display: flex;
+  gap: 16px;
+  margin-top: 22px;
+  width: 100%;
+  max-width: 1050px;
+  justify-content: flex-end;
+}
+
+.print-btn,
+.update-btn,
+.save-btn,
+.complete-btn {
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 26px;
+  font-size: 1.08rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.print-btn,
+.update-btn {
+  background: #f5f6fa;
+  color: #1976d2;
+}
+
+.save-btn {
+  background: #43a047;
+  color: #fff;
+}
+
+.complete-btn {
+  background: #5c6bc0;
+  color: #fff;
+}
+
+.complete-btn:hover {
+  background: #3949ab;
+}
+
+.vaccine-injection-header-container {
+  width: 90%;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 32px 0 rgba(30, 136, 229, 0.10);
+  border-radius: 18px;
+  background: #fff;
+  padding: 32px 36px 18px 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 24px;
+  box-sizing: border-box;
+  border-bottom: 2px solid #e3e8fd;
+}
+
+.vaccine-injection-alerts {
+  width: 90%;
+  max-width: 1000px;
+  margin-top: 10px;
+  padding: 10px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(30, 136, 229, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 1.08rem;
+  color: #222b45;
+  font-weight: 500;
+  line-height: 1.5;
+  position: relative;
+  z-index: 1;
+  border: 1px solid #e3e8fd;
+  margin-bottom: 24px;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #f8faff, #e3e8fd);
+}
+
+.details-btn {
+  background: linear-gradient(90deg, #43a047 60%, #388e3c 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 7px 22px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(67, 160, 71, 0.10);
+  transition: background 0.2s, box-shadow 0.2s;
+  outline: none;
+  letter-spacing: 1px;
+  margin: 0 auto;
+  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.details-icon {
+  vertical-align: middle;
+  margin-right: 6px;
+  font-size: 20px !important;
+}
+
+.details-btn:hover {
+  background: #2e7031;
+}
