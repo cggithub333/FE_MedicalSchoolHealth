@@ -30,7 +30,7 @@ const Surveys = () => {
         <Grid item size={{ xs: 11 }}>
           {(healthCampaignInfo === null || healthCampaignInfo.length === 0 || campaignLoading) && noAvailableSurveys()}
           <Grid item size={{ xs: 11 }}>
-            {healthCampaignInfo && healthCampaignInfo.length > 0 && (
+            {(!(healthCampaignInfo === null || healthCampaignInfo.length === 0 || campaignLoading)) && (
               <>
                 {header()}
                 <Grid container>
