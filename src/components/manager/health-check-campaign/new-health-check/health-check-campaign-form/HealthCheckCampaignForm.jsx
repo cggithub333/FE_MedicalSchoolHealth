@@ -147,8 +147,8 @@ const HealthCheckCampaignForm = ({ onSuccess, onCancel }) => {
         }
 
         try {
-            // Get diseaseIds as an array of IDs only
-            const diseaseIds = form.consentOptions
+            // Get diseaseIds as an array of IDs only from selectedConsents
+            const diseaseIds = form.selectedConsents
                 .map(name => genitalDiseases.find(d => d.name === name)?.diseaseId)
                 .filter(id => id !== undefined && id !== null);
 

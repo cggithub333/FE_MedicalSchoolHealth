@@ -271,6 +271,18 @@ const NewHealthCheckCampaign = () => {
                                 <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Deadline</Typography>
                                 <Typography variant="body2">{formatDate(selectedCampaign.deadlineDate)}</Typography>
                             </Box>
+                            {/* Diseases Section */}
+                            {Array.isArray(selectedCampaign.diseases) && selectedCampaign.diseases.length > 0 && (
+                                <Box sx={{ gridColumn: { xs: '1', sm: '1 / span 2' }, mt: 2 }}>
+                                    <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>Diseases</Typography>
+                                    {selectedCampaign.diseases.map((disease) => (
+                                        <Paper key={disease.diseaseId} sx={{ p: 2, mb: 1, background: '#f7fafd', borderRadius: 2 }}>
+                                            <Typography variant="body1" sx={{ fontWeight: 600 }}>{disease.name}</Typography>
+                                            <Typography variant="body2" sx={{ color: 'text.secondary' }}>{disease.description}</Typography>
+                                        </Paper>
+                                    ))}
+                                </Box>
+                            )}
                         </Box>
                     )}
                 </DialogContent>
