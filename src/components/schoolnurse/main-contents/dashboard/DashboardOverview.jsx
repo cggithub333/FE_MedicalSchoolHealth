@@ -198,7 +198,7 @@ const DashboardOverview = () => {
                                 borderRadius: 4,
                                 boxShadow: 3,
                                 background: `var(--stat-card-gradient-${stat.color})`,
-                                color: "#fff",
+                                color: "#1e293b",
                                 transition: "transform 0.2s cubic-bezier(.4,2,.6,1)",
                                 '&:hover': { transform: 'translateY(-6px) scale(1.03)', boxShadow: 6 },
                             }}
@@ -222,138 +222,145 @@ const DashboardOverview = () => {
             <Grid container spacing={3} className="main-grid" sx={{ width: "100%" }}>
                 {/* Left Column - Recent Medical Events & Medication Schedule */}
                 <Grid item size={{ xs: 12, md: 8 }}>
-                    <Box className="left-column" sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                        {/* Recent Medical Events */}
-                        <Card className="events-card glass-card" sx={{ borderRadius: 4, boxShadow: 2 }}>
-                            <CardHeader
-                                className="events-card__header"
-                                title={
-                                    <Box className="card-title" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                        <Box className="card-title__icon card-title__icon--rose" sx={{ bgcolor: 'rgba(244,63,94,0.12)', borderRadius: '50%', p: 1 }}>
-                                            <AlertTriangleIcon color="error" />
-                                        </Box>
-                                        <Typography variant="h6" sx={{ fontWeight: 600 }}>Recent Medical Events</Typography>
-                                        <Button size="small" className="view-all-button" sx={{ color: '#6366f1', fontWeight: 500, textTransform: 'none', display: 'flex', position: 'absolute', right: 16, top: 16 }}>
-                                            view all →
-                                        </Button>
-                                    </Box>
-                                }
-                            />
-                            <CardContent className="events-card__content" sx={{ p: 2 }}>
-                                {recentMedicalEvents.map((event, index) => (
-                                    <Box
-                                        key={event.id}
-                                        className={`event-item ${index !== recentMedicalEvents.length - 1 ? "event-item--bordered" : ""}`}
-                                        sx={{
-                                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                            py: 1.5, px: 1, borderBottom: index !== recentMedicalEvents.length - 1 ? '1px solid #f3f4f6' : 'none',
-                                            transition: 'background 0.2s',
-                                            '&:hover': { background: 'rgba(244,63,94,0.04)' },
-                                        }}
-                                    >
-                                        <Box className="event-item__left" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                            <Avatar className={`event-avatar event-avatar--${event.color}`}
-                                                sx={{ bgcolor: `var(--avatar-${event.color})`, color: '#fff', fontWeight: 600 }}>
-                                                {event.avatar}
-                                            </Avatar>
-                                            <Box className="event-item__info">
-                                                <Typography variant="body2" className="event-item__name" sx={{ fontWeight: 500 }}>{event.pupilName}</Typography>
-                                                <Typography variant="caption" className="event-item__injury" sx={{ color: '#64748b' }}>{event.injury}</Typography>
-                                            </Box>
-                                        </Box>
-                                        <Box className="event-item__right" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                            <Box className="event-item__details" sx={{ textAlign: 'right' }}>
-                                                <Typography variant="caption" sx={{ color: '#64748b' }}>{event.grade}</Typography>
-                                                <Typography variant="caption" className="event-item__time" sx={{ color: '#64748b' }}>{event.dateTime}</Typography>
-                                            </Box>
-                                            <Box className="event-item__badges" sx={{ display: 'flex', gap: 1 }}>
-                                                <Chip size="small" label={event.status} {...getStatusChipProps(event.status)} />
-                                                <Chip size="small" label={event.severity} {...getSeverityChipProps(event.severity)} />
-                                            </Box>
-                                        </Box>
-                                    </Box>
-                                ))}
-                            </CardContent>
-                        </Card>
-
-                        {/* Today's Medication Schedule */}
-                        <Card className="medication-card glass-card" sx={{ borderRadius: 4, boxShadow: 2 }}>
-                            <CardHeader
-                                className="medication-card__header"
-                                title={
-                                    <Box className="card-title" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                        <Box className="card-title__icon card-title__icon--emerald" sx={{ bgcolor: 'rgba(16,185,129,0.12)', borderRadius: '50%', p: 1 }}>
-                                            <PillIcon color="success" />
-                                        </Box>
-                                        <Typography variant="h6" sx={{ fontWeight: 600 }}>Today's Prescription Schedule</Typography>
-                                        <Button size="small" className="view-all-button" sx={{ color: '#6366f1', fontWeight: 500, textTransform: 'none', display: 'flex', position: 'absolute', right: 16, top: 16 }}>
-                                            view all →
-                                        </Button>
-                                    </Box>
-
-                                }
-                            />
-                            {/* <CardHeader
-                                className="requests-card__header"
-                                title={
-                                    <Box className="requests-header" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                        <Button size="small" className="view-all-button" sx={{ color: '#6366f1', fontWeight: 500, textTransform: 'none' }}>
-                                            view all →
-                                        </Button>
-                                    </Box>
-                                }
-                            /> */}
-                            <CardContent className="medication-card__content" sx={{ p: 2 }}>
-                                {medicationSchedule.map((med, index) => (
-                                    <Box
-                                        key={med.id}
-                                        className={`medication-item ${index !== medicationSchedule.length - 1 ? "medication-item--bordered" : ""} ${med.urgent ? "medication-item--urgent" : ""}`}
-                                        sx={{
-                                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                            py: 1.5, px: 1, borderBottom: index !== medicationSchedule.length - 1 ? '1px solid #f3f4f6' : 'none',
-                                            background: med.urgent ? 'linear-gradient(90deg, #fef9c3 0%, #f0fdfa 100%)' : 'none',
-                                            transition: 'background 0.2s',
-                                            '&:hover': { background: 'rgba(16,185,129,0.04)' },
-                                        }}
-                                    >
-                                        <Box className="medication-item__left" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                            <Avatar className={`medication-avatar medication-avatar--${med.color}`}
-                                                sx={{ bgcolor: `var(--avatar-${med.color})`, color: '#fff', fontWeight: 600 }}>
-                                                {med.avatar}
-                                            </Avatar>
-                                            <Box className="medication-item__info">
-                                                <Box className="medication-item__name-row" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                                    <Typography variant="body2" className="medication-item__name" sx={{ fontWeight: 500 }}>{med.pupilName}</Typography>
-                                                    {med.urgent && <ClockIcon className="urgent-icon" color="warning" fontSize="small" />}
+                    <Grid item size={{ xs: 12 }}>
+                        <Box className="left-column" sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                            {/* Recent Medical Events */}
+                            <Grid item size={{ xs: 12 }}>
+                                <Card className="events-card glass-card" sx={{ borderRadius: 4, boxShadow: 2 }}>
+                                    <CardHeader
+                                        className="events-card__header"
+                                        title={
+                                            <Box className="card-title" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                <Box className="card-title__icon card-title__icon--rose" sx={{ bgcolor: 'rgba(244,63,94,0.12)', borderRadius: '50%', p: 1 }}>
+                                                    <AlertTriangleIcon color="error" />
                                                 </Box>
-                                                <Typography variant="caption" className="medication-item__details" sx={{ color: '#64748b' }}>
-                                                    {med.medication} - {med.dosage}
-                                                </Typography>
+                                                <Typography variant="h6" sx={{ fontWeight: 600 }}>Recent Medical Events</Typography>
+
+                                                <Link to="/schoolnurse/medical-events" style={{ textDecoration: "none" }}>
+                                                    <Button size="small" className="view-all-button" sx={{ color: '#6366f1', fontWeight: 500, textTransform: 'none', display: 'flex', position: 'absolute', right: 16, top: 16 }}>
+                                                        view all →
+                                                    </Button>
+                                                </Link>
                                             </Box>
+                                        }
+                                    />
+                                    <Grid item size={{ xs: 12 }}>
+                                        <CardContent className="events-card__content" sx={{ p: 2 }}>
+                                            {recentMedicalEvents.map((event, index) => (
+                                                <Box
+                                                    key={event.id}
+                                                    className={`event-item ${index !== recentMedicalEvents.length - 1 ? "event-item--bordered" : ""}`}
+                                                    sx={{
+                                                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                                        py: 1.5, px: 1, borderBottom: index !== recentMedicalEvents.length - 1 ? '1px solid #f3f4f6' : 'none',
+                                                        transition: 'background 0.2s',
+                                                        '&:hover': { background: 'rgba(244,63,94,0.04)' },
+                                                    }}
+                                                >
+                                                    <Grid item size={{ xs: 5 }}>
+                                                        <Box className="event-item__left" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                                            <Avatar className={`event-avatar event-avatar--${event.color}`}
+                                                                sx={{ bgcolor: `var(--avatar-${event.color})`, color: '#fff', fontWeight: 600 }}>
+                                                                {event.avatar}
+                                                            </Avatar>
+                                                            <Box className="event-item__info">
+                                                                <Typography variant="body2" className="event-item__name" sx={{ fontWeight: 500 }}>{event.pupilName}</Typography>
+                                                                <Typography variant="caption" className="event-item__injury" sx={{ color: '#64748b' }}>{event.injury}</Typography>
+                                                            </Box>
+                                                        </Box>
+                                                    </Grid>
+                                                    <Grid item size={{ xs: 5 }}>
+                                                        <Box className="event-item__left" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                                            <Box className="event-item__details" >
+                                                                <Typography variant="caption" sx={{ color: '#64748b' }}>{event.grade}</Typography>
+                                                                <Typography variant="caption" className="event-item__time" sx={{ color: '#64748b' }}>{event.dateTime}</Typography>
+                                                            </Box>
+                                                        </Box>
+                                                    </Grid>
+                                                    <Grid item size={{ xs: 2 }} >
+                                                        <Box className="event-item__right" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+
+                                                            <Box className="event-item__badges" sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                                                                <Chip size="small" label={event.severity} {...getSeverityChipProps(event.severity)} />
+                                                            </Box>
+                                                        </Box>
+                                                    </Grid>
+                                                </Box>
+                                            ))}
+                                        </CardContent>
+                                    </Grid>
+                                </Card>
+                            </Grid>
+
+                            {/* Today's Medication Schedule */}
+                            <Card className="medication-card glass-card" sx={{ borderRadius: 4, boxShadow: 2 }}>
+                                <CardHeader
+                                    className="medication-card__header"
+                                    title={
+                                        <Box className="card-title" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                            <Box className="card-title__icon card-title__icon--emerald" sx={{ bgcolor: 'rgba(16,185,129,0.12)', borderRadius: '50%', p: 1 }}>
+                                                <PillIcon color="success" />
+                                            </Box>
+                                            <Typography variant="h6" sx={{ fontWeight: 600 }}>Today's Prescription Schedule</Typography>
+                                            <Link to="/schoolnurse/prescription" style={{ textDecoration: "none" }}>
+                                                <Button size="small" className="view-all-button" sx={{ color: '#6366f1', fontWeight: 500, textTransform: 'none', display: 'flex', position: 'absolute', right: 16, top: 16 }}>
+                                                    view all →
+                                                </Button>
+                                            </Link>
                                         </Box>
-                                        <Box className="medication-item__right" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                            <Box className="medication-item__time-info" sx={{ textAlign: 'right' }}>
-                                                <Typography variant="body2" className="medication-item__time" sx={{ color: '#0f172a', fontWeight: 600 }}>{med.time}</Typography>
-                                                {med.urgent && (
-                                                    <Typography variant="caption" className="medication-item__urgent-text" sx={{ color: '#f59e42', fontWeight: 500 }}>
-                                                        Due soon
+
+                                    }
+                                />
+
+                                <CardContent className="medication-card__content" sx={{ p: 2 }}>
+                                    {medicationSchedule.map((med, index) => (
+                                        <Box
+                                            key={med.id}
+                                            className={`medication-item ${index !== medicationSchedule.length - 1 ? "medication-item--bordered" : ""} ${med.urgent ? "medication-item--urgent" : ""}`}
+                                            sx={{
+                                                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                                py: 1.5, px: 1, borderBottom: index !== medicationSchedule.length - 1 ? '1px solid #f3f4f6' : 'none',
+                                                background: med.urgent ? 'linear-gradient(90deg, #fef9c3 0%, #f0fdfa 100%)' : 'none',
+                                                transition: 'background 0.2s',
+                                                '&:hover': { background: 'rgba(16,185,129,0.04)' },
+                                            }}
+                                        >
+                                            <Box className="medication-item__left" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                                <Avatar className={`medication-avatar medication-avatar--${med.color}`}
+                                                    sx={{ bgcolor: `var(--avatar-${med.color})`, color: '#fff', fontWeight: 600 }}>
+                                                    {med.avatar}
+                                                </Avatar>
+                                                <Box className="medication-item__info">
+                                                    <Box className="medication-item__name-row" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                        <Typography variant="body2" className="medication-item__name" sx={{ fontWeight: 500 }}>{med.pupilName}</Typography>
+                                                        {med.urgent && <ClockIcon className="urgent-icon" color="warning" fontSize="small" />}
+                                                    </Box>
+                                                    <Typography variant="caption" className="medication-item__details" sx={{ color: '#64748b' }}>
+                                                        {med.medication} - {med.dosage}
                                                     </Typography>
-                                                )}
+                                                </Box>
                                             </Box>
-                                            <Button size="small" className="medication-button" {...getButtonProps(med.status)}
-                                                sx={{ borderRadius: 2, fontWeight: 600, px: 2, boxShadow: 1 }}>
-                                                {med.status === "Given" ? "Given" : med.status === "Pending" ? "Give" : "Active"}
-                                            </Button>
+                                            <Box className="medication-item__right" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                                <Box className="medication-item__time-info" sx={{ textAlign: 'right' }}>
+                                                    <Typography variant="body2" className="medication-item__time" sx={{ color: '#0f172a', fontWeight: 600 }}>{med.time}</Typography>
+                                                    {med.urgent && (
+                                                        <Typography variant="caption" className="medication-item__urgent-text" sx={{ color: '#f59e42', fontWeight: 500 }}>
+                                                            Due soon
+                                                        </Typography>
+                                                    )}
+                                                </Box>
+
+                                            </Box>
                                         </Box>
-                                    </Box>
-                                ))}
-                            </CardContent>
-                        </Card>
-                    </Box>
-                </Grid>
+                                    ))}
+                                </CardContent>
+                            </Card>
+                        </Box>
+                    </Grid >
+                </Grid >
 
                 {/* Right Column */}
-                <Grid item size={{ xs: 12, md: 4 }}>
+                < Grid item size={{ xs: 12, md: 4 }}>
                     <Box className="right-column" sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                         {/* Requests */}
                         <Card className="requests-card glass-card" sx={{ borderRadius: 4, boxShadow: 2 }}>
@@ -362,9 +369,11 @@ const DashboardOverview = () => {
                                 title={
                                     <Box className="requests-header" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                         <Typography variant="h6" sx={{ fontWeight: 600 }}>Requests</Typography>
-                                        <Button size="small" className="view-all-button" sx={{ color: '#6366f1', fontWeight: 500, textTransform: 'none' }}>
-                                            view all →
-                                        </Button>
+                                        <Link to="/schoolnurse/prescription/prescription-requests" style={{ textDecoration: "none" }}>
+                                            <Button size="small" className="view-all-button" sx={{ color: '#6366f1', fontWeight: 500, textTransform: 'none', display: 'flex', position: 'absolute', right: 16, top: 16 }}>
+                                                view all →
+                                            </Button>
+                                        </Link>
                                     </Box>
                                 }
                             />
@@ -445,14 +454,14 @@ const DashboardOverview = () => {
 
                                     </Grid>
                                     <Grid item size={6}>
-                                        <Link to="/schoolnurse/profile" style={{ textDecoration: "none" }}>
+                                        <Link to="/schoolnurse/medical-events" style={{ textDecoration: "none" }}>
                                             <Button className="action-button action-button--purple" fullWidth sx={{
                                                 bgcolor: 'linear-gradient(135deg, #a78bfa 0%, #6366f1 100%)',
                                                 color: '#fff', borderRadius: 3, fontWeight: 600, py: 2, gap: 1, boxShadow: 2,
                                                 '&:hover': { bgcolor: '#a78bfa', opacity: 0.9 }, display: 'flex', flexDirection: 'column', alignItems: 'center',
                                             }}>
                                                 <AssignmentIndIcon />
-                                                <Typography variant="caption">Profile</Typography>
+                                                <Typography variant="caption">New Medical Event</Typography>
                                             </Button>
                                         </Link>
                                     </Grid>
@@ -460,9 +469,9 @@ const DashboardOverview = () => {
                             </CardContent>
                         </Card>
                     </Box>
-                </Grid>
-            </Grid>
-        </Box>
+                </Grid >
+            </Grid >
+        </Box >
     )
 }
 
