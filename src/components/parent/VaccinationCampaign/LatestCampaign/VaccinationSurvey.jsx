@@ -196,6 +196,22 @@ const VaccinationSurvey = () => {
     )
   }
 
+  /*
+  const doubleVaccinationSurveys = (vaccinationSurveys) => {
+    vaccinationSurveys = vaccinationSurveys || [];
+    return vaccinationSurveys.reduce((acc, survey) => {
+
+      acc.push(survey);
+      acc.push(survey);
+      acc.push(survey);
+      acc.push(survey); // remember to make key as index for avoid duplicate key error in React when rendering
+
+      return acc;
+    }, [])
+  }
+   */
+
+
   return (
     <Container maxWidth="lg" sx={{ py: 3 }}>
       {/* Header */}
@@ -207,9 +223,9 @@ const VaccinationSurvey = () => {
       </Box>
 
       {/* Survey Cards Grid */}
-      <Grid container spacing={"100px"}>
-        {vaccinationSurveys.map((form) => (
-          <Grid item size={{ xs: 12, md: 6, lg: 4 }} key={form.consentFormId}>
+      <Grid container spacing={"100px"} justifyContent="center" marginTop={'50px'}>
+        {(vaccinationSurveys || []).map((form, idx) => (
+          <Grid item size={{ xs: 12, md: 6, lg: 4 }} key={idx}>
             <Card
               sx={{
                 cursor: "pointer",
@@ -282,7 +298,7 @@ const VaccinationSurvey = () => {
       </Grid>
 
       {/* No Data State */}
-      {vaccinationSurveys.length === 0 && (
+      {(vaccinationSurveys || []).length === 0 && (
         <Card>
           <CardContent sx={{ textAlign: "center", py: 6 }}>
             <Assignment sx={{ fontSize: 64, color: "text.secondary", mb: 2 }} />

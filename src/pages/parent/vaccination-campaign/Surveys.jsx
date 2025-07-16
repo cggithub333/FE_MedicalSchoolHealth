@@ -3,13 +3,12 @@ import { Grid } from '@mui/material';
 import CustomTittle from '@components/magic/CustomTittle/CustomTitle';
 import Breadcrumbs from '@components/magic/Breadcrumb/CustomBreadcrumb';
 
-import chooseChildImg from  '@assets/images/instruct_choose_child.png';
 import VaccinationSurvey from '@components/parent/VaccinationCampaign/LatestCampaign/VaccinationSurvey';
 
 const Surveys = () => {
   
   return (
-    <div style={{ background: "#e6f8f9", width: "100%", height: "100vh" }}>
+    <div style={{ background: "#e6f8f9", width: "100%", height: "100vh", paddingBottom: "80px" }}>
       <Grid container>
         <Grid item size={{ xs: 6 }}>
           <Breadcrumbs breadcrumbPairs={breadcrumbPairs} />
@@ -20,8 +19,8 @@ const Surveys = () => {
           <CustomTittle title={"Vaccination Surveys"} />
         </Grid>
       </Grid>
-      <Grid container justifyContent={'center'}>
-        <Grid item size={{ xs: 11 }}>
+      <Grid container  style={{ background: "#e6f8f9", paddingBottom: "80px"}}>
+        <Grid item size={{ xs: 11 }} style={{ display: 'flex', justifyContent: 'center' }}>
           <VaccinationSurvey />
         </Grid>
       </Grid>
