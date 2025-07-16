@@ -1,7 +1,7 @@
 "use client"
 
-import usePupils from "../../../hooks/parent/usePupils";
-import useHealthCheckHistoryByPupilIdSchoolYear from "../../../hooks/parent/health-check/useHealthCheckHistoryByPupilId-SchoolYear";
+import usePupils from "@hooks/parent/usePupils";
+import useHealthCheckHistoryByPupilIdSchoolYear from "@hooks/parent/health-check/useHealthCheckHistoryByPupilId-SchoolYear";
 import { useState, useEffect } from "react"
 import {
   Card,
