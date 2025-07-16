@@ -99,10 +99,13 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
         musculoskeletalSystem: notes['musculoskeletalSystem'] || '',
         neurologyAndPsychiatry: notes['neurologyAndPsychiatry'] || '',
         additionalNotes: notes['conclusion'] || '',
-        diseases: (diseaseCategories.genital.diseases || []).map(d => ({
-            diseaseId: d.diseaseId,
-            note: notes[d.field] || ''
-        })),
+        diseases:
+            (Array.isArray(diseaseCategories.genital.diseases) && diseaseCategories.genital.diseases.length === 1 && Object.keys(diseaseCategories.genital.diseases[0]).length === 0)
+                ? []
+                : (diseaseCategories.genital.diseases || []).map(d => ({
+                    diseaseId: d.diseaseId,
+                    note: notes[d.field] || ''
+                })),
     });
     useEffect(() => {
         if (pupilData && Array.isArray(pupilData.diseases)) {
@@ -165,6 +168,7 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
             setSnackbar({ open: true, message: errorMsg || "Failed to save result.", severity: "error" });
         }
     };
+    console.log("Genital Diseases:", diseaseCategories.genital.diseases);
     const handleSubmit = () => {
         setSnackbar({
             open: true,
@@ -178,15 +182,20 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
         })
     }
     if (pupilData && Array.isArray(pupilData.diseases) && pupilData.diseases.length > 0) {
-        diseaseCategories.genital.diseases = pupilData.diseases.map((d, idx) => ({
-            disease_id: d.diseaseId || idx + 1000,
-            field: 'disease_' + (d.diseaseId ? d.diseaseId : (idx + 1000)),
-            name: d.name,
-            type: "string",
-            diseaseId: d.diseaseId,
-            description: d.description,
-            category: "genital"
-        }));
+        // Only add genital diseases if they are valid (not [{}])
+        if (!(pupilData.diseases.length === 1 && Object.keys(pupilData.diseases[0]).length === 0)) {
+            diseaseCategories.genital.diseases = pupilData.diseases.map((d, idx) => ({
+                disease_id: d.diseaseId || idx + 1000,
+                field: 'disease_' + (d.diseaseId ? d.diseaseId : (idx + 1000)),
+                name: d.name,
+                type: "string",
+                diseaseId: d.diseaseId,
+                description: d.description,
+                category: "genital"
+            }));
+        } else {
+            diseaseCategories.genital.diseases = [];
+        }
     }
     if (!sensitive_disease.length) {
         return (
@@ -260,19 +269,17 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
             </Fade>
             <div className="health-check-sections modern-section-list">
                 {/* Genital Examination Section */}
-                {!diseaseCategories.genital.diseases || diseaseCategories.genital.diseases == null ? (
-                    <Box sx={{ my: 2, p: 2, background: '#fff3e0', borderRadius: 2, border: '1px solid #ffb74d', display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Warning sx={{ color: '#ff9800', fontSize: 28 }} />
-                        <Typography variant="body1" color="text.secondary" fontWeight={600}>
-                            No genital health check data available for this student.
-                        </Typography>
-                    </Box>
-                ) : null}
                 {Object.entries(diseaseCategories).map(([categoryKey, category], index) => {
-                    // Remove general examination (medical) section
-                    if (categoryKey === 'medical') return null;
-                    if (categoryKey === 'genital' && (!category.diseases || category.diseases == null)) return null;
-                    if (!category.diseases || category.diseases == null) return null;
+                    const diseases = category.diseases;
+                    if (
+                        categoryKey === "medical" ||
+                        !Array.isArray(diseases) ||
+                        diseases.length === 0 ||
+                        (diseases.length === 1 && Object.keys(diseases[0]).length === 0)
+                    ) {
+                        return null;
+                    }
+
                     return (
                         <Grow in={true} timeout={300 + index * 100} key={categoryKey}>
                             <Accordion

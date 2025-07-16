@@ -16,10 +16,10 @@ import { Link } from "react-router-dom"
 const DashboardOverview = () => {
     // Mock data based on the database schema
     const dashboardStats = {
-        totalStudents: 1247,
-        totalMedication: 89,
-        medicalEvents: 8,
-        totalPrescription: 156,
+        totalStudents: 20,
+        totalMedication: 1,
+        medicalEvents: 1,
+        totalPrescription: 2,
     }
 
     const recentMedicalEvents = [
