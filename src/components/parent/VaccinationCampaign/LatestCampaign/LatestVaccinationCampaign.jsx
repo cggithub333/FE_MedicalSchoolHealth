@@ -29,7 +29,7 @@ import {
 import useLatestVaccinationCampaign from "@hooks/parent/vaccination/useLatestVaccinationcampaign";
 
 const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleDateString("vi-VN", {
+  return new Date(dateString).toLocaleDateString("en-EN", {
     year: "numeric",
     month: "long",
     day: "numeric",

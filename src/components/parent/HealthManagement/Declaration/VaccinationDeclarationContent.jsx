@@ -161,6 +161,16 @@ const VaccinationDeclarationFormContent = () => {
       return false
     }
 
+    // check if vaccination date and notes are provided for each dose
+    for (const disease of validDiseases) {
+      for (const dose of disease.doses) {
+        if (!dose || !dose.vaccinatedAt || !dose.notes) {
+          showErrorToast("Please provide vaccination date and notes for each dose.")
+          return false
+        }
+      }
+    }
+
     return true
   }
 

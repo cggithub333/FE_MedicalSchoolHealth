@@ -49,11 +49,11 @@ const formatDate = (dateString) => {
 
 const getGradeName = (gradeLevel) => {
   const gradeMap = {
-    GRADE_1: "Lớp 1",
-    GRADE_2: "Lớp 2",
-    GRADE_3: "Lớp 3",
-    GRADE_4: "Lớp 4",
-    GRADE_5: "Lớp 5",
+    GRADE_1: "Class 1",
+    GRADE_2: "Class 2",
+    GRADE_3: "Class 3",
+    GRADE_4: "Class 4",
+    GRADE_5: "Class 5",
   }
   return gradeMap[gradeLevel] || gradeLevel
 }
@@ -62,7 +62,7 @@ const getStatusChip = (status) => {
   if (status === "APPROVED") {
     return (
       <Chip
-        label="Injected"
+        label="Approved"
         size="small"
         sx={{
           bgcolor: "success.main",
@@ -74,7 +74,7 @@ const getStatusChip = (status) => {
   } else if (status === "REJECTED") {
     return (
       <Chip
-        label="Injected"
+        label="Rejected"
         size="small"
         sx={{
           bgcolor: "error.main",
@@ -196,6 +196,22 @@ const VaccinationSurvey = () => {
     )
   }
 
+  /*
+  const doubleVaccinationSurveys = (vaccinationSurveys) => {
+    vaccinationSurveys = vaccinationSurveys || [];
+    return vaccinationSurveys.reduce((acc, survey) => {
+
+      acc.push(survey);
+      acc.push(survey);
+      acc.push(survey);
+      acc.push(survey); // remember to make key as index for avoid duplicate key error in React when rendering
+
+      return acc;
+    }, [])
+  }
+   */
+
+
   return (
     <Container maxWidth="lg" sx={{ py: 3 }}>
       {/* Header */}
@@ -207,9 +223,9 @@ const VaccinationSurvey = () => {
       </Box>
 
       {/* Survey Cards Grid */}
-      <Grid container spacing={"100px"}>
-        {vaccinationSurveys.map((form) => (
-          <Grid item size={{ xs: 12, md: 6, lg: 4 }} key={form.consentFormId}>
+      <Grid container spacing={"100px"} justifyContent="center" marginTop={'50px'}>
+        {(vaccinationSurveys || []).map((form, idx) => (
+          <Grid item size={{ xs: 12, md: 6, lg: 4 }} key={idx}>
             <Card
               sx={{
                 cursor: "pointer",
@@ -282,7 +298,7 @@ const VaccinationSurvey = () => {
       </Grid>
 
       {/* No Data State */}
-      {vaccinationSurveys.length === 0 && (
+      {(vaccinationSurveys || []).length === 0 && (
         <Card>
           <CardContent sx={{ textAlign: "center", py: 6 }}>
             <Assignment sx={{ fontSize: 64, color: "text.secondary", mb: 2 }} />

@@ -179,7 +179,7 @@ const ParentNotifications = () => {
 
     // group notifications by type (e.g., VACCINATION_CAMPAIGN group, HEALTH_CHECK_CAMPAIGN group)
     const groupNotificationsByType = (notifications) => {
-      return notifications.reduce((groups, notification) => {
+      const notificationByType = notifications.reduce((groups, notification) => {
         const type = notification.typeNotification
         if (!groups[type]) {
           groups[type] = [] // Initialize the array for this type if it doesn't exist
@@ -187,6 +187,13 @@ const ParentNotifications = () => {
         groups[type].push(notification) // Add the notification to the appropriate type group
         return groups
       }, {})
+
+      // sort each group by createdAt date in descending order
+      Object.keys(notificationByType) // get all keys (types) of the grouped notifications
+            .forEach(type => {
+              notificationByType[type].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            })
+      return notificationByType
     }
 
     const renderLoadingSkeleton = () => (

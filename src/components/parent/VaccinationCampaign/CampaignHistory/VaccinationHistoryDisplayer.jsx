@@ -317,10 +317,11 @@ const VaccinationHistoryDisplayer = ({ pupilObj }) => {
       ) : (
         <Grid container spacing={3}>
           {filteredRecords.map((record) => (
-            <Grid item  size={{ xs: 12, md: 3, lg: 4 }}  key={record.historyId}>
+            <Grid item  size={{ xs: 12, md: 3, lg: 4 }} xs={{height: "250px"}} key={record.historyId}>
               <Card
                 sx={{
                   cursor: "pointer",
+                  height: "100%",
                   transition: "all 0.3s ease",
                   "&:hover": {
                     transform: "translateY(-4px)",

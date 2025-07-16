@@ -34,6 +34,7 @@ import {
   Assignment,
 } from "@mui/icons-material"
 
+/*
 const currentPupil = {
   pupilId: "PP0006",
   lastName: "Hoàng",
@@ -45,15 +46,14 @@ const currentPupil = {
   gradeLevel: "GRADE_1",
   gradeName: "Lớp 1D",
 }
+  */
 
-import useCurrentStoragedPupil from "@hooks/parent/useCurrentStoragedPupil"
 import useLatestHealthCheckCampaign from "@hooks/parent/useLatestHealthCheckCampaign"
 import useSendHealthCheckSurvey from "@hooks/parent/health-check/useSendHealthCheckSurvey"
 import { showErrorToast, showSuccessToast } from "@utils/toast-utils"
 
-const HealthCheckSurveyByPupil = () => {
+const HealthCheckSurveyByPupil = ({ currentPupil}) => {
 
-  const { currentPupil, loading: pupilLoading, refetch: pupilRefetch} = useCurrentStoragedPupil();
   const { latestHealthCheckCampaign: healthCampaignInfo, isLoading: campaignLoading, refetch: campaignRefetch, error: campaignError } = useLatestHealthCheckCampaign();
   const { sendHealthCheckSurvey, loading: surveyLoading, error: surveyError } = useSendHealthCheckSurvey();
 
@@ -145,7 +145,7 @@ const HealthCheckSurveyByPupil = () => {
 
   const isSubmitDisabled = selectedDiseases.length === 0 || !agreementChecked || surveyLoading
 
-  if (healthCampaignInfo === null || healthCampaignInfo.length === 0 || pupilLoading || campaignLoading) {
+  if (healthCampaignInfo === null || healthCampaignInfo.length === 0 || campaignLoading) {
     return (
       <Card sx={{ mt: 5}}>
         <CardContent sx={{ textAlign: "center", py: 6 }}>
@@ -162,22 +162,7 @@ const HealthCheckSurveyByPupil = () => {
   }
 
   return (
-    <Container sx={{ py: 3, width: "80%" }}>
-      {/* Header */}
-      <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 4 }}>
-        <Avatar sx={{ bgcolor: "primary.main", width: 48, height: 48 }}>
-          <LocalHospital />
-        </Avatar>
-        <Box>
-          <Typography variant="h4" fontWeight="bold">
-            Health Check Survey
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            Health examination consent for your child
-          </Typography>
-        </Box>
-      </Box>
-
+    <Container sx={{ py: 3, width: "100%" }}>
       {/* Campaign Card */}
       <Card
         sx={{
@@ -192,92 +177,24 @@ const HealthCheckSurveyByPupil = () => {
       >
         <CardContent sx={{ p: 4 }}>
           {/* Campaign Header */}
-          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 3 }}>
+          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", mb: 3 }}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
               <Avatar sx={{ bgcolor: "success.main", width: 56, height: 56 }}>
                 <LocalHospital fontSize="large" />
               </Avatar>
               <Box>
                 <Typography variant="h5" fontWeight="bold">
-                  {healthCampaignInfo?.title}
+                  Health Check Survey
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Campaign ID: #{healthCampaignInfo?.campaignId}
+                  {healthCampaignInfo?.title}
                 </Typography>
               </Box>
             </Box>
-            <Chip
-              label={healthCampaignInfo?.statusHealthCampaign}
-              color={getStatusColor(healthCampaignInfo?.statusHealthCampaign)}
-              variant="filled"
-              sx={{ fontWeight: "bold" }}
-            />
           </Box>
 
-          {/* Campaign Description */}
-          <Typography variant="body1" sx={{ mb: 3, lineHeight: 1.6 }}>
-            {healthCampaignInfo?.description}
-          </Typography>
-
-          {/* Campaign Details */}
-          <Grid container spacing={3}>
-            <Grid item size={{ xs: 12, md:6}} sx={{ height: "110px", mb: 1}}>
-              <Paper sx={{ p: 2, bgcolor: "info.50", height: "100%" }}>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                  <LocationOn color="info" fontSize="small" />
-                  <Typography variant="subtitle2" fontWeight="bold" color="info.main">
-                    Examination Location
-                  </Typography>
-                </Box>
-                <Typography variant="body2">{healthCampaignInfo?.address}</Typography>
-              </Paper>
-            </Grid>
-
-            <Grid item size={{ xs: 12, md: 6 }} sx={{ height: "110px", mb: 1 }}>
-              <Paper sx={{ p: 2, bgcolor: "warning.50", height: "100%" }}>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                  <CalendarToday color="warning" fontSize="small" />
-                  <Typography variant="subtitle2" fontWeight="bold" color="warning.main">
-                    Registration Deadline
-                  </Typography>
-                </Box>
-                <Typography variant="body2" fontWeight="bold">
-                  {formatDate(healthCampaignInfo?.deadlineDate)}
-                </Typography>
-              </Paper>
-            </Grid>
-
-            <Grid item size={{ xs: 12, md: 6 }} sx={{ height: "110px", mb: 1 }}>
-              <Paper sx={{ p: 2, bgcolor: "success.50", height: "100%" }}>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                  <Schedule color="success" fontSize="small" />
-                  <Typography variant="subtitle2" fontWeight="bold" color="success.main">
-                    Examination Start
-                  </Typography>
-                </Box>
-                <Typography variant="body2" fontWeight="bold">
-                  {formatDateTime(healthCampaignInfo?.startExaminationDate)}
-                </Typography>
-              </Paper>
-            </Grid>
-
-            <Grid item size={{ xs: 12, md: 6 }} sx={{ height: "110px", mb: 1 }}>
-              <Paper sx={{ p: 2, bgcolor: "error.50" , height: "100%" }}>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                  <Schedule color="error" fontSize="small" />
-                  <Typography variant="subtitle2" fontWeight="bold" color="error.main">
-                    Examination End
-                  </Typography>
-                </Box>
-                <Typography variant="body2" fontWeight="bold">
-                  {formatDateTime(healthCampaignInfo?.endExaminationDate)}
-                </Typography>
-              </Paper>
-            </Grid>
-          </Grid>
-
           {/* Student Info */}
-          <Paper sx={{ p: 3, mt: 3, bgcolor: "primary.50" }}>
+          <Paper sx={{ p: 3, mb: 3, bgcolor: "primary.50" }}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
               <Person color="primary" />
               <Typography variant="h6" fontWeight="bold" color="primary.main">
@@ -314,6 +231,37 @@ const HealthCheckSurveyByPupil = () => {
                   Class
                 </Typography>
                 <Chip label={currentPupil?.gradeName} color="primary" variant="outlined" />
+              </Grid>
+            </Grid>
+          </Paper>
+
+          {/* Examination Period */}
+          <Paper sx={{ p: 3, mb: 3, bgcolor: "info.50" }}>
+            <Typography variant="h6" fontWeight="bold" color="info.main" sx={{ mb: 2 }}>
+              Examination Period
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item size={{ xs: 12, md: 6 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                  <Schedule color="success" fontSize="small" />
+                  <Typography variant="subtitle2" fontWeight="bold" color="success.main">
+                    Start Date
+                  </Typography>
+                </Box>
+                <Typography variant="body2" fontWeight="bold">
+                  {formatDateTime(healthCampaignInfo?.startExaminationDate)}
+                </Typography>
+              </Grid>
+              <Grid item size={{ xs: 12, md: 6 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                  <Schedule color="error" fontSize="small" />
+                  <Typography variant="subtitle2" fontWeight="bold" color="error.main">
+                    End Date
+                  </Typography>
+                </Box>
+                <Typography variant="body2" fontWeight="bold">
+                  {formatDateTime(healthCampaignInfo?.endExaminationDate)}
+                </Typography>
               </Grid>
             </Grid>
           </Paper>

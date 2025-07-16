@@ -50,8 +50,8 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday"
 import VaccinesIcon from "@mui/icons-material/Vaccines"
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital"
 import NotesIcon from "@mui/icons-material/Notes"
-import { useAllVaccinationCampaign } from "../../../../hooks/manager/vaccination/campaign/useAllCampaignByStatus"
-import { useDeleteCampaignByCampaignID } from "../../../../hooks/manager/vaccination/create-new-campaign/useDeleteCampaignByCampaignID"
+import { useAllVaccinationCampaign } from "@hooks/manager/vaccination/campaign/useAllCampaignByStatus"
+import { useDeleteCampaignByCampaignID } from "@hooks/manager/vaccination/create-new-campaign/useDeleteCampaignByCampaignID"
 import { styleCampaign } from "./StyleCampaign"
 import ScheduleForm from "./schedule/vaccination-schedule-management/ScheduleForm.jsx";
 import { useNavigate } from "react-router-dom";
