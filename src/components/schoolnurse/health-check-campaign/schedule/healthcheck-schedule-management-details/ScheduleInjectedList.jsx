@@ -69,7 +69,7 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
             gender: form.pupilRes.gender,
             Grade: form.pupilRes.gradeName,
             gradeName: form.pupilRes.gradeName,
-            healthCheckConsentId: form.healthCheckConsentId,
+            // healthCheckConsentId: form.healthCheckConsentId,
             schoolYear: form.schoolYear,
             diseases: form.disease || [],
             avatar: `https://ui-avatars.com/api/?name=${form.pupilRes.firstName}+${form.pupilRes.lastName}&background=1976d2&color=fff`,

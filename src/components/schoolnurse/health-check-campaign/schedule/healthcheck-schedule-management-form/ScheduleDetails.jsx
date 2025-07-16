@@ -48,6 +48,7 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
         reproductive: false,
         medical: false,
     })
+    console.log("[ScheduleDetails] Initial pupilData:", pupilData);
     const { saveResultOfHealthCheckCampaign, isSaving } = useSaveResultOfHealthCheckCampaign();
     const [status, setStatus] = useState(null); // "COMPLETED" or "ABSENT"
     // Use frontend disease list instead of API data
@@ -59,7 +60,6 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
         dental: { title: "Dental Health", icon: <MedicalServices />, diseases: [] },
         skin: { title: "Skin Conditions", icon: <Person />, diseases: [] },
         cardiovascular: { title: "Cardiovascular", icon: <Favorite />, diseases: [] },
-        medical: { title: "General Examination", icon: <Assignment />, diseases: [] },
         genital: { title: "Genital Examination", icon: <Psychology />, diseases: [] },
     }
     sensitive_disease.forEach((disease) => {
@@ -105,16 +105,16 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
         })),
     });
     useEffect(() => {
-        if (pupilData && Array.isArray(pupilData.disease)) {
+        if (pupilData && Array.isArray(pupilData.diseases)) {
             const genitalNotes = {};
-            pupilData.disease.forEach((d, idx) => {
+            pupilData.diseases.forEach((d, idx) => {
                 const field = `disease_${d.diseaseId || idx + 1000}`;
                 genitalNotes[field] = d.note || "";
             });
             setNotes(prev => ({ ...genitalNotes, ...prev }));
         }
     }, [pupilData]);
-
+    console.log("[ScheduleDetails] Initial notes state:", pupilData.diseases);
     const validateFields = () => {
         for (const categoryKey of Object.keys(diseaseCategories)) {
             for (const disease of diseaseCategories[categoryKey].diseases) {
@@ -177,8 +177,8 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
             details: getDetailsForDB(),
         })
     }
-    if (pupilData && Array.isArray(pupilData.disease) && pupilData.disease.length > 0) {
-        diseaseCategories.genital.diseases = pupilData.disease.map((d, idx) => ({
+    if (pupilData && Array.isArray(pupilData.diseases) && pupilData.diseases.length > 0) {
+        diseaseCategories.genital.diseases = pupilData.diseases.map((d, idx) => ({
             disease_id: d.diseaseId || idx + 1000,
             field: 'disease_' + (d.diseaseId ? d.diseaseId : (idx + 1000)),
             name: d.name,
@@ -259,8 +259,20 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
                 </Card>
             </Fade>
             <div className="health-check-sections modern-section-list">
+                {/* Genital Examination Section */}
+                {!diseaseCategories.genital.diseases || diseaseCategories.genital.diseases == null ? (
+                    <Box sx={{ my: 2, p: 2, background: '#fff3e0', borderRadius: 2, border: '1px solid #ffb74d', display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Warning sx={{ color: '#ff9800', fontSize: 28 }} />
+                        <Typography variant="body1" color="text.secondary" fontWeight={600}>
+                            No genital health check data available for this student.
+                        </Typography>
+                    </Box>
+                ) : null}
                 {Object.entries(diseaseCategories).map(([categoryKey, category], index) => {
-                    if (category.diseases.length === 0) return null;
+                    // Remove general examination (medical) section
+                    if (categoryKey === 'medical') return null;
+                    if (categoryKey === 'genital' && (!category.diseases || category.diseases == null)) return null;
+                    if (!category.diseases || category.diseases == null) return null;
                     return (
                         <Grow in={true} timeout={300 + index * 100} key={categoryKey}>
                             <Accordion
