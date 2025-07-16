@@ -69,7 +69,7 @@ const DigitalClock = () => {
     )
 }
 
-const currentSessionInfor0 = () => {
+const currentSessionInfor = () => {
     const now = new Date()
     const currentHour = now.getHours()
     const currentMinute = now.getMinutes()
@@ -81,7 +81,7 @@ const currentSessionInfor0 = () => {
 }
 
 // for testing sesion 1:
-const currentSessionInfor = () => {
+const currentSessionInfor1 = () => {
     const now = new Date()
     const currentHour = now.getHours()
     const currentMinute = now.getMinutes()
@@ -237,14 +237,14 @@ const TakeMedicationBySession = () => {
         const currentTotalMinutes = currentHour * 60 + currentMinute
 
         // Define session time windows (when GIVEN button can be clicked)
-        const sessionTimeWindows0 = [
+        const sessionTimeWindows = [
             { start: 9 * 60 + 30, end: 10 * 60 + 15 }, // Session 1: 9:30-10:15
             { start: 10 * 60 + 30, end: 11 * 60 + 15 },  // Session 2: 10:30-11:15
             { start: 11 * 60 + 30, end: 12 * 60 + 15 }   // Session 3: 11:30-12:15
         ]
 
         // for test session 1:
-        const sessionTimeWindows = [
+        const sessionTimeWindows1 = [
             { start: currentTotalMinutes - 30, end: currentTotalMinutes + 30 }, // Session 1: Current time ±30 min
             { start: 10 * 60 + 30, end: 11 * 60 + 15 },  // Session 2: 10:30-11:15
             { start: 11 * 60 + 30, end: 12 * 60 + 15 }   // Session 3: 11:30-12:15

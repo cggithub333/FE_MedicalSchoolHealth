@@ -145,22 +145,6 @@ const HealthCheckSurveyByPupil = ({ currentPupil}) => {
 
   const isSubmitDisabled = selectedDiseases.length === 0 || !agreementChecked || surveyLoading
 
-  if (healthCampaignInfo === null || healthCampaignInfo.length === 0 || campaignLoading) {
-    return (
-      <Card sx={{ mt: 5}}>
-        <CardContent sx={{ textAlign: "center", py: 6 }}>
-          <Assignment sx={{ fontSize: 64, color: "text.secondary", mb: 2 }} />
-          <Typography variant="h5" fontWeight="bold" sx={{ mb: 1 }}>
-            No Health Check Surveys
-          </Typography>
-          <Typography color="text.secondary">
-            There are currently no health check survey available for review.
-          </Typography>
-        </CardContent>
-      </Card>
-    )
-  }
-
   return (
     <Container sx={{ py: 3, width: "100%" }}>
       {/* Campaign Card */}
