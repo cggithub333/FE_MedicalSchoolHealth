@@ -49,11 +49,11 @@ const formatDate = (dateString) => {
 
 const getGradeName = (gradeLevel) => {
   const gradeMap = {
-    GRADE_1: "Lớp 1",
-    GRADE_2: "Lớp 2",
-    GRADE_3: "Lớp 3",
-    GRADE_4: "Lớp 4",
-    GRADE_5: "Lớp 5",
+    GRADE_1: "Class 1",
+    GRADE_2: "Class 2",
+    GRADE_3: "Class 3",
+    GRADE_4: "Class 4",
+    GRADE_5: "Class 5",
   }
   return gradeMap[gradeLevel] || gradeLevel
 }
