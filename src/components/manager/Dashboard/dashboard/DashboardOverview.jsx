@@ -165,7 +165,7 @@ const DashboardOverview = () => {
                                                 </Box>
                                                 <Typography variant="h6" sx={{ fontWeight: 600 }}>Recent Medical Events</Typography>
 
-                                                <Link to="/schoolnurse/medical-events" style={{ textDecoration: "none" }}>
+                                                <Link to="/manager/medical-events" style={{ textDecoration: "none" }}>
                                                     <Button size="small" className="view-all-button" sx={{ color: '#6366f1', fontWeight: 500, textTransform: 'none', display: 'flex', position: 'absolute', right: 16, top: 16 }}>
                                                         view all →
                                                     </Button>
@@ -231,7 +231,7 @@ const DashboardOverview = () => {
                                                 <PillIcon color="success" />
                                             </Box>
                                             <Typography variant="h6" sx={{ fontWeight: 600 }}>Today's Prescription Schedule</Typography>
-                                            <Link to="/schoolnurse/prescription" style={{ textDecoration: "none" }}>
+                                            <Link to="/manager/prescriptions" style={{ textDecoration: "none" }}>
                                                 <Button size="small" className="view-all-button" sx={{ color: '#6366f1', fontWeight: 500, textTransform: 'none', display: 'flex', position: 'absolute', right: 16, top: 16 }}>
                                                     view all →
                                                 </Button>
@@ -294,7 +294,7 @@ const DashboardOverview = () => {
                                 title={
                                     <Box className="requests-header" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                         <Typography variant="h6" sx={{ fontWeight: 600 }}>Requests</Typography>
-                                        <Link to="/schoolnurse/prescription/prescription-requests" style={{ textDecoration: "none" }}>
+                                        <Link to="/manager/prescriptions" style={{ textDecoration: "none" }}>
                                             <Button size="small" className="view-all-button" sx={{ color: '#6366f1', fontWeight: 500, textTransform: 'none', display: 'flex', position: 'absolute', right: 16, top: 16 }}>
                                                 view all →
                                             </Button>
@@ -338,7 +338,7 @@ const DashboardOverview = () => {
                             <CardContent className="actions-card__content" sx={{ p: 2 }}>
                                 <Grid container spacing={1}>
                                     <Grid size={6}>
-                                        <Link to="/schoolnurse/vaccination-campaign/schedule" style={{ textDecoration: "none" }}>
+                                        <Link to="/manager/vaccination-campaign/campaigns" style={{ textDecoration: "none" }}>
                                             <Button className="action-button action-button--rose" fullWidth sx={{
                                                 bgcolor: 'linear-gradient(135deg, #f43f5e 0%, #fbbf24 100%)',
                                                 color: '#fff', borderRadius: 3, fontWeight: 600, py: 2, gap: 1, boxShadow: 2,
@@ -351,7 +351,7 @@ const DashboardOverview = () => {
 
                                     </Grid>
                                     <Grid size={6}>
-                                        <Link to="/schoolnurse/health-check-campaign/schedule" style={{ textDecoration: "none" }}>
+                                        <Link to="/manager/health-check-campaign/campaigns" style={{ textDecoration: "none" }}>
                                             <Button className="action-button action-button--emerald" fullWidth sx={{
                                                 bgcolor: 'linear-gradient(135deg, #10b981 0%, #06b6d4 100%)',
                                                 color: '#fff', borderRadius: 3, fontWeight: 600, py: 2, gap: 1, boxShadow: 2,
@@ -364,7 +364,7 @@ const DashboardOverview = () => {
 
                                     </Grid>
                                     <Grid size={6}>
-                                        <Link to="/schoolnurse/pupils-management" style={{ textDecoration: "none" }}>
+                                        <Link to="/manager/pupils-management" style={{ textDecoration: "none" }}>
                                             <Button className="action-button action-button--blue" fullWidth sx={{
                                                 bgcolor: 'linear-gradient(135deg, #6366f1 0%, #60a5fa 100%)',
                                                 color: '#fff', borderRadius: 3, fontWeight: 600, py: 2, gap: 1, boxShadow: 2,
@@ -377,7 +377,7 @@ const DashboardOverview = () => {
 
                                     </Grid>
                                     <Grid size={6}>
-                                        <Link to="/schoolnurse/medical-events" style={{ textDecoration: "none" }}>
+                                        <Link to="/manager/medical-events" style={{ textDecoration: "none" }}>
                                             <Button className="action-button action-button--purple" fullWidth sx={{
                                                 bgcolor: 'linear-gradient(135deg, #a78bfa 0%, #6366f1 100%)',
                                                 color: '#fff', borderRadius: 3, fontWeight: 600, py: 2, gap: 1, boxShadow: 2,

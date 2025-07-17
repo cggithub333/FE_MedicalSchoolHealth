@@ -337,32 +337,7 @@ const DashboardOverview = () => {
                             <CardHeader title={<Typography variant="h6" sx={{ fontWeight: 600 }}>Quick Actions</Typography>} />
                             <CardContent className="actions-card__content" sx={{ p: 2 }}>
                                 <Grid container spacing={1}>
-                                    <Grid size={6}>
-                                        <Link to="/schoolnurse/vaccination-campaign/schedule" style={{ textDecoration: "none" }}>
-                                            <Button className="action-button action-button--rose" fullWidth sx={{
-                                                bgcolor: 'linear-gradient(135deg, #f43f5e 0%, #fbbf24 100%)',
-                                                color: '#fff', borderRadius: 3, fontWeight: 600, py: 2, gap: 1, boxShadow: 2,
-                                                '&:hover': { bgcolor: '#f43f5e', opacity: 0.9 }, display: 'flex', flexDirection: 'column', alignItems: 'center',
-                                            }}>
-                                                <VaccinesIcon />
-                                                <Typography variant="caption">Vaccination</Typography>
-                                            </Button>
-                                        </Link>
 
-                                    </Grid>
-                                    <Grid size={6}>
-                                        <Link to="/schoolnurse/health-check-campaign/schedule" style={{ textDecoration: "none" }}>
-                                            <Button className="action-button action-button--emerald" fullWidth sx={{
-                                                bgcolor: 'linear-gradient(135deg, #10b981 0%, #06b6d4 100%)',
-                                                color: '#fff', borderRadius: 3, fontWeight: 600, py: 2, gap: 1, boxShadow: 2,
-                                                '&:hover': { bgcolor: '#10b981', opacity: 0.9 }, display: 'flex', flexDirection: 'column', alignItems: 'center',
-                                            }}>
-                                                <PillIcon />
-                                                <Typography variant="caption">Health Check</Typography>
-                                            </Button>
-                                        </Link>
-
-                                    </Grid>
                                     <Grid size={6}>
                                         <Link to="/schoolnurse/pupils-management" style={{ textDecoration: "none" }}>
                                             <Button className="action-button action-button--blue" fullWidth sx={{
