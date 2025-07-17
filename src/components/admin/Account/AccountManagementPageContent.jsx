@@ -42,6 +42,9 @@ import {
   DeleteSweep as DeleteSweepIcon,
 } from "@mui/icons-material"
 
+
+import { downloadExcel } from "@utils/excel-utils"
+
 // Mock data
 const userAccounts = [
   {
@@ -196,6 +199,7 @@ const userAccounts = [
   },
 ]
 
+
 const ACCOUNT_PER_PAGE = 5;
 
 const AccountManagementPageContent = () => {
@@ -263,15 +267,14 @@ const AccountManagementPageContent = () => {
     return matchesSearch && matchesRole && matchesStatus
   }
   const handleDownloadAsExcel = () => {
-
     // get data:
     const data = (users || []).filter(filterCallback);
-
     // debug:
     console.log("Downloaded data:", data);
-
+    downloadExcel(data, "user_accounts");
     setActionsAnchor(null); // Close the menu after action
   }
+
   const filteredUsers = (users || []).filter(filterCallback)
 
   return (

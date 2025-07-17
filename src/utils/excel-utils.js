@@ -2,9 +2,12 @@ import * as XLSX from "xlsx";
 
 import { getCurrentDateFormatted } from "./date-utils";
 
-const downloadExcel = (data, fileName) => {
+export const downloadExcel = (data, prefixFileName) => {
 
-  fileName = fileName || `data_${getCurrentDateFormatted("dd_mm_yyyy")}.xlsx`;
+  const hashValueByDate = Date.now() % 111111;
+
+  // make sure the name will not be duplicated with the right name
+  const fileName = `${prefixFileName}_${getCurrentDateFormatted("dd_mm_yyyy")}_${hashValueByDate}.xlsx`;
 
   // convert data to worksheet:
   const worksheet = XLSX.utils.json_to_sheet(data);
@@ -17,4 +20,36 @@ const downloadExcel = (data, fileName) => {
 
   // write the file and trigger download:
   XLSX.writeFile(workbook, fileName);
+}
+
+export const importExcel = (file) => {
+  if (!file) {
+    throw new Error("No file provided for import.");
+  }
+
+  if (!file.name.endsWith(".xlsx")) {
+    throw new Error("Invalid file type. Please upload an Excel file.");
+  }
+
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    const data = new Uint8Array(event.target.result);
+    const workbook = XLSX.read(data, { type: "array" });
+
+    // Process the workbook as needed
+  };
+  reader.readAsArrayBuffer(file);
+  return new Promise((resolve, reject) => {
+    reader.onload = (event) => {
+      const data = new Uint8Array(event.target.result);
+      const workbook = XLSX.read(data, { type: "array" });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet);
+      resolve(jsonData);
+    };
+    reader.onerror = (error) => {
+      reject(error);
+    };
+  });
 }
