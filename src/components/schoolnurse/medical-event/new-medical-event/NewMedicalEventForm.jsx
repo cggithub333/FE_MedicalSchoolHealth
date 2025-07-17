@@ -62,7 +62,6 @@ const MedicalEventForm = ({ onCancel, onSuccess }) => {
     const { createNewMedicalEvent, loading: createLoading, error: createError, success: createSuccess } = useCreateNewMedicalEvent();
 
     // Debug: Log pupils array to verify data at render time
-    console.log('Pupils from API:', pupils);
 
     const handleInputChange = (field, value) => {
         setFormData((prev) => ({

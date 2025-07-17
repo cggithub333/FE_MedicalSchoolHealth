@@ -13,61 +13,41 @@ import "./DashboardOverview.scss"
 import VaccinesIcon from '@mui/icons-material/Vaccines';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import { Link } from "react-router-dom"
+import { useGetPupilsInformation } from "../../../../hooks/schoolnurse/new-event/useGetPupilsInformation.js";
+import { useGetAllMedicalEvent } from "../../../../hooks/schoolnurse/new-event/useGetAllMedicalEvent.js"
+import { useGetAllPrescription } from "../../../../hooks/schoolnurse/main-contents/useGetAllPrescription.js";
+
+
+
 const DashboardOverview = () => {
+    const { pupilsList = [], loading, error } = useGetPupilsInformation();
+    const { medicalEventList = [] } = useGetAllMedicalEvent();
+    // Fix prescriptions: extract array from response if needed
+    const { prescriptions: prescriptionsRaw = [], loading: loadingPrescriptions, error: errorPrescriptions } = useGetAllPrescription();
+    const prescriptions = Array.isArray(prescriptionsRaw) ? prescriptionsRaw : (Array.isArray(prescriptionsRaw.data) ? prescriptionsRaw.data : []);
+
+    // Remove debug log or update if needed
+    // console.log("Prescriptions:", prescriptions.length);
+
     // Mock data based on the database schema
     const dashboardStats = {
-        totalStudents: 20,
-        totalMedication: 1,
-        medicalEvents: 1,
-        totalPrescription: 2,
+        totalStudents: pupilsList.length,
+        totalMedication: medicalEventList.length,
+        medicalEvents: medicalEventList.length,
+        totalPrescription: prescriptions.length,
     }
 
-    const recentMedicalEvents = [
-        {
-            id: 1,
-            pupilName: "Emma Johnson",
-            grade: "Grade 3",
-            injury: "Minor cut on finger",
-            severity: "low",
-            dateTime: "10:30 AM",
-            status: "Completed",
-            avatar: "EJ",
-            color: "emerald",
-        },
-        {
-            id: 2,
-            pupilName: "Michael Chen",
-            grade: "Grade 5",
-            injury: "Headache and fever",
-            severity: "medium",
-            dateTime: "09:15 AM",
-            status: "Ongoing",
-            avatar: "MC",
-            color: "amber",
-        },
-        {
-            id: 3,
-            pupilName: "Sarah Williams",
-            grade: "Grade 2",
-            injury: "Allergic reaction",
-            severity: "high",
-            dateTime: "Yesterday",
-            status: "Resolved",
-            avatar: "SW",
-            color: "rose",
-        },
-        {
-            id: 4,
-            pupilName: "Alex Rodriguez",
-            grade: "Grade 4",
-            injury: "Scraped knee",
-            severity: "low",
-            dateTime: "08:45 AM",
-            status: "Completed",
-            avatar: "AR",
-            color: "emerald",
-        },
-    ]
+    // Map medicalEventList to recentMedicalEvents (show only first 4)
+    const recentMedicalEvents = (medicalEventList || []).slice(0, 4).map((event, idx) => ({
+        id: event.medicalEventId,
+        pupilName: `${event.pupil.lastName} ${event.pupil.firstName}`,
+        grade: event.pupil.gradeName,
+        injury: event.injuryDescription,
+        severity: event.status,
+        dateTime: event.createdAt || event.dateTime,
+        avatar: event.pupil.firstName ? event.pupil.firstName.charAt(0) : '',
+        color: ["emerald", "amber", "rose", "blue"][idx % 4], // cycle colors for demo
+    }));
 
     const medicationSchedule = [
         {
@@ -176,7 +156,7 @@ const DashboardOverview = () => {
             {/* Top Stats Cards */}
             <Grid container spacing={3} className="stats-row" sx={{ mb: 3 }}>
                 {[{
-                    label: "Total Students",
+                    label: "Total Pupils",
                     value: dashboardStats.totalStudents.toLocaleString(),
                     icon: <UsersIcon />, color: "blue"
                 }, {
@@ -192,7 +172,7 @@ const DashboardOverview = () => {
                     value: dashboardStats.totalPrescription,
                     icon: <FileTextIcon />, color: "purple"
                 }].map((stat, idx) => (
-                    <Grid item size={{ xs: 12, sm: 6, md: 3 }} key={stat.label}>
+                    <Grid size={{ xs: 12, sm: 6, md: 3 }} key={stat.label}>
                         <Card className={`stat-card stat-card--${stat.color}`}
                             sx={{
                                 borderRadius: 4,
@@ -221,11 +201,11 @@ const DashboardOverview = () => {
             {/* Main Content Grid */}
             <Grid container spacing={3} className="main-grid" sx={{ width: "100%" }}>
                 {/* Left Column - Recent Medical Events & Medication Schedule */}
-                <Grid item size={{ xs: 12, md: 8 }}>
-                    <Grid item size={{ xs: 12 }}>
+                <Grid size={{ xs: 12, md: 8 }}>
+                    <Grid size={{ xs: 12 }}>
                         <Box className="left-column" sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                             {/* Recent Medical Events */}
-                            <Grid item size={{ xs: 12 }}>
+                            <Grid size={{ xs: 12 }}>
                                 <Card className="events-card glass-card" sx={{ borderRadius: 4, boxShadow: 2 }}>
                                     <CardHeader
                                         className="events-card__header"
@@ -244,7 +224,7 @@ const DashboardOverview = () => {
                                             </Box>
                                         }
                                     />
-                                    <Grid item size={{ xs: 12 }}>
+                                    <Grid size={{ xs: 12 }}>
                                         <CardContent className="events-card__content" sx={{ p: 2 }}>
                                             {recentMedicalEvents.map((event, index) => (
                                                 <Box
@@ -257,7 +237,7 @@ const DashboardOverview = () => {
                                                         '&:hover': { background: 'rgba(244,63,94,0.04)' },
                                                     }}
                                                 >
-                                                    <Grid item size={{ xs: 5 }}>
+                                                    <Grid size={{ xs: 5 }}>
                                                         <Box className="event-item__left" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                                                             <Avatar className={`event-avatar event-avatar--${event.color}`}
                                                                 sx={{ bgcolor: `var(--avatar-${event.color})`, color: '#fff', fontWeight: 600 }}>
@@ -269,7 +249,7 @@ const DashboardOverview = () => {
                                                             </Box>
                                                         </Box>
                                                     </Grid>
-                                                    <Grid item size={{ xs: 5 }}>
+                                                    <Grid size={{ xs: 5 }}>
                                                         <Box className="event-item__left" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                                                             <Box className="event-item__details" >
                                                                 <Typography variant="caption" sx={{ color: '#64748b' }}>{event.grade}</Typography>
@@ -277,7 +257,7 @@ const DashboardOverview = () => {
                                                             </Box>
                                                         </Box>
                                                     </Grid>
-                                                    <Grid item size={{ xs: 2 }} >
+                                                    <Grid size={{ xs: 2 }} >
                                                         <Box className="event-item__right" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
 
                                                             <Box className="event-item__badges" sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
@@ -360,7 +340,7 @@ const DashboardOverview = () => {
                 </Grid >
 
                 {/* Right Column */}
-                < Grid item size={{ xs: 12, md: 4 }}>
+                < Grid size={{ xs: 12, md: 4 }}>
                     <Box className="right-column" sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                         {/* Requests */}
                         <Card className="requests-card glass-card" sx={{ borderRadius: 4, boxShadow: 2 }}>
@@ -400,10 +380,7 @@ const DashboardOverview = () => {
                                             <Typography variant="caption">📅 {request.date}</Typography>
                                             <Typography variant="caption">🕐 {request.time}</Typography>
                                         </Box>
-                                        <Box className="request-item__actions" sx={{ display: 'flex', gap: 1, ml: 7 }}>
-                                            <Button size="small" variant="contained" color="success" className="request-button" sx={{ borderRadius: 2, fontWeight: 600, px: 2, boxShadow: 1 }}>Accept</Button>
-                                            <Button size="small" variant="contained" color="error" className="request-button" sx={{ borderRadius: 2, fontWeight: 600, px: 2, boxShadow: 1 }}>Reject</Button>
-                                        </Box>
+
                                     </Box>
                                 ))}
                             </CardContent>
@@ -414,7 +391,7 @@ const DashboardOverview = () => {
                             <CardHeader title={<Typography variant="h6" sx={{ fontWeight: 600 }}>Quick Actions</Typography>} />
                             <CardContent className="actions-card__content" sx={{ p: 2 }}>
                                 <Grid container spacing={1}>
-                                    <Grid item size={6}>
+                                    <Grid size={6}>
                                         <Link to="/schoolnurse/vaccination-campaign/schedule" style={{ textDecoration: "none" }}>
                                             <Button className="action-button action-button--rose" fullWidth sx={{
                                                 bgcolor: 'linear-gradient(135deg, #f43f5e 0%, #fbbf24 100%)',
@@ -427,7 +404,7 @@ const DashboardOverview = () => {
                                         </Link>
 
                                     </Grid>
-                                    <Grid item size={6}>
+                                    <Grid size={6}>
                                         <Link to="/schoolnurse/health-check-campaign/schedule" style={{ textDecoration: "none" }}>
                                             <Button className="action-button action-button--emerald" fullWidth sx={{
                                                 bgcolor: 'linear-gradient(135deg, #10b981 0%, #06b6d4 100%)',
@@ -440,7 +417,7 @@ const DashboardOverview = () => {
                                         </Link>
 
                                     </Grid>
-                                    <Grid item size={6}>
+                                    <Grid size={6}>
                                         <Link to="/schoolnurse/pupils-management" style={{ textDecoration: "none" }}>
                                             <Button className="action-button action-button--blue" fullWidth sx={{
                                                 bgcolor: 'linear-gradient(135deg, #6366f1 0%, #60a5fa 100%)',
@@ -453,7 +430,7 @@ const DashboardOverview = () => {
                                         </Link>
 
                                     </Grid>
-                                    <Grid item size={6}>
+                                    <Grid size={6}>
                                         <Link to="/schoolnurse/medical-events" style={{ textDecoration: "none" }}>
                                             <Button className="action-button action-button--purple" fullWidth sx={{
                                                 bgcolor: 'linear-gradient(135deg, #a78bfa 0%, #6366f1 100%)',

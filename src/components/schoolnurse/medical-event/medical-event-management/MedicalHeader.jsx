@@ -176,7 +176,7 @@ const MedicalHeader = () => {
 
     return (
         <>
-            <div maxWidth="xxl" className="medical-header" style={{}}>
+            <div className="medical-header" style={{}}>
                 {/* Header Section */}
                 <Box className="header-section" sx={{ position: 'relative' }}>
                     <Grid container spacing={3} alignItems="center">
