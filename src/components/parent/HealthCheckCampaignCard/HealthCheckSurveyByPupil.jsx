@@ -369,6 +369,12 @@ const HealthCheckSurveyByPupil = ({ currentPupil }) => {
               <Alert severity="warning" sx={{ mt: 2 }}>
                 Please select at least one examination area to proceed.
               </Alert>
+
+            )}
+            {selectedDiseases.length === 0 && (
+              <Alert severity="warning" sx={{ mt: 2 }}>
+                Non-sensitive diseases are required for the health check examination. Selected sensitive diseases can only be changed while the survey is ongoing.
+              </Alert>
             )}
           </Paper>
 
