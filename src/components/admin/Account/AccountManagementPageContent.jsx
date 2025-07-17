@@ -106,7 +106,7 @@ const userAccounts = [
   },
   {
     user_id: "SN0002",
-    first_name: "An",
+    first_name: "Tuệ",
     last_name: "Vũ",
     email: "an.vu@truonghoc.edu.vn",
     phone_number: "0287890123",
@@ -199,6 +199,7 @@ const userAccounts = [
 const ACCOUNT_PER_PAGE = 5;
 
 const AccountManagementPageContent = () => {
+  
   const [users, setUsers] = useState(userAccounts || [])
   const [searchTerm, setSearchTerm] = useState("")
   const [roleFilter, setRoleFilter] = useState("All")
@@ -243,12 +244,15 @@ const AccountManagementPageContent = () => {
     setActionsAnchor(null)
   }
 
-  const filteredUsers = (users || []).filter((user) => {
+  const filterCallback = (user) => {
+
+    const userName = `${user.last_name} ${user.first_name}`.toLowerCase()
+
     const matchesSearch =
-      user.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      userName.includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.user_id.toString().includes(searchTerm)
+      user.user_id.toString().includes(searchTerm) ||
+      user.phone_number.includes(searchTerm)
 
     const matchesRole = roleFilter === "All" || user.role === roleFilter
     const matchesStatus =
@@ -257,7 +261,18 @@ const AccountManagementPageContent = () => {
       (statusFilter === "Inactive" && !user.is_active)
 
     return matchesSearch && matchesRole && matchesStatus
-  })
+  }
+  const handleDownloadAsExcel = () => {
+
+    // get data:
+    const data = (users || []).filter(filterCallback);
+
+    // debug:
+    console.log("Downloaded data:", data);
+
+    setActionsAnchor(null); // Close the menu after action
+  }
+  const filteredUsers = (users || []).filter(filterCallback)
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
@@ -296,24 +311,29 @@ const AccountManagementPageContent = () => {
         <CardContent sx={{ p: 3 }}>
           <Grid container spacing={3} alignItems="center">
             <Grid item size={{xs: 12, md:3}}>
-              <TextField
-                fullWidth
-                placeholder="Search by ID, email, or name"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon color="action" />
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: 2,
-                  },
-                }}
-              />
+              <Tooltip title="Search by ID, email, phone or name">
+                <TextField
+                  fullWidth
+                  placeholder="Search by ID, email, phone or name"
+                  value={searchTerm}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value)
+                    setPage(1) // Reset to first page on search
+                  }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon color="action" />
+                      </InputAdornment>
+                    ),
+                  }}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 2,
+                    },
+                  }}
+                />
+              </Tooltip>
             </Grid>
 
             <Grid item size={{xs: 12, md:2}}>
@@ -381,7 +401,7 @@ const AccountManagementPageContent = () => {
                 Actions
               </Button>
               <Menu anchorEl={actionsAnchor} open={Boolean(actionsAnchor)} onClose={handleActionsClose}>
-                <MenuItem onClick={handleActionsClose}>
+                <MenuItem onClick={handleDownloadAsExcel}>
                   <ListItemIcon>
                     <FileDownloadIcon fontSize="small" />
                   </ListItemIcon>
@@ -459,10 +479,10 @@ const AccountManagementPageContent = () => {
                     <TableCell>
                       <Box>
                         <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: 1.2 }}>
-                          {user.first_name}
+                          {user.last_name}
                         </Typography>
                         <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.2 }}>
-                          {user.last_name}
+                          {user.first_name}
                         </Typography>
                       </Box>
                     </TableCell>
@@ -528,7 +548,7 @@ const AccountManagementPageContent = () => {
       {/* Pagination */}
       <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
         <Pagination
-          count={3}
+          count={Math.ceil((filteredUsers.length || 0) / ACCOUNT_PER_PAGE) || 1}
           page={page}
           onChange={(event, page) => setPage(page)}
           color="primary"
