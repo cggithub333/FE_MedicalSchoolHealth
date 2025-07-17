@@ -22,6 +22,13 @@ export const downloadExcel = (data, prefixFileName) => {
   XLSX.writeFile(workbook, fileName);
 }
 
+export const excelDateToJSDate = (serial) => {
+  const utc_days = Math.floor(serial - 25569);
+  const utc_value = utc_days * 86400;
+  const date_info = new Date(utc_value * 1000);
+  return date_info.toISOString().split("T")[0]; // "yyyy-mm-dd"
+};
+
 export const importExcel = (file) => {
   if (!file) {
     throw new Error("No file provided for import.");
