@@ -554,18 +554,25 @@ const PrescriptionSearching = ({ pupil, userFullName }) => {
                   </IconButton>
                 </Box>
                 <Box sx={{ textAlign: "center" }}>
-                  <img
-                    src={selectedRecord.prescriptionImage || "/placeholder.svg"}
-                    alt="Prescription"
-                    style={{
-                      maxWidth: "100%",
-                      maxHeight: "150px",
-                      borderRadius: "4px",
-                      border: "1px solid #e0e0e0",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => handleImageClick(selectedRecord.prescriptionImage)}
-                  />
+                  {selectedRecord.prescriptionImage && (
+                    <img
+                      src={selectedRecord.prescriptionImage || "/placeholder.svg"}
+                      alt="Prescription"
+                      style={{
+                        maxWidth: "100%",
+                        maxHeight: "150px",
+                        borderRadius: "4px",
+                        border: "1px solid #e0e0e0",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => handleImageClick(selectedRecord.prescriptionImage)}
+                    />
+                  )}
+                  {!selectedRecord.prescriptionImage && (
+                    <Typography variant="body2" color="text.secondary">
+                      No prescription image available.
+                    </Typography>
+                  )}                  
                 </Box>
               </Paper>
 

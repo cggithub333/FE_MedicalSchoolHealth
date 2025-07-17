@@ -12,7 +12,7 @@ export const stylePupilBtn = (pupilGender) => {
   const test = (forAllChildrenLink.some(item => location.pathname.includes(item)))
   const isForAll = test;
   const isForMale = !test && (pupilGender === "M");
-  const backgroundColor = isForAll ? "#e7ef88" : (isForMale ? "#65aee7" : "#e493b3");
+  const backgroundColor = isForAll ? "#77c1ad" : (isForMale ? "#65aee7" : "#e493b3");
 
   return {
     color: "#fff",
@@ -22,8 +22,9 @@ export const stylePupilBtn = (pupilGender) => {
     boxShadow: "0px 2px 2px 2px rgba(0, 0, 0, 0.1)",
     transition: "all 0.5s ease",
     "&:hover": {
-      background: "#e7ef88"
-    }
+      background: "#77c1ad"
+    },
+    cursor: "default",
   }
 }
 

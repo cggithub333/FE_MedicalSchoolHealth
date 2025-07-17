@@ -21,6 +21,7 @@ import { useNewestCampaign } from "../../../../hooks/manager/healthcheck/create-
 import { useUpdateCampaignStatus } from "../../../../hooks/manager/healthcheck/create-new-campaign/useUpdateStatusOfNewCampaign"
 import HealthCheckCampaignForm from "./health-check-campaign-form/HealthCheckCampaignForm"
 import "./StyleNewHealthCheckCampaign.scss" // Assuming this file contains the necessary styles
+import { showErrorToast } from "@utils/toast-utils"
 
 const NewHealthCheckCampaign = () => {
     const { newestCampaign, isLoading, refetch } = useNewestCampaign()
@@ -74,7 +75,7 @@ const NewHealthCheckCampaign = () => {
             setDialogOpen(false)
             refetch()
         } catch (error) {
-            alert("Failed to update campaign status")
+            showErrorToast("Failed to update campaign status")
         }
     }
 

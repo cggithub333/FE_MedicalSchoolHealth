@@ -14,6 +14,7 @@ import Homepage from './components/homepage-resources/Homepage';
 // toastify config:
 import { ToastContainer, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Toaster } from 'react-hot-toast';
 
 import { getPayloadResources } from './utils/jwt-utils';
 import { isContained } from './utils/string-utils';
@@ -63,6 +64,18 @@ function App() {
                 theme="dark"
                 transition={Bounce}
             />
+            <Toaster
+                position="top-right"
+                toastOptions={{
+                    duration: 3000,
+                    style: {
+                        padding: '16px',
+                        color: '#fff',
+                        background: '#333',
+                    },
+                }}
+            />
+
             <Router>
                 <Routes>
                     <Route path="/" element={<Navigate to={"/homepage"} />} /> {/* entry point of the application */}

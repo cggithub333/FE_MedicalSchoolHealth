@@ -142,7 +142,6 @@ export default function LoginModal() {
 
   const handlePressEnter = (e) => {
     if (e.key === "Enter") {
-      console.log("Debug: Enter is pressed!");
       handleLoginWithPwd();
     }
   }

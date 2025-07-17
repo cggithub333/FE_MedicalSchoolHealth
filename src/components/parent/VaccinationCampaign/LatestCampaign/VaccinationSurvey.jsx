@@ -37,6 +37,8 @@ import useLatestVaccinationCampaign from "@hooks/parent/vaccination/useLatestVac
 import useAllVaccinationSurveys from "@hooks/parent/vaccination/useAllVaccinationSurveys"
 import useUpdateVaccineSurveyStatus from "@hooks/parent/vaccination/useUpdateVaccineSurveyStatus"
 
+import { showErrorToast, showSuccessToast } from "@utils/toast-utils"
+
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString("en-EN", {
     year: "numeric",
@@ -103,7 +105,7 @@ const VaccinationSurvey = () => {
   const [needReload, setNeedReload] = useState(false) // help page reload every time a response is submitted successfully
 
   // Debug log
-  // console.log("Vaccination Surveys:\n", JSON.stringify(vaccinationSurveys))
+  console.log("Vaccination Surveys:\n", JSON.stringify(vaccinationSurveys))
 
   // Refetch data everytime `needReload` changes. (true when a response is submitted successfully)
   // This ensures the page is updated with the latest data after parent 'rejects' or 'approves' the surveys.
@@ -131,7 +133,7 @@ const VaccinationSurvey = () => {
 
     // check status of selectedForm:
     if (selectedForm.status === response) {
-      alert(`This survey has already been ${selectedForm.status.toLowerCase()}!`);
+      showErrorToast(`This survey has already been ${selectedForm.status.toLowerCase()}!`);
       return;
     }
 
@@ -144,7 +146,7 @@ const VaccinationSurvey = () => {
       console.log("Response submitted:", responseData);
 
       // alert information:
-      alert(`Your survey of  disease "${selectedForm.diseaseName}" for student "${selectedForm.pupilName}" has been ${response === "APPROVED" ? "approved" : "rejected"} successfully.`);
+      showSuccessToast(`Your survey of  disease "${selectedForm.diseaseName}" for student "${selectedForm.pupilName}" has been ${response === "APPROVED" ? "approved" : "rejected"} successfully`);
 
       handleCloseDialog(); // now `selectedForm` is null;
 
@@ -153,7 +155,7 @@ const VaccinationSurvey = () => {
 
     } catch (err) {
       console.error("Error submitting response:", err)
-      alert(`OOps! There was an error submitting your response!`);
+      showErrorToast(`OOps! There was an error submitting your response!`);
     } finally {
       setSubmitting(false)
     }

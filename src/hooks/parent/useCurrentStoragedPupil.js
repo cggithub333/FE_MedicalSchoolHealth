@@ -40,8 +40,28 @@ const useCurrentStoragedPupil = () => {
   return {
     loading,
     currentPupil,
-    refetch: getStoragedPupil
+    refetch: getStoragedPupil,
+    filterUserInfor: (pupilInfo, parentId) => filterUserInfoData(pupilInfo, parentId)
   };
 }
+
+const filterUserInfoData = (pupilInfo, parentId) => {
+  if (!pupilInfo || !parentId) {
+    return null; // Return null if no data is available
+  }
+  return {
+    pupilId: pupilInfo.pupilId,
+    lastName: pupilInfo.lastName,
+    firstName: pupilInfo.firstName,
+    birthDate: pupilInfo.birthDate,
+    gender: pupilInfo.gender,
+    gradeId: pupilInfo.gradeId,
+    startYear: pupilInfo.startYear,
+    gradeLevel: pupilInfo.gradeLevel,
+    gradeName: pupilInfo.gradeName,
+    currentParent: pupilInfo.parents.find(parent => parent.userId === parentId) || null,
+  }
+}
+
 
 export default useCurrentStoragedPupil
