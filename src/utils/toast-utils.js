@@ -41,8 +41,8 @@ export const showErrorToast = (message) => {
   });
 }
 
-const delay = (ms) => new Promise(res => setTimeout(res, ms));
 
+const delay = (ms) => new Promise(res => setTimeout(res, ms));
 export const showWarningToast = async (message) => {
   toast.warn(`${message}!`, {
     style: {
