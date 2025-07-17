@@ -49,41 +49,19 @@ const DashboardOverview = () => {
         color: ["emerald", "amber", "rose", "blue"][idx % 4], // cycle colors for demo
     }));
 
-    const medicationSchedule = [
-        {
-            id: 1,
-            pupilName: "Jessica Park",
-            medication: "Insulin",
-            dosage: "5 units",
-            time: "12:00 PM",
-            status: "Pending",
-            avatar: "JP",
-            color: "blue",
-            urgent: true,
-        },
-        {
-            id: 2,
-            pupilName: "David Thompson",
-            medication: "Methylphenidate",
-            dosage: "10mg",
-            time: "08:00 AM",
-            status: "Given",
-            avatar: "DT",
-            color: "purple",
-            urgent: false,
-        },
-        {
-            id: 3,
-            pupilName: "Alex Rodriguez",
-            medication: "Albuterol Inhaler",
-            dosage: "2 puffs",
-            time: "PRN",
-            status: "Active",
-            avatar: "AR",
-            color: "teal",
-            urgent: false,
-        },
-    ]
+    // Map prescriptions to medicationSchedule (show only 4 newest by requestedDate)
+    const medicationSchedule = (prescriptions || [])
+        .slice() // copy array
+        .sort((a, b) => new Date(b.requestedDate) - new Date(a.requestedDate))
+        .slice(0, 4)
+        .map((item, idx) => ({
+            pupilName: `${item.pupilLastName} ${item.pupilFirstName}`,
+            medication: item.medicationItems?.[0]?.medicationName || '',
+            dosage: item.medicationItems?.[0]?.unitAndUsage || '',
+            time: item.medicationItems?.[0]?.medicationSchedule || '',
+            avatar: item.pupilFirstName ? item.pupilFirstName.charAt(0) : '',
+            color: ["blue", "purple", "teal", "emerald"][idx % 4],
+        }))
 
     const requests = [
         {
@@ -114,35 +92,6 @@ const DashboardOverview = () => {
                 return { color: "success", variant: "outlined" }
             default:
                 return { color: "default", variant: "outlined" }
-        }
-    }
-
-    const getStatusChipProps = (status) => {
-        switch (status.toLowerCase()) {
-            case "completed":
-            case "resolved":
-            case "given":
-                return { color: "success", variant: "filled" }
-            case "pending":
-            case "ongoing":
-                return { color: "info", variant: "filled" }
-            case "active":
-                return { color: "secondary", variant: "filled" }
-            default:
-                return { color: "default", variant: "filled" }
-        }
-    }
-
-    const getButtonProps = (status) => {
-        switch (status) {
-            case "Given":
-                return { color: "inherit", variant: "outlined", disabled: true }
-            case "Pending":
-                return { color: "primary", variant: "contained" }
-            case "Active":
-                return { color: "success", variant: "contained" }
-            default:
-                return { color: "primary", variant: "contained" }
         }
     }
 
@@ -323,11 +272,7 @@ const DashboardOverview = () => {
                                             <Box className="medication-item__right" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                                                 <Box className="medication-item__time-info" sx={{ textAlign: 'right' }}>
                                                     <Typography variant="body2" className="medication-item__time" sx={{ color: '#0f172a', fontWeight: 600 }}>{med.time}</Typography>
-                                                    {med.urgent && (
-                                                        <Typography variant="caption" className="medication-item__urgent-text" sx={{ color: '#f59e42', fontWeight: 500 }}>
-                                                            Due soon
-                                                        </Typography>
-                                                    )}
+
                                                 </Box>
 
                                             </Box>
