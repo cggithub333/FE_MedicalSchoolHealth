@@ -189,11 +189,11 @@ const MedicalHeader = () => {
 
     return (
         <>
-            <div maxWidth="xxl" className="medical-header" style={{}}>
+            <div className="medical-header" style={{}}>
                 {/* Header Section */}
                 <Box className="header-section" sx={{ position: 'relative' }}>
                     <Grid container spacing={3} alignItems="center">
-                        <Grid item xs={12} md={8}>
+                        <Grid>
                             <Fade in timeout={800}>
                                 <Box className="header-content">
                                     <Typography variant="h2" className="main-title">
@@ -214,7 +214,7 @@ const MedicalHeader = () => {
                 <Box className="stats-section">
                     <Grid container spacing={10}>
                         {statsData.map((stat, index) => (
-                            <Grid item xs={12} sm={6} lg={3} key={stat.title}>
+                            <Grid key={stat.title}>
                                 <Grow in timeout={stat.delay}>
                                     <Card
                                         className={`stat-card ${stat.color}`} // 🛠️ Fixed className bug here

@@ -50,6 +50,7 @@ import { useGetAllMedicalEventByPupilsId } from "../../../../hooks/schoolnurse/n
 import { useGetVaccinationHistoryByPupilId } from "../../../../hooks/schoolnurse/new-event/useGetVaccinationByPupilId"
 import { useGetAllHealthCheckByPupilID } from "../../../../hooks/schoolnurse/new-event/useGetAllHealthCheckByPupilID"
 import useSearchPupilInforByPupilId from "../../../../hooks/schoolnurse/useSearchPupilInforByPupilId";
+import { useGetAllHealthRecordByPupilId } from "@hooks/parent/new-event/useGetAllHealthrecordByPupilId";
 
 import MedicalEventDetails from "./medical-event-details/EventFormResult.jsx";
 import ScheduleResult from "./healthcheck-schedule-management-result/ScheduleResult.jsx";
@@ -186,10 +187,12 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
     const BMI = latestHealthCheck && latestHealthCheck.height && latestHealthCheck.weight ? (latestHealthCheck.weight / ((latestHealthCheck.height / 100) ** 2)).toFixed(2) : '-';
     const Lefteye = latestHealthCheck?.leftEyeVision || '-';
     const Righteye = latestHealthCheck?.rightEyeVision || '-';
-    const BloodPressure = latestHealthCheck?.bloodPressure || '-';
-    const DentalCheck = latestHealthCheck?.dentalCheck || '-';
     const Notes = latestHealthCheck?.additionalNotes || '-';
 
+    // Fetch health declaration records for the selected pupil
+    const { healthRecords = [], loading, error } = useGetAllHealthRecordByPupilId(pupilId);
+
+    console.log("health records - pupilInfo:", healthRecords);
     if (isMedicalEventsLoading) {
         return <Box p={4}><Typography>Loading medical events...</Typography></Box>;
     }
@@ -340,22 +343,6 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
                                         <span>{Righteye}</span>
                                     </Item>
                                 </Grid>
-                                <Grid size={6}>
-                                    <Item>
-                                        <Typography variant="h6" sx={{ alignItems: 'center', gap: 1, color: '#1976d2' }}>
-                                            Blood Pressure
-                                        </Typography>
-                                        <span>{BloodPressure}</span>
-                                    </Item>
-                                </Grid>
-                                <Grid size={6}>
-                                    <Item>
-                                        <Typography variant="h6" sx={{ alignItems: 'center', gap: 1, color: '#1976d2' }}>
-                                            Dental Check
-                                        </Typography>
-                                        <span>{DentalCheck}</span>
-                                    </Item>
-                                </Grid>
                                 <Grid size={12}>
                                     <Item>
                                         <Typography variant="h6" sx={{ alignItems: 'center', gap: 1, color: '#1976d2' }}>
@@ -363,6 +350,85 @@ const MedicalEventResultForm = ({ pupilId, onBack }) => {
                                         </Typography>
                                         <span>{Notes}</span>
                                     </Item>
+                                </Grid>
+                            </Grid>
+                            {/* Health Declaration */}
+                            <Grid container spacing={2} sx={{ bgcolor: '#fff', p: 2, borderRadius: 2 }} size={12}>
+                                <Grid size={12}>
+                                    {/* ALLERGY Section */}
+                                    <Paper elevation={1} sx={{ flex: 1, minWidth: 320, padding: 3, margin: 1, bgcolor: 'primary.50', borderRadius: 3, boxShadow: 4 }}>
+                                        <Typography variant="h6" color="primary" gutterBottom sx={{ fontWeight: 'bold', letterSpacing: 1 }}>ALLERGY</Typography>
+                                        {loading ? (
+                                            <Typography variant="body2" color="text.secondary">Loading...</Typography>
+                                        ) : (
+                                            (healthRecords.filter(r => r.typeHistory === 'ALLERGY').length === 0) ? (
+                                                <Typography variant="body2" color="text.secondary">No allergy records.</Typography>
+                                            ) : (
+                                                <Box component="table" sx={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0 }}>
+                                                    <Box component="thead">
+                                                        <Box component="tr" sx={{ bgcolor: 'primary.light' }}>
+                                                            <Box component="th" sx={{ textAlign: 'left', p: 1, fontWeight: 700, color: 'primary.main', borderRadius: '8px 0 0 0', color: "#fff" }}>Name</Box>
+                                                            <Box component="th" sx={{ textAlign: 'left', p: 1, fontWeight: 700, color: 'primary.main', color: "#fff" }}>Reaction/Note</Box>
+                                                            <Box component="th" sx={{ textAlign: 'center', p: 1, fontWeight: 700, color: 'primary.main', borderRadius: '0 8px 0 0', color: "#fff" }}>Image</Box>
+                                                        </Box>
+                                                    </Box>
+                                                    <Box component="tbody">
+                                                        {healthRecords.filter(r => r.typeHistory === 'ALLERGY').map((record, idx, arr) => (
+                                                            <Box component="tr" key={record.conditionId} sx={{ bgcolor: idx % 2 === 0 ? 'white' : 'primary.100', borderRadius: 2 }}>
+                                                                <Box component="td" sx={{ p: 1, borderBottom: idx === arr.length - 1 ? 'none' : '1px solid #e0e0e0' }}>{record.name}</Box>
+                                                                <Box component="td" sx={{ p: 1, borderBottom: idx === arr.length - 1 ? 'none' : '1px solid #e0e0e0' }}>{record.reactionOrNote}</Box>
+                                                                <Box component="td" sx={{ p: 1, textAlign: 'center', borderBottom: idx === arr.length - 1 ? 'none' : '1px solid #e0e0e0' }}>
+                                                                    {record.imageUrl ? (
+                                                                        <Button size="small" variant="outlined" color="primary" startIcon={<PersonIcon />} onClick={() => window.open(record.imageUrl, '_blank')}>See</Button>
+                                                                    ) : (
+                                                                        <Typography variant="caption" color="text.secondary">No image</Typography>
+                                                                    )}
+                                                                </Box>
+                                                            </Box>
+                                                        ))}
+                                                    </Box>
+                                                </Box>
+                                            )
+                                        )}
+                                    </Paper>
+                                </Grid>
+                                {/* MEDICAL_HISTORY Section */}
+                                <Grid size={12}>
+                                    <Paper elevation={1} sx={{ flex: 1, minWidth: 320, padding: 3, margin: 1, bgcolor: 'secondary.50', borderRadius: 3, boxShadow: 4 }}>
+                                        <Typography variant="h6" color="secondary" gutterBottom sx={{ fontWeight: 'bold', letterSpacing: 1 }}>MEDICAL HISTORY</Typography>
+                                        {loading ? (
+                                            <Typography variant="body2" color="text.secondary">Loading...</Typography>
+                                        ) : (
+                                            (healthRecords.filter(r => r.typeHistory === 'MEDICAL_HISTORY').length === 0) ? (
+                                                <Typography variant="body2" color="text.secondary">No medical history records.</Typography>
+                                            ) : (
+                                                <Box component="table" sx={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0 }}>
+                                                    <Box component="thead">
+                                                        <Box component="tr" sx={{ bgcolor: 'secondary.light' }}>
+                                                            <Box component="th" sx={{ textAlign: 'left', p: 1, fontWeight: 700, color: 'secondary.main', borderRadius: '8px 0 0 0', color: "#fff" }}>Name</Box>
+                                                            <Box component="th" sx={{ textAlign: 'left', p: 1, fontWeight: 700, color: 'secondary.main', color: "#fff" }}>Reaction/Note</Box>
+                                                            <Box component="th" sx={{ textAlign: 'center', p: 1, fontWeight: 700, color: 'secondary.main', borderRadius: '0 8px 0 0', color: "#fff" }}>Image</Box>
+                                                        </Box>
+                                                    </Box>
+                                                    <Box component="tbody">
+                                                        {healthRecords.filter(r => r.typeHistory === 'MEDICAL_HISTORY').map((record, idx, arr) => (
+                                                            <Box component="tr" key={record.conditionId} sx={{ bgcolor: idx % 2 === 0 ? 'white' : 'secondary.100', borderRadius: 2 }}>
+                                                                <Box component="td" sx={{ p: 1, borderBottom: idx === arr.length - 1 ? 'none' : '1px solid #e0e0e0' }}>{record.name}</Box>
+                                                                <Box component="td" sx={{ p: 1, borderBottom: idx === arr.length - 1 ? 'none' : '1px solid #e0e0e0' }}>{record.reactionOrNote}</Box>
+                                                                <Box component="td" sx={{ p: 1, textAlign: 'center', borderBottom: idx === arr.length - 1 ? 'none' : '1px solid #e0e0e0' }}>
+                                                                    {record.imageUrl ? (
+                                                                        <Button size="small" variant="outlined" color="secondary" startIcon={<PersonIcon />} onClick={() => window.open(record.imageUrl, '_blank')}>See</Button>
+                                                                    ) : (
+                                                                        <Typography variant="caption" color="text.secondary">No image</Typography>
+                                                                    )}
+                                                                </Box>
+                                                            </Box>
+                                                        ))}
+                                                    </Box>
+                                                </Box>
+                                            )
+                                        )}
+                                    </Paper>
                                 </Grid>
                             </Grid>
 

@@ -9,19 +9,17 @@ const Profile = () => {
   return (
     <div style={{ background: "#E6F8F9", height: "100vh", paddingBottom: "50px", paddingTop: "10px" }}>
       <Grid container>
-        <Grid item size={{ xs: 6 }}>
+        <Grid size={{ xs: 6 }}>
           <Breadcrumb breadcrumbPairs={breadcrumbPairs} />
         </Grid>
       </Grid>
       <Grid container>
-        <Grid item sx={{ marginLeft: "20px", marginTop: "25px" }} size={{ xs: 6 }}>
+        <Grid sx={{ marginLeft: "20px", marginTop: "25px" }} size={{ xs: 6 }}>
           <CustomTittle title={"Manager's Profile"} />
         </Grid>
       </Grid>
       <Grid container justifyContent={'center'} sx={{ backgroundColor: "#E6F8F9" }}>
-        {/* <Grid item size={{ xs: 10 }}> */}
         <ProfileComponent />
-        {/* </Grid> */}
       </Grid>
     </div>
   )

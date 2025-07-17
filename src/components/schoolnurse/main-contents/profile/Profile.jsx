@@ -148,17 +148,17 @@ const ProfileComponent = () => {
     return (
         <Grid container className="profile-container" spacing={3}>
             {/* Header Section */}
-            <Grid item size={12}>
+            <Grid size={12}>
                 <Card className="profile-header">
                     <CardContent>
                         <Grid container alignItems="center" className="header-content" spacing={2} sx={{ marginX: 30 }}>
-                            <Grid item className="avatar-section">
+                            <Grid className="avatar-section">
                                 <Avatar src={formData.avatar} className="profile-avatar" sx={{ width: 120, height: 120, position: "relative", right: 200 }}>
                                     {formData.firstName?.[0]?.toUpperCase() || "U"}
                                 </Avatar>
                             </Grid>
 
-                            <Grid item xs sx={{ position: "relative", right: 200 }}>
+                            <Grid sx={{ position: "relative", right: 200 }}>
                                 <Box className="user-info">
                                     <Typography variant="h4" className="user-name">
                                         {formData.firstName} {formData.lastName}
@@ -189,9 +189,9 @@ const ProfileComponent = () => {
             </Grid>
 
             {/* Profile Details & Account Summary */}
-            <Grid item size={12}>
+            <Grid size={12}>
                 <Grid container spacing={3}>
-                    <Grid item size={6} md={8}>
+                    <Grid size={6} >
                         <Card className="profile-details">
                             <CardContent>
                                 <Typography variant="h6" gutterBottom>
@@ -212,7 +212,7 @@ const ProfileComponent = () => {
                     </Grid>
 
                     {/* Account Summary */}
-                    <Grid item size={6} md={4}>
+                    <Grid size={6} >
                         <Card className="summary-card">
                             <CardContent>
                                 <Typography variant="h6" gutterBottom className="section-title">
