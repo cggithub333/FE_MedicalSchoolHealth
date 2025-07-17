@@ -16,12 +16,14 @@ import { Link } from "react-router-dom"
 import { useGetPupilsInformation } from "../../../../hooks/schoolnurse/new-event/useGetPupilsInformation.js";
 import { useGetAllMedicalEvent } from "../../../../hooks/schoolnurse/new-event/useGetAllMedicalEvent.js"
 import { useGetAllPrescription } from "../../../../hooks/schoolnurse/main-contents/useGetAllPrescription.js";
+import useAllPendingPrescriptions from "@hooks/schoolnurse/useAllPendingPrescriptions"
 
 
 
 const DashboardOverview = () => {
     const { pupilsList = [], loading, error } = useGetPupilsInformation();
     const { medicalEventList = [] } = useGetAllMedicalEvent();
+    const { pendingMedicationRequests, loading: loadingPendingPrescriptions, error: errorPendingPrescriptions } = useAllPendingPrescriptions();
     // Fix prescriptions: extract array from response if needed
     const { prescriptions: prescriptionsRaw = [], loading: loadingPrescriptions, error: errorPrescriptions } = useGetAllPrescription();
     const prescriptions = Array.isArray(prescriptionsRaw) ? prescriptionsRaw : (Array.isArray(prescriptionsRaw.data) ? prescriptionsRaw.data : []);
@@ -55,6 +57,7 @@ const DashboardOverview = () => {
         .sort((a, b) => new Date(b.requestedDate) - new Date(a.requestedDate))
         .slice(0, 4)
         .map((item, idx) => ({
+            id: item.sendMedicationId,
             pupilName: `${item.pupilLastName} ${item.pupilFirstName}`,
             medication: item.medicationItems?.[0]?.medicationName || '',
             dosage: item.medicationItems?.[0]?.unitAndUsage || '',
@@ -63,24 +66,21 @@ const DashboardOverview = () => {
             color: ["blue", "purple", "teal", "emerald"][idx % 4],
         }))
 
-    const requests = [
-        {
-            id: 1,
+    // Map pendingMedicationRequests to requests (show only 2)
+    const requests = (pendingMedicationRequests || [])
+        .slice() // copy array
+        .sort((a, b) => new Date(b.requestedDate) - new Date(a.requestedDate))
+        .slice(0, 2)
+        .map((item) => ({
+            id: item.sendMedicationId,
             type: "Medication Request",
-            studentName: "Kevin Mitchell",
-            date: "01/02/2024",
-            time: "09:30 - 10:30",
-            avatar: "KM",
-        },
-        {
-            id: 2,
-            type: "Health Check Request",
-            studentName: "Adeline Hughes",
-            date: "07/02/2024",
-            time: "14:00 - 15:00",
-            avatar: "AH",
-        },
-    ]
+            studentName: `${item.pupilLastName} ${item.pupilFirstName}`,
+            date: item.startDate,
+            time: item.medicationItems?.[0]?.medicationSchedule || '',
+            avatar: item.pupilFirstName ? item.pupilFirstName.charAt(0) : '',
+            prescriptionImage: item.prescriptionImage,
+            status: item.status,
+        }));
 
     const getSeverityChipProps = (severity) => {
         switch (severity) {
@@ -321,7 +321,8 @@ const DashboardOverview = () => {
                                                 <Typography variant="caption" className="request-item__type" sx={{ color: '#64748b' }}>{request.type}</Typography>
                                             </Box>
                                         </Box>
-                                        <Box className="request-item__details" sx={{ display: 'flex', gap: 2, color: '#64748b', fontSize: 13, ml: 7 }}>
+
+                                        <Box className="request-item__details" sx={{ display: 'flex', gap: 0, color: '#64748b', fontSize: 13, ml: 0 }}>
                                             <Typography variant="caption">📅 {request.date}</Typography>
                                             <Typography variant="caption">🕐 {request.time}</Typography>
                                         </Box>
