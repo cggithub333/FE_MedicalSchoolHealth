@@ -52,7 +52,7 @@ import useLatestHealthCheckCampaign from "@hooks/parent/useLatestHealthCheckCamp
 import useSendHealthCheckSurvey from "@hooks/parent/health-check/useSendHealthCheckSurvey"
 import { showErrorToast, showSuccessToast } from "@utils/toast-utils"
 
-const HealthCheckSurveyByPupil = ({ currentPupil}) => {
+const HealthCheckSurveyByPupil = ({ currentPupil }) => {
 
   const { latestHealthCheckCampaign: healthCampaignInfo, isLoading: campaignLoading, refetch: campaignRefetch, error: campaignError } = useLatestHealthCheckCampaign();
   const { sendHealthCheckSurvey, loading: surveyLoading, error: surveyError } = useSendHealthCheckSurvey();
@@ -61,7 +61,7 @@ const HealthCheckSurveyByPupil = ({ currentPupil}) => {
   // debug:
   // console.log("Health check campaign info:", JSON.stringify(healthCampaignInfo, null, 2));
 
-  
+
   const [dialogOpen, setDialogOpen] = useState(false)
   const [selectedDiseases, setSelectedDiseases] = useState([])
   const [agreementChecked, setAgreementChecked] = useState(false)
@@ -186,7 +186,7 @@ const HealthCheckSurveyByPupil = ({ currentPupil}) => {
               </Typography>
             </Box>
             <Grid container spacing={2}>
-              <Grid item size={{ xs: 6, md:3}}>
+              <Grid item size={{ xs: 6, md: 3 }}>
                 <Typography variant="body2" color="text.secondary">
                   Student ID
                 </Typography>
@@ -194,7 +194,7 @@ const HealthCheckSurveyByPupil = ({ currentPupil}) => {
                   {currentPupil?.pupilId}
                 </Typography>
               </Grid>
-              <Grid item size={{ xs: 6, md:3}}>
+              <Grid item size={{ xs: 6, md: 3 }}>
                 <Typography variant="body2" color="text.secondary">
                   Full Name
                 </Typography>
@@ -202,7 +202,7 @@ const HealthCheckSurveyByPupil = ({ currentPupil}) => {
                   {currentPupil?.lastName} {currentPupil?.firstName}
                 </Typography>
               </Grid>
-              <Grid item size={{ xs: 6, md:3}}>
+              <Grid item size={{ xs: 6, md: 3 }}>
                 <Typography variant="body2" color="text.secondary">
                   Birth Date
                 </Typography>
@@ -210,7 +210,7 @@ const HealthCheckSurveyByPupil = ({ currentPupil}) => {
                   {currentPupil?.birthDate}
                 </Typography>
               </Grid>
-              <Grid item size={{ xs: 6, md:3}}>
+              <Grid item size={{ xs: 6, md: 3 }}>
                 <Typography variant="body2" color="text.secondary">
                   Class
                 </Typography>
@@ -282,7 +282,7 @@ const HealthCheckSurveyByPupil = ({ currentPupil}) => {
               Student Information
             </Typography>
             <Grid container spacing={2}>
-              <Grid item size={{ xs: 6, md:3}}>
+              <Grid item size={{ xs: 6, md: 3 }}>
                 <Typography variant="body2" color="text.secondary">
                   Student ID
                 </Typography>
@@ -290,7 +290,7 @@ const HealthCheckSurveyByPupil = ({ currentPupil}) => {
                   {currentPupil?.pupilId}
                 </Typography>
               </Grid>
-              <Grid item size={{ xs: 6, md:3}}>
+              <Grid item size={{ xs: 6, md: 3 }}>
                 <Typography variant="body2" color="text.secondary">
                   Full Name
                 </Typography>
@@ -298,7 +298,7 @@ const HealthCheckSurveyByPupil = ({ currentPupil}) => {
                   {currentPupil?.lastName} {currentPupil?.firstName}
                 </Typography>
               </Grid>
-              <Grid item size={{ xs: 6, md:3}}>
+              <Grid item size={{ xs: 6, md: 3 }}>
                 <Typography variant="body2" color="text.secondary">
                   Birth Date
                 </Typography>
@@ -306,7 +306,7 @@ const HealthCheckSurveyByPupil = ({ currentPupil}) => {
                   {currentPupil?.birthDate}
                 </Typography>
               </Grid>
-              <Grid item size={{ xs: 6, md:3}}>
+              <Grid item size={{ xs: 6, md: 3 }}>
                 <Typography variant="body2" color="text.secondary">
                   Class
                 </Typography>

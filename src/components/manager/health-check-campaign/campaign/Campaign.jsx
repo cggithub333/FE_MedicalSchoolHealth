@@ -1,5 +1,5 @@
-//done but not tested
 import { useState, useMemo } from "react"
+import { Link } from "react-router-dom"
 import {
     Box,
     Card,
@@ -451,29 +451,33 @@ const HealthCampaignManager = () => {
                                 <Typography variant="h5" color="text.secondary" gutterBottom>
                                     No campaigns found
                                 </Typography>
+
                                 <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
                                     Create your first campaign to get started
                                 </Typography>
-                                <Button
-                                    variant="contained"
-                                    size="large"
-                                    onClick={() => {
-                                        setSelectedCampaign(null)
-                                        setDialogMode("create")
-                                        setOpenDialog(true)
-                                    }}
-                                    sx={{
-                                        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                                        borderRadius: 3,
-                                        px: 4,
-                                        py: 1.5,
-                                        textTransform: "none",
-                                        fontSize: "1.1rem",
-                                        fontWeight: 600,
-                                    }}
-                                >
-                                    Create Your First Campaign
-                                </Button>
+                                <Link to="/manager/health-check-campaign/new">
+                                    <Button
+                                        variant="contained"
+                                        size="large"
+                                        onClick={() => {
+                                            setSelectedCampaign(null)
+                                            setDialogMode("create")
+                                            setOpenDialog(true)
+                                        }}
+                                        sx={{
+                                            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                                            borderRadius: 3,
+                                            px: 4,
+                                            py: 1.5,
+                                            textTransform: "none",
+                                            fontSize: "1.1rem",
+                                            fontWeight: 600,
+                                        }}
+                                    >
+                                        Create Your First Campaign
+                                    </Button>
+                                </Link>
+
                             </Box>
                         </Fade>
                     )}

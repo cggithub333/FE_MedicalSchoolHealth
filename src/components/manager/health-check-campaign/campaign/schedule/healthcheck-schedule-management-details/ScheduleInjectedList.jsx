@@ -52,9 +52,17 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
     const gradeName = shift?.grade
     // Fetch campaign details
     const { campaignDetails, isLoading } = useGetDetailsOfCampaignByID(campaignId)
-    // Extract pupils for this grade from consentForms
+    // Helper: extract grade number from gradeName (e.g., "Class 1A" -> 1)
+    function extractGradeNumber(gradeName) {
+        const match = gradeName && gradeName.match(/(\d+)/);
+        return match ? parseInt(match[1], 10) : null;
+    }
+    // Extract pupils for this grade from consentForms (by grade number)
     const pupils = (campaignDetails?.data?.consentForms || campaignDetails?.consentForms || [])
-        .filter(form => (form.pupilRes?.gradeName || form.pupilRes?.Grade) === gradeName)
+        .filter(form => {
+            const pupilGrade = form.pupilRes?.gradeName || form.pupilRes?.Grade || "";
+            return extractGradeNumber(pupilGrade) === Number(gradeName);
+        })
         .map(form => ({
             consentFormId: form.consentFormId, // <-- add consentFormId for ScheduleDetails
             pupilId: form.pupilRes.pupilId,
@@ -64,7 +72,7 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
             gender: form.pupilRes.gender,
             Grade: form.pupilRes.gradeName,
             gradeName: form.pupilRes.gradeName,
-            healthCheckConsentId: form.healthCheckConsentId,
+            // healthCheckConsentId: form.healthCheckConsentId,
             schoolYear: form.schoolYear,
             diseases: form.disease || [],
             avatar: `https://ui-avatars.com/api/?name=${form.pupilRes.firstName}+${form.pupilRes.lastName}&background=1976d2&color=fff`,

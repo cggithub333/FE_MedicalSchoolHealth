@@ -104,8 +104,8 @@ const HealthCheckScheduleForm = ({ campaignId, onBack }) => {
 
     // Use campaignDetails.data if present (API returns {data, status})
     const activeCampaign = campaignDetails?.data || campaignDetails
-
-    // Group pupils by gradeName (e.g., "Grade 1", "Grade 2") from consentForms in campaign
+    console.log("Active Campaign:", activeCampaign)
+    // Group pupils by grade number (1-5)
     useEffect(() => {
         if (!activeCampaign || !activeCampaign.consentForms) {
             setPupilsByGrade({})
@@ -114,8 +114,11 @@ const HealthCheckScheduleForm = ({ campaignId, onBack }) => {
         const grouped = {}
         for (const form of activeCampaign.consentForms) {
             const gradeName = form.pupilRes?.gradeName || "Unknown"
-            if (!grouped[gradeName]) grouped[gradeName] = []
-            grouped[gradeName].push({
+            const gradeNum = extractGradeNumber(gradeName)
+            if (!gradeNum || gradeNum < 1 || gradeNum > 5) continue
+            if (!grouped[gradeNum]) grouped[gradeNum] = []
+            grouped[gradeNum].push({
+
                 ...form.pupilRes,
                 consentFormId: form.consentFormId,
                 healthCheckHistoryRes: form.healthCheckHistoryRes,
@@ -130,24 +133,26 @@ const HealthCheckScheduleForm = ({ campaignId, onBack }) => {
         return activeCampaign ? calculateScheduleDates(activeCampaign) : []
     }, [activeCampaign])
 
+
+
     // Handle navigation to student list
-    const handleViewStudents = (gradeName) => {
+    const handleViewStudents = (gradeNum) => {
         if (!activeCampaign) return
-        const gradePupils = pupilsByGrade[gradeName] || []
-        const savedData = getShiftSavedData(activeCampaign.campaignId, gradeName, gradePupils)
+        const gradePupils = pupilsByGrade[gradeNum] || []
+        const savedData = getShiftSavedData(activeCampaign.campaignId, gradeNum, gradePupils)
         // Use index for schedule date
-        const gradeIndex = Object.keys(pupilsByGrade).indexOf(gradeName)
+        const gradeIndex = GRADES.indexOf(Number(gradeNum))
         const scheduleDate = scheduleDates[gradeIndex]
         const shift = {
-            id: `${activeCampaign.campaignId}-${gradeName}-morning`,
-            name: `${gradeName} - Morning`,
+            id: `${activeCampaign.campaignId}-Grade${gradeNum}-morning`,
+            name: `Grade ${gradeNum} - Morning`,
             time: "08:00 - 11:00",
-            grade: gradeName,
+            grade: gradeNum,
             campaignId: activeCampaign.campaignId,
             students: savedData, // merged with saved data
             allPupils: gradePupils, // raw pupils array for consistent count
             totalPupils: gradePupils.length,
-            scheduleDate: scheduleDate?.date || `Day ${gradeName}`,
+            scheduleDate: scheduleDate?.date || `Day Grade ${gradeNum}`,
         }
         setSelectedShift(shift)
         setShowInjectionList(true)
@@ -179,12 +184,10 @@ const HealthCheckScheduleForm = ({ campaignId, onBack }) => {
         }
     }, [activeCampaign, isLoading])
 
+    // Only show grades 1-5
     // Show all grades, even if there are no pupils for that grade
     // Build a list of all grade names from pupilsByGrade and GRADES
-    const allGradeNames = Array.from(new Set([
-        ...Object.keys(pupilsByGrade),
-        ...GRADES.map((g) => `Grade ${g}`)
-    ]))
+    const allGradeNames = GRADES.map((g) => g.toString())
 
     if (isLoading) {
         return (
@@ -340,8 +343,10 @@ const HealthCheckScheduleForm = ({ campaignId, onBack }) => {
                                                                 WebkitTextFillColor: 'transparent',
                                                             }}
                                                         >
-                                                            {gradeName} Health Check
+                                                            Grade {gradeName}
+
                                                         </Typography>
+
 
                                                         <Chip
                                                             icon={
@@ -410,6 +415,12 @@ const HealthCheckScheduleForm = ({ campaignId, onBack }) => {
             </Fade>
         </div>
     )
+}
+
+// Helper: extract grade number from gradeName (e.g., "Class 1A" -> 1)
+function extractGradeNumber(gradeName) {
+    const match = gradeName && gradeName.match(/(\d+)/);
+    return match ? parseInt(match[1], 10) : null;
 }
 
 export default HealthCheckScheduleForm
