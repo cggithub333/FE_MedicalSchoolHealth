@@ -143,7 +143,7 @@ const VaccineCampaignForm = ({ onSuccess, onCancel }) => {
                 if (err?.response) {
                     console.error("Backend error response:", err.response.data)
                     if (err.response.data && err.response.data.message) {
-                        alert("Backend error: " + err.response.data.message)
+                        console.error("Backend error: " + err.response.data.message)
                     }
                 }
                 console.error("Error creating vaccination campaign (full):", err)

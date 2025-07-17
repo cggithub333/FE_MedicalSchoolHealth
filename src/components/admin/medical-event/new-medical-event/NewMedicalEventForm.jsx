@@ -26,6 +26,7 @@ import { useGetPupilsInformation } from "../../../../hooks/schoolnurse/new-event
 import { useCreateNewMedicalEvent } from "../../../../hooks/schoolnurse/new-event/useCreateNewMedicalEvent"
 import { useGetAllEquipment } from "../../../../hooks/schoolnurse/new-event/useGetAllEquipment"
 import { useGetAllMedication } from "../../../../hooks/schoolnurse/new-event/useGetAllMedication"
+import { showErrorToast } from "@utils/toast-utils";
 
 const MedicalEventForm = ({ onCancel, onSuccess }) => {
     // Get current date-time in yyyy-MM-ddTHH:mm format for input type="datetime-local"
@@ -72,7 +73,7 @@ const MedicalEventForm = ({ onCancel, onSuccess }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!selectedPupil) {
-            alert('Please select a pupil.');
+            showErrorToast('Please select a pupil.');
             return;
         }
         await createNewMedicalEvent({

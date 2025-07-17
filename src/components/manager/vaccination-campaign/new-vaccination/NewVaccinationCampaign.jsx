@@ -17,10 +17,11 @@ import {
     Fade,
 } from "@mui/material"
 import AddIcon from "@mui/icons-material/Add"
-import { useNewestCampaignByStatus } from "../../../../hooks/manager/vaccination/create-new-campaign/useGetNewestCampaingByStatus"
-import { useUpdateNewCampaign } from "../../../../hooks/manager/vaccination/create-new-campaign/useUpdateNewCampaign"
+import { useNewestCampaignByStatus } from "@hooks/manager/vaccination/create-new-campaign/useGetNewestCampaingByStatus"
+import { useUpdateNewCampaign } from "@hooks/manager/vaccination/create-new-campaign/useUpdateNewCampaign"
 import VaccineCampaignForm from "./vaccination-campaign-form/VaccineCampaignForm"
-import { usePublishVaccinationCampaign } from "../../../../hooks/manager/vaccination/create-new-campaign/usePublishVaccinationCampaign"
+import { usePublishVaccinationCampaign } from "@hooks/manager/vaccination/create-new-campaign/usePublishVaccinationCampaign"
+import { showErrorToast } from "@utils/toast-utils"
 const cardSx = {
     minWidth: 320,
     maxWidth: 340,
@@ -118,7 +119,7 @@ const NewVaccinationCampaign = () => {
             refetch && refetch()
         } catch (error) {
             console.error("Failed to update campaign status:", error)
-            alert("Failed to update campaign status")
+            showErrorToast("Failed to update campaign status")
         }
     }
 
@@ -130,7 +131,7 @@ const NewVaccinationCampaign = () => {
                 setCreateFormOpen(false)
                 refetch && refetch()
             } else {
-                alert("Failed to delete campaign.")
+                showErrorToast("Failed to delete campaign.")
             }
         }
     }
@@ -142,7 +143,7 @@ const NewVaccinationCampaign = () => {
             refetch && refetch();
         } catch (error) {
             console.error("Failed to publish campaign:", error);
-            alert("Failed to publish campaign");
+            showErrorToast("Failed to publish campaign");
         }
     };
 
