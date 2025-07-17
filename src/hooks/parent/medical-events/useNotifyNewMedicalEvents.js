@@ -28,7 +28,27 @@ const useNotifyNewMedicalEvents = () => {
     fetchNotiNewEventOfPupils();
   }, [fetchNotiNewEventOfPupils]);
 
-  return { notiNewEventOfPupils, loading, error, refetch: fetchNotiNewEventOfPupils };
+  return { 
+    notiNewEventOfPupils, loading, 
+    error, refetch: fetchNotiNewEventOfPupils,
+    getSimplifiedEventsByPupilId: (pupilId) => getSimplifiedEventsByPupilId(pupilId, notiNewEventOfPupils)
+  };
 }
+
+const getSimplifiedEventsByPupilId = (pupilId, notiNewEventOfPupils) => {
+
+  if (!pupilId || !notiNewEventOfPupils) return [];
+
+  return notiNewEventOfPupils
+    .filter(event => event.pupil?.pupilId === pupilId)
+    .map(event => ({
+      status: event.status,
+      dateTime: event.dateTime,
+      schoolNurse: {
+        name: `${event.schoolNurse?.lastName} ${event.schoolNurse?.firstName}`,
+      }
+    }));
+}
+
 
 export default useNotifyNewMedicalEvents;

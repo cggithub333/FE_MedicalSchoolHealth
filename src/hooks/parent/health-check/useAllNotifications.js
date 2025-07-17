@@ -29,7 +29,39 @@ export const useAllNotifications = () => {
     fetchNotifications();
   }, [fetchNotifications]);
 
-  return { notifications, loading, error, refetch: fetchNotifications, quantity: (notifications.length || 0) };
+  return { 
+    notifications, loading, error, 
+    refetch: fetchNotifications, quantity: (notifications.length || 0),
+    countNotificationsByType: countNotificationCountByType(notifications || [])
+  };
 }
+
+
+const countNotificationCountByType = (notifications) => {
+
+  if (!notifications || !Array.isArray(notifications)) {
+    return {};
+  }
+
+  //else:
+  const notificationTypeCount = notifications.reduce((acc, item) => {
+
+    if (!item || !item.typeNotification) {
+      return acc; // skip if item or typeNotification is not defined
+    }
+
+    const type = item.typeNotification;
+    if (!acc[type]) {
+      acc[type] = 1; // initialize count for new type, avoid 0 as initial value
+    } else {
+      acc[type] += 1; // increment count for existing type
+    }
+    return acc;
+
+  }, {});
+
+  return notificationTypeCount;
+}
+
 
 export default useAllNotifications;

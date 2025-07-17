@@ -15,7 +15,7 @@ const useLatestVaccinationCampaign = () => {
       const campaign = await getNewestVaccinationCampaignAction();
 
       //debug:
-      console.log("Fetched Latest Vaccination Campaign Data:", campaign);
+      // console.log("Fetched Latest Vaccination Campaign Data:", campaign);
 
       setLatestCampaign(campaign);
     } catch (err) {

@@ -1,5 +1,6 @@
 
 import { getPrescriptionByPupilIdAction } from "@api/parent/parent-requests-action/send-medication/get-prescription-by-pupilid-action";
+import { parseMedicalInfo } from "@utils/parseLogsObject";
 import { useState, useEffect, useCallback } from "react";
 
 const usePrescriptionByPupil = (pupilId) => {
@@ -45,7 +46,47 @@ const usePrescriptionByPupil = (pupilId) => {
     loading,
     error,
     refetch: fetchPrescription, // Allows manual refetching
+    injectedNoteObjs: injectMedicationLogs(prescriptionArr) // Injects parsed logs into the prescription array
   }
+}
+
+const injectMedicationLogs = (prescriptionArr) => {
+
+  if (!prescriptionArr || !Array.isArray(prescriptionArr)) {
+    console.error("Invalid prescription array provided.");
+    return [];
+  }
+
+  const injectedNoteObjs = prescriptionArr.reduce((acc, prescription) => {
+
+
+    if (!prescription || !prescription.medicationLogs || !Array.isArray(prescription.medicationLogs)) {
+      console.warn("No medication logs found for prescription:", prescription);
+      return acc;
+    }
+
+    const medicationLogs = prescription.medicationLogs;
+    const medicationLogNoteObjs = medicationLogs.map(log => {
+      
+      if (!log || !log.note) {
+        console.warn("Invalid log or missing note:", log);
+        return null;
+      }
+
+      // else:
+      const parsedNoteObj = parseMedicalInfo(log.note);
+      return parsedNoteObj;
+    }).filter(noteObj => noteObj !== null);
+
+    if (medicationLogNoteObjs.length > 0) {
+      acc.push(...medicationLogNoteObjs);
+    }
+
+    return acc;
+
+  }, []);
+
+  return injectedNoteObjs;
 }
 
 export default usePrescriptionByPupil;
