@@ -45,153 +45,153 @@ import {
 // Mock data
 const userAccounts = [
   {
-    id: "PR0001",
-    firstName: "Hùng",
-    lastName: "Nguyễn",
+    user_id: "PR0001",
+    first_name: "Hùng",
+    last_name: "Nguyễn",
     email: "hung.nguyen@truonghoc.edu.vn",
-    phone: "0281234678",
+    phone_number: "0281234678",
     role: "PARENT",
-    status: true,
+    is_active: true,
     avatar: null,
   },
   {
-    id: "SN0001",
-    firstName: "Lan",
-    lastName: "Trần",
+    user_id: "SN0001",
+    first_name: "Lan",
+    last_name: "Trần",
     email: "lan.tran@truonghoc.edu.vn",
-    phone: "0282345789",
+    phone_number: "0282345789",
     role: "SCHOOL_NURSE",
-    status: true,
+    is_active: true,
     avatar: null,
   },
   {
-    id: "AD0001",
-    firstName: "Minh",
-    lastName: "Phạm",
+    user_id: "AD0001",
+    first_name: "Minh",
+    last_name: "Phạm",
     email: "minh.pham@truonghoc.edu.vn",
-    phone: "0284567890",
+    phone_number: "0284567890",
     role: "ADMIN",
-    status: false,
+    is_active: false,
     avatar: null,
   },
   {
-    id: "MN0001",
-    firstName: "Thảo",
-    lastName: "Lê",
+    user_id: "MN0001",
+    first_name: "Thảo",
+    last_name: "Lê",
     email: "thao.le@truonghoc.edu.vn",
-    phone: "0284562890",
+    phone_number: "0284562890",
     role: "MANAGER",
-    status: true,
+    is_active: true,
     avatar: null,
   },
   {
-    id: "PR0002",
-    firstName: "Tuấn",
-    lastName: "Hoàng",
+    user_id: "PR0002",
+    first_name: "Tuấn",
+    last_name: "Hoàng",
     email: "tuan.hoang@truonghoc.edu.vn",
-    phone: "0284567811",
+    phone_number: "0284567811",
     role: "PARENT",
-    status: true,
+    is_active: true,
     avatar: null,
   },
   {
-    id: "PR0003",
-    firstName: "Quỳnh",
-    lastName: "Đỗ",
+    user_id: "PR0003",
+    first_name: "Quỳnh",
+    last_name: "Đỗ",
     email: "quynh.do@truonghoc.edu.vn",
-    phone: "0286789012",
+    phone_number: "0286789012",
     role: "PARENT",
-    status: true,
+    is_active: true,
     avatar: null,
   },
   {
-    id: "SN0002",
-    firstName: "An",
-    lastName: "Vũ",
+    user_id: "SN0002",
+    first_name: "An",
+    last_name: "Vũ",
     email: "an.vu@truonghoc.edu.vn",
-    phone: "0287890123",
+    phone_number: "0287890123",
     role: "SCHOOL_NURSE",
-    status: true,
+    is_active: true,
     avatar: null,
   },
   {
-    id: "AD0002",
-    firstName: "Tuệ",
-    lastName: "Ngô",
+    user_id: "AD0002",
+    first_name: "Tuệ",
+    last_name: "Ngô",
     email: "tue.ngo@truonghoc.edu.vn",
-    phone: "0288901234",
+    phone_number: "0288901234",
     role: "ADMIN",
-    status: false,
+    is_active: false,
     avatar: null,
   },
   {
-    id: "PR0004",
-    firstName: "Việt",
-    lastName: "Lâm",
+    user_id: "PR0004",
+    first_name: "Việt",
+    last_name: "Lâm",
     email: "viet.lam@truonghoc.edu.vn",
-    phone: "0289012345",
+    phone_number: "0289012345",
     role: "PARENT",
-    status: true,
+    is_active: true,
     avatar: null,
   },
   {
-    id: "MN0002",
-    firstName: "Như",
-    lastName: "Đinh",
+    user_id: "MN0002",
+    first_name: "Như",
+    last_name: "Đinh",
     email: "nhu.dinh@truonghoc.edu.vn",
-    phone: "0280123456",
+    phone_number: "0280123456",
     role: "MANAGER",
-    status: true,
+    is_active: true,
     avatar: null,
   },
   {
-    id: "PR0005",
-    firstName: "Long",
-    lastName: "Trịnh",
+    user_id: "PR0005",
+    first_name: "Long",
+    last_name: "Trịnh",
     email: "long.trinh@truonghoc.edu.vn",
-    phone: "0282345678",
+    phone_number: "0282345678",
     role: "PARENT",
-    status: true,
+    is_active: true,
     avatar: null,
   },
   {
-    id: "SN0003",
-    firstName: "Hà",
-    lastName: "Bùi",
+    user_id: "SN0003",
+    first_name: "Hà",
+    last_name: "Bùi",
     email: "ha.bui@truonghoc.edu.vn",
-    phone: "0283456789",
+    phone_number: "0283456789",
     role: "SCHOOL_NURSE",
-    status: false,
+    is_active: false,
     avatar: null,
   },
   {
-    id: "AD0003",
-    firstName: "Sơn",
-    lastName: "Mai",
+    user_id: "AD0003",
+    first_name: "Sơn",
+    last_name: "Mai",
     email: "son.mai@truonghoc.edu.vn",
-    phone: "0284567890",
+    phone_number: "0284567890",
     role: "ADMIN",
-    status: true,
+    is_active: true,
     avatar: null,
   },
   {
-    id: "PR0006",
-    firstName: "Thư",
-    lastName: "Phan",
+    user_id: "PR0006",
+    first_name: "Thư",
+    last_name: "Phan",
     email: "thu.phan@truonghoc.edu.vn",
-    phone: "0285678901",
+    phone_number: "0285678901",
     role: "PARENT",
-    status: true,
+    is_active: true,
     avatar: null,
   },
   {
-    id: "MN0003",
-    firstName: "Dũng",
-    lastName: "Hoàng",
+    user_id: "MN0003",
+    first_name: "Dũng",
+    last_name: "Hoàng",
     email: "dung.hoang@truonghoc.edu.vn",
-    phone: "0286789012",
+    phone_number: "0286789012",
     role: "MANAGER",
-    status: false,
+    is_active: false,
     avatar: null,
   },
 ]
@@ -228,7 +228,7 @@ const AccountManagementPageContent = () => {
   }
 
   const handleStatusToggle = (userId) => {
-    setUsers((users || []).map((user) => (user.id === userId ? { ...user, status: !user.status } : user)))
+    setUsers((users || []).map((user) => (user.user_id === userId ? { ...user, is_active: !user.is_active } : user)))
   }
 
   const getInitials = (firstName, lastName) => {
@@ -245,16 +245,16 @@ const AccountManagementPageContent = () => {
 
   const filteredUsers = (users || []).filter((user) => {
     const matchesSearch =
-      user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.id.toString().includes(searchTerm)
+      user.user_id.toString().includes(searchTerm)
 
     const matchesRole = roleFilter === "All" || user.role === roleFilter
     const matchesStatus =
       statusFilter === "All" ||
-      (statusFilter === "Active" && user.status) ||
-      (statusFilter === "Inactive" && !user.status)
+      (statusFilter === "Active" && user.is_active) ||
+      (statusFilter === "Inactive" && !user.is_active)
 
     return matchesSearch && matchesRole && matchesStatus
   })
@@ -428,7 +428,7 @@ const AccountManagementPageContent = () => {
 
                 return (
                   <TableRow
-                    key={user.id}
+                    key={user.user_id}
                     sx={{
                       backgroundColor: index % 2 === 0 ? "#ffffff" : "#f9fafb",
                       "&:hover": {
@@ -448,10 +448,10 @@ const AccountManagementPageContent = () => {
                             fontWeight: 600,
                           }}
                         >
-                          {getInitials(user.firstName, user.lastName)}
+                          {getInitials(user.first_name, user.last_name)}
                         </Avatar>
                         <Typography variant="caption" color="text.secondary">
-                          {user.firstName}
+                          {user.first_name}
                         </Typography>
                       </Box>
                     </TableCell>
@@ -459,10 +459,10 @@ const AccountManagementPageContent = () => {
                     <TableCell>
                       <Box>
                         <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: 1.2 }}>
-                          {user.firstName}
+                          {user.first_name}
                         </Typography>
                         <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.2 }}>
-                          {user.lastName}
+                          {user.last_name}
                         </Typography>
                       </Box>
                     </TableCell>
@@ -472,7 +472,7 @@ const AccountManagementPageContent = () => {
                     </TableCell>
 
                     <TableCell>
-                      <Typography variant="body2">{user.phone}</Typography>
+                      <Typography variant="body2">{user.phone_number}</Typography>
                     </TableCell>
 
                     <TableCell>
@@ -491,9 +491,9 @@ const AccountManagementPageContent = () => {
 
                     <TableCell>
                       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                        <Switch checked={user.status} onChange={() => handleStatusToggle(user.id)} size="small" />
+                        <Switch checked={user.is_active} onChange={() => handleStatusToggle(user.user_id)} size="small" />
                         <Typography variant="body2" color="text.secondary">
-                          {user.status ? "Active" : "Inactive"}
+                          {user.is_active ? "Active" : "Inactive"}
                         </Typography>
                       </Box>
                     </TableCell>
@@ -510,8 +510,8 @@ const AccountManagementPageContent = () => {
                             <LockIcon fontSize="small" />
                           </IconButton>
                         </Tooltip>
-                        <Tooltip title="Delete User">
-                          <IconButton size="small" sx={{ color: "#d32f2f" }}>
+                        <Tooltip title={user.role === "ADMIN" ? "Cannot delete admin" : "Delete User"}>
+                          <IconButton size="small" sx={{ color: user.role === "ADMIN" ? "#ddd" : "#d32f2f" }}>
                             <DeleteIcon fontSize="small" />
                           </IconButton>
                         </Tooltip>
