@@ -62,5 +62,5 @@ export const showWarningToast = async (message) => {
     transition: Bounce,
   });
 
-  await delay(2000);
+  await delay(1200);
 };
