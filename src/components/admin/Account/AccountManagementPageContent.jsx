@@ -295,7 +295,7 @@ const AccountManagementPageContent = () => {
       <Card sx={{ mb: 4, boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}>
         <CardContent sx={{ p: 3 }}>
           <Grid container spacing={3} alignItems="center">
-            <Grid item size={{xs: 12, md:3}}>
+            <Grid item size={{ xs: 12, md: 3 }}>
               <TextField
                 fullWidth
                 placeholder="Search by ID, email, or name"
@@ -316,7 +316,7 @@ const AccountManagementPageContent = () => {
               />
             </Grid>
 
-            <Grid item size={{xs: 12, md:2}}>
+            <Grid item size={{ xs: 12, md: 2 }}>
               <FormControl fullWidth>
                 <InputLabel>Role</InputLabel>
                 <Select
@@ -334,7 +334,7 @@ const AccountManagementPageContent = () => {
               </FormControl>
             </Grid>
 
-            <Grid item size={{xs: 12, md:2}}>
+            <Grid item size={{ xs: 12, md: 2 }}>
               <FormControl fullWidth>
                 <InputLabel>Status</InputLabel>
                 <Select
@@ -350,7 +350,7 @@ const AccountManagementPageContent = () => {
               </FormControl>
             </Grid>
 
-            <Grid item size={{xs: 12, md:2}}>
+            <Grid item size={{ xs: 12, md: 2 }}>
               <FormControl fullWidth>
                 <InputLabel>Sort by</InputLabel>
                 <Select
@@ -367,7 +367,7 @@ const AccountManagementPageContent = () => {
               </FormControl>
             </Grid>
 
-            <Grid item size={{xs: 12, md:3}}>
+            <Grid item size={{ xs: 12, md: 3 }}>
               <Button
                 variant="outlined"
                 onClick={handleActionsClick}

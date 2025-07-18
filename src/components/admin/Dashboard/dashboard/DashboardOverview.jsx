@@ -17,7 +17,162 @@ import { useGetPupilsInformation } from "../../../../hooks/schoolnurse/new-event
 import { useGetAllMedicalEvent } from "../../../../hooks/schoolnurse/new-event/useGetAllMedicalEvent.js"
 import { useGetAllPrescription } from "../../../../hooks/schoolnurse/main-contents/useGetAllPrescription.js";
 import useAllPendingPrescriptions from "@hooks/schoolnurse/useAllPendingPrescriptions"
+import { rgba } from "framer-motion";
 
+
+// Mock data
+const userAccounts = [
+    {
+        user_id: "PR0001",
+        first_name: "Hùng",
+        last_name: "Nguyễn",
+        email: "hung.nguyen@truonghoc.edu.vn",
+        phone_number: "0281234678",
+        role: "PARENT",
+        is_active: true,
+        avatar: null,
+    },
+    {
+        user_id: "SN0001",
+        first_name: "Lan",
+        last_name: "Trần",
+        email: "lan.tran@truonghoc.edu.vn",
+        phone_number: "0282345789",
+        role: "SCHOOL_NURSE",
+        is_active: true,
+        avatar: null,
+    },
+    {
+        user_id: "AD0001",
+        first_name: "Minh",
+        last_name: "Phạm",
+        email: "minh.pham@truonghoc.edu.vn",
+        phone_number: "0284567890",
+        role: "ADMIN",
+        is_active: false,
+        avatar: null,
+    },
+    {
+        user_id: "MN0001",
+        first_name: "Thảo",
+        last_name: "Lê",
+        email: "thao.le@truonghoc.edu.vn",
+        phone_number: "0284562890",
+        role: "MANAGER",
+        is_active: true,
+        avatar: null,
+    },
+    {
+        user_id: "PR0002",
+        first_name: "Tuấn",
+        last_name: "Hoàng",
+        email: "tuan.hoang@truonghoc.edu.vn",
+        phone_number: "0284567811",
+        role: "PARENT",
+        is_active: true,
+        avatar: null,
+    },
+    {
+        user_id: "PR0003",
+        first_name: "Quỳnh",
+        last_name: "Đỗ",
+        email: "quynh.do@truonghoc.edu.vn",
+        phone_number: "0286789012",
+        role: "PARENT",
+        is_active: true,
+        avatar: null,
+    },
+    {
+        user_id: "SN0002",
+        first_name: "An",
+        last_name: "Vũ",
+        email: "an.vu@truonghoc.edu.vn",
+        phone_number: "0287890123",
+        role: "SCHOOL_NURSE",
+        is_active: true,
+        avatar: null,
+    },
+    {
+        user_id: "AD0002",
+        first_name: "Tuệ",
+        last_name: "Ngô",
+        email: "tue.ngo@truonghoc.edu.vn",
+        phone_number: "0288901234",
+        role: "ADMIN",
+        is_active: false,
+        avatar: null,
+    },
+    {
+        user_id: "PR0004",
+        first_name: "Việt",
+        last_name: "Lâm",
+        email: "viet.lam@truonghoc.edu.vn",
+        phone_number: "0289012345",
+        role: "PARENT",
+        is_active: true,
+        avatar: null,
+    },
+    {
+        user_id: "MN0002",
+        first_name: "Như",
+        last_name: "Đinh",
+        email: "nhu.dinh@truonghoc.edu.vn",
+        phone_number: "0280123456",
+        role: "MANAGER",
+        is_active: true,
+        avatar: null,
+    },
+    {
+        user_id: "PR0005",
+        first_name: "Long",
+        last_name: "Trịnh",
+        email: "long.trinh@truonghoc.edu.vn",
+        phone_number: "0282345678",
+        role: "PARENT",
+        is_active: true,
+        avatar: null,
+    },
+    {
+        user_id: "SN0003",
+        first_name: "Hà",
+        last_name: "Bùi",
+        email: "ha.bui@truonghoc.edu.vn",
+        phone_number: "0283456789",
+        role: "SCHOOL_NURSE",
+        is_active: false,
+        avatar: null,
+    },
+    {
+        user_id: "AD0003",
+        first_name: "Sơn",
+        last_name: "Mai",
+        email: "son.mai@truonghoc.edu.vn",
+        phone_number: "0284567890",
+        role: "ADMIN",
+        is_active: true,
+        avatar: null,
+    },
+    {
+        user_id: "PR0006",
+        first_name: "Thư",
+        last_name: "Phan",
+        email: "thu.phan@truonghoc.edu.vn",
+        phone_number: "0285678901",
+        role: "PARENT",
+        is_active: true,
+        avatar: null,
+    },
+    {
+        user_id: "MN0003",
+        first_name: "Dũng",
+        last_name: "Hoàng",
+        email: "dung.hoang@truonghoc.edu.vn",
+        phone_number: "0286789012",
+        role: "MANAGER",
+        is_active: false,
+        avatar: null,
+    },
+]
 
 
 const DashboardOverview = () => {
@@ -28,15 +183,12 @@ const DashboardOverview = () => {
     const { prescriptions: prescriptionsRaw = [], loading: loadingPrescriptions, error: errorPrescriptions } = useGetAllPrescription();
     const prescriptions = Array.isArray(prescriptionsRaw) ? prescriptionsRaw : (Array.isArray(prescriptionsRaw.data) ? prescriptionsRaw.data : []);
 
-    // Remove debug log or update if needed
-    // console.log("Prescriptions:", prescriptions.length);
-
-    // Mock data based on the database schema
+    const activeAccounts = userAccounts.filter(account => account.is_active);
     const dashboardStats = {
         totalStudents: pupilsList.length,
-        totalMedication: medicalEventList.length,
         medicalEvents: medicalEventList.length,
-        totalPrescription: prescriptions.length,
+        TotalAcount: userAccounts.length,
+        ActiveAccount: activeAccounts.length,
     }
 
     // Map medicalEventList to recentMedicalEvents (show only first 4)
@@ -51,20 +203,15 @@ const DashboardOverview = () => {
         color: ["emerald", "amber", "rose", "blue"][idx % 4], // cycle colors for demo
     }));
 
-    // Map prescriptions to medicationSchedule (show only 4 newest by requestedDate)
-    const medicationSchedule = (prescriptions || [])
-        .slice() // copy array
-        .sort((a, b) => new Date(b.requestedDate) - new Date(a.requestedDate))
-        .slice(0, 4)
-        .map((item, idx) => ({
-            id: item.sendMedicationId,
-            pupilName: `${item.pupilLastName} ${item.pupilFirstName}`,
-            medication: item.medicationItems?.[0]?.medicationName || '',
-            dosage: item.medicationItems?.[0]?.unitAndUsage || '',
-            time: item.medicationItems?.[0]?.medicationSchedule || '',
-            avatar: item.pupilFirstName ? item.pupilFirstName.charAt(0) : '',
-            color: ["blue", "purple", "teal", "emerald"][idx % 4],
-        }))
+    const account = (userAccounts || []).slice(0, 4).map((account, idx) => ({
+        id: account.user_id,
+        name: `${account.first_name} ${account.last_name}`,
+        email: account.email,
+        phone: account.phone_number,
+        role: account.role,
+        avatar: account.avatar || `${account.first_name.charAt(0)}${account.last_name.charAt(0)}`.toUpperCase(),
+        color: ["blue", "purple", "teal", "emerald"][idx % 4], // cycle colors for demo
+    }));
 
     // Map pendingMedicationRequests to requests (show only 2)
     const requests = (pendingMedicationRequests || [])
@@ -109,16 +256,16 @@ const DashboardOverview = () => {
                     value: dashboardStats.totalStudents.toLocaleString(),
                     icon: <UsersIcon />, color: "blue"
                 }, {
-                    label: "Total Medication",
-                    value: dashboardStats.totalMedication,
+                    label: "Mediacal Events",
+                    value: dashboardStats.medicalEvents,
                     icon: <PillIcon />, color: "emerald"
                 }, {
-                    label: "Medical Events",
-                    value: dashboardStats.medicalEvents,
+                    label: "Total Accounts",
+                    value: dashboardStats.TotalAcount,
                     icon: <AlertTriangleIcon />, color: "amber"
                 }, {
-                    label: "Total Prescription",
-                    value: dashboardStats.totalPrescription,
+                    label: "Active Accounts",
+                    value: dashboardStats.ActiveAccount,
                     icon: <FileTextIcon />, color: "purple"
                 }].map((stat, idx) => (
                     <Grid size={{ xs: 12, sm: 6, md: 3 }} key={stat.label}>
@@ -165,7 +312,7 @@ const DashboardOverview = () => {
                                                 </Box>
                                                 <Typography variant="h6" sx={{ fontWeight: 600 }}>Recent Medical Events</Typography>
 
-                                                <Link to="/schoolnurse/medical-events" style={{ textDecoration: "none" }}>
+                                                <Link to="/admin/medical-events" style={{ textDecoration: "none" }}>
                                                     <Button size="small" className="view-all-button" sx={{ color: '#6366f1', fontWeight: 500, textTransform: 'none', display: 'flex', position: 'absolute', right: 16, top: 16 }}>
                                                         view all →
                                                     </Button>
@@ -221,7 +368,7 @@ const DashboardOverview = () => {
                                 </Card>
                             </Grid>
 
-                            {/* Today's Medication Schedule */}
+                            {/* Today's Active Account */}
                             <Card className="medication-card glass-card" sx={{ borderRadius: 4, boxShadow: 2 }}>
                                 <CardHeader
                                     className="medication-card__header"
@@ -230,8 +377,8 @@ const DashboardOverview = () => {
                                             <Box className="card-title__icon card-title__icon--emerald" sx={{ bgcolor: 'rgba(16,185,129,0.12)', borderRadius: '50%', p: 1 }}>
                                                 <PillIcon color="success" />
                                             </Box>
-                                            <Typography variant="h6" sx={{ fontWeight: 600 }}>Today's Prescription Schedule</Typography>
-                                            <Link to="/schoolnurse/prescription" style={{ textDecoration: "none" }}>
+                                            <Typography variant="h6" sx={{ fontWeight: 600 }}>Today's Active Account</Typography>
+                                            <Link to="/admin/accounts" style={{ textDecoration: "none" }}>
                                                 <Button size="small" className="view-all-button" sx={{ color: '#6366f1', fontWeight: 500, textTransform: 'none', display: 'flex', position: 'absolute', right: 16, top: 16 }}>
                                                     view all →
                                                 </Button>
@@ -242,37 +389,34 @@ const DashboardOverview = () => {
                                 />
 
                                 <CardContent className="medication-card__content" sx={{ p: 2 }}>
-                                    {medicationSchedule.map((med, index) => (
+                                    {account.map((acc, index) => (
                                         <Box
-                                            key={med.id}
-                                            className={`medication-item ${index !== medicationSchedule.length - 1 ? "medication-item--bordered" : ""} ${med.urgent ? "medication-item--urgent" : ""}`}
+                                            key={acc.id}
+                                            className={`medication-item ${index !== account.length - 1 ? "medication-item--bordered" : ""} ${acc.urgent ? "medication-item--urgent" : ""}`}
                                             sx={{
                                                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                                py: 1.5, px: 1, borderBottom: index !== medicationSchedule.length - 1 ? '1px solid #f3f4f6' : 'none',
-                                                background: med.urgent ? 'linear-gradient(90deg, #fef9c3 0%, #f0fdfa 100%)' : 'none',
+                                                py: 1.5, px: 1, borderBottom: index !== account.length - 1 ? '1px solid #f3f4f6' : 'none',
                                                 transition: 'background 0.2s',
                                                 '&:hover': { background: 'rgba(16,185,129,0.04)' },
                                             }}
                                         >
                                             <Box className="medication-item__left" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                                <Avatar className={`medication-avatar medication-avatar--${med.color}`}
-                                                    sx={{ bgcolor: `var(--avatar-${med.color})`, color: '#fff', fontWeight: 600 }}>
-                                                    {med.avatar}
+                                                <Avatar className={`medication-avatar medication-avatar--${acc.color}`}
+                                                    sx={{ bgcolor: `var(--avatar-${acc.color})`, color: "rgb(45, 42, 42)", fontWeight: 600 }}>
+                                                    {acc.avatar}
                                                 </Avatar>
                                                 <Box className="medication-item__info">
                                                     <Box className="medication-item__name-row" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                                        <Typography variant="body2" className="medication-item__name" sx={{ fontWeight: 500 }}>{med.pupilName}</Typography>
-                                                        {med.urgent && <ClockIcon className="urgent-icon" color="warning" fontSize="small" />}
+                                                        <Typography variant="body2" className="medication-item__name" sx={{ fontWeight: 500 }}>{acc.name}</Typography>
                                                     </Box>
                                                     <Typography variant="caption" className="medication-item__details" sx={{ color: '#64748b' }}>
-                                                        {med.medication} - {med.dosage}
+                                                        {acc.email}
                                                     </Typography>
                                                 </Box>
                                             </Box>
                                             <Box className="medication-item__right" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                                                 <Box className="medication-item__time-info" sx={{ textAlign: 'right' }}>
-                                                    <Typography variant="body2" className="medication-item__time" sx={{ color: '#0f172a', fontWeight: 600 }}>{med.time}</Typography>
-
+                                                    <Typography variant="body2" className="medication-item__time" sx={{ color: '#0f172a', fontWeight: 600 }}>{acc.role}</Typography>
                                                 </Box>
 
                                             </Box>
@@ -288,49 +432,7 @@ const DashboardOverview = () => {
                 < Grid size={{ xs: 12, md: 4 }}>
                     <Box className="right-column" sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                         {/* Requests */}
-                        <Card className="requests-card glass-card" sx={{ borderRadius: 4, boxShadow: 2 }}>
-                            <CardHeader
-                                className="requests-card__header"
-                                title={
-                                    <Box className="requests-header" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                        <Typography variant="h6" sx={{ fontWeight: 600 }}>Requests</Typography>
-                                        <Link to="/schoolnurse/prescription/prescription-requests" style={{ textDecoration: "none" }}>
-                                            <Button size="small" className="view-all-button" sx={{ color: '#6366f1', fontWeight: 500, textTransform: 'none', display: 'flex', position: 'absolute', right: 16, top: 16 }}>
-                                                view all →
-                                            </Button>
-                                        </Link>
-                                    </Box>
-                                }
-                            />
-                            <CardContent className="requests-card__content" sx={{ p: 2 }}>
-                                {requests.map((request, index) => (
-                                    <Box
-                                        key={request.id}
-                                        className={`request-item ${index !== requests.length - 1 ? "request-item--bordered" : ""}`}
-                                        sx={{
-                                            display: 'flex', flexDirection: 'column', gap: 1, py: 1.5, px: 1,
-                                            borderBottom: index !== requests.length - 1 ? '1px solid #f3f4f6' : 'none',
-                                            transition: 'background 0.2s',
-                                            '&:hover': { background: 'rgba(99,102,241,0.04)' },
-                                        }}
-                                    >
-                                        <Box className="request-item__header" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                            <Avatar className="request-avatar" sx={{ bgcolor: '#6366f1', color: '#fff', fontWeight: 600 }}>{request.avatar}</Avatar>
-                                            <Box className="request-item__info">
-                                                <Typography variant="body2" className="request-item__name" sx={{ fontWeight: 500 }}>{request.studentName}</Typography>
-                                                <Typography variant="caption" className="request-item__type" sx={{ color: '#64748b' }}>{request.type}</Typography>
-                                            </Box>
-                                        </Box>
 
-                                        <Box className="request-item__details" sx={{ display: 'flex', gap: 0, color: '#64748b', fontSize: 13, ml: 0 }}>
-                                            <Typography variant="caption">📅 {request.date}</Typography>
-                                            <Typography variant="caption">🕐 {request.time}</Typography>
-                                        </Box>
-
-                                    </Box>
-                                ))}
-                            </CardContent>
-                        </Card>
 
                         {/* Quick Actions */}
                         <Card className="actions-card glass-card" sx={{ borderRadius: 4, boxShadow: 2, p: 2 }}>
@@ -339,7 +441,7 @@ const DashboardOverview = () => {
                                 <Grid container spacing={1}>
 
                                     <Grid size={6}>
-                                        <Link to="/schoolnurse/pupils-management" style={{ textDecoration: "none" }}>
+                                        <Link to="/admin/pupils-management" style={{ textDecoration: "none" }}>
                                             <Button className="action-button action-button--blue" fullWidth sx={{
                                                 bgcolor: 'linear-gradient(135deg, #6366f1 0%, #60a5fa 100%)',
                                                 color: '#fff', borderRadius: 3, fontWeight: 600, py: 2, gap: 1, boxShadow: 2,
@@ -352,16 +454,42 @@ const DashboardOverview = () => {
 
                                     </Grid>
                                     <Grid size={6}>
-                                        <Link to="/schoolnurse/medical-events" style={{ textDecoration: "none" }}>
+                                        <Link to="/admin/medical-events" style={{ textDecoration: "none" }}>
                                             <Button className="action-button action-button--purple" fullWidth sx={{
                                                 bgcolor: 'linear-gradient(135deg, #a78bfa 0%, #6366f1 100%)',
                                                 color: '#fff', borderRadius: 3, fontWeight: 600, py: 2, gap: 1, boxShadow: 2,
                                                 '&:hover': { bgcolor: '#a78bfa', opacity: 0.9 }, display: 'flex', flexDirection: 'column', alignItems: 'center',
                                             }}>
                                                 <AssignmentIndIcon />
-                                                <Typography variant="caption">New Medical Event</Typography>
+                                                <Typography variant="caption">Medical Event</Typography>
                                             </Button>
                                         </Link>
+                                    </Grid>
+                                    <Grid size={6}>
+                                        <Link to="/admin/accounts" style={{ textDecoration: "none" }}>
+                                            <Button className="action-button action-button--rose" fullWidth sx={{
+                                                bgcolor: 'linear-gradient(135deg, #f43f5e 0%, #fbbf24 100%)',
+                                                color: '#fff', borderRadius: 3, fontWeight: 600, py: 2, gap: 1, boxShadow: 2,
+                                                '&:hover': { bgcolor: '#f43f5e', opacity: 0.9 }, display: 'flex', flexDirection: 'column', alignItems: 'center',
+                                            }}>
+                                                <VaccinesIcon />
+                                                <Typography variant="caption">Account</Typography>
+                                            </Button>
+                                        </Link>
+
+                                    </Grid>
+                                    <Grid size={6}>
+                                        <Link to="/admin/reports/report-a" style={{ textDecoration: "none" }}>
+                                            <Button className="action-button action-button--emerald" fullWidth sx={{
+                                                bgcolor: 'linear-gradient(135deg, #10b981 0%, #06b6d4 100%)',
+                                                color: '#fff', borderRadius: 3, fontWeight: 600, py: 2, gap: 1, boxShadow: 2,
+                                                '&:hover': { bgcolor: '#10b981', opacity: 0.9 }, display: 'flex', flexDirection: 'column', alignItems: 'center',
+                                            }}>
+                                                <PillIcon />
+                                                <Typography variant="caption">Report</Typography>
+                                            </Button>
+                                        </Link>
+
                                     </Grid>
                                 </Grid>
                             </CardContent>

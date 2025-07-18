@@ -288,7 +288,7 @@ const DashboardOverview = () => {
                 < Grid size={{ xs: 12, md: 4 }}>
                     <Box className="right-column" sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                         {/* Requests */}
-                        <Card className="requests-card glass-card" sx={{ borderRadius: 4, boxShadow: 2 }}>
+                        <Card className="requests-card glass-card" sx={{ borderRadius: 4, boxShadow: 2, p: 1 }}>
                             <CardHeader
                                 className="requests-card__header"
                                 title={

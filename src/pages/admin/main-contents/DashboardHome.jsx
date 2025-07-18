@@ -1,9 +1,9 @@
+import DashboardOverview from '../../../components/admin/Dashboard/dashboard/DashboardOverview'
+
 const DashboardHome = () => {
 
   return (
-    <>
-      Admin - DashboardHome
-    </>
+    <DashboardOverview />
   );
 }
 
