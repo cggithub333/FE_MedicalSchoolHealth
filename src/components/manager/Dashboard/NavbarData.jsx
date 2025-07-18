@@ -125,18 +125,18 @@ const NavbarData = [
         segment: "manager/reports",
         title: "Reports",
         icon: <BarChartIcon />,
-        children: [
-            {
-                segment: "sales",
-                title: "Sales",
-                icon: <DescriptionIcon />,
-            },
-            {
-                segment: "traffic",
-                title: "Traffic",
-                icon: <DescriptionIcon />,
-            },
-        ],
+        // children: [
+        //     {
+        //         segment: "sales",
+        //         title: "Sales",
+        //         icon: <DescriptionIcon />,
+        //     },
+        //     {
+        //         segment: "traffic",
+        //         title: "Traffic",
+        //         icon: <DescriptionIcon />,
+        //     },
+        // ],
     },
 
     {
