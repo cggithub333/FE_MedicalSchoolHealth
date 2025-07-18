@@ -420,7 +420,7 @@ const MainDashboardContent = () => {
                 </Box>
                 <Grid container spacing={2}>
                   <Grid item size={{xs: 12, sm: 6}} sx={styleQuickActionItem}>
-                    <Link href="#" underline="none">
+                    <Box component={RouterLink} to="/parent/health-check-campaign/campaigns" sx={{ textDecoration: "none" }}>
                       <Card
                         sx={{
                           textAlign: "center",
@@ -435,11 +435,11 @@ const MainDashboardContent = () => {
                           Health Check Campaign
                         </Typography>
                       </Card>
-                    </Link>
+                    </Box>
                   </Grid>
 
                   <Grid item size={{xs: 12, sm: 6}}  sx={styleQuickActionItem}>
-                    <Link href="#" underline="none">
+                    <Box component={RouterLink} to="/parent/vaccination-campaign/campaigns" sx={{ textDecoration: "none" }}>
                       <Card
                         sx={{
                           textAlign: "center",
@@ -454,11 +454,11 @@ const MainDashboardContent = () => {
                           Vaccination Campaign
                         </Typography>
                       </Card>
-                    </Link>
+                    </Box>
                   </Grid>
 
                   <Grid item size={{xs: 12, sm: 6}}  sx={styleQuickActionItem}>
-                    <Link href="#" underline="none">
+                    <Box component={RouterLink} to="/parent/medical-events" sx={{ textDecoration: "none" }}>
                       <Card
                         sx={{
                           textAlign: "center",
@@ -473,11 +473,11 @@ const MainDashboardContent = () => {
                           Medical Events
                         </Typography>
                       </Card>
-                    </Link>
+                    </Box>
                   </Grid>
 
                   <Grid item size={{xs: 12, sm: 6}}  sx={styleQuickActionItem}>
-                    <Link href="#" underline="none">
+                    <Box component={RouterLink} to="/parent/prescription/new-prescription" sx={{ textDecoration: "none" }}>
                       <Card
                         sx={{
                           textAlign: "center",
@@ -492,7 +492,7 @@ const MainDashboardContent = () => {
                           Send Medication
                         </Typography>
                       </Card>
-                    </Link>
+                    </Box>
                   </Grid>
 
                   <Grid item size={{xs: 12, sm: 6}}  sx={styleQuickActionItem}>
