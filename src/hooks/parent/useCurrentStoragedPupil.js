@@ -41,11 +41,11 @@ const useCurrentStoragedPupil = () => {
     loading,
     currentPupil,
     refetch: getStoragedPupil,
-    filterUserInfor: (pupilInfo, parentId) => filterUserInfoData(pupilInfo, parentId)
+    filterPupilInforWithCurrentParent: (pupilInfo, parentId) => filterCurrentPupilWithCurrentParent(pupilInfo, parentId)
   };
 }
 
-const filterUserInfoData = (pupilInfo, parentId) => {
+const filterCurrentPupilWithCurrentParent = (pupilInfo, parentId) => {
   if (!pupilInfo || !parentId) {
     return null; // Return null if no data is available
   }

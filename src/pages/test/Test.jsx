@@ -1,9 +1,10 @@
 import AccountMenu from "./account-menu/account-menu";
 import DemoVariations from "./account-menu/account-menu-variations";
 
-import { Grid } from "@mui/material";
-
+import { Grid, Typography } from "@mui/material";
 import useMyInformation from "@hooks/common/useMyInformation";
+
+import { importExcel, excelDateToJSDate } from "@utils/excel-utils";
 
 const Test = () => {
   const { personalInforState, error } = useMyInformation();
@@ -13,6 +14,34 @@ const Test = () => {
   console.log("error:", error);
   console.log("error exists:", !!error);
   console.log("personalInforState exists:", !!personalInforState);
+
+  const handleUploadFile = (e) => {
+    const file = e.target.files[0];
+    if (!file || !file.name.endsWith(".xlsx")) {
+      console.error("Invalid file type. Please upload an Excel file.");
+      return;
+    }
+
+    const data = importExcel(file);
+    data.then((result) => {
+      return result.map((item) => ({
+        ...item,
+        birth_date: excelDateToJSDate(item.birth_date), // Convert Excel date to JS date
+        phone_number: item.phone_number || "N/A", // Handle missing phone numbers
+        first_name: item.first_name || "Unknown", // Handle missing first names
+        last_name: item.last_name || "Unknown", // Handle missing last names
+        email: item.email || "N/A", // Handle missing emails
+        role: item.role || "Unknown", // Handle missing roles
+      }))
+      // You can handle the imported data here, e.g., update state or send to server
+    })
+    .then ((processedData) => {
+      console.log("Processed data:", processedData);
+    })
+    .catch((err) => {
+      console.error("Error importing Excel file:", err);
+    });
+  }
 
   return (
     <div>
@@ -46,8 +75,27 @@ const Test = () => {
           </Grid>
         )}
       </Grid>
+      <Grid container pl={2} pt={2}>
+        <Typography fontSize={'20px'}>Import xlsx file:</Typography>
+        <span>
+          <input onChange={handleUploadFile} type="file" accept=".xlsx" name="xlsx_file" title="Import Accounts"/>
+        </span>
+      </Grid>
     </div>
   );
 }
 
 export default Test;
+
+/* 
+  test schema:
+  (
+    birth_date   date                                                not null,
+    phone_number varchar(12)                                         not null,
+    first_name   varchar(50)                                         not null,
+    last_name    varchar(50)                                         not null,
+    email        varchar(255)                                        null,
+    role         enum ('ADMIN', 'MANAGER', 'PARENT', 'SCHOOL_NURSE') null
+
+);
+*/

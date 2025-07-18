@@ -6,6 +6,15 @@ export function formatDateToDDMMYYYY(dateStr) {
   return `${day}-${month}-${year}`;
 }
 
+// get current date with format 'dd_mm_yyyy':
+export function getCurrentDateFormatted(format = 'dd_mm_yyyy') {
+  const date = new Date();
+  const dd = String(date.getDate()).padStart(2, '0');
+  const mm = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+  const yyyy = date.getFullYear();
+  return `${dd}_${mm}_${yyyy}`;
+}
+
 // Converts 'yyyy-mm-ddTHH:MM:SS' to 'hh:mm:ss AM/PM dd-mm-yyyy'
 export function formatDateTimeToReadable(dateTimeStr) {
   if (!dateTimeStr) return '';

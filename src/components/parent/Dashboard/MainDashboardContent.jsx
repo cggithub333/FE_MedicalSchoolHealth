@@ -33,37 +33,13 @@ import {
   Info,
 } from "@mui/icons-material"
 
+import { Link as RouterLink } from "react-router-dom";
 import { FaChild as Child } from "react-icons/fa6";
+import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 
-const countNotificationsByType = {
-  VACCINATION_CAMPAIGN: 1,
-  HEALTH_CHECK_CAMPAIGN: 0,
-  MED_EVENT: 1,
-  SEND_MEDICAL: 4,
-}
+import { useState, useEffect } from 'react';
 
-const pupilInfo = {
-  pupilId: "PP0001",
-  lastName: "Nguyễn",
-  firstName: "Minh",
-  birthDate: "01-09-2019",
-  gender: "M",
-  gradeId: 1,
-  startYear: 2025,
-  gradeLevel: "GRADE_1",
-  gradeName: "Class 1A",
-  currentParent: {
-    userId: "PR0001",
-    lastName: "Anh",
-    firstName: "Ngọc",
-    birthDate: "10-05-1985",
-    email: "ngoc.anh@gmail.com",
-    phoneNumber: "0848025116",
-    createdAt: "08-07-2025",
-    role: "PARENT",
-  },
-}
-
+/*
 const latestHealthCheckCampaign = {
   title: "Health Check Exam Winter 2025",
   description: "This is description",
@@ -87,7 +63,9 @@ const latestVaccinationCampaign = {
     consentFormDeadline: "2025-07-19",
   },
 }
+  */
 
+/*
 const injectedNoteObjs = [
   {
     diseaseInfor: {
@@ -101,7 +79,9 @@ const injectedNoteObjs = [
     nurseName: "Thủy Vy",
   },
 ]
+  */
 
+/*
 const simplifiedMedicalEventArr = [
   {
     status: "MEDIUM",
@@ -111,9 +91,34 @@ const simplifiedMedicalEventArr = [
     },
   },
 ]
+  */
+
+import useAllNotifications from "@hooks/parent/health-check/useAllNotifications";
+import usePersonalInformation from "@hooks/common/useMyInformation";
+import useCurrentStoragedPupil from "@hooks/parent/useCurrentStoragedPupil";
+import useLatestHealthCheckCampaign from "@hooks/parent/useLatestHealthCheckCampaign";
+import useLatestVaccinationCampaign from "@hooks/parent/vaccination/useLatestVaccinationcampaign";
+import usePrescriptionByPupil from "@hooks/parent/send-medication/usePrescriptionByPupil";
+import useNotifyNewMedicalEvents from "@hooks/parent/medical-events/useNotifyNewMedicalEvents"
 
 const MainDashboardContent = () => {
+
+  const { countNotificationsByType, loading: notificationLoading} = useAllNotifications();
+  const { personalInforState } = usePersonalInformation();
+  const { currentPupil, filterPupilInforWithCurrentParent, loading: currentPupilLoading} = useCurrentStoragedPupil();
+  const { latestHealthCheckCampaign, isLoading: latestHealthCheckLoading } = useLatestHealthCheckCampaign();
+  const { latestCampaign: latestVaccinationCampaign, loading: latestVaccinationLoading } = useLatestVaccinationCampaign();
+  const { prescriptionArr, injectedNoteObjs, loading: injectedNoteLoading } = usePrescriptionByPupil(localStorage.getItem("pupilId"));
+  const { getSimplifiedEventsByPupilId, loading: simplifiedEventsLoading, refetch: notiNewEventRefetch } = useNotifyNewMedicalEvents();
+
+  const [pupilInfo, setPupilInfo] = useState(filterPupilInforWithCurrentParent(currentPupil, personalInforState?.userId));
+  const [simplifiedMedicalEventArr, setSimplifiedMedicalEventArr] = useState(getSimplifiedEventsByPupilId(currentPupil?.pupilId));
+
+
   const formatDate = (dateString) => {
+
+    if (!dateString) return "";
+
     const [year, month, day] = dateString.split("-")
     return `${day}/${month}/${year}`
   }
@@ -158,68 +163,76 @@ const MainDashboardContent = () => {
 
       {/* Notification Count Boxes */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid item size={{xs: 12, md:3}}>
-          <Card sx={{ bgcolor: "success.50", border: "1px solid", borderColor: "success.200" }}>
-            <CardContent sx={{ textAlign: "center", py: 2 }}>
-              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mb: 1 }}>
-                <HealthAndSafety color="success" sx={{ fontSize: 28 }} />
-                <Typography variant="h4" fontWeight="bold" color="success.main">
-                  {countNotificationsByType.HEALTH_CHECK_CAMPAIGN || 0}
+        <Grid item size={{xs: 12, md:3}} sx={styleNoficationBoxItem}>
+          <Box component={RouterLink} to="/parent/notification#health-check-campaign" sx={{ textDecoration: "none" }}>
+            <Card sx={{ bgcolor: "info.50", borderColor: "info.200" }}>
+              <CardContent sx={{ textAlign: "center", py: 2 }} >
+                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mb: 1 }}>
+                  <HealthAndSafety color="info" sx={{ fontSize: 28 }} />
+                  <Typography variant="h4" fontWeight="bold" color="info.main">
+                    {countNotificationsByType.HEALTH_CHECK_CAMPAIGN || 0}
+                  </Typography>
+                </Box>
+                <Typography variant="subtitle1" fontWeight="bold" color="info.dark">
+                  Health Check Campaign
                 </Typography>
-              </Box>
-              <Typography variant="subtitle1" fontWeight="bold" color="success.dark">
-                Health Check Campaign
-              </Typography>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </Box>
         </Grid>
 
-        <Grid item size={{xs: 12, md:3}}>
-          <Card sx={{ bgcolor: "info.50", border: "1px solid", borderColor: "info.200" }}>
-            <CardContent sx={{ textAlign: "center", py: 2 }}>
-              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mb: 1 }}>
-                <Vaccines color="info" sx={{ fontSize: 28 }} />
-                <Typography variant="h4" fontWeight="bold" color="info.main">
-                  {countNotificationsByType.VACCINATION_CAMPAIGN || 0}
+        <Grid item size={{xs: 12, md:3}}  sx={styleNoficationBoxItem}>
+          <Box component={RouterLink} to="/parent/notification#vaccination-campaign" sx={{ textDecoration: "none" }}>
+            <Card sx={{ bgcolor: "success.50", borderColor: "success.200" }}>
+              <CardContent sx={{ textAlign: "center", py: 2 }}>
+                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mb: 1 }}>
+                  <Vaccines color="success" sx={{ fontSize: 28 }} />
+                  <Typography variant="h4" fontWeight="bold" color="success.main">
+                    {countNotificationsByType.VACCINATION_CAMPAIGN || 0}
+                  </Typography>
+                </Box>
+                <Typography variant="subtitle1" fontWeight="bold" color="success.dark">
+                  Vaccination Campaign
                 </Typography>
-              </Box>
-              <Typography variant="subtitle1" fontWeight="bold" color="info.dark">
-                Vaccination Campaign
-              </Typography>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </Box>
         </Grid>
 
-        <Grid item size={{xs: 12, md:3}}>
-          <Card sx={{ bgcolor: "warning.50", border: "1px solid", borderColor: "warning.200" }}>
-            <CardContent sx={{ textAlign: "center", py: 2 }}>
-              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mb: 1 }}>
-                <LocalHospital color="warning" sx={{ fontSize: 28 }} />
-                <Typography variant="h4" fontWeight="bold" color="warning.main">
-                  {countNotificationsByType.MED_EVENT || 0}
+        <Grid item size={{xs: 12, md:3}}  sx={styleNoficationBoxItem}>
+          <Box component={RouterLink} to="/parent/notification#medical-events" sx={{ textDecoration: "none" }}>
+            <Card sx={{ bgcolor: "error.50", borderColor: "error.200" }}>
+              <CardContent sx={{ textAlign: "center", py: 2 }}>
+                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mb: 1 }}>
+                  <LocalHospital color="error" sx={{ fontSize: 28 }} />
+                  <Typography variant="h4" fontWeight="bold" color="error.main">
+                    {countNotificationsByType.MED_EVENT || 0}
+                  </Typography>
+                </Box>
+                <Typography variant="subtitle1" fontWeight="bold" color="error.dark">
+                  Medical Event
                 </Typography>
-              </Box>
-              <Typography variant="subtitle1" fontWeight="bold" color="warning.dark">
-                Medical Event
-              </Typography>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </Box>
         </Grid>
 
-        <Grid item size={{xs: 12, md:3}}>
-          <Card sx={{ bgcolor: "error.50", border: "1px solid", borderColor: "error.200" }}>
-            <CardContent sx={{ textAlign: "center", py: 2 }}>
-              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mb: 1 }}>
-                <Medication color="error" sx={{ fontSize: 28 }} />
-                <Typography variant="h4" fontWeight="bold" color="error.main">
-                  {countNotificationsByType.SEND_MEDICAL || 0}
+        <Grid item size={{xs: 12, md:3}}  sx={styleNoficationBoxItem}>
+          <Box component={RouterLink} to="/parent/notification#send-medication" sx={{ textDecoration: "none" }}>
+            <Card sx={{ bgcolor: "warning.50", borderColor: "warning.200" }}>
+              <CardContent sx={{ textAlign: "center", py: 2 }}>
+                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mb: 1 }}>
+                  <Medication color="warning" sx={{ fontSize: 28 }} />
+                  <Typography variant="h4" fontWeight="bold" color="warning.main">
+                    {countNotificationsByType.SEND_MEDICAL || 0}
+                  </Typography>
+                </Box>
+                <Typography variant="subtitle1" fontWeight="bold" color="warning.dark">
+                  Medication Taking
                 </Typography>
-              </Box>
-              <Typography variant="subtitle1" fontWeight="bold" color="error.dark">
-                Medication Taking
-              </Typography>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </Box>
         </Grid>
       </Grid>
 
@@ -240,7 +253,7 @@ const MainDashboardContent = () => {
                     Parent ID
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {pupilInfo.currentParent.userId}
+                    {pupilInfo?.currentParent.userId}
                   </Typography>
                 </Grid>
                 <Grid item size={{xs: 6}}>
@@ -248,7 +261,7 @@ const MainDashboardContent = () => {
                     Full Name
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {pupilInfo.currentParent.lastName} {pupilInfo.currentParent.firstName}
+                    {pupilInfo?.currentParent.lastName} {pupilInfo?.currentParent.firstName}
                   </Typography>
                 </Grid>
                 <Grid item size={{xs: 6}}>
@@ -256,7 +269,7 @@ const MainDashboardContent = () => {
                     Email
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {pupilInfo.currentParent.email}
+                    {pupilInfo?.currentParent.email}
                   </Typography>
                 </Grid>
                 <Grid item size={{xs: 6}}>
@@ -264,7 +277,7 @@ const MainDashboardContent = () => {
                     Phone Number
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {pupilInfo.currentParent.phoneNumber}
+                    {pupilInfo?.currentParent.phoneNumber}
                   </Typography>
                 </Grid>
               </Grid>
@@ -287,7 +300,7 @@ const MainDashboardContent = () => {
                     Pupil ID
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {pupilInfo.pupilId}
+                    {pupilInfo?.pupilId}
                   </Typography>
                 </Grid>
                 <Grid item size={{xs: 6}}>
@@ -295,7 +308,7 @@ const MainDashboardContent = () => {
                     Full Name
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {pupilInfo.lastName} {pupilInfo.firstName}
+                    {pupilInfo?.lastName} {pupilInfo?.firstName}
                   </Typography>
                 </Grid>
                 <Grid item size={{xs: 6}}>
@@ -303,7 +316,7 @@ const MainDashboardContent = () => {
                     Class
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {pupilInfo.gradeName}
+                    {pupilInfo?.gradeName}
                   </Typography>
                 </Grid>
                 <Grid item size={{xs: 6}}>
@@ -311,7 +324,7 @@ const MainDashboardContent = () => {
                     Birth Date
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {pupilInfo.birthDate}
+                    {pupilInfo?.birthDate}
                   </Typography>
                 </Grid>
               </Grid>
@@ -327,12 +340,12 @@ const MainDashboardContent = () => {
           <Card sx={{ height: "100%" }}>
             <CardContent sx={{ p: 3 }}>
               {/* Latest Campaigns Row */}
-              <Grid container spacing={2} sx={{ mb: 3 }}>
+              <Grid container spacing={2} sx={{ mb: 3, height: "200px" }}>
                 <Grid item size={{xs: 12, md:6}}>
-                  <Paper sx={{ p: 2, bgcolor: "success.50", border: "1px solid", borderColor: "success.200" }}>
+                  <Paper sx={{ p: 2, bgcolor: "info.50", borderColor: "info.200", height: "100%" }}>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                      <HealthAndSafety color="success" fontSize="small" />
-                      <Typography variant="subtitle1" fontWeight="bold" color="success.main">
+                      <HealthAndSafety color="info" fontSize="small" />
+                      <Typography variant="subtitle1" fontWeight="bold" color="info.main">
                         Latest Health Check Campaign
                       </Typography>
                     </Box>
@@ -347,9 +360,11 @@ const MainDashboardContent = () => {
                         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                           {latestHealthCheckCampaign.description}
                         </Typography>
-                        <Button variant="outlined" size="small" color="success">
-                          Details
-                        </Button>
+                        <Box component={RouterLink} to="/parent/health-check-campaign/campaigns" sx={{ textDecoration: "none" }}>
+                          <Button variant="outlined" size="small" color="info" sx={{ marginLeft: "35%", marginBottom: "0px" }}>
+                            Details
+                          </Button>
+                        </Box>
                       </Box>
                     ) : (
                       <Box>
@@ -361,11 +376,11 @@ const MainDashboardContent = () => {
                   </Paper>
                 </Grid>
 
-                <Grid item size={{xs: 12, md:6}}>
-                  <Paper sx={{ p: 2, bgcolor: "info.50", border: "1px solid", borderColor: "info.200" }}>
+                <Grid item size={{xs: 12, md:6}} sx={{height: "200px"}}>
+                  <Paper sx={{ p: 2, bgcolor: "success.50", borderColor: "success.200", height: "100%" }}>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                      <Vaccines color="info" fontSize="small" />
-                      <Typography variant="subtitle1" fontWeight="bold" color="info.main">
+                      <Vaccines color="success" fontSize="small" />
+                      <Typography variant="subtitle1" fontWeight="bold" color="success.main">
                         Latest Vaccination Campaign
                       </Typography>
                     </Box>
@@ -380,9 +395,11 @@ const MainDashboardContent = () => {
                         <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                           Deadline: {formatDate(latestVaccinationCampaign.campaign.consentFormDeadline)}
                         </Typography>
-                        <Button variant="outlined" size="small" color="info">
-                          Details
-                        </Button>
+                        <Box component={RouterLink} to="/parent/vaccination-campaign/campaigns" sx={{ textDecoration: "none" }}>
+                          <Button variant="outlined" size="small" color="success" sx={{ marginLeft: "35%", marginBottom: "0px" }}>
+                            Details
+                          </Button>
+                        </Box>
                       </Box>
                     ) : (
                       <Box>
@@ -399,31 +416,15 @@ const MainDashboardContent = () => {
 
               {/* Quick Actions */}
               <Box sx={{ mb: 2 }}>
-                <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
-                  Quick Actions
-                </Typography>
+                <Box display={'flex'} alignItems="center" gap={1} mb={2}>
+                  <RocketLaunchIcon color="action" />
+                  <Typography variant="h6" fontWeight="bold" color="default.main">
+                    Quick Actions
+                  </Typography>
+                </Box>
                 <Grid container spacing={2}>
-                  <Grid item size={{xs: 12, sm: 6, md: 2.4}}>
-                    <Link href="#" underline="none">
-                      <Card
-                        sx={{
-                          textAlign: "center",
-                          p: 2,
-                          cursor: "pointer",
-                          "&:hover": { bgcolor: "success.50" },
-                          transition: "all 0.3s",
-                        }}
-                      >
-                        <HealthAndSafety color="success" sx={{ fontSize: 32, mb: 1 }} />
-                        <Typography variant="body2" fontWeight="bold">
-                          Health Check Campaign
-                        </Typography>
-                      </Card>
-                    </Link>
-                  </Grid>
-
-                  <Grid item size={{xs: 12, sm: 6, md: 2.4}}>
-                    <Link href="#" underline="none">
+                  <Grid item size={{xs: 12, sm: 6}} sx={styleQuickActionItem}>
+                    <Box component={RouterLink} to="/parent/health-check-campaign/campaigns" sx={{ textDecoration: "none" }}>
                       <Card
                         sx={{
                           textAlign: "center",
@@ -433,35 +434,35 @@ const MainDashboardContent = () => {
                           transition: "all 0.3s",
                         }}
                       >
-                        <Vaccines color="info" sx={{ fontSize: 32, mb: 1 }} />
+                        <HealthAndSafety color="info" sx={{ fontSize: 32, mb: 1 }} />
                         <Typography variant="body2" fontWeight="bold">
-                          Vaccination Campaign
+                          Health Check Campaign
                         </Typography>
                       </Card>
-                    </Link>
+                    </Box>
                   </Grid>
 
-                  <Grid item size={{xs: 12, sm: 6, md: 2.4}}>
-                    <Link href="#" underline="none">
+                  <Grid item size={{xs: 12, sm: 6}}  sx={styleQuickActionItem}>
+                    <Box component={RouterLink} to="/parent/vaccination-campaign/campaigns" sx={{ textDecoration: "none" }}>
                       <Card
                         sx={{
                           textAlign: "center",
                           p: 2,
                           cursor: "pointer",
-                          "&:hover": { bgcolor: "warning.50" },
+                          "&:hover": { bgcolor: "success.50" },
                           transition: "all 0.3s",
                         }}
                       >
-                        <LocalHospital color="warning" sx={{ fontSize: 32, mb: 1 }} />
+                        <Vaccines color="success" sx={{ fontSize: 32, mb: 1 }} />
                         <Typography variant="body2" fontWeight="bold">
-                          Medical Events
+                          Vaccination Campaign
                         </Typography>
                       </Card>
-                    </Link>
+                    </Box>
                   </Grid>
 
-                  <Grid item size={{xs: 12, sm: 6, md: 2.4}}>
-                    <Link href="#" underline="none">
+                  <Grid item size={{xs: 12, sm: 6}}  sx={styleQuickActionItem}>
+                    <Box component={RouterLink} to="/parent/medical-events" sx={{ textDecoration: "none" }}>
                       <Card
                         sx={{
                           textAlign: "center",
@@ -471,15 +472,34 @@ const MainDashboardContent = () => {
                           transition: "all 0.3s",
                         }}
                       >
-                        <Send color="error" sx={{ fontSize: 32, mb: 1 }} />
+                        <LocalHospital color="error" sx={{ fontSize: 32, mb: 1 }} />
+                        <Typography variant="body2" fontWeight="bold">
+                          Medical Events
+                        </Typography>
+                      </Card>
+                    </Box>
+                  </Grid>
+
+                  <Grid item size={{xs: 12, sm: 6}}  sx={styleQuickActionItem}>
+                    <Box component={RouterLink} to="/parent/prescription/new-prescription" sx={{ textDecoration: "none" }}>
+                      <Card
+                        sx={{
+                          textAlign: "center",
+                          p: 2,
+                          cursor: "pointer",
+                          "&:hover": { bgcolor: "warning.50" },
+                          transition: "all 0.3s",
+                        }}
+                      >
+                        <Send color="warning" sx={{ fontSize: 32, mb: 1 }} />
                         <Typography variant="body2" fontWeight="bold">
                           Send Medication
                         </Typography>
                       </Card>
-                    </Link>
+                    </Box>
                   </Grid>
 
-                  <Grid item size={{xs: 12, sm: 6, md: 2.4}}>
+                  <Grid item size={{xs: 12, sm: 6}}  sx={styleQuickActionItem}>
                     <Link href="#" underline="none">
                       <Card
                         sx={{
@@ -510,8 +530,8 @@ const MainDashboardContent = () => {
             <Card sx={{ flex: 1 }}>
               <CardContent sx={{ p: 2 }}>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-                  <Medication color="error" fontSize="small" />
-                  <Typography variant="subtitle1" fontWeight="bold" color="error.main">
+                  <Medication color="warning" fontSize="small" />
+                  <Typography variant="subtitle1" fontWeight="bold" color="warning.main">
                     New Medication Taking
                   </Typography>
                 </Box>
@@ -542,7 +562,7 @@ const MainDashboardContent = () => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {injectedNoteObjs.map((item, index) => (
+                      {(injectedNoteObjs || []).map((item, index) => (
                         <TableRow key={index}>
                           <TableCell>
                             <Typography variant="caption">{item.diseaseInfor.disease}</Typography>
@@ -562,15 +582,25 @@ const MainDashboardContent = () => {
                           </TableCell>
                         </TableRow>
                       ))}
+                      {(!injectedNoteObjs || (Array.isArray(injectedNoteObjs) && injectedNoteObjs.length === 0)) ? (
+                        <TableRow>
+                          <TableCell colSpan={4} align="center">
+                            <Typography variant="caption" color="text.secondary" mb={2}>
+                              No new medication taking records
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      ) : null                        
+                      }
                     </TableBody>
                   </Table>
                 </TableContainer>
                 <Box sx={{ mt: 2, textAlign: "center" }}>
-                  <Link href="#" underline="none">
-                    <Button variant="outlined" size="small" color="error">
+                  <Box component={RouterLink} to="/parent/prescription/prescription-logs" sx={{ textDecoration: "none" }}>
+                    <Button variant="outlined" size="small" color="warning">
                       Details
                     </Button>
-                  </Link>
+                  </Box>
                 </Box>
               </CardContent>
             </Card>
@@ -579,8 +609,8 @@ const MainDashboardContent = () => {
             <Card sx={{ flex: 1 }}>
               <CardContent sx={{ p: 2 }}>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-                  <LocalHospital color="warning" fontSize="small" />
-                  <Typography variant="subtitle1" fontWeight="bold" color="warning.main">
+                  <LocalHospital color="error" fontSize="small" />
+                  <Typography variant="subtitle1" fontWeight="bold" color="error.main">
                     New Medical Events
                   </Typography>
                 </Box>
@@ -595,7 +625,7 @@ const MainDashboardContent = () => {
                         </TableCell>
                         <TableCell>
                           <Typography variant="caption" fontWeight="bold">
-                            Date Time
+                            Event Time
                           </Typography>
                         </TableCell>
                         <TableCell>
@@ -624,15 +654,24 @@ const MainDashboardContent = () => {
                           </TableCell>
                         </TableRow>
                       ))}
+                      {(!simplifiedMedicalEventArr || (Array.isArray(simplifiedMedicalEventArr) && simplifiedMedicalEventArr.length === 0)) ? (
+                        <TableRow>
+                          <TableCell colSpan={3} align="center">
+                            <Typography variant="caption" color="text.secondary">
+                              No new medical events
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      ) : null}
                     </TableBody>
                   </Table>
                 </TableContainer>
                 <Box sx={{ mt: 2, textAlign: "center" }}>
-                  <Link href="#" underline="none">
-                    <Button variant="outlined" size="small" color="warning">
+                  <Box component={RouterLink} to="/parent/medical-events" sx={{ textDecoration: "none" }}>
+                    <Button variant="outlined" size="small" color="error">
                       Details
                     </Button>
-                  </Link>
+                  </Box>
                 </Box>
               </CardContent>
             </Card>
@@ -641,6 +680,23 @@ const MainDashboardContent = () => {
       </Grid>
     </Container>
   )
+}
+
+const styleQuickActionItem = {
+  "&:hover": {
+    bgcolor: "primary.50",
+    transform: "scale(1.05)",
+    transition: "all 0.3s ease-in-out",
+  },
+}
+
+const styleNoficationBoxItem = {
+  "&:hover": {
+    transform: "translate(5px, 3px)",
+    transition: "all 0.3s ease-in-out",
+    cursor: "pointer",
+    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+  },
 }
 
 export default MainDashboardContent

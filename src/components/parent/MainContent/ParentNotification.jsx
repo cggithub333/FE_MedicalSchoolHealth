@@ -37,49 +37,61 @@ const ITEMS_PER_PAGE = 5;
 
 const ParentNotifications = () => {
 
+  const { notifications, loading, error, refetch } = useAllNotifications()
+
   const location = useLocation();
 
   useEffect(() => {
 
-    // get the hash value from the URL:
-    const hashVal = location.hash;
+   // oncly scroll after notifications are loadted and not loading:
+    if (!loading && notifications && notifications.length > 0) {
+      
+      // small delay to ensure the page is fully rendered
+      const timer = setTimeout(() => {
+        // get the hash value from the URL:
+        const hashVal = location.hash;
 
-    if (hashVal === "#vaccination-campaign") {
+        if (hashVal === "#vaccination-campaign") {
 
-      // get the element with id get is the type of notification
-      const element = document.getElementById("VACCINATION_CAMPAIGN");
-      if (element) {
-        // scroll to the element with id "VACCINATION_CAMPAIGN"
-        element.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }
-    else if (hashVal === "#health-check-campaign") {
-      // get the element with id get is the type of notification
-      const element = document.getElementById("HEALTH_CHECK_CAMPAIGN");
-      if (element) {
-        // scroll to the element with id "HEALTH_CHECK_CAMPAIGN"
-        element.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }
-    else if (hashVal === "#medical-events") {
-      // get the element with id get is the type of notification
-      const element = document.getElementById("MED_EVENT");
-      if (element) {
-        // scroll to the element with id "MED_EVENT"
-        element.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }
-    else if (hashVal === "#send-medication") {
-      // get the element with id get is the type of notification
-      const element = document.getElementById("SEND_MEDICAL");
-      if (element) {
-        // scroll to the element with id "SEND_MEDICAL"
-        element.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }
-  }, [location])
+          // get the element with id get is the type of notification
+          const element = document.getElementById("VACCINATION_CAMPAIGN");
+          if (element) {
+            // scroll to the element with id "VACCINATION_CAMPAIGN"
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }
+        else if (hashVal === "#health-check-campaign") {
+          // get the element with id get is the type of notification
+          const element = document.getElementById("HEALTH_CHECK_CAMPAIGN");
+          if (element) {
+            // scroll to the element with id "HEALTH_CHECK_CAMPAIGN"
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }
+        else if (hashVal === "#medical-events") {
+          // get the element with id get is the type of notification
+          const element = document.getElementById("MED_EVENT");
+          if (element) {
+            // scroll to the element with id "MED_EVENT"
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }
+        else if (hashVal === "#send-medication") {
+          // get the element with id get is the type of notification
+          const element = document.getElementById("SEND_MEDICAL");
+          if (element) {
+            // scroll to the element with id "SEND_MEDICAL"
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }
+      }, 250) // 250ms delay to ensure the page is fully rendered
 
-  const { notifications, loading, error, refetch } = useAllNotifications()
+      // cleanup function to clear the timer
+      // this is important to avoid memory leaks
+      return () => { clearTimeout(timer)}
+    }
+
+  }, [location.hash, loading, notifications])
 
   {
     const [pageIndex, setPageIndex] = useState(
@@ -145,7 +157,7 @@ const ParentNotifications = () => {
 
     const getNotificationRoute = (type) => {
       switch (type) {
-        case "VACCINATION_CAMPAIGN":
+        case "VACCINATION_CAMPAIGN": 
           return "../vaccination-campaign/surveys"
         case "HEALTH_CHECK_CAMPAIGN":
           return "../health-check-campaign/surveys"
@@ -165,7 +177,7 @@ const ParentNotifications = () => {
         case "HEALTH_CHECK_CAMPAIGN":
           return "Health Check Campaign"
         case "SEND_MEDICAL":
-          return "Send Medication"
+          return "Medication Taking"
         case "MED_EVENT":
           return "Medical Event"
         default:
@@ -291,7 +303,7 @@ const ParentNotifications = () => {
                   {groupedNotifications.SEND_MEDICAL?.length || 0}
                 </Typography>
                 <Typography variant="body2" color="orange">
-                  Send Medication
+                  Medication Taking
                 </Typography>
               </Paper>
             </Link>
