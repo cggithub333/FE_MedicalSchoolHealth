@@ -165,7 +165,7 @@ const ParentNotifications = () => {
         case "HEALTH_CHECK_CAMPAIGN":
           return "Health Check Campaign"
         case "SEND_MEDICAL":
-          return "Send Medication"
+          return "Medication Taking"
         case "MED_EVENT":
           return "Medical Event"
         default:
@@ -291,7 +291,7 @@ const ParentNotifications = () => {
                   {groupedNotifications.SEND_MEDICAL?.length || 0}
                 </Typography>
                 <Typography variant="body2" color="orange">
-                  Send Medication
+                  Medication Taking
                 </Typography>
               </Paper>
             </Link>
