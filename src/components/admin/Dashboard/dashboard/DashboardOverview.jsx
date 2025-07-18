@@ -479,7 +479,7 @@ const DashboardOverview = () => {
 
                                     </Grid>
                                     <Grid size={6}>
-                                        <Link to="/admin/reports/report-a" style={{ textDecoration: "none" }}>
+                                        <Link to="/admin/reports" style={{ textDecoration: "none" }}>
                                             <Button className="action-button action-button--emerald" fullWidth sx={{
                                                 bgcolor: 'linear-gradient(135deg, #10b981 0%, #06b6d4 100%)',
                                                 color: '#fff', borderRadius: 3, fontWeight: 600, py: 2, gap: 1, boxShadow: 2,
