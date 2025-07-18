@@ -37,29 +37,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { FaChild as Child } from "react-icons/fa6";
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 
-
-const pupilInfo = {
-  pupilId: "PP0001",
-  lastName: "Nguyễn",
-  firstName: "Minh",
-  birthDate: "01-09-2019",
-  gender: "M",
-  gradeId: 1,
-  startYear: 2025,
-  gradeLevel: "GRADE_1",
-  gradeName: "Class 1A",
-  currentParent: {
-    userId: "PR0001",
-    lastName: "Anh",
-    firstName: "Ngọc",
-    birthDate: "10-05-1985",
-    email: "ngoc.anh@gmail.com",
-    phoneNumber: "0848025116",
-    createdAt: "08-07-2025",
-    role: "PARENT",
-  },
-}
-
+/*
 const latestHealthCheckCampaign = {
   title: "Health Check Exam Winter 2025",
   description: "This is description",
@@ -83,6 +61,7 @@ const latestVaccinationCampaign = {
     consentFormDeadline: "2025-07-19",
   },
 }
+  */
 
 const injectedNoteObjs = [
   {
@@ -108,8 +87,34 @@ const simplifiedMedicalEventArr = [
   },
 ]
 
-const MainDashboardContent = ({ countNotificationsByType }) => {
+import useAllNotifications from "@hooks/parent/health-check/useAllNotifications";
+import usePersonalInformation from "@hooks/common/useMyInformation";
+import useCurrentStoragedPupil from "@hooks/parent/useCurrentStoragedPupil";
+import useLatestHealthCheckCampaign from "@hooks/parent/useLatestHealthCheckCampaign";
+import useLatestVaccinationCampaign from "@hooks/parent/vaccination/useLatestVaccinationcampaign";
+import usePrescriptionByPupil from "@hooks/parent/send-medication/usePrescriptionByPupil";
+import useNotifyNewMedicalEvents from "@hooks/parent/medical-events/useNotifyNewMedicalEvents"
+
+const MainDashboardContent = () => {
+
+  const { countNotificationsByType } = useAllNotifications();
+  const { personalInforState } = usePersonalInformation();
+  const { currentPupil, filterPupilInforWithCurrentParent} = useCurrentStoragedPupil();
+  const { latestHealthCheckCampaign, isLoading: latestHealthCheckLoading } = useLatestHealthCheckCampaign();
+  const { latestCampaign: latestVaccinationCampaign, loading: latestVaccinationLoading } = useLatestVaccinationCampaign();
+  // const { injectedNoteObjs, loading: injectedNoteLoading} = usePrescriptionByPupil(localStorage.getItem("pupilId"));
+  // const { getSimplifiedEventsByPupilId, loading: simplifiedEventsLoading } = useNotifyNewMedicalEvents();
+
+  const pupilInfo = filterPupilInforWithCurrentParent(currentPupil, personalInforState?.userId);
+
+  // debug:
+  console.log("health check campaign: ", JSON.stringify(latestHealthCheckCampaign, null, 2));
+  console.log("vaccination campaign: ", JSON.stringify(latestVaccinationCampaign, null, 2));
+
   const formatDate = (dateString) => {
+
+    if (!dateString) return "";
+
     const [year, month, day] = dateString.split("-")
     return `${day}/${month}/${year}`
   }
@@ -156,15 +161,15 @@ const MainDashboardContent = ({ countNotificationsByType }) => {
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item size={{xs: 12, md:3}} sx={styleNoficationBoxItem}>
           <Box component={RouterLink} to="/parent/notification#health-check-campaign" sx={{ textDecoration: "none" }}>
-            <Card sx={{ bgcolor: "success.50", borderColor: "success.200" }}>
+            <Card sx={{ bgcolor: "info.50", borderColor: "info.200" }}>
               <CardContent sx={{ textAlign: "center", py: 2 }} >
                 <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mb: 1 }}>
-                  <HealthAndSafety color="success" sx={{ fontSize: 28 }} />
-                  <Typography variant="h4" fontWeight="bold" color="success.main">
+                  <HealthAndSafety color="info" sx={{ fontSize: 28 }} />
+                  <Typography variant="h4" fontWeight="bold" color="info.main">
                     {countNotificationsByType.HEALTH_CHECK_CAMPAIGN || 0}
                   </Typography>
                 </Box>
-                <Typography variant="subtitle1" fontWeight="bold" color="success.dark">
+                <Typography variant="subtitle1" fontWeight="bold" color="info.dark">
                   Health Check Campaign
                 </Typography>
               </CardContent>
@@ -174,15 +179,15 @@ const MainDashboardContent = ({ countNotificationsByType }) => {
 
         <Grid item size={{xs: 12, md:3}}  sx={styleNoficationBoxItem}>
           <Box component={RouterLink} to="/parent/notification#vaccination-campaign" sx={{ textDecoration: "none" }}>
-            <Card sx={{ bgcolor: "info.50", borderColor: "info.200" }}>
+            <Card sx={{ bgcolor: "success.50", borderColor: "success.200" }}>
               <CardContent sx={{ textAlign: "center", py: 2 }}>
                 <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mb: 1 }}>
-                  <Vaccines color="info" sx={{ fontSize: 28 }} />
-                  <Typography variant="h4" fontWeight="bold" color="info.main">
+                  <Vaccines color="success" sx={{ fontSize: 28 }} />
+                  <Typography variant="h4" fontWeight="bold" color="success.main">
                     {countNotificationsByType.VACCINATION_CAMPAIGN || 0}
                   </Typography>
                 </Box>
-                <Typography variant="subtitle1" fontWeight="bold" color="info.dark">
+                <Typography variant="subtitle1" fontWeight="bold" color="success.dark">
                   Vaccination Campaign
                 </Typography>
               </CardContent>
@@ -192,15 +197,15 @@ const MainDashboardContent = ({ countNotificationsByType }) => {
 
         <Grid item size={{xs: 12, md:3}}  sx={styleNoficationBoxItem}>
           <Box component={RouterLink} to="/parent/notification#medical-events" sx={{ textDecoration: "none" }}>
-            <Card sx={{ bgcolor: "warning.50", borderColor: "warning.200" }}>
+            <Card sx={{ bgcolor: "error.50", borderColor: "error.200" }}>
               <CardContent sx={{ textAlign: "center", py: 2 }}>
                 <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mb: 1 }}>
-                  <LocalHospital color="warning" sx={{ fontSize: 28 }} />
-                  <Typography variant="h4" fontWeight="bold" color="warning.main">
+                  <LocalHospital color="error" sx={{ fontSize: 28 }} />
+                  <Typography variant="h4" fontWeight="bold" color="error.main">
                     {countNotificationsByType.MED_EVENT || 0}
                   </Typography>
                 </Box>
-                <Typography variant="subtitle1" fontWeight="bold" color="warning.dark">
+                <Typography variant="subtitle1" fontWeight="bold" color="error.dark">
                   Medical Event
                 </Typography>
               </CardContent>
@@ -210,15 +215,15 @@ const MainDashboardContent = ({ countNotificationsByType }) => {
 
         <Grid item size={{xs: 12, md:3}}  sx={styleNoficationBoxItem}>
           <Box component={RouterLink} to="/parent/notification#send-medication" sx={{ textDecoration: "none" }}>
-            <Card sx={{ bgcolor: "error.50", borderColor: "error.200" }}>
+            <Card sx={{ bgcolor: "warning.50", borderColor: "warning.200" }}>
               <CardContent sx={{ textAlign: "center", py: 2 }}>
                 <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mb: 1 }}>
-                  <Medication color="error" sx={{ fontSize: 28 }} />
-                  <Typography variant="h4" fontWeight="bold" color="error.main">
+                  <Medication color="warning" sx={{ fontSize: 28 }} />
+                  <Typography variant="h4" fontWeight="bold" color="warning.main">
                     {countNotificationsByType.SEND_MEDICAL || 0}
                   </Typography>
                 </Box>
-                <Typography variant="subtitle1" fontWeight="bold" color="error.dark">
+                <Typography variant="subtitle1" fontWeight="bold" color="warning.dark">
                   Medication Taking
                 </Typography>
               </CardContent>
@@ -244,7 +249,7 @@ const MainDashboardContent = ({ countNotificationsByType }) => {
                     Parent ID
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {pupilInfo.currentParent.userId}
+                    {pupilInfo?.currentParent.userId}
                   </Typography>
                 </Grid>
                 <Grid item size={{xs: 6}}>
@@ -252,7 +257,7 @@ const MainDashboardContent = ({ countNotificationsByType }) => {
                     Full Name
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {pupilInfo.currentParent.lastName} {pupilInfo.currentParent.firstName}
+                    {pupilInfo?.currentParent.lastName} {pupilInfo?.currentParent.firstName}
                   </Typography>
                 </Grid>
                 <Grid item size={{xs: 6}}>
@@ -260,7 +265,7 @@ const MainDashboardContent = ({ countNotificationsByType }) => {
                     Email
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {pupilInfo.currentParent.email}
+                    {pupilInfo?.currentParent.email}
                   </Typography>
                 </Grid>
                 <Grid item size={{xs: 6}}>
@@ -268,7 +273,7 @@ const MainDashboardContent = ({ countNotificationsByType }) => {
                     Phone Number
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {pupilInfo.currentParent.phoneNumber}
+                    {pupilInfo?.currentParent.phoneNumber}
                   </Typography>
                 </Grid>
               </Grid>
@@ -291,7 +296,7 @@ const MainDashboardContent = ({ countNotificationsByType }) => {
                     Pupil ID
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {pupilInfo.pupilId}
+                    {pupilInfo?.pupilId}
                   </Typography>
                 </Grid>
                 <Grid item size={{xs: 6}}>
@@ -299,7 +304,7 @@ const MainDashboardContent = ({ countNotificationsByType }) => {
                     Full Name
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {pupilInfo.lastName} {pupilInfo.firstName}
+                    {pupilInfo?.lastName} {pupilInfo?.firstName}
                   </Typography>
                 </Grid>
                 <Grid item size={{xs: 6}}>
@@ -307,7 +312,7 @@ const MainDashboardContent = ({ countNotificationsByType }) => {
                     Class
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {pupilInfo.gradeName}
+                    {pupilInfo?.gradeName}
                   </Typography>
                 </Grid>
                 <Grid item size={{xs: 6}}>
@@ -315,7 +320,7 @@ const MainDashboardContent = ({ countNotificationsByType }) => {
                     Birth Date
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {pupilInfo.birthDate}
+                    {pupilInfo?.birthDate}
                   </Typography>
                 </Grid>
               </Grid>
@@ -333,10 +338,10 @@ const MainDashboardContent = ({ countNotificationsByType }) => {
               {/* Latest Campaigns Row */}
               <Grid container spacing={2} sx={{ mb: 3, height: "200px" }}>
                 <Grid item size={{xs: 12, md:6}}>
-                  <Paper sx={{ p: 2, bgcolor: "success.50", borderColor: "success.200", height: "100%" }}>
+                  <Paper sx={{ p: 2, bgcolor: "info.50", borderColor: "info.200", height: "100%" }}>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                      <HealthAndSafety color="success" fontSize="small" />
-                      <Typography variant="subtitle1" fontWeight="bold" color="success.main">
+                      <HealthAndSafety color="info" fontSize="small" />
+                      <Typography variant="subtitle1" fontWeight="bold" color="info.main">
                         Latest Health Check Campaign
                       </Typography>
                     </Box>
@@ -351,9 +356,11 @@ const MainDashboardContent = ({ countNotificationsByType }) => {
                         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                           {latestHealthCheckCampaign.description}
                         </Typography>
-                        <Button variant="outlined" size="small" color="success">
-                          Details
-                        </Button>
+                        <Box component={RouterLink} to="/parent/health-check-campaign/campaigns" sx={{ textDecoration: "none" }}>
+                          <Button variant="outlined" size="small" color="info" sx={{ marginLeft: "35%", marginBottom: "0px" }}>
+                            Details
+                          </Button>
+                        </Box>
                       </Box>
                     ) : (
                       <Box>
@@ -366,10 +373,10 @@ const MainDashboardContent = ({ countNotificationsByType }) => {
                 </Grid>
 
                 <Grid item size={{xs: 12, md:6}} sx={{height: "200px"}}>
-                  <Paper sx={{ p: 2, bgcolor: "info.50", borderColor: "info.200", height: "100%" }}>
+                  <Paper sx={{ p: 2, bgcolor: "success.50", borderColor: "success.200", height: "100%" }}>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                      <Vaccines color="info" fontSize="small" />
-                      <Typography variant="subtitle1" fontWeight="bold" color="info.main">
+                      <Vaccines color="success" fontSize="small" />
+                      <Typography variant="subtitle1" fontWeight="bold" color="success.main">
                         Latest Vaccination Campaign
                       </Typography>
                     </Box>
@@ -384,9 +391,11 @@ const MainDashboardContent = ({ countNotificationsByType }) => {
                         <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                           Deadline: {formatDate(latestVaccinationCampaign.campaign.consentFormDeadline)}
                         </Typography>
-                        <Button variant="outlined" size="small" color="info">
-                          Details
-                        </Button>
+                        <Box component={RouterLink} to="/parent/vaccination-campaign/campaigns" sx={{ textDecoration: "none" }}>
+                          <Button variant="outlined" size="small" color="success" sx={{ marginLeft: "35%", marginBottom: "0px" }}>
+                            Details
+                          </Button>
+                        </Box>
                       </Box>
                     ) : (
                       <Box>
@@ -417,11 +426,11 @@ const MainDashboardContent = ({ countNotificationsByType }) => {
                           textAlign: "center",
                           p: 2,
                           cursor: "pointer",
-                          "&:hover": { bgcolor: "success.50" },
+                          "&:hover": { bgcolor: "info.50" },
                           transition: "all 0.3s",
                         }}
                       >
-                        <HealthAndSafety color="success" sx={{ fontSize: 32, mb: 1 }} />
+                        <HealthAndSafety color="info" sx={{ fontSize: 32, mb: 1 }} />
                         <Typography variant="body2" fontWeight="bold">
                           Health Check Campaign
                         </Typography>
@@ -436,32 +445,13 @@ const MainDashboardContent = ({ countNotificationsByType }) => {
                           textAlign: "center",
                           p: 2,
                           cursor: "pointer",
-                          "&:hover": { bgcolor: "info.50" },
+                          "&:hover": { bgcolor: "success.50" },
                           transition: "all 0.3s",
                         }}
                       >
-                        <Vaccines color="info" sx={{ fontSize: 32, mb: 1 }} />
+                        <Vaccines color="success" sx={{ fontSize: 32, mb: 1 }} />
                         <Typography variant="body2" fontWeight="bold">
                           Vaccination Campaign
-                        </Typography>
-                      </Card>
-                    </Link>
-                  </Grid>
-
-                  <Grid item size={{xs: 12, sm: 6}}  sx={styleQuickActionItem}>
-                    <Link href="#" underline="none">
-                      <Card
-                        sx={{
-                          textAlign: "center",
-                          p: 2,
-                          cursor: "pointer",
-                          "&:hover": { bgcolor: "warning.50" },
-                          transition: "all 0.3s",
-                        }}
-                      >
-                        <LocalHospital color="warning" sx={{ fontSize: 32, mb: 1 }} />
-                        <Typography variant="body2" fontWeight="bold">
-                          Medical Events
                         </Typography>
                       </Card>
                     </Link>
@@ -478,7 +468,26 @@ const MainDashboardContent = ({ countNotificationsByType }) => {
                           transition: "all 0.3s",
                         }}
                       >
-                        <Send color="error" sx={{ fontSize: 32, mb: 1 }} />
+                        <LocalHospital color="error" sx={{ fontSize: 32, mb: 1 }} />
+                        <Typography variant="body2" fontWeight="bold">
+                          Medical Events
+                        </Typography>
+                      </Card>
+                    </Link>
+                  </Grid>
+
+                  <Grid item size={{xs: 12, sm: 6}}  sx={styleQuickActionItem}>
+                    <Link href="#" underline="none">
+                      <Card
+                        sx={{
+                          textAlign: "center",
+                          p: 2,
+                          cursor: "pointer",
+                          "&:hover": { bgcolor: "warning.50" },
+                          transition: "all 0.3s",
+                        }}
+                      >
+                        <Send color="warning" sx={{ fontSize: 32, mb: 1 }} />
                         <Typography variant="body2" fontWeight="bold">
                           Send Medication
                         </Typography>
@@ -517,8 +526,8 @@ const MainDashboardContent = ({ countNotificationsByType }) => {
             <Card sx={{ flex: 1 }}>
               <CardContent sx={{ p: 2 }}>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-                  <Medication color="error" fontSize="small" />
-                  <Typography variant="subtitle1" fontWeight="bold" color="error.main">
+                  <Medication color="warning" fontSize="small" />
+                  <Typography variant="subtitle1" fontWeight="bold" color="warning.main">
                     New Medication Taking
                   </Typography>
                 </Box>
@@ -574,7 +583,7 @@ const MainDashboardContent = ({ countNotificationsByType }) => {
                 </TableContainer>
                 <Box sx={{ mt: 2, textAlign: "center" }}>
                   <Link href="#" underline="none">
-                    <Button variant="outlined" size="small" color="error">
+                    <Button variant="outlined" size="small" color="warning">
                       Details
                     </Button>
                   </Link>
@@ -586,8 +595,8 @@ const MainDashboardContent = ({ countNotificationsByType }) => {
             <Card sx={{ flex: 1 }}>
               <CardContent sx={{ p: 2 }}>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-                  <LocalHospital color="warning" fontSize="small" />
-                  <Typography variant="subtitle1" fontWeight="bold" color="warning.main">
+                  <LocalHospital color="error" fontSize="small" />
+                  <Typography variant="subtitle1" fontWeight="bold" color="error.main">
                     New Medical Events
                   </Typography>
                 </Box>
@@ -636,7 +645,7 @@ const MainDashboardContent = ({ countNotificationsByType }) => {
                 </TableContainer>
                 <Box sx={{ mt: 2, textAlign: "center" }}>
                   <Link href="#" underline="none">
-                    <Button variant="outlined" size="small" color="warning">
+                    <Button variant="outlined" size="small" color="error">
                       Details
                     </Button>
                   </Link>
