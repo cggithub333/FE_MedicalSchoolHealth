@@ -94,7 +94,7 @@ export default function AdminReportsDashboard() {
                 component="h1"
                 sx={{ fontWeight: 800, textAlign: "center", color: "#1f2937", letterSpacing: "-0.025em", paddingBottom: "20px" }}
             >
-                Admin Reports In {currentYear}
+                Reports In {currentYear}
             </Typography>
             <Grid container spacing={2}>
                 {/* Summary Boxes */}
