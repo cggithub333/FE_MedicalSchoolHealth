@@ -28,7 +28,7 @@ import StarIcon from '@mui/icons-material/Star';
 import HomeIcon from '@mui/icons-material/Home';
 
 // import custom hooks here..
-import usePupils from '../../../hooks/parent/usePupils';
+import usePupils from '@hooks/parent/usePupils';
 
 // encode/decode service:
 import { Base64 } from 'js-base64';
@@ -37,7 +37,7 @@ import useAllNotifications from '@hooks/parent/health-check/useAllNotifications'
 
 import { stylePupilBtn, styleChildItem } from './parent-dashboard-layout-custom-css.js';
 import Logout from '../../Logout.jsx';
-import { getPayloadResources } from '../../../utils/jwt-utils.js';
+import { getPayloadResources } from '@utils/jwt-utils.js';
 import { Box } from '@mui/material';
 
 import useMyInformation from '@hooks/common/useMyInformation.js';
@@ -93,7 +93,8 @@ function ToolbarActionsUtility() {
   const forAllChildrenLink = [
     "/parent/declaration/health-declaration",
     "/parent/profile",
-    "/parent/notification"
+    "/parent/notification",
+    "/parent/medical-events"
   ]
 
   return (

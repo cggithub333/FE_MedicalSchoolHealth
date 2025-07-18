@@ -37,9 +37,21 @@ const useNotifyNewMedicalEvents = () => {
 
 const getSimplifiedEventsByPupilId = (pupilId, notiNewEventOfPupils) => {
 
-  if (!pupilId || !notiNewEventOfPupils) return [];
+  if (!pupilId) {
+    console.error("Pupil ID is not provided.");
+    return [];
+  };
+  if (!notiNewEventOfPupils || notiNewEventOfPupils.length === 0) {
+    console.error("No new medical events found for the pupil.");
+    return [];
+  }
 
-  return notiNewEventOfPupils
+
+  // debug:
+  console.log("getSimplifiedEventsByPupilId called with pupilId:", pupilId);
+  console.log("notiNewEventOfPupils:", notiNewEventOfPupils);
+
+  const convertedRes = notiNewEventOfPupils
     .filter(event => event.pupil?.pupilId === pupilId)
     .map(event => ({
       status: event.status,
@@ -48,6 +60,8 @@ const getSimplifiedEventsByPupilId = (pupilId, notiNewEventOfPupils) => {
         name: `${event.schoolNurse?.lastName} ${event.schoolNurse?.firstName}`,
       }
     }));
+
+  return convertedRes;
 }
 
 

@@ -37,6 +37,8 @@ import { Link as RouterLink } from "react-router-dom";
 import { FaChild as Child } from "react-icons/fa6";
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 
+import { useState, useEffect } from 'react';
+
 /*
 const latestHealthCheckCampaign = {
   title: "Health Check Exam Winter 2025",
@@ -63,6 +65,7 @@ const latestVaccinationCampaign = {
 }
   */
 
+/*
 const injectedNoteObjs = [
   {
     diseaseInfor: {
@@ -76,7 +79,9 @@ const injectedNoteObjs = [
     nurseName: "Thủy Vy",
   },
 ]
+  */
 
+/*
 const simplifiedMedicalEventArr = [
   {
     status: "MEDIUM",
@@ -86,6 +91,7 @@ const simplifiedMedicalEventArr = [
     },
   },
 ]
+  */
 
 import useAllNotifications from "@hooks/parent/health-check/useAllNotifications";
 import usePersonalInformation from "@hooks/common/useMyInformation";
@@ -97,19 +103,17 @@ import useNotifyNewMedicalEvents from "@hooks/parent/medical-events/useNotifyNew
 
 const MainDashboardContent = () => {
 
-  const { countNotificationsByType } = useAllNotifications();
+  const { countNotificationsByType, loading: notificationLoading} = useAllNotifications();
   const { personalInforState } = usePersonalInformation();
-  const { currentPupil, filterPupilInforWithCurrentParent} = useCurrentStoragedPupil();
+  const { currentPupil, filterPupilInforWithCurrentParent, loading: currentPupilLoading} = useCurrentStoragedPupil();
   const { latestHealthCheckCampaign, isLoading: latestHealthCheckLoading } = useLatestHealthCheckCampaign();
   const { latestCampaign: latestVaccinationCampaign, loading: latestVaccinationLoading } = useLatestVaccinationCampaign();
-  // const { injectedNoteObjs, loading: injectedNoteLoading} = usePrescriptionByPupil(localStorage.getItem("pupilId"));
-  // const { getSimplifiedEventsByPupilId, loading: simplifiedEventsLoading } = useNotifyNewMedicalEvents();
+  const { prescriptionArr, injectedNoteObjs, loading: injectedNoteLoading } = usePrescriptionByPupil(localStorage.getItem("pupilId"));
+  const { getSimplifiedEventsByPupilId, loading: simplifiedEventsLoading, refetch: notiNewEventRefetch } = useNotifyNewMedicalEvents();
 
-  const pupilInfo = filterPupilInforWithCurrentParent(currentPupil, personalInforState?.userId);
+  const [pupilInfo, setPupilInfo] = useState(filterPupilInforWithCurrentParent(currentPupil, personalInforState?.userId));
+  const [simplifiedMedicalEventArr, setSimplifiedMedicalEventArr] = useState(getSimplifiedEventsByPupilId(currentPupil?.pupilId));
 
-  // debug:
-  console.log("health check campaign: ", JSON.stringify(latestHealthCheckCampaign, null, 2));
-  console.log("vaccination campaign: ", JSON.stringify(latestVaccinationCampaign, null, 2));
 
   const formatDate = (dateString) => {
 
@@ -558,7 +562,7 @@ const MainDashboardContent = () => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {injectedNoteObjs.map((item, index) => (
+                      {(injectedNoteObjs || []).map((item, index) => (
                         <TableRow key={index}>
                           <TableCell>
                             <Typography variant="caption">{item.diseaseInfor.disease}</Typography>
@@ -578,15 +582,25 @@ const MainDashboardContent = () => {
                           </TableCell>
                         </TableRow>
                       ))}
+                      {(!injectedNoteObjs || (Array.isArray(injectedNoteObjs) && injectedNoteObjs.length === 0)) ? (
+                        <TableRow>
+                          <TableCell colSpan={4} align="center">
+                            <Typography variant="caption" color="text.secondary" mb={2}>
+                              No new medication taking records
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      ) : null                        
+                      }
                     </TableBody>
                   </Table>
                 </TableContainer>
                 <Box sx={{ mt: 2, textAlign: "center" }}>
-                  <Link href="#" underline="none">
+                  <Box component={RouterLink} to="/parent/prescription/prescription-logs" sx={{ textDecoration: "none" }}>
                     <Button variant="outlined" size="small" color="warning">
                       Details
                     </Button>
-                  </Link>
+                  </Box>
                 </Box>
               </CardContent>
             </Card>
@@ -640,15 +654,24 @@ const MainDashboardContent = () => {
                           </TableCell>
                         </TableRow>
                       ))}
+                      {(!simplifiedMedicalEventArr || (Array.isArray(simplifiedMedicalEventArr) && simplifiedMedicalEventArr.length === 0)) ? (
+                        <TableRow>
+                          <TableCell colSpan={3} align="center">
+                            <Typography variant="caption" color="text.secondary">
+                              No new medical events
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      ) : null}
                     </TableBody>
                   </Table>
                 </TableContainer>
                 <Box sx={{ mt: 2, textAlign: "center" }}>
-                  <Link href="#" underline="none">
+                  <Box component={RouterLink} to="/parent/medical-events" sx={{ textDecoration: "none" }}>
                     <Button variant="outlined" size="small" color="error">
                       Details
                     </Button>
-                  </Link>
+                  </Box>
                 </Box>
               </CardContent>
             </Card>

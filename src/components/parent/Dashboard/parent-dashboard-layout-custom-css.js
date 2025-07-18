@@ -3,7 +3,8 @@ import { useLocation } from "react-router-dom"
 const forAllChildrenLink = [
   "/parent/declaration/health-declaration",
   "/parent/profile",
-  "/parent/notification"
+  "/parent/notification",
+  "/parent/medical-events"
 ]
 
 export const stylePupilBtn = (pupilGender) => {
