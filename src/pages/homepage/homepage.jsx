@@ -19,7 +19,7 @@ export default function Homepage() {
     role: personalInforState?.role || "guest",
   })
 
-  // reload if state changes:
+  // reload if redux state changes:
   useEffect(() => {
     if (!loading) {
       setCurrentUser({
@@ -34,19 +34,19 @@ export default function Homepage() {
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
       {/* Header and Navigation */}
-      <HomepageHeader />
+      <HomepageHeader currentUser={currentUser} />
 
       {/* Banner Section */}
       <HomepageBanner currentUser={currentUser} />
 
       {/* Features Section */}
-      <HomepageHealthServices />
+      <HomepageHealthServices currentUser={currentUser} />
 
       {/* Latest News Section */}
-      <HomepageBlogsUpdates />
+      <HomepageBlogsUpdates currentUser={currentUser} />
 
       {/* Footer */}
-      <HomepageFooter />
+      <HomepageFooter currentUser={currentUser} />
     </Box>
   )
 }
