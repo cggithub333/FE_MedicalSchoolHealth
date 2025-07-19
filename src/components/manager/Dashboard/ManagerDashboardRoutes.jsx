@@ -35,11 +35,11 @@ const ManagerDashboardRoutes = () => {
                 </Route>
 
                 {/* reports */}
-                <Route path="reports">
-                    <Route index element={<Navigate to="sales" />} />
+                <Route path="reports" element={<ManagerComponentPagePackages.ReportsA />} />
+                {/* <Route index element={<Navigate to="sales" />} />
                     <Route path="sales" element={<ManagerComponentPagePackages.ReportsA />} />
                     <Route path="traffic" element={<ManagerComponentPagePackages.ReportsB />} />
-                </Route>
+                </Route> */}
 
                 {/* integration */}
                 <Route path="integration" element={<ManagerComponentPagePackages.Integration />} />

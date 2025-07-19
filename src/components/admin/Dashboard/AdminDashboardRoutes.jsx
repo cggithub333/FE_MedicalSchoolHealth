@@ -22,10 +22,10 @@ const AdminDashboardRoutes = () => {
         <Route path="accounts" element={<AdminComponentPagePackages.Accounts />} />
 
         {/* analytics */}
-        <Route path="reports">
-          <Route path="report-a" element={<AdminComponentPagePackages.ReportsA />} />
+        <Route path="reports" element={<AdminComponentPagePackages.ReportsA />} />
+        {/* <Route path="report-a" element={<AdminComponentPagePackages.ReportsA />} />
           <Route path="report-b" element={<AdminComponentPagePackages.ReportsB />} />
-        </Route>
+        </Route> */}
         <Route path="integration" element={<AdminComponentPagePackages.Integration />} />
 
         {/* Settings */}

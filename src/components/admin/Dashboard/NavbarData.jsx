@@ -77,18 +77,18 @@ const NavbarData = [
     segment: 'admin/reports',
     title: 'Reports',
     icon: <BarChartIcon />,
-    children: [
-      {
-        segment: 'report-a',
-        title: 'Report A',
-        icon: <DescriptionIcon />,
-      },
-      {
-        segment: 'report-b',
-        title: 'Report B',
-        icon: <DescriptionIcon />,
-      },
-    ],
+    // children: [
+    //   {
+    //     segment: 'report-a',
+    //     title: 'Report A',
+    //     icon: <DescriptionIcon />,
+    //   },
+    //   {
+    //     segment: 'report-b',
+    //     title: 'Report B',
+    //     icon: <DescriptionIcon />,
+    //   },
+    // ],
   },
   {
     segment: 'admin/integration',
