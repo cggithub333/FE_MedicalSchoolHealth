@@ -8,7 +8,8 @@ import AdminDashboardRoutes from "./components/admin/Dashboard/AdminDashboardRou
 import ManagerDashboardRoutes from "./components/manager/Dashboard/ManagerDashboardRoutes";
 import SchoolNurseDashboardRoutes from "./components/schoolnurse/Dashboard/SchoolNurseDashboardRoutes";
 import ParentDashboardRoutes from "./components/parent/Dashboard/ParentDashboardRoutes";
-import Homepage from './components/homepage-resources/Homepage';
+import Homepage from './pages/homepage/homepage.jsx';
+import Blogs from '@pages/blogs/Blogs';
 
 
 // toastify config:
@@ -80,6 +81,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Navigate to={"/homepage"} />} /> {/* entry point of the application */}
                     <Route path="/homepage" element={<Homepage />} />
+                    <Route path="/blogs" element={<Blogs />} />
                     <Route path="/test" element={<Test />} />
                     <Route path="/dashboard" element={<TargetRedirect target="dashboard" />} />
                     <Route path="/profile" element={<TargetRedirect target="profile"/>} />
