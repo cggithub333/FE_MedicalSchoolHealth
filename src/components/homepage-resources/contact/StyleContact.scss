@@ -133,7 +133,6 @@ $white: #fff;
     transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 
     &:hover {
-        background-color: darken($primary-teal, 10%);
         box-shadow: 0 8px 20px rgba($primary-teal, 0.4);
     }
 }
