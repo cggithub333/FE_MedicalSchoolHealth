@@ -5,9 +5,9 @@ import useMyInformation from "@hooks/common/useMyInformation";
 
 import { useEffect, useState } from "react";
 
-const Blogs = () => {
+const Contact = () => {
 
-  const { personalInforState, loading} = useMyInformation();
+  const { personalInforState, loading } = useMyInformation();
 
   const [currentUser, setCurrentUser] = useState({
     role: personalInforState?.role || "guest",
@@ -26,14 +26,14 @@ const Blogs = () => {
     <div>
       <HomepageHeader currentUser={currentUser} />
 
-      {/* Viết nội dung trang blogs ở chỗ này này */}
+      {/* Viết nội dung trang contact ở chỗ này này */}
       <div style={{padding: "20px"}}>
-        Blogs here!!!
+        Contact here!!!
       </div>
 
-      <HomepageFooter/>
+      <HomepageFooter />
     </div>
   );
 };
 
-export default Blogs;
+export default Contact;

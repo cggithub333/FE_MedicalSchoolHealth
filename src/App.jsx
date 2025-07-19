@@ -10,6 +10,7 @@ import SchoolNurseDashboardRoutes from "./components/schoolnurse/Dashboard/Schoo
 import ParentDashboardRoutes from "./components/parent/Dashboard/ParentDashboardRoutes";
 import Homepage from './pages/homepage/homepage.jsx';
 import Blogs from '@pages/blogs/Blogs';
+import Contact from '@pages/contact/Contact';
 
 
 // toastify config:
@@ -82,6 +83,7 @@ function App() {
                     <Route path="/" element={<Navigate to={"/homepage"} />} /> {/* entry point of the application */}
                     <Route path="/homepage" element={<Homepage />} />
                     <Route path="/blogs" element={<Blogs />} />
+                    <Route path="/contact" element={<Contact />} />
                     <Route path="/test" element={<Test />} />
                     <Route path="/dashboard" element={<TargetRedirect target="dashboard" />} />
                     <Route path="/profile" element={<TargetRedirect target="profile"/>} />
