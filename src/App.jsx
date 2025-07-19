@@ -8,7 +8,7 @@ import AdminDashboardRoutes from "./components/admin/Dashboard/AdminDashboardRou
 import ManagerDashboardRoutes from "./components/manager/Dashboard/ManagerDashboardRoutes";
 import SchoolNurseDashboardRoutes from "./components/schoolnurse/Dashboard/SchoolNurseDashboardRoutes";
 import ParentDashboardRoutes from "./components/parent/Dashboard/ParentDashboardRoutes";
-import Homepage from './components/homepage-resources/Homepage';
+import Homepage from './pages/homepage/homepage.jsx';
 
 
 // toastify config:
