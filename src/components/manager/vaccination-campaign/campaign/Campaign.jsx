@@ -36,7 +36,7 @@ import {
     InputAdornment,
     Fab,
 } from "@mui/material"
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import EditIcon from "@mui/icons-material/Edit"
 import DeleteIcon from "@mui/icons-material/Delete"
 import MoreVertIcon from "@mui/icons-material/MoreVert"
@@ -305,7 +305,7 @@ const allCampaign = () => {
                 sx={styleCampaign.header}
             >
                 <Toolbar>
-                    <VaccinesIcon sx={{ mr: 2, fontSize: 32, color: "white" }} />
+                    {/* <VaccinesIcon sx={{ mr: 2, fontSize: 32, color: "black" }} /> */}
                     <Typography
                         variant="h4"
                         sx={styleCampaign.title}
@@ -503,27 +503,27 @@ const allCampaign = () => {
                                         : 'Create your first vaccination campaign to get started'}
                                 </Typography>
                                 {!searchTerm && (
-                                            <Link to={'/manager/vaccination-campaign/new'}>
-                                                <Button
-                                                    variant="contained"
-                                                    size="large"
-                                                    onClick={() => {
-                                                        setSelectedCampaign(null)
-                                                        setDialogMode('create')
-                                                        setOpenDialog(true)
-                                                    }}
-                                                    sx={{
-                                                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                                                        borderRadius: 3,
-                                                        px: 4,
-                                                        py: 1.5,
-                                                        textTransform: 'none',
-                                                        fontSize: '1.1rem',
-                                                        fontWeight: 600,
-                                                    }}
-                                                >
-                                                    Create Your First Campaign
-                                                </Button>
+                                    <Link to={'/manager/vaccination-campaign/new'}>
+                                        <Button
+                                            variant="contained"
+                                            size="large"
+                                            onClick={() => {
+                                                setSelectedCampaign(null)
+                                                setDialogMode('create')
+                                                setOpenDialog(true)
+                                            }}
+                                            sx={{
+                                                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                                borderRadius: 3,
+                                                px: 4,
+                                                py: 1.5,
+                                                textTransform: 'none',
+                                                fontSize: '1.1rem',
+                                                fontWeight: 600,
+                                            }}
+                                        >
+                                            Create Your First Campaign
+                                        </Button>
                                     </Link>
                                 )}
                             </Box>

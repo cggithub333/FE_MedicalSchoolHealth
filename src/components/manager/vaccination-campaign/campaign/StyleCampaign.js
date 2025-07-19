@@ -15,7 +15,9 @@ export const styleCampaign = {
         right: 0,
         bottom: 0,
         zIndex: -1,
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 60%, #f7971e 100%)",
+        // background: "linear-gradient(135deg, #667eea 0%, #764ba2 60%, #f7971e 100%)",
+        background: "linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%)",
+
         minHeight: "100vh",
         width: "100vw",
     },
@@ -27,8 +29,7 @@ export const styleCampaign = {
     title: {
         flexGrow: 1,
         fontWeight: 700,
-        color: "white",
-        textShadow: "0 2px 4px rgba(0,0,0,0.3)",
+        color: "rgb(77, 72, 72)",        // textShadow: "0 2px 4px rgba(0,0,0,0.3)",
     },
     searchbar: {
         p: 2,
