@@ -13,7 +13,7 @@ import "./DashboardOverview.scss"
 import VaccinesIcon from '@mui/icons-material/Vaccines';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import { Link } from "react-router-dom"
-import { useGetPupilsInformation } from "../../../../hooks/schoolnurse/new-event/useGetPupilsInformation.js";
+import { useGetPupilsInformation } from "@hooks/schoolnurse/new-event/useGetPupilsInformation.js";
 import { useGetAllMedicalEvent } from "../../../../hooks/schoolnurse/new-event/useGetAllMedicalEvent.js"
 import { useGetAllPrescription } from "../../../../hooks/schoolnurse/main-contents/useGetAllPrescription.js";
 import useAllPendingPrescriptions from "@hooks/schoolnurse/useAllPendingPrescriptions"
@@ -100,6 +100,7 @@ const DashboardOverview = () => {
             padding: { xs: 1, sm: 3 },
             background: "linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%)",
             width: "100%",
+            height: "100%",
             boxSizing: "border-box",
         }}>
             {/* Top Stats Cards */}
