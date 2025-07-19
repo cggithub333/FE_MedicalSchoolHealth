@@ -68,7 +68,10 @@ export default function HomepageHeader({ currentUser }) {
       <Box sx={{ bgcolor: "grey.50", borderBottom: 1, borderColor: "divider" }}>
         <Container maxWidth="xl" sx={{ display: "flex", alignItems: "center"}}>
           <Box sx={{ display: "flex", alignItems: "center", py: 1 }}>
-            <Button sx={{ mx: 1, color: "text.primary", fontWeight: "medium" }}>Home</Button>
+
+            <Box component={Link} to={'/homepage'} sx={{ textDecoration: "none" }}>
+              <Button sx={{ mx: 1, color: "text.secondary", fontWeight: "medium" }}>Home</Button>
+            </Box>
             
             <Box component={Link} to={'/blogs'} sx={{ textDecoration: "none" }}>
               <Button sx={{ mx: 1, color: "text.secondary", fontWeight: "medium" }}>Blogs</Button>

@@ -46,7 +46,7 @@ export default function Homepage() {
       <HomepageBlogsUpdates currentUser={currentUser} />
 
       {/* Footer */}
-      <HomepageFooter currentUser={currentUser} />
+      <HomepageFooter/>
     </Box>
   )
 }
