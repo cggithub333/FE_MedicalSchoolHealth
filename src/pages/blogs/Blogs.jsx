@@ -4,6 +4,8 @@ import HomepageFooter from "@components/homepage-resources/homepage-footer";
 import useMyInformation from "@hooks/common/useMyInformation";
 
 import { useEffect, useState } from "react";
+import BlogContent from "@components/blog-resources/blogs-content";
+import { Grid } from "@mui/material";
 
 const Blogs = () => {
 
@@ -27,9 +29,11 @@ const Blogs = () => {
       <HomepageHeader currentUser={currentUser} />
 
       {/* Viết nội dung trang blogs ở chỗ này này */}
-      <div style={{padding: "20px"}}>
-        Blogs here!!!
-      </div>
+      <Grid container justifyContent={'center'} backgroundColor={"#f4f4f4"}>
+        <Grid size={{ xs: 10}}>
+          <BlogContent />
+        </Grid>
+      </Grid>
 
       <HomepageFooter/>
     </div>
