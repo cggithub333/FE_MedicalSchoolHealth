@@ -30,6 +30,7 @@
     "@syncfusion/ej2-react-schedule": "^29.2.10",
     "@toolpad/core": "^0.16.0",
     "axios": "^1.10.0",
+    "emailjs-com": "^3.2.0",
     "firebase": "^11.10.0",
     "framer-motion": "^12.23.2",
     "js-base64": "^3.7.7",
