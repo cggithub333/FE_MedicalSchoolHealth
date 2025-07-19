@@ -21,9 +21,9 @@ export default function HomepageBlogsUpdates() {
           </Typography>
         </Box>
 
-        <Grid container spacing={4}>
-          <Grid size={{ xs: 12, lg: 4 }}>
-            <Card>
+        <Grid container spacing={4} >
+          <Grid size={{ xs: 12, lg: 4 }} >
+            <Card sx={{ height: "100%", position: "relative" }}>
               <CardContent>
                 <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
                   New Vaccination Schedule Released
@@ -34,15 +34,15 @@ export default function HomepageBlogsUpdates() {
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                   Updated immunization requirements for the upcoming school year. All students must complete...
                 </Typography>
-                <Button size="small">Read More</Button>
+                <Button size="small" sx={{ position: "absolute", bottom: 16, right: 16 }}>Read More</Button>
               </CardContent>
             </Card>
           </Grid>
 
           <Grid size={{ xs: 12, lg: 4 }}>
-            <Card>
+            <Card sx={{ height: "100%", position: "relative" }}>
               <CardContent>
-                <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
+                <Typography variant="h6">
                   Mental Health Awareness Week
                 </Typography>
                 <Typography variant="caption" color="text.secondary" sx={{ mb: 2, display: "block" }}>
@@ -51,15 +51,15 @@ export default function HomepageBlogsUpdates() {
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                   Join us for a week of activities focused on mental wellness and emotional health support...
                 </Typography>
-                <Button size="small">Read More</Button>
+                <Button size="small" sx={{ position: "absolute", bottom: 16, right: 16 }}>Read More</Button>
               </CardContent>
             </Card>
           </Grid>
 
           <Grid size={{ xs: 12, lg: 4 }}>
-            <Card>
+            <Card sx={{ height: "100%", position: "relative" }}>
               <CardContent>
-                <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
+                <Typography variant="h6">
                   Healthy Eating Initiative Launch
                 </Typography>
                 <Typography variant="caption" color="text.secondary" sx={{ mb: 2, display: "block" }}>
@@ -68,7 +68,7 @@ export default function HomepageBlogsUpdates() {
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                   New nutrition program aims to promote healthy eating habits among students and staff...
                 </Typography>
-                <Button size="small">Read More</Button>
+                <Button size="small" sx={{ position: "absolute", bottom: 16, right: 16 }}>Read More</Button>
               </CardContent>
             </Card>
           </Grid>
