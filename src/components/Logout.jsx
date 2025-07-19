@@ -1,14 +1,20 @@
 import { Navigate } from "react-router-dom"
+import { useDispatch } from "react-redux";
+import { clearPersonalInfo } from "@store/slices/personalInforSlice";
 
 const Logout = () => {
+  const dispatch = useDispatch();
 
-  // clear all localStotage's data:
-  localStorage.clear();1
+  // clear all localStorage's data:
+  localStorage.clear();
+
+  // clear personal info from redux store:
+  dispatch(clearPersonalInfo());
   
   // add light mode:
   localStorage.setItem("toolpad-mode", "light");
-  
-  // back to HOmepage:
+
+  // back to Homepage:
   return <Navigate to={"/homepage"} replace />
 }
 

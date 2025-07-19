@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   AppBar,
   Toolbar,
@@ -35,10 +35,30 @@ import {
 import LoginModal from "./login-modal.jsx"
 
 import SchoolHealthIcon from '@mui/icons-material/School';
+import useMyInformation from "@hooks/common/useMyInformation.js"
 
 export default function Homepage() {
   const [servicesAnchor, setServicesAnchor] = useState(null)
   const [blogsAnchor, setBlogsAnchor] = useState(null)
+
+  const { personalInforState, loading} = useMyInformation();
+
+  const [currentUser, setCurrentUser] = useState({
+    role: personalInforState?.role || "guest",
+  })
+
+  // reload if state changes:
+  useEffect(() => {
+    if (!loading) {
+      setCurrentUser({
+        role: personalInforState?.role || "guest",
+      })
+    }
+  }, [loading, personalInforState]);
+
+  // debug:
+  console.log("Current User Role:", JSON.stringify(currentUser, null, 2));  
+
 
   const handleServicesClick = (event) => {
     setServicesAnchor(event.currentTarget)
@@ -101,10 +121,10 @@ export default function Homepage() {
               <MenuItem onClick={handleClose}>Sports Medicine</MenuItem>
             </Menu>
 
-            <Button sx={{ mx: 1, color: "text.secondary", fontWeight: "medium" }}>News & Updates</Button>
+            {/* <Button sx={{ mx: 1, color: "text.secondary", fontWeight: "medium" }}>News & Updates</Button> */}
             <Button sx={{ mx: 1, color: "text.secondary", fontWeight: "medium" }}>Health Records</Button>
-            <Button sx={{ mx: 1, color: "text.secondary", fontWeight: "medium" }}>Emergency Contacts</Button>
-            <Button sx={{ mx: 1, color: "text.secondary", fontWeight: "medium" }}>About Us</Button>
+            <Button sx={{ mx: 1, color: "text.secondary", fontWeight: "medium" }}>Contacts</Button>
+            {/* <Button sx={{ mx: 1, color: "text.secondary", fontWeight: "medium" }}>About Us</Button> */}
           </Box>
         </Container>
       </Box>
