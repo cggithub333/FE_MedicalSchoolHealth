@@ -125,7 +125,8 @@ const NewHealthCheckCampaign = () => {
         right: 0,
         bottom: 0,
         zIndex: -1,
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 60%, #f7971e 100%)",
+        // background: "linear-gradient(135deg, #667eea 0%, #764ba2 60%, #f7971e 100%)",
+        background: "linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%)",
         minHeight: "100vh",
         width: "100vw",
     }
