@@ -1,4 +1,4 @@
-import DashboardOverview from "../../../components/schoolnurse/main-contents/dashboard/DashBoardoverview";
+import DashboardOverview from "@components/schoolnurse/main-contents/dashboard/DashBoardoverview";
 
 const DashboardHome = () => {
 
