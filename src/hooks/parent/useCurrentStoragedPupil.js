@@ -46,10 +46,11 @@ const useCurrentStoragedPupil = () => {
 }
 
 const filterCurrentPupilWithCurrentParent = (pupilInfo, parentId) => {
+
   if (!pupilInfo || !parentId) {
     return null; // Return null if no data is available
   }
-  return {
+  const result =  {
     pupilId: pupilInfo.pupilId,
     lastName: pupilInfo.lastName,
     firstName: pupilInfo.firstName,
@@ -61,6 +62,7 @@ const filterCurrentPupilWithCurrentParent = (pupilInfo, parentId) => {
     gradeName: pupilInfo.gradeName,
     currentParent: pupilInfo.parents.find(parent => parent.userId === parentId) || null,
   }
+  return result.currentParent ? result : null; // Return the pupil info if the parent is found, otherwise return null
 }
 
 

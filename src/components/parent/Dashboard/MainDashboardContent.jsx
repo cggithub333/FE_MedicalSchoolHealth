@@ -102,7 +102,6 @@ import usePrescriptionByPupil from "@hooks/parent/send-medication/usePrescriptio
 import useNotifyNewMedicalEvents from "@hooks/parent/medical-events/useNotifyNewMedicalEvents"
 
 const MainDashboardContent = () => {
-
   const { countNotificationsByType, loading: notificationLoading} = useAllNotifications();
   const { personalInforState } = usePersonalInformation();
   const { currentPupil, filterPupilInforWithCurrentParent, loading: currentPupilLoading} = useCurrentStoragedPupil();
@@ -111,9 +110,25 @@ const MainDashboardContent = () => {
   const { prescriptionArr, injectedNoteObjs, loading: injectedNoteLoading } = usePrescriptionByPupil(localStorage.getItem("pupilId"));
   const { getSimplifiedEventsByPupilId, loading: simplifiedEventsLoading, refetch: notiNewEventRefetch } = useNotifyNewMedicalEvents();
 
-  const [pupilInfo, setPupilInfo] = useState(filterPupilInforWithCurrentParent(currentPupil, personalInforState?.userId));
-  const [simplifiedMedicalEventArr, setSimplifiedMedicalEventArr] = useState(getSimplifiedEventsByPupilId(currentPupil?.pupilId));
+  // Initialize with null instead of calling the function immediately
+  const [pupilInfo, setPupilInfo] = useState(null);
+  const [simplifiedMedicalEventArr, setSimplifiedMedicalEventArr] = useState([]);
 
+  // Add useEffect to update pupilInfo when data is available
+  useEffect(() => {
+    if (!currentPupilLoading && currentPupil && personalInforState?.userId) {
+      const filteredPupilInfo = filterPupilInforWithCurrentParent(currentPupil, personalInforState?.userId);
+      setPupilInfo(filteredPupilInfo);
+    }
+  }, [currentPupil, personalInforState?.userId, currentPupilLoading]);
+
+  // Add useEffect to update simplified medical events
+  useEffect(() => {
+    if (currentPupil?.pupilId) {
+      const events = getSimplifiedEventsByPupilId(currentPupil.pupilId);
+      setSimplifiedMedicalEventArr(events || []);
+    }
+  }, [currentPupil?.pupilId]);
 
   const formatDate = (dateString) => {
 

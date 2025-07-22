@@ -5,9 +5,6 @@ import { useState, useEffect, useCallback } from "react";
 
 const usePrescriptionByPupil = (pupilId) => {
 
-  // debug:
-  console.log("PupilId in usePrescriptionByPupil:", pupilId);
-
   const [prescriptionArr, setPrescriptionArr] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
