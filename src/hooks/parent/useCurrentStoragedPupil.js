@@ -4,23 +4,50 @@ import { useState, useEffect, useCallback } from "react"
 
 const useCurrentStoragedPupil = () => {
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Start with loading = true
   const [currentPupil, setCurrentPupil] = useState(null);
 
-  const getStoragedPupil = useCallback(async () => {
+  const getStoragedPupil = useCallback(() => { // Remove async since we're not doing async operations
 
     setLoading(true);
     try {
       const encodedPupilInfor = localStorage.getItem("pupilInfor");
+      
+      console.log("🔍 Checking localStorage for pupilInfor:");
+      console.log("- Raw encoded data:", encodedPupilInfor);
+      
+      if (!encodedPupilInfor) {
+        console.warn("❌ No pupilInfor found in localStorage");
+        setCurrentPupil(null);
+        setLoading(false);
+        return;
+      }
+
+      console.log("📝 Attempting to decode pupilInfor...");
       const pupilInfor = Base64.decode(encodedPupilInfor);
+      console.log("- Decoded data:", pupilInfor);
+      
+      if (!pupilInfor) {
+        console.warn("❌ Failed to decode pupilInfor");
+        setCurrentPupil(null);
+        setLoading(false);
+        return;
+      }
+
+      console.log("🔧 Attempting to parse JSON...");
       const pupilObj = JSON.parse(pupilInfor);
-      if (pupilObj) {
+      console.log("- Parsed pupil object:", pupilObj);
+      
+      if (pupilObj && typeof pupilObj === 'object') {
+        console.log("✅ Successfully set currentPupil:", pupilObj);
         setCurrentPupil(pupilObj);
       } else {
+        console.warn("❌ Invalid pupil object structure");
         setCurrentPupil(null);
       }
     } catch (error) {
-      console.error("Error retrieving pupil from localStorage:", error);
+      console.error("💥 Error retrieving pupil from localStorage:", error);
+      console.error("Stack trace:", error.stack);
       setCurrentPupil(null);
     } finally {
       setLoading(false);
@@ -29,11 +56,8 @@ const useCurrentStoragedPupil = () => {
   }, []);
 
   useEffect(() => {
-    const fetchPupil = async () => {
-      await getStoragedPupil();
-    };
-
-    fetchPupil();
+    // Run immediately on mount, no need for async wrapper
+    getStoragedPupil();
   }, [getStoragedPupil]);
   
 

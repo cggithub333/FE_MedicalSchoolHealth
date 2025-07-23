@@ -38,6 +38,7 @@ import { FaChild as Child } from "react-icons/fa6";
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 
 import { useState, useEffect } from 'react';
+import { Base64 } from "js-base64"; // Temporary for testing
 
 /*
 const latestHealthCheckCampaign = {
@@ -104,23 +105,22 @@ import useNotifyNewMedicalEvents from "@hooks/parent/medical-events/useNotifyNew
 const MainDashboardContent = () => {
   const { countNotificationsByType, loading: notificationLoading} = useAllNotifications();
   const { personalInforState } = usePersonalInformation();
-  const { currentPupil, filterPupilInforWithCurrentParent, loading: currentPupilLoading} = useCurrentStoragedPupil();
+  const { currentPupil, filterPupilInforWithCurrentParent, loading: currentPupilLoading, refetch: refetchCurrPupil} = useCurrentStoragedPupil();
   const { latestHealthCheckCampaign, isLoading: latestHealthCheckLoading } = useLatestHealthCheckCampaign();
   const { latestCampaign: latestVaccinationCampaign, loading: latestVaccinationLoading } = useLatestVaccinationCampaign();
   const { prescriptionArr, injectedNoteObjs, loading: injectedNoteLoading } = usePrescriptionByPupil(localStorage.getItem("pupilId"));
   const { getSimplifiedEventsByPupilId, loading: simplifiedEventsLoading, refetch: notiNewEventRefetch } = useNotifyNewMedicalEvents();
 
   // Initialize with null instead of calling the function immediately
-  const [pupilInfo, setPupilInfo] = useState(null);
+  // const [pupilInfo, setPupilInfo] = useState(null);
   const [simplifiedMedicalEventArr, setSimplifiedMedicalEventArr] = useState([]);
 
-  // Add useEffect to update pupilInfo when data is available
-  useEffect(() => {
-    if (!currentPupilLoading && currentPupil && personalInforState?.userId) {
-      const filteredPupilInfo = filterPupilInforWithCurrentParent(currentPupil, personalInforState?.userId);
-      setPupilInfo(filteredPupilInfo);
-    }
-  }, [currentPupil, personalInforState?.userId, currentPupilLoading]);
+  // debug:
+  console.log("Current pupil info:", JSON.stringify(currentPupil, null, 2));
+  console.log("User information:", JSON.stringify(personalInforState, null, 2));
+  console.log("currentPupilLoading:", currentPupilLoading);
+  console.log("localStorage pupilInfor exists:", !!localStorage.getItem("pupilInfor"));
+  console.log("localStorage pupilId:", localStorage.getItem("pupilId"));
 
   // Add useEffect to update simplified medical events
   useEffect(() => {
@@ -129,6 +129,34 @@ const MainDashboardContent = () => {
       setSimplifiedMedicalEventArr(events || []);
     }
   }, [currentPupil?.pupilId]);
+
+  // Add useEffect to refetch pupil information when the component mounts
+  useEffect(() => {
+    console.log("Dashboard mounted, pupil state:");
+    console.log("- currentPupil:", currentPupil);
+    console.log("- currentPupilLoading:", currentPupilLoading);
+    
+    // Only refetch if we don't have pupil data and we're not currently loading
+    if (!currentPupil && !currentPupilLoading) {
+      console.log("No pupil found and not loading, attempting refetch...");
+      refetchCurrPupil();
+    }
+  }, []); // Run only on mount
+
+  // Separate effect to handle delayed localStorage population
+  useEffect(() => {
+    if (!currentPupil && !currentPupilLoading) {
+      const checkTimer = setTimeout(() => {
+        console.log("⏰ Delayed check for pupil data...");
+        if (localStorage.getItem("pupilInfor") && !currentPupil) {
+          console.log("📦 Found pupilInfor in localStorage, refetching...");
+          refetchCurrPupil();
+        }
+      }, 1000); // Check after 1 second
+
+      return () => clearTimeout(checkTimer);
+    }
+  }, [currentPupil, currentPupilLoading, refetchCurrPupil]);
 
   const formatDate = (dateString) => {
 
@@ -268,7 +296,7 @@ const MainDashboardContent = () => {
                     Parent ID
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {pupilInfo?.currentParent.userId}
+                    {personalInforState?.userId}
                   </Typography>
                 </Grid>
                 <Grid item size={{xs: 6}}>
@@ -276,7 +304,7 @@ const MainDashboardContent = () => {
                     Full Name
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {pupilInfo?.currentParent.lastName} {pupilInfo?.currentParent.firstName}
+                    {personalInforState?.lastName} {personalInforState?.firstName}
                   </Typography>
                 </Grid>
                 <Grid item size={{xs: 6}}>
@@ -284,7 +312,7 @@ const MainDashboardContent = () => {
                     Email
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {pupilInfo?.currentParent.email}
+                    {personalInforState?.email}
                   </Typography>
                 </Grid>
                 <Grid item size={{xs: 6}}>
@@ -292,7 +320,7 @@ const MainDashboardContent = () => {
                     Phone Number
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {pupilInfo?.currentParent.phoneNumber}
+                    {personalInforState?.phoneNumber}
                   </Typography>
                 </Grid>
               </Grid>
@@ -315,7 +343,7 @@ const MainDashboardContent = () => {
                     Pupil ID
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {pupilInfo?.pupilId}
+                    {currentPupilLoading ? "Loading..." : (currentPupil?.pupilId || "Not Available")}
                   </Typography>
                 </Grid>
                 <Grid item size={{xs: 6}}>
@@ -323,7 +351,7 @@ const MainDashboardContent = () => {
                     Full Name
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {pupilInfo?.lastName} {pupilInfo?.firstName}
+                    {currentPupilLoading ? "Loading..." : (currentPupil ? `${currentPupil.lastName} ${currentPupil.firstName}` : "Not Available")}
                   </Typography>
                 </Grid>
                 <Grid item size={{xs: 6}}>
@@ -331,7 +359,7 @@ const MainDashboardContent = () => {
                     Class
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {pupilInfo?.gradeName}
+                    {currentPupilLoading ? "Loading..." : (currentPupil?.gradeName || "Not Available")}
                   </Typography>
                 </Grid>
                 <Grid item size={{xs: 6}}>
@@ -339,7 +367,7 @@ const MainDashboardContent = () => {
                     Birth Date
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {pupilInfo?.birthDate}
+                    {currentPupilLoading ? "Loading..." : (currentPupil?.birthDate || "Not Available")}
                   </Typography>
                 </Grid>
               </Grid>
