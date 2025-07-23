@@ -14,6 +14,8 @@ const Surveys = () => {
   const { pupils } = usePupils();
   const { latestHealthCheckCampaign: healthCampaignInfo, isLoading: campaignLoading, refetch: campaignRefetch, error: campaignError } = useLatestHealthCheckCampaign();
 
+  console.log("🔧 Health Campaign Info:", JSON.stringify(healthCampaignInfo, null, 2));
+
   return (
     <div style={{ background: "#e6f8f9", width: "100%", height: "100vh" }}>
       <Grid container>
