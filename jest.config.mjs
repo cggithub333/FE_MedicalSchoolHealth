@@ -18,9 +18,9 @@ export default {
 
   moduleNameMapper: {
     '^@components/(.*)$': '<rootDir>/src/components/$1',
-    '^@hooks/(.*)$': '<rootDir>/src/hooks/$1',
-    '^@pages/(.*)$': '<rootDir>/src/pages/$1',
-    '^@api/(.*)$': '<rootDir>/src/api/$1',
+    '^@hooks/(.*)$': '<rootDir>/src/hooks/$1', // make shortcut as @hooks
+    '^@pages/(.*)$': '<rootDir>/src/pages/$1',  // make shortcut as @pages
+    '^@api/(.*)$': '<rootDir>/src/api/$1',  // make shortcut as @api
     '^@assets/(.*)$': '<rootDir>/src/assets/$1',
     '^@store/(.*)$': '<rootDir>/src/store/$1',
     '^@utils/(.*)$': '<rootDir>/src/utils/$1',
