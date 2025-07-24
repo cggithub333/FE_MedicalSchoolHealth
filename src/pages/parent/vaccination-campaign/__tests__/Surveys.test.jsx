@@ -58,16 +58,14 @@ describe('Vaccination Surveys Component', () => {
   // 1. Test UI rendering ban đầu
   describe('Initial Rendering', () => {
     test('renders basic layout elements correctly', () => {
-      renderWithRouter(<Surveys />);
-      
-      // Check main container styling
-      const mainContainer = screen.getByTestId('custom-title').closest('div');
+      const { container } = renderWithRouter(<Surveys />);
+      const mainContainer = container.firstChild;
       expect(mainContainer).toHaveStyle({
         background: '#e6f8f9',
         width: '100%',
         height: '100vh'
       });
-    });
+    }); // <-- Add this line to close the test
 
     test('renders page title correctly', () => {
       renderWithRouter(<Surveys />);

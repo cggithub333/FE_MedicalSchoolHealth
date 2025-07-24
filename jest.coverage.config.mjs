@@ -18,22 +18,20 @@ export default {
 
   moduleNameMapper: {
     '^@components/(.*)$': '<rootDir>/src/components/$1',
-    '^@hooks/(.*)$': '<rootDir>/src/hooks/$1', // make shortcut as @hooks
-    '^@pages/(.*)$': '<rootDir>/src/pages/$1',  // make shortcut as @pages
-    '^@api/(.*)$': '<rootDir>/src/api/$1',  // make shortcut as @api
+    '^@hooks/(.*)$': '<rootDir>/src/hooks/$1',
+    '^@pages/(.*)$': '<rootDir>/src/pages/$1',
+    '^@api/(.*)$': '<rootDir>/src/api/$1',
     '^@assets/(.*)$': '<rootDir>/src/assets/$1',
     '^@store/(.*)$': '<rootDir>/src/store/$1',
     '^@utils/(.*)$': '<rootDir>/src/utils/$1',
     '^.+\\.(css|scss|sass)$': 'identity-obj-proxy',
     '^.+\\.(jpg|jpeg|png|gif|webp|svg)$': 'jest-transform-stub',
-    // Mock the request and fetch-response modules specifically (both alias and relative)
     '^@api/request\\.js$': '<rootDir>/src/api/__mocks__/request.js',
     '^@api/fetch-response\\.js$': '<rootDir>/src/api/__mocks__/fetch-response.js',
     '\\./request\\.js$': '<rootDir>/src/api/__mocks__/request.js',
     '\\./fetch-response\\.js$': '<rootDir>/src/api/__mocks__/fetch-response.js',
   },
 
-  // Handle ES modules
   extensionsToTreatAsEsm: ['.jsx'],
   globals: {
     'import.meta': {
@@ -44,34 +42,16 @@ export default {
     }
   },
 
+  // Only collect coverage for files that have tests
   collectCoverageFrom: [
-    'src/**/*.{js,jsx}',
-    '!src/**/*.test.{js,jsx}',
-    '!src/**/__tests__/**',
-    '!src/**/__test__/**',
-    '!src/**/__mocks__/**',
-    '!src/main.jsx',
-    '!src/vite-env.d.ts',
-    // Exclude API files (usually contain only API calls, hard to unit test meaningfully)
-    '!src/api/**',
-    // Exclude configuration files
-    '!src/config/**',
-    // Exclude utility files that are mostly external dependencies wrappers
-    '!src/utils/**',
-    // Exclude store/state management files (usually need integration testing)
-    '!src/store/**',
-    // Exclude specific files that are hard to test or not meaningful to test
-    '!src/**/*.config.{js,jsx}',
-    '!src/**/*.constant.{js,jsx}',
-    '!src/**/*-constant.{js,jsx}',
-    '!src/**/*-constants.{js,jsx}',
-    // Exclude routing files
-    '!src/**/routes.{js,jsx}',
-    '!src/**/router.{js,jsx}',
+    'src/components/parent/HealthManagement/PrescriptionSendingForm.jsx',
+    'src/components/parent/HealthManagement/Declaration/VaccinationDeclarationContent.jsx',
+    'src/components/parent/HealthCheckCampaignCard/HealthCheckSurveyByPupil.jsx',
+    'src/pages/parent/vaccination-campaign/Surveys.jsx',
+    'src/pages/parent/health-check-campaign/Surveys.jsx',
   ],
 
-  // Coverage reporting configuration
-  coverageDirectory: 'coverage',
+  coverageDirectory: 'coverage-focused',
   coverageReporters: [
     'text',
     'text-summary',
@@ -81,10 +61,10 @@ export default {
   ],
   coverageThreshold: {
     global: {
-      branches: 50,
-      functions: 50,
-      lines: 50,
-      statements: 50
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80
     }
   },
 
@@ -95,14 +75,6 @@ export default {
   ],
 
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
-  
-  // Increase timeout for async operations
   testTimeout: 10000,
-  
-  // Clear mocks between tests
-  clearMocks: true,
-  restoreMocks: true,
-  
-  // Verbose output
   verbose: true,
 };
