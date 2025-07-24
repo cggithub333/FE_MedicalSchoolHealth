@@ -26,17 +26,18 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import ScheduleDetails from '../ScheduleDetails';
 
+
 // Mock hooks and API calls used in ScheduleDetails
-jest.mock('@hooks/schoolnurse/healthcheck/schedule/useSaveResultOfHealthCheckCampaign');
+jest.mock('../../../../../../hooks/schoolnurse/healthcheck/schedule/useSaveResultOfHealthCheckCampaign');
 
 // Mock toast utilities
-jest.mock('@utils/toast-utils', () => ({
+jest.mock('../../../../../../utils/toast-utils', () => ({
     showErrorToast: jest.fn(),
     showSuccessToast: jest.fn(),
 }));
 
-import { showErrorToast, showSuccessToast } from '@utils/toast-utils';
-import { useSaveResultOfHealthCheckCampaign } from '@hooks/schoolnurse/healthcheck/schedule/useSaveResultOfHealthCheckCampaign';
+import { showErrorToast, showSuccessToast } from '../../../../../../utils/toast-utils';
+import { useSaveResultOfHealthCheckCampaign } from '../../../../../../hooks/schoolnurse/healthcheck/schedule/useSaveResultOfHealthCheckCampaign';
 
 const mockPupilData = {
     pupilId: 'PP001',

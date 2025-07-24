@@ -59,7 +59,6 @@ import {
 } from "@mui/icons-material"
 import { styled } from '@mui/material/styles';
 import { useGetDetailsOfCampaignByID } from "../../../../../hooks/manager/healthcheck/campaign/useGetDetaisOfCampaignByID"
-import { useNavigate } from "react-router-dom"
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -96,7 +95,6 @@ const Item = styled(Paper)(({ theme }) => ({
 
 
 const ScheduleResult = ({ consentFormId, pupilData, onBack }) => {
-    const navigate = useNavigate();
     const campaignId = pupilData?.campaignId || pupilData?.campaignID || pupilData?.campaign_id;
     const { campaignDetails, isLoading } = useGetDetailsOfCampaignByID(campaignId);
     // Find the consentForm by consentFormId (not pupilId)

@@ -21,16 +21,16 @@ import '@testing-library/jest-dom';
 import ScheduleResult from '../ScheduleResult';
 
 // Mock hooks and API calls used in ScheduleResult
-jest.mock('@hooks/manager/healthcheck/campaign/useGetDetaisOfCampaignByID');
+jest.mock('../../../../../../hooks/manager/healthcheck/campaign/useGetDetaisOfCampaignByID');
 
 // Mock toast utilities
-jest.mock('@utils/toast-utils', () => ({
+jest.mock('../../../../../../utils/toast-utils', () => ({
     showErrorToast: jest.fn(),
     showSuccessToast: jest.fn(),
 }));
 
-import { showErrorToast, showSuccessToast } from '@utils/toast-utils';
-import { useGetDetailsOfCampaignByID } from '@hooks/manager/healthcheck/campaign/useGetDetaisOfCampaignByID';
+import { showErrorToast, showSuccessToast } from '../../../../../../utils/toast-utils';
+import { useGetDetailsOfCampaignByID } from '../../../../../../hooks/manager/healthcheck/campaign/useGetDetaisOfCampaignByID';
 
 const mockPupilData = {
     pupilId: 'PP001',

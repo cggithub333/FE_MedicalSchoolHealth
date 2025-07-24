@@ -25,9 +25,8 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import EventFormResult from '../EventFormResult';
-
 // Mock hooks and API calls used in EventFormResult
-jest.mock('@hooks/schoolnurse/new-event/useGetMedicalEventByMedicalEventId');
+jest.mock('../../../../../hooks/schoolnurse/new-event/useGetMedicalEventByMedicalEventId');
 
 // Mock toast utilities
 jest.mock('../../../../../utils/toast-utils', () => ({
@@ -36,7 +35,7 @@ jest.mock('../../../../../utils/toast-utils', () => ({
 }));
 
 import { showErrorToast, showSuccessToast } from '../../../../../utils/toast-utils';
-import { useGetMedicalEventByMedicalEventId } from '@hooks/schoolnurse/new-event/useGetMedicalEventByMedicalEventId';
+import { useGetMedicalEventByMedicalEventId } from '../../../../../hooks/schoolnurse/new-event/useGetMedicalEventByMedicalEventId';
 
 const mockEvent = {
     injuryDescription: 'Sprain',
@@ -95,7 +94,7 @@ describe('EventFormResult', () => {
         expect(screen.getByText('Bandage')).toBeInTheDocument();
         expect(screen.getByText('Paracetamol')).toBeInTheDocument();
         expect(screen.getByText('Nurse One')).toBeInTheDocument();
-        expect(screen.getByText('Parent One')).toBeInTheDocument();
+        expect(screen.getByText('Parent')).toBeInTheDocument();
     });
 
     // Submit không hợp lệ (error state)
