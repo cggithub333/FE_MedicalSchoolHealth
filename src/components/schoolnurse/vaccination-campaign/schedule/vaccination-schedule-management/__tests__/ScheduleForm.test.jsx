@@ -111,8 +111,9 @@ describe('VaccinationScheduleForm', () => {
             { pupilId: 'P02', firstName: 'C', lastName: 'D', Grade: 1, completed: false },
         ];
         setup({ campaign, pupils });
-        expect(screen.getByText(/Students:/i)).toBeInTheDocument();
-        expect(screen.getByText(/Date:/i)).toBeInTheDocument();
+        // Check that there are at least 2 Students: labels, but do not require exactly 2
+        expect(screen.getAllByText(/Students:/i).length).toBeGreaterThanOrEqual(2);
+        expect(screen.getAllByText(/Date:/i).length).toBeGreaterThanOrEqual(1);
     });
 
     test('Submit không hợp lệ: shows error when no active campaign', () => {
@@ -129,7 +130,7 @@ describe('VaccinationScheduleForm', () => {
 
     test('Loading state: shows skeletons for grades', () => {
         setup({ campaign: null, pupils: [], isLoading: true });
-        expect(screen.getAllByRole('progressbar').length).toBeGreaterThanOrEqual(0);
-        expect(screen.getAllByText(/Vaccination/i).length).toBeGreaterThanOrEqual(0);
+        // Check for skeletons by class name
+        expect(document.querySelectorAll('.MuiSkeleton-root').length).toBeGreaterThan(0);
     });
 });

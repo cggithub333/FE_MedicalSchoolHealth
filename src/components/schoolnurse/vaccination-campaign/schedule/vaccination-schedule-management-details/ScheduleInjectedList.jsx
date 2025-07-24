@@ -56,6 +56,17 @@ import { useGetAllConsentFormByStatus } from "../../../../../hooks/schoolnurse/v
 import { showSuccessToast, showErrorToast } from '../../../../../utils/toast-utils';
 
 const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
+    // Defensive: if shift or campaign is missing, show fallback UI
+    if (!shift || !campaign) {
+        return (
+            <div className="schedule-list-root empty-state">
+                <Typography variant="h6" sx={{ mt: 2, color: "#666" }}>
+                    No students found
+                </Typography>
+            </div>
+        );
+    }
+
     const injectedResult = useGetAllConsentFormByStatus(campaign.campaignId, "INJECTED");
     const noShowResult = useGetAllConsentFormByStatus(campaign.campaignId, "NO_SHOW");
     const notYetResult = useGetAllConsentFormByStatus(campaign.campaignId, "APPROVED");
