@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`VaccinationHistory page matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    style="background: rgb(230, 248, 249); height: 100vh; padding-top: 20px; padding-bottom: 100px;"
+  >
+    <div
+      class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row css-d64g0g-MuiGrid-root"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-6 css-1ml5fja-MuiGrid-root"
+      >
+        <div
+          data-testid="Breadcrumb"
+        >
+          Dashboard
+        </div>
+      </div>
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row css-d64g0g-MuiGrid-root"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-6 css-hu5rp3-MuiGrid-root"
+      >
+        <div
+          data-testid="CustomTittle"
+        >
+          Vaccination History
+        </div>
+      </div>
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row css-1hhh65b-MuiGrid-root"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-10 css-ztm7ie-MuiGrid-root"
+      >
+        <div
+          data-testid="VaccinationHistoryDisplayer"
+        >
+          An
+        </div>
+      </div>
+    </div>
+    <div
+      data-testid="FloatingNavigateButton"
+    >
+      Declare
+    </div>
+  </div>
+</DocumentFragment>
+`;
