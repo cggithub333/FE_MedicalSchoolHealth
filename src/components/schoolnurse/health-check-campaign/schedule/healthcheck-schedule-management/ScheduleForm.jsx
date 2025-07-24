@@ -26,7 +26,6 @@ import "./StyleScheduleForm.scss"
 import ScheduleInjectedList from "../healthcheck-schedule-management-details/ScheduleInjectedList"
 import { useNewestCampaignByStatus } from "../../../../../hooks/schoolnurse/healthcheck/schedule/useNewestCampaignByStatus"
 import { fetchPupilsByGrade } from "../../../../../api/schoolnurse/schoolnurse-requests-action/healthcheck/pupils-by-grade-request-action"
-import { useNavigate } from "react-router-dom"
 
 const GRADES = [1, 2, 3, 4, 5]
 
@@ -100,7 +99,6 @@ const HealthCheckScheduleForm = () => {
     const [pupilsByGrade, setPupilsByGrade] = useState({})
     const [pupilsLoading, setPupilsLoading] = useState(true)
     const [animateCards, setAnimateCards] = useState(false)
-    const navigate = useNavigate();
 
     // Find active campaign (IN_PROGRESS)
     const activeCampaign = useMemo(() => {
