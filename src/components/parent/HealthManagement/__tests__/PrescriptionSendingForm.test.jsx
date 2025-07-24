@@ -84,6 +84,7 @@ describe("PrescriptionSendingForm", () => {
     mockHandleFileSelect.mockReset();
     mockHandleDrop.mockReset();
     mockHandleDragOver.mockReset();
+    mockFileInputRef.current.click.mockReset();
   });
 
   describe("Component Rendering", () => {
@@ -547,20 +548,22 @@ describe("PrescriptionSendingForm", () => {
     });
 
     it("shows loading state during submission", async () => {
-      mockSendMedication.mockImplementation(() => new Promise(() => {})); // Never resolves
+      // Mock to delay resolution so we can see loading state
+      mockSendMedication.mockImplementation(() => new Promise(resolve => setTimeout(resolve, 100)));
       render(<PrescriptionSendingForm />);
       
       await fillValidForm();
       fireEvent.click(screen.getByText(/Send Prescription/i));
       
       await waitFor(() => {
-        expect(screen.getByText(/Sending prescription.../)).toBeInTheDocument();
+        expect(screen.getByText(/Sending prescription\.\.\./)).toBeInTheDocument();
       });
     });
 
     it("shows uploading image text when file needs upload", async () => {
       const mockFile = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
-      mockHandleUpload.mockImplementation(() => new Promise(() => {})); // Never resolves
+      // Mock to delay resolution so we can see uploading state
+      mockHandleUpload.mockImplementation(() => new Promise(resolve => setTimeout(resolve, 100)));
       
       jest.mocked(require("@hooks/magic-hooks/useUploadImage").default).mockReturnValue({
         selectedFile: mockFile,
@@ -583,7 +586,7 @@ describe("PrescriptionSendingForm", () => {
       fireEvent.click(screen.getByText(/Send Prescription/i));
       
       await waitFor(() => {
-        expect(screen.getByText(/Uploading image.../)).toBeInTheDocument();
+        expect(screen.getByText(/Uploading image\.\.\./)).toBeInTheDocument();
       });
     });
 
@@ -629,7 +632,7 @@ describe("PrescriptionSendingForm", () => {
       });
       
       render(<PrescriptionSendingForm />);
-      expect(screen.getByText(/Loading pupil\.\./)).toBeInTheDocument();
+      expect(screen.getAllByText(/Loading pupil\.\./)).toHaveLength(2); // Appears in both InputLabel and Select label
     });
 
     it("disables submit button when not confirmed", () => {

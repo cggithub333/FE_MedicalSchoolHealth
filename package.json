@@ -14,7 +14,8 @@
     "test:coverage": "jest --coverage",
     "test:verbose": "jest --verbose",
     "test:silent": "jest --silent",
-    "test:ci": "jest --ci --coverage --watchAll=false"
+    "test:ci": "jest --ci --coverage --watchAll=false",
+    "coverage": "npx jest --config=jest.coverage.config.mjs --coverage"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
