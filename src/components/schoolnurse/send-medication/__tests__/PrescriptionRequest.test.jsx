@@ -22,9 +22,8 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import PrescriptionRequest from '../PrescriptionRequest';
-
 // Mock hook
-jest.mock('@hooks/schoolnurse/useAllPendingPrescriptions', () => () => ({
+jest.mock('../../../../hooks/schoolnurse/useAllPendingPrescriptions', () => () => ({
     pendingMedicationRequests: [
         {
             sendMedicationId: 1,
@@ -88,7 +87,7 @@ describe('PrescriptionRequest', () => {
     });
 
     test('Submit không hợp lệ: shows skeleton when loading and no requests', () => {
-        jest.mock('@hooks/schoolnurse/useAllPendingPrescriptions', () => () => ({
+        jest.mock('../../../../hooks/schoolnurse/useAllPendingPrescriptions', () => () => ({
             pendingMedicationRequests: [],
             loading: true,
             error: null,
@@ -99,7 +98,7 @@ describe('PrescriptionRequest', () => {
     });
 
     test('Submit lỗi API: shows skeleton when error', () => {
-        jest.mock('@hooks/schoolnurse/useAllPendingPrescriptions', () => () => ({
+        jest.mock('../../../../hooks/schoolnurse/useAllPendingPrescriptions', () => () => ({
             pendingMedicationRequests: [],
             loading: false,
             error: 'API error',

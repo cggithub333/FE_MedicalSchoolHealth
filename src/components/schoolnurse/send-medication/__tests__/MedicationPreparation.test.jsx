@@ -22,9 +22,9 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import MedicationPreparation from '../MedicationPreparation';
-
+import test from '../../../../hooks/schoolnurse/send-medication/useMedicationPreparation';
 // Mock hook
-jest.mock('@hooks/schoolnurse/send-medication/useMedicationPreparation', () => () => ({
+jest.mock('../../../../hooks/schoolnurse/send-medication/useMedicationPreparation', () => () => ({
     medicationPreparations: [
         {
             pupilId: 'PP0006',
@@ -72,7 +72,7 @@ describe('MedicationPreparation', () => {
     });
 
     test('Submit thành công: clicking Search calls refetch and resets page', () => {
-        const { refetch } = require('@hooks/schoolnurse/send-medication/useMedicationPreparation')();
+        const { refetch } = require('../../../../hooks/schoolnurse/send-medication/useMedicationPreparation')();
         render(<MedicationPreparation />);
         fireEvent.click(screen.getByRole('button', { name: /Search Medications/i }));
         expect(refetch).toHaveBeenCalled();
@@ -92,7 +92,7 @@ describe('MedicationPreparation', () => {
     });
 
     test('Submit lỗi API: shows error message when API fails', () => {
-        jest.mock('@hooks/schoolnurse/send-medication/useMedicationPreparation', () => () => ({
+        jest.mock('../../../../hooks/schoolnurse/send-medication/useMedicationPreparation', () => () => ({
             medicationPreparations: [],
             loading: false,
             error: 'API error',
@@ -103,7 +103,7 @@ describe('MedicationPreparation', () => {
     });
 
     test('Loading state: shows loading spinner', () => {
-        jest.mock('@hooks/schoolnurse/send-medication/useMedicationPreparation', () => () => ({
+        jest.mock('../../../../hooks/schoolnurse/send-medication/useMedicationPreparation', () => () => ({
             medicationPreparations: [],
             loading: true,
             error: null,

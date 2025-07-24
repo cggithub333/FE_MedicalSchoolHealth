@@ -7,7 +7,6 @@ import {
     ArrowBack, ExpandMore, Save, CheckCircle, Warning, Height, RemoveRedEye, Hearing, MedicalServices, Favorite, Psychology, Person, Assignment,
 } from "@mui/icons-material"
 import { useSaveResultOfHealthCheckCampaign } from "../../../../../hooks/schoolnurse/healthcheck/schedule/useSaveResultOfHealthCheckCampaign"
-import { useNavigate } from "react-router-dom"
 import { showSuccessToast, showErrorToast } from '../../../../../utils/toast-utils';
 
 const HEALTH_CHECK_DISEASES = [
@@ -32,7 +31,6 @@ const HEALTH_CHECK_DISEASES = [
 ];
 
 const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFormId }) => {
-    const navigate = useNavigate();
     const [healthData, setHealthData] = useState({})
     const [notes, setNotes] = useState({})
     const [measurements, setMeasurements] = useState({})

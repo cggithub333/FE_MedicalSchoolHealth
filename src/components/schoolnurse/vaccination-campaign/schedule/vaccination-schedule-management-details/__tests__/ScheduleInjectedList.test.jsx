@@ -55,7 +55,7 @@ const mockCampaign = {
 };
 
 function setup({ injected = [], noShow = [], approved = [], isLoading = false }) {
-    require('../../../../../hooks/schoolnurse/vaccination/vaccination/useGetAllConsentFormByStatus').useGetAllConsentFormByStatus
+    require('../../../../../../hooks/schoolnurse/vaccination/vaccination/useGetAllConsentFormByStatus').useGetAllConsentFormByStatus
         .mockImplementation((campaignId, status) => {
             if (status === 'INJECTED') return { consentForms: injected, isLoading };
             if (status === 'NO_SHOW') return { consentForms: noShow, isLoading };
@@ -89,7 +89,7 @@ describe('ScheduleInjectedList', () => {
     });
 
     test('Submit thành công: saving status updates UI and shows success', async () => {
-        const { saveResultOfVaccinationCampaign } = require('../../../../../hooks/schoolnurse/vaccination/vaccination/useSaveResultOfVaccinationCampaign').useSaveResultOfVaccinationCampaign();
+        const { saveResultOfVaccinationCampaign } = require('../../../../../../hooks/schoolnurse/vaccination/vaccination/useSaveResultOfVaccinationCampaign').useSaveResultOfVaccinationCampaign();
         saveResultOfVaccinationCampaign.mockResolvedValueOnce(true);
         setup({ injected: [], noShow: [], approved: [mockShift.students[0]] });
         // Switch to Not Yet tab
@@ -99,33 +99,33 @@ describe('ScheduleInjectedList', () => {
         // Confirm dialog
         fireEvent.click(screen.getByRole('button', { name: /Confirm/i }));
         await waitFor(() => {
-            expect(require('../../../../../utils/toast-utils').showSuccessToast).toHaveBeenCalled();
+            expect(require('../../../../../../utils/toast-utils').showSuccessToast).toHaveBeenCalled();
             expect(screen.getByText(/Status saved as INJECTED/i)).toBeInTheDocument();
         });
     });
 
     test('Submit không hợp lệ: missing consentFormId shows error and does not call API', async () => {
-        const { saveResultOfVaccinationCampaign } = require('../../../../../hooks/schoolnurse/vaccination/vaccination/useSaveResultOfVaccinationCampaign').useSaveResultOfVaccinationCampaign();
+        const { saveResultOfVaccinationCampaign } = require('../../../../../../hooks/schoolnurse/vaccination/vaccination/useSaveResultOfVaccinationCampaign').useSaveResultOfVaccinationCampaign();
         setup({ injected: [], noShow: [], approved: [{ ...mockShift.students[0], consentFormId: null }] });
         fireEvent.click(screen.getAllByRole('tab')[2]);
         fireEvent.click(screen.getAllByRole('checkbox')[0]);
         fireEvent.click(screen.getByRole('button', { name: /Confirm/i }));
         await waitFor(() => {
-            expect(require('../../../../../utils/toast-utils').showErrorToast).toHaveBeenCalledWith('Consent Form ID missing!');
+            expect(require('../../../../../../utils/toast-utils').showErrorToast).toHaveBeenCalledWith('Consent Form ID missing!');
             expect(saveResultOfVaccinationCampaign).not.toHaveBeenCalled();
             expect(screen.getByText(/Consent Form ID missing!/i)).toBeInTheDocument();
         });
     });
 
     test('Submit lỗi API: shows error when API fails', async () => {
-        const { saveResultOfVaccinationCampaign } = require('../../../../../hooks/schoolnurse/vaccination/vaccination/useSaveResultOfVaccinationCampaign').useSaveResultOfVaccinationCampaign();
+        const { saveResultOfVaccinationCampaign } = require('../../../../../../hooks/schoolnurse/vaccination/vaccination/useSaveResultOfVaccinationCampaign').useSaveResultOfVaccinationCampaign();
         saveResultOfVaccinationCampaign.mockRejectedValueOnce(new Error('API error'));
         setup({ injected: [], noShow: [], approved: [mockShift.students[0]] });
         fireEvent.click(screen.getAllByRole('tab')[2]);
         fireEvent.click(screen.getAllByRole('checkbox')[0]);
         fireEvent.click(screen.getByRole('button', { name: /Confirm/i }));
         await waitFor(() => {
-            expect(require('../../../../../utils/toast-utils').showErrorToast).toHaveBeenCalledWith('Error saving status.');
+            expect(require('../../../../../../utils/toast-utils').showErrorToast).toHaveBeenCalledWith('Error saving status.');
             expect(screen.getByText(/Error saving status/i)).toBeInTheDocument();
         });
     });
