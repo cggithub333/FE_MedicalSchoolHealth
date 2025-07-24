@@ -44,11 +44,37 @@ export default {
 
   // Only collect coverage for files that have tests
   collectCoverageFrom: [
-    'src/components/parent/HealthManagement/PrescriptionSendingForm.jsx',
-    'src/components/parent/HealthManagement/Declaration/VaccinationDeclarationContent.jsx',
+    // Parent components
     'src/components/parent/HealthCheckCampaignCard/HealthCheckSurveyByPupil.jsx',
-    'src/pages/parent/vaccination-campaign/Surveys.jsx',
+    'src/components/parent/HealthManagement/Declaration/VaccinationDeclarationContent.jsx',
+    'src/components/parent/HealthManagement/PrescriptionSendingForm.jsx',
+    
+    // School nurse - Health check campaign schedule components
+    'src/components/schoolnurse/health-check-campaign/schedule/healthcheck-schedule-management/ScheduleForm.jsx',
+    'src/components/schoolnurse/health-check-campaign/schedule/healthcheck-schedule-management-details/ScheduleInjectedList.jsx',
+    'src/components/schoolnurse/health-check-campaign/schedule/healthcheck-schedule-management-form/ScheduleDetails.jsx',
+    'src/components/schoolnurse/health-check-campaign/schedule/healthcheck-schedule-management-result/ScheduleResult.jsx',
+    
+    // School nurse - Medical event components  
+    'src/components/schoolnurse/medical-event/medical-event-management/MedicalHeader.jsx',
+    'src/components/schoolnurse/medical-event/medical-event-result/EventFormResult.jsx',
+    'src/components/schoolnurse/medical-event/new-medical-event/NewMedicalEventForm.jsx',
+    
+    // School nurse - Send medication components
+    'src/components/schoolnurse/send-medication/MedicationPreparation.jsx',
+    'src/components/schoolnurse/send-medication/PrescriptionRequest.jsx',
+    'src/components/schoolnurse/send-medication/PrescriptionRequestPageRequestList.jsx',
+    'src/components/schoolnurse/send-medication/SearchPupilInformationById.jsx',
+    'src/components/schoolnurse/send-medication/TakeMedicationBySession.jsx',
+    
+    // School nurse - Vaccination campaign schedule components
+    'src/components/schoolnurse/vaccination-campaign/schedule/healthcheck-schedule-management-form/ScheduleDetails.jsx',
+    'src/components/schoolnurse/vaccination-campaign/schedule/vaccination-schedule-management/ScheduleForm.jsx',
+    'src/components/schoolnurse/vaccination-campaign/schedule/vaccination-schedule-management-details/ScheduleInjectedList.jsx',
+    
+    // Pages
     'src/pages/parent/health-check-campaign/Surveys.jsx',
+    'src/pages/parent/vaccination-campaign/Surveys.jsx',
   ],
 
   coverageDirectory: 'coverage-focused',

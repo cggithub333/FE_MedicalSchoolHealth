@@ -17,11 +17,13 @@ export default {
   ],
 
   moduleNameMapper: {
-    '^@components/(.*)$': '<rootDir>/src/components/$1',
-    '^@hooks/(.*)$': '<rootDir>/src/hooks/$1', // make shortcut as @hooks
-    '^@pages/(.*)$': '<rootDir>/src/pages/$1',  // make shortcut as @pages
-    '^@api/(.*)$': '<rootDir>/src/api/$1',  // make shortcut as @api
+    '^@api/(.*)$': '<rootDir>/src/api/$1',
     '^@assets/(.*)$': '<rootDir>/src/assets/$1',
+    '^@components/(.*)$': '<rootDir>/src/components/$1',
+    '^@config/(.*)$': '<rootDir>/src/config/$1',
+    '^@controllers/(.*)$': '<rootDir>/src/controllers/$1',
+    '^@hooks/(.*)$': '<rootDir>/src/hooks/$1',
+    '^@pages/(.*)$': '<rootDir>/src/pages/$1',
     '^@store/(.*)$': '<rootDir>/src/store/$1',
     '^@utils/(.*)$': '<rootDir>/src/utils/$1',
     '^.+\\.(css|scss|sass)$': 'identity-obj-proxy',
