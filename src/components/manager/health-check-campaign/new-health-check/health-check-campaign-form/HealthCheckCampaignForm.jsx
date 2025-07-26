@@ -4,6 +4,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import useCreateNewCampaign from "../../../../../hooks/manager/healthcheck/create-new-campaign/useCreateNewCampaign"
 import { useGetGenitalHealthCheck } from "../../../../../hooks/manager/healthcheck/create-new-campaign/useGetGenitalHealthCheck"
+import { showSuccessToast, showErrorToast } from "../../../../../utils/toast-utils";
 import "./HealthCheckCampaignForm.css"
 
 const HealthCheckCampaignForm = ({ onSuccess, onCancel }) => {
@@ -78,54 +79,60 @@ const HealthCheckCampaignForm = ({ onSuccess, onCancel }) => {
     }
 
     const validateForm = () => {
-        const errors = {}
+        const errors = {};
+        // Trim all string fields before validation
+        const title = formData.title.trim();
+        const description = formData.description.trim();
+        const address = formData.address.trim();
+        const deadlineDate = formData.deadlineDate;
+        const startExaminationDate = formData.startExaminationDate;
+        const endExaminationDate = formData.endExaminationDate;
 
-        if (!formData.title.trim()) {
-            errors.title = "Campaign title is required"
+        if (!title) {
+            errors.title = "Campaign title is required";
         }
-
-        if (!formData.description.trim()) {
-            errors.description = "Description is required"
+        if (!description) {
+            errors.description = "Description is required";
         }
-
-        if (!formData.address.trim()) {
-            errors.address = "Address is required"
+        if (!address) {
+            errors.address = "Address is required";
         }
-
-        if (!formData.deadlineDate) {
-            errors.deadlineDate = "Deadline date is required"
+        if (!deadlineDate) {
+            errors.deadlineDate = "Deadline date is required";
         }
-
-        if (!formData.startExaminationDate) {
-            errors.startExaminationDate = "Start date and time is required"
+        if (!startExaminationDate) {
+            errors.startExaminationDate = "Start date and time is required";
         }
-
-        if (!formData.endExaminationDate) {
-            errors.endExaminationDate = "End date and time is required"
+        if (!endExaminationDate) {
+            errors.endExaminationDate = "End date and time is required";
         }
-
-        // Check if end date is after start date
-        if (formData.startExaminationDate && formData.endExaminationDate) {
-            const startDate = new Date(formData.startExaminationDate)
-            const endDate = new Date(formData.endExaminationDate)
-
+        // Date logic
+        if (startExaminationDate && endExaminationDate) {
+            const startDate = new Date(startExaminationDate);
+            const endDate = new Date(endExaminationDate);
             if (endDate <= startDate) {
-                errors.endExaminationDate = "End date must be after start date"
+                errors.endExaminationDate = "End date must be after start date";
+            }
+            // Check if end date is at least 5 days after start date
+            else if ((endDate - startDate) / (1000 * 60 * 60 * 24) < 5) {
+                errors.endExaminationDate = "End date must be at least 5 days after start date"
             }
         }
-
-        // Check if deadline is before or same as start date (allow same day)
-        if (formData.deadlineDate && formData.startExaminationDate) {
-            const deadlineDate = new Date(formData.deadlineDate)
-            const startDate = new Date(formData.startExaminationDate)
-            if (deadlineDate > startDate) {
-                errors.deadlineDate = "Deadline must be before or same as examination start date"
+        if (deadlineDate && startExaminationDate) {
+            const deadline = new Date(deadlineDate);
+            const startDate = new Date(startExaminationDate);
+            if (deadline > startDate) {
+                errors.startExaminationDate = "start date must be after or same as examination deadline";
+            }
+            // NEW: Deadline must not be in the past
+            const now = new Date();
+            if (deadline < now) {
+                errors.deadlineDate = "Deadline must not be in the past";
             }
         }
-
-        setValidationErrors(errors)
-        return Object.keys(errors).length === 0
-    }
+        setValidationErrors(errors);
+        return Object.keys(errors).length === 0;
+    };
 
     // Update formatDateForAPI to output UTC ISO string with 'Z' for date-times
     const formatDateForAPI = (dateString, withTime = false) => {
@@ -143,6 +150,13 @@ const HealthCheckCampaignForm = ({ onSuccess, onCancel }) => {
         e.preventDefault()
 
         if (!validateForm()) {
+            showErrorToast("Please fix the errors in the form before submitting.");
+            // Optionally scroll to first error field
+            const firstErrorField = Object.keys(validationErrors)[0];
+            if (firstErrorField) {
+                const el = document.querySelector(`[name='${firstErrorField}']`);
+                if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
             return
         }
 
@@ -174,22 +188,21 @@ const HealthCheckCampaignForm = ({ onSuccess, onCancel }) => {
                 endExaminationDate: "",
                 selectedDisease: "",
             })
-
+            showSuccessToast("Campaign created successfully!");
             onSuccess && onSuccess()
         } catch (error) {
+            showErrorToast("Failed to create campaign. Please try again.");
             console.error("Error creating campaign:", error)
         }
     }
 
     return (
 
-        <div className="vaccine-campaign-root">
+        <div className="health-campaign-root">
             <Fade in timeout={500} >
                 <Paper elevation={4} className="campaign-form-container">
                     <form onSubmit={handleSubmit} autoComplete="off" className="campaign-form">
-                        <Typography variant="h5" className="form-title">
-                            Health Check Campaign Form
-                        </Typography>
+                        <h2 className="health-campaign-title">Vaccination Campaign Form</h2>
                         {error && (
                             <Box mb={2} className="error-alert">
                                 <Paper elevation={0}>
@@ -392,7 +405,7 @@ const HealthCheckCampaignForm = ({ onSuccess, onCancel }) => {
                             <Grid item>
                                 <Button
                                     type="button"
-                                    variant="outlined"
+                                    variant="contained"
                                     onClick={onCancel}
                                     disabled={isCreating}
                                     className="cancel-button"

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { Box, TextField, Alert, AlertTitle } from "@mui/material"
 import { useGetVaccineByDisease } from "../../../../../hooks/manager/vaccination/create-new-campaign/useGetVaccineByDisease"
 import { useCreateNewCampaign } from "../../../../../hooks/manager/vaccination/create-new-campaign/useCreateNewCampaign"
+import { showSuccessToast, showErrorToast } from "../../../../../utils/toast-utils";
 import "./StyleVaccineCampaignForm.css"
 
 // Helper to format date as dd-MM-YYYY
@@ -99,26 +100,35 @@ const VaccineCampaignForm = ({ onSuccess, onCancel }) => {
             if (endDate <= startDate) {
                 errors.endDate = "End date must be after start date"
             }
+            // Check if end date is at least 5 days after start date
+            else if ((endDate - startDate) / (1000 * 60 * 60 * 24) < 5) {
+                errors.endDate = "End date must be at least 5 days after start date"
+            }
         }
 
-        // Check if deadline is before start date
+        // Check if deadline is before start date and not in the past
         if (form.formDeadline && form.startDate) {
             const deadlineDate = new Date(form.formDeadline)
             const startDate = new Date(form.startDate)
-
+            const now = new Date()
             if (deadlineDate >= startDate) {
-                errors.formDeadline = "Form deadline must be before start date"
+                errors.startDate = "Form start date must be after deadline date"
+            }
+            if (deadlineDate < now) {
+                errors.formDeadline = "Form deadline must not be in the past"
             }
         }
 
         setValidationErrors(errors)
-        return Object.keys(errors).length === 0
+        return errors
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        if (!validateForm()) {
+        const errors = validateForm()
+        if (Object.keys(errors).length > 0) {
+            showErrorToast("Please fix the errors in the form before submitting.")
             return
         }
 
@@ -134,9 +144,9 @@ const VaccineCampaignForm = ({ onSuccess, onCancel }) => {
                 notes: (form.notes && form.notes.trim()) || "", // always send string
             }
 
-
             try {
                 const response = await createNewCampaign(campaignData)
+                showSuccessToast("Vaccination campaign created successfully!")
                 console.log("Vaccination campaign created successfully:", response)
             } catch (err) {
                 // Log the error and any error response from backend
@@ -163,6 +173,7 @@ const VaccineCampaignForm = ({ onSuccess, onCancel }) => {
 
             onSuccess && onSuccess()
         } catch (error) {
+            showErrorToast("Failed to create campaign. Please try again.")
             console.error("Error creating vaccination campaign:", error)
         }
     }
