@@ -39,7 +39,6 @@ import useTodayTakeMedicationSessions from "@hooks/schoolnurse/send-medication/u
 import { showErrorToast, showSuccessToast, showWarningToast } from "@utils/toast-utils"
 
 import { getDateFromDDMMYYYY } from "@utils/date-utils"
-import { isTakenThisPupilThisSessionThisDate } from "@utils/parseLogsObject"
 
 // Mock DigitalClock component
 const DigitalClock = () => {
@@ -119,6 +118,98 @@ const currentSessionInfor3 = () => {
 
 
 const TakeMedicationBySession = () => {
+
+    // Utility functions for localStorage medication check management
+    const getCurrentDateString = () => {
+        const today = new Date();
+        const day = String(today.getDate()).padStart(2, '0');
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const year = today.getFullYear();
+        return `${day}-${month}-${year}`;
+    };
+
+    const getMedicationCheckList = () => {
+        const stored = localStorage.getItem('medicationCheckList');
+        if (!stored) {
+            return null;
+        }
+        try {
+            return JSON.parse(stored);
+        } catch (error) {
+            console.error('Error parsing medicationCheckList from localStorage:', error);
+            return null;
+        }
+    };
+
+    const initializeMedicationCheckList = () => {
+        const currentDate = getCurrentDateString();
+        const medicationCheckList = {
+            takingDate: currentDate,
+            session1check: [],
+            session2check: [],
+            session3check: []
+        };
+        localStorage.setItem('medicationCheckList', JSON.stringify(medicationCheckList));
+        return medicationCheckList;
+    };
+
+    const getMedicationCheckListForToday = () => {
+        const currentDate = getCurrentDateString();
+        let medicationCheckList = getMedicationCheckList();
+        
+        // If no list exists or date doesn't match, initialize new one
+        if (!medicationCheckList || medicationCheckList.takingDate !== currentDate) {
+            medicationCheckList = initializeMedicationCheckList();
+        }
+        
+        return medicationCheckList;
+    };
+
+    const isMedicationAlreadyGiven = (pupilId, medicationId, sessionNumber) => {
+        const medicationCheckList = getMedicationCheckListForToday();
+        const sessionKey = `session${sessionNumber}check`;
+        const sessionChecks = medicationCheckList[sessionKey] || [];
+        
+        const pupilRecord = sessionChecks.find(record => record.pupilId === pupilId);
+        if (!pupilRecord) return false;
+        
+        return pupilRecord.medicationId.includes(medicationId);
+    };
+
+    const addMedicationToCheckList = (pupilId, medicationIds, sessionNumber) => {
+        const medicationCheckList = getMedicationCheckListForToday();
+        const sessionKey = `session${sessionNumber}check`;
+        
+        // Find existing pupil record in this session
+        let pupilRecord = medicationCheckList[sessionKey].find(record => record.pupilId === pupilId);
+        
+        if (pupilRecord) {
+            // Add new medication IDs to existing record (avoid duplicates)
+            medicationIds.forEach(medId => {
+                if (!pupilRecord.medicationId.includes(medId)) {
+                    pupilRecord.medicationId.push(medId);
+                }
+            });
+        } else {
+            // Create new pupil record
+            medicationCheckList[sessionKey].push({
+                pupilId: pupilId,
+                medicationId: [...medicationIds]
+            });
+        }
+        
+        // Save back to localStorage
+        localStorage.setItem('medicationCheckList', JSON.stringify(medicationCheckList));
+    };
+
+    const isDiseaseAlreadyGiven = (request) => {
+        if (!request || !request.medicationItems || !selectedPupil) return false;
+        
+        // Check if any medication in this disease request was already given
+        return request.medicationItems.some(medication => 
+            isMedicationAlreadyGiven(selectedPupil.pupilId, medication.medicationId, selectedSession + 1)
+        );
+    };
 
     const { createTakeMedicationLogs, loading: createLogsLoading, error: createLogsError } = useCreateTakeMedicationLogs()
     const { sessionsInfor, loading: sessionsLoading, error: errorLoading } = useTodayTakeMedicationSessions()
@@ -353,6 +444,9 @@ const TakeMedicationBySession = () => {
 
         setSelectedMedicationDetails(null); // Reset selected medication details
 
+        // Initialize medication check list for today
+        getMedicationCheckListForToday();
+
         // Get all approved medication requests for this pupil
         const pupilMedications = (medicationDetailsByPupil || []).filter(
             request => (request.pupilId === pupil.pupilId && request.status === "APPROVED" && request.medicationItems != null && request.medicationItems.length > 0) // Ensure medicationItems is not null or empty
@@ -416,6 +510,12 @@ const TakeMedicationBySession = () => {
             return
         }
 
+        // Prevent double-giving: check with isDiseaseAlreadyGiven (localStorage approach)
+        if (isDiseaseAlreadyGiven(request)) {
+            showWarningToast(`This medication has already been given for Session ${selectedSession + 1}!`)
+            return
+        }
+
         // append pupilId to the "givenPrescriptionSession":
         setGivenPrescriptionBySession(prev => {
             const updatedGiven = [...prev]  // clone previous state
@@ -439,13 +539,9 @@ const TakeMedicationBySession = () => {
             return updatedGiven
         })
 
-
-
-        // Check if already given for this session
-        if (isGivenInCurrentSession(request)) {
-            showWarningToast(`This medication has already been given for Session ${selectedSession + 1}!`)
-            return
-        }
+        // Add medications to localStorage check list
+        const medicationIds = request.medicationItems.map(med => med.medicationId);
+        addMedicationToCheckList(selectedPupil.pupilId, medicationIds, selectedSession + 1);
 
         const medicationLogData = {
             sendMedicationId: request.sendMedicationId,
@@ -475,8 +571,8 @@ const TakeMedicationBySession = () => {
 
     // Add function to check if any medication is checked for a specific disease
     const hasCheckedMedications = (request) => {
-        // If already given for current session, don't allow clicking
-        if (isGivenInCurrentSession(request)) return false
+        // If already given for current session (using localStorage), don't allow clicking
+        if (isDiseaseAlreadyGiven(request)) return false
 
         if (!request.medicationItems) return false
         return request.medicationItems.some(medication =>
@@ -484,15 +580,10 @@ const TakeMedicationBySession = () => {
         )
     }
 
-    // Check if disease already has GIVEN status for current session
-    const isDiseaseAlreadyGiven = (request) => {
-        return isGivenInCurrentSession(request)
-    }
-
     // Get log messages for a specific disease
     const getDiseaseLogMessages = (request) => {
         // If disease already given for current session, show existing notes
-        if (isGivenInCurrentSession(request)) {
+        if (isDiseaseAlreadyGiven(request)) {
             const currentSessionLog = request.medicationLogs?.find(log =>
                 log.status === "GIVEN" && log.sessionNumber === (selectedSession + 1)
             )

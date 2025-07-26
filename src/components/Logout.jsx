@@ -5,6 +5,11 @@ import { clearPersonalInfo } from "@store/slices/personalInforSlice";
 const Logout = () => {
   const dispatch = useDispatch();
 
+  // let medicationCheckList = "";
+  // if (localStorage.getItem("medicationCheckList")) {
+  //   medicationCheckList = localStorage.getItem("medicationCheckList");
+  // }
+
   // clear all localStorage's data:
   localStorage.clear();
 
@@ -13,6 +18,7 @@ const Logout = () => {
   
   // add light mode:
   localStorage.setItem("toolpad-mode", "light");
+  // localStorage.setItem("medicationCheckList", medicationCheckList);
 
   // back to Homepage:
   return <Navigate to={"/homepage"} replace />

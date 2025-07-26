@@ -9,7 +9,18 @@ import FloatingNavigateButton from '@components/magic/FloatingNavigateButton/Flo
 import { MdOutlineMedication as MedicationPreparationIcon } from "react-icons/md";
 import NewRequestsIcon from '@mui/icons-material/Article';
 
+import { getDDMMYYYYFromISOString } from "@utils/date-utils";
+
 const Prescription = () => {
+
+    // check the date inside the 'medicationCheckList':
+    const medicationCheckListStr = localStorage.getItem('medicationCheckList');
+    if (medicationCheckListStr) {
+        const convertedObj = JSON.parse(medicationCheckListStr);
+        const currentDate = getDDMMYYYYFromISOString((new Date).toISOString()); // format: dd-mm-yyyy
+        if (convertedObj?.takingDate !== currentDate)
+            localStorage.removeItem("medicationCheckList");
+    }
 
     return (
         <div style={{ background: "#E6F8F9", height: "100vh", paddingBottom: "50px", paddingTop: "10px" }}>
