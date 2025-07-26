@@ -39,6 +39,7 @@ import useTodayTakeMedicationSessions from "@hooks/schoolnurse/send-medication/u
 import { showErrorToast, showSuccessToast, showWarningToast } from "@utils/toast-utils"
 
 import { getDateFromDDMMYYYY } from "@utils/date-utils"
+import { isTakenThisPupilThisSessionThisDate } from "@utils/parseLogsObject"
 
 // Mock DigitalClock component
 const DigitalClock = () => {
@@ -303,7 +304,7 @@ const TakeMedicationBySession = () => {
         setValue(newValue)
     }
 
-    const handleGradeCardClick = (grade, sessionIndex) => {
+    const handleGradeCardClick = async (grade, sessionIndex) => {
 
         // debug:
         console.log("handleGradeCardClick called!!!!");
@@ -338,7 +339,7 @@ const TakeMedicationBySession = () => {
             localStorage.removeItem("givenPrescriptionSession1");
             localStorage.removeItem("givenPrescriptionSession2");
         } else {
-            showErrorToast("No active session available for now.")
+            showWarningToast("No active session available for now. Make sure you're picking the right session")
             // return
         }
 
@@ -439,12 +440,6 @@ const TakeMedicationBySession = () => {
         })
 
 
-        // Check if current time is within session window
-        if (!isCurrentTimeInSession(selectedSession)) {
-            const sessionTime = getSessionTimeWindow(selectedSession)
-            showErrorToast(`Medication can only be given during Session ${selectedSession + 1} time window: ${sessionTime}`)
-            return
-        }
 
         // Check if already given for this session
         if (isGivenInCurrentSession(request)) {
@@ -482,9 +477,6 @@ const TakeMedicationBySession = () => {
     const hasCheckedMedications = (request) => {
         // If already given for current session, don't allow clicking
         if (isGivenInCurrentSession(request)) return false
-
-        // If not in session time window, don't allow clicking
-        if (!isCurrentTimeInSession(selectedSession)) return false
 
         if (!request.medicationItems) return false
         return request.medicationItems.some(medication =>
@@ -538,13 +530,9 @@ const TakeMedicationBySession = () => {
 
     // Modified close dialog function
     const handleCloseDialog = () => {
-        showWarningToast("Please ensure all medication administration is complete before closing!")
-
-        if (window.confirm("Are you sure you want to close? Any unsaved changes will be lost.")) {
-            setPrescriptionDetailOpen(false)
-            setSelectedMedicationDetails(null) // Reset selected medication details
-            setSelectedPupil(null) // Reset selected pupil
-        }
+        setPrescriptionDetailOpen(false)
+        setSelectedMedicationDetails(null) // Reset selected medication details
+        setSelectedPupil(null) // Reset selected pupil
     }
 
     const getGradeColor = (grade) => {
@@ -1167,10 +1155,7 @@ const TakeMedicationBySession = () => {
                                                             onClick={() => handleGivenButtonClick(request)}
                                                             sx={{ minWidth: 180 }}
                                                         >
-                                                            {!isCurrentTimeInSession(selectedSession)
-                                                                ? `Available ${getSessionTimeWindow(selectedSession)}`
-                                                                : `Give (Session ${selectedSession + 1})`
-                                                            }
+                                                            {`Give (Session ${selectedSession + 1})`}
                                                         </Button>
                                                     )}
                                                 </Box>

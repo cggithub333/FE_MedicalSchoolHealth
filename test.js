@@ -1,20 +1,3 @@
-
-/*
-  example: const test = "+ School Nurse's name: Vy Thủy\n\n+ Disease: Common cold with dry throat; Medication: Honey syrup; Unit & Usage: 5ml to soothe dry throat and suppress cough; Schedule: After breakfast: 9h00-9h30; Given: Yes; Given Time: 7:26:15 PM\n\n+ Session Info: Session 1 (09:30 - 10:00)";
-  {
-    diseaseInfor: {
-      disease: 'Common cold with dry throat',
-      medication: 'Honey syrup',
-      unitUsage: '5ml to soothe dry throat and suppress cough',
-      schedule: 'After breakfast: 9h00-9h30',
-      given: 'Yes',
-      givenTime: '7:26:15 PM'
-    },
-    nurseName: 'Vy Thủy',
-    sessionInfo: 'Session 1 (09:30 - 10:00)'
-  }
-*/
-
 export const parseMedicalInfo = (input) => {
   const result = {
     diseaseInfor: {}
@@ -56,8 +39,39 @@ export const parseMedicalInfo = (input) => {
   return result;
 }
 
+export function getDDMMYYYYFromISOString(isoString) {
+  // Converts an ISO date string to 'dd-mm-yyyy'
+  const date = new Date(isoString);
+  if (isNaN(date.getTime())) return '';
+  const dd = String(date.getDate()).padStart(2, '0');
+  const mm = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+  const yyyy = date.getFullYear();
+  return `${dd}-${mm}-${yyyy}`;
+}
 
-import { getDDMMYYYYFromISOString } from "./date-utils";
+const medicationLogs = [
+  {
+    logId: 2,
+    givenTime: "27-07-2025 23:11:48",
+    note: "+ School Nurse's name: Thủy Vy\n\n+ Disease: Common cold with cough; Medication: Dextromethorphan; Unit & Usage: 1 capsule taken by mouth to suppress dry cough; Schedule: After breakfast: 9h00-9h30; Given: Yes; Given Time: 11:11:32 PM\n\n+ Session: 1 (9:30-10:15)",
+    status: "GIVEN"
+  },
+  {
+    logId: 3,
+    givenTime: "26-07-2025 23:12:10",
+    note: "+ School Nurse's name: Thủy Vy\n\n+ Disease: Common cold with cough; Medication: Strepsils lozenges; Unit & Usage: 1 lozenge dissolved slowly in mouth to soothe throat; Schedule: Before lunch: 10h30-11h00; Given: Yes; Given Time: 11:12:07 PM\n\n+ Session: 2 (10:30-11:15)",
+    status: "GIVEN"
+  },
+  {
+    logId: 4,
+    givenTime: "26-07-2025 23:12:20",
+    note: "+ School Nurse's name: Thủy Vy\n\n+ Disease: Common cold with cough; Medication: Strepsils lozenges; Unit & Usage: 1 lozenge dissolved slowly in mouth to soothe throat; Schedule: Before lunch: 10h30-11h00; Given: Yes; Given Time: 11:12:15 PM\n\n+ Session: 2 (10:30-11:15)",
+    status: "GIVEN"
+  }
+];
+
+// Vào cái ngày hôm nay, tại session đang chọn này, đứa trẻ (pupil) này đã được cho uống cái loại thuốc kia chưa
+
 
 /*
   <<example>>
@@ -68,14 +82,14 @@ import { getDDMMYYYYFromISOString } from "./date-utils";
     medication: "Dextromethorphan",
   }
 */
-export const isTakenThisPupilThisSessionThisDate = (recorded, medicationLogs) => {
+const isTakenThisPupilThisSessionThisDate = (recorded, medicationLogs) => {
   const schedules = ['After breakfast: 9h00-9h30', 'Before lunch: 10h30-11h00', 'After lunch: 11h30-12h00']; // ~ session (1, 2, 3)
   const currentDate = getDDMMYYYYFromISOString((new Date).toISOString()); // format: dd-mm-yyyy;
-
-  for (let medicationLog of medicationLogs) {
+  
+  for(let medicationLog of medicationLogs) {
     const givenTime = recorded.givenTime.split(/\s+/)[0];
     const noteObj = parseMedicalInfo(medicationLog.note);
-
+    
     console.log(noteObj);
     if (givenTime && givenTime !== currentDate)
       break;
@@ -86,7 +100,7 @@ export const isTakenThisPupilThisSessionThisDate = (recorded, medicationLogs) =>
     }
     let session = schedules.reduce((acc, schedule, idx) => {
       let convertedSchedule = "";
-
+      
       if (diseaseInfor) {
         convertedSchedule = diseaseInfor.schedule;
       }
@@ -103,7 +117,7 @@ export const isTakenThisPupilThisSessionThisDate = (recorded, medicationLogs) =>
     if (session !== recorded.session)
       break;
     if (diseaseInfor) {
-      if ((diseaseInfor.disease !== recorded.disease) || (diseaseInfor.medication !== recorded.medication))
+      if ((diseaseInfor.disease !== recorded.disease) || (diseaseInfor.medication !== recorded.medication)) 
         break;
     }
     return true; // has already taken medication;
@@ -117,3 +131,5 @@ const recorded = {
   disease: "Common cold with cough",
   medication: "Dextromethorphan",
 }
+
+console.log("result: ", isTakenThisPupilThisSessionThisDate(recorded, medicationLogs));
