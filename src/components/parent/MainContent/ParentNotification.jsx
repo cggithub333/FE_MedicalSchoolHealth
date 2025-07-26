@@ -203,7 +203,7 @@ const ParentNotifications = () => {
       // sort each group by createdAt date in descending order
       Object.keys(notificationByType) // get all keys (types) of the grouped notifications
             .forEach(type => {
-              notificationByType[type].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+              notificationByType[type].sort((a, b) => b.notificationId - a.notificationId);
             })
       return notificationByType
     }
