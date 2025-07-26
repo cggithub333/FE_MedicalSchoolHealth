@@ -100,7 +100,8 @@ const DashboardOverview = () => {
             padding: { xs: 1, sm: 3 },
             background: "linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%)",
             width: "100%",
-            height: "100%",
+            minHeight: "100%",
+            height: "auto",
             boxSizing: "border-box",
         }}>
             {/* Top Stats Cards */}
