@@ -37,6 +37,7 @@ import {
 } from "@mui/icons-material"
 
 import useVaccinationHistoryByPupilId from "@hooks/parent/vaccination/useVaccinationHistoryByPupilId";
+import { getDDMMYYYYFromISOString } from "@utils/date-utils";
 
 const VaccinationHistoryDisplayer = ({ pupilObj }) => {
 
@@ -67,13 +68,11 @@ const VaccinationHistoryDisplayer = ({ pupilObj }) => {
   }, [vaccinationHistoryRecords, searchDisease, searchYear, selectedSource])
 
   const formatDateTime = (dateString) => {
-    return new Date(dateString).toLocaleString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    })
+
+    if (!dateString) return "";
+    const dateObj = new Date(dateString);
+    const formattedDateStr = getDDMMYYYYFromISOString(dateObj.toISOString());
+    return formattedDateStr;
   }
 
   const formatDate = (dateString) => {
