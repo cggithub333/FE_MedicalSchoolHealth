@@ -354,9 +354,26 @@ const ParentNotifications = () => {
                   }
 
                   let isApprovedOrRejectedSendMedicationNoti = false;
-                  const markedMsg = ['has been approved', 'has been rejected'];
+                  const markedMsg = ['approved', 'rejected'];
                   if (type === "SEND_MEDICAL" && notification.message) {
                     isApprovedOrRejectedSendMedicationNoti = markedMsg.some(msg => notification.message.includes(msg));
+                  }
+
+                  let fadeCard = false, failedCard = false;
+                  const currentDate = new Date();
+                  const createdAtDate = new Date(notification.createdAt); // createdAt's format: 'yyyy-mm-dd'
+                  // if the notification is older then 7 days, fade it
+                  fadeCard = (currentDate - createdAtDate) > (7 * 24 * 60 * 60 * 1000); // 7 days in milliseconds
+                  // if the notification is containing string in following array, mark it:
+
+                  if (!fadeCard) {
+                    if (type === "VACCINATION_CAMPAIGN" || type === "HEALTH_CHECK_CAMPAIGN") {
+                      const failedMsg = ["absent", "but not yet vaccinated"]
+                      failedCard = failedMsg.some(msg => notification.message && notification.message.toLowerCase().includes(msg));
+                    }
+                    if (type === "SEND_MEDICAL") {
+                      failedCard = (notification.message && notification.message.toLowerCase().includes("rejected"));
+                    }
                   }
 
                   return (
@@ -376,6 +393,9 @@ const ParentNotifications = () => {
                             boxShadow: "0 4px 20px rgba(0,0,0,0.12)",
                             bgcolor: `${getNotificationColor(notification.typeNotification)}.50`,
                           },
+                          backgroundColor: fadeCard ? "rgba(0, 0, 0, 0.1)" : (failedCard ? "rgba(255, 0, 0, 0.1)" : "white"),
+                          opacity: fadeCard ? 0.5 : 1,
+                          border: failedCard ? "1px solid red" : "none",
                         }}
                       >
                         <CardContent>
