@@ -350,6 +350,7 @@ const SettingContent = () => {
         </Grid>
 
         {/* Language Section */}
+        {/*
         <Grid item size={{xs:12}}>
           <Card elevation={2} sx={{ borderRadius: 2 }}>
             <CardContent sx={{ p: 3 }}>
@@ -391,6 +392,7 @@ const SettingContent = () => {
             </CardContent>
           </Card>
         </Grid>
+        */}
       </Grid>
 
       {/* Change Password Dialog */}
