@@ -173,7 +173,7 @@ const PrescriptionLogsContent = () => {
   const filteredPrescriptionLogs = filterInforFromPrescriptionArr(prescriptionArr);
 
   // debug:
-  console.log("Pupil Information:", JSON.stringify(PupilInfor, null, 2));
+  // console.log("Pupil Information:", JSON.stringify(PupilInfor, null, 2));
   console.log("Filtered Prescription Logs:", JSON.stringify(filteredPrescriptionLogs, null, 2));
 
   const [medicationLogsDialogOpen, setMedicationLogsDialogOpen] = useState(false)
@@ -327,7 +327,7 @@ const PrescriptionLogsContent = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filteredPrescriptionLogs.map((prescription, index) => (
+                {(filteredPrescriptionLogs && filteredPrescriptionLogs.length > 0) ? filteredPrescriptionLogs.map((prescription, index) => (
                   <TableRow key={index} sx={{ "&:hover": { bgcolor: "grey.50" } }}>
                     <TableCell>
                       <Typography variant="body2" fontWeight="bold">
@@ -362,7 +362,16 @@ const PrescriptionLogsContent = () => {
                       </Button>
                     </TableCell>
                   </TableRow>
-                ))}
+                )) : (
+                  <TableRow>
+                    <TableCell colSpan={4} align="center">
+                      <Typography variant="body2" color="text.secondary">
+                        No prescription logs available.
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                )
+                }
               </TableBody>
             </Table>
           </TableContainer>

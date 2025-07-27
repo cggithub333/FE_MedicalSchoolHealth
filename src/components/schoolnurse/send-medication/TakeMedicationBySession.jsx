@@ -582,20 +582,7 @@ const TakeMedicationBySession = () => {
 
     // Get log messages for a specific disease
     const getDiseaseLogMessages = (request) => {
-        // If disease already given for current session, show existing notes
-        if (isDiseaseAlreadyGiven(request)) {
-            const currentSessionLog = request.medicationLogs?.find(log =>
-                log.status === "GIVEN" && log.sessionNumber === (selectedSession + 1)
-            )
-
-            if (currentSessionLog) {
-                return currentSessionLog.note
-            }
-
-            return `Medication already given for Session ${selectedSession + 1}`
-        }
-
-        // Otherwise, generate new log messages
+        // Always generate detailed log messages, regardless of whether already given
         const diseaseMessages = []
 
         // Add school nurse name
@@ -614,7 +601,7 @@ const TakeMedicationBySession = () => {
         }
 
         // Add session information
-        diseaseMessages.push(`+ Session: ${selectedSession + 1} (${getSessionTimeWindow(selectedSession)})`)
+        diseaseMessages.push(`+ Session Info: Session ${selectedSession + 1} (${getSessionTimeWindow(selectedSession)})`)
 
         return diseaseMessages.join("\n\n").trim() || `No medication given yet for Session ${selectedSession + 1}.`
     }
