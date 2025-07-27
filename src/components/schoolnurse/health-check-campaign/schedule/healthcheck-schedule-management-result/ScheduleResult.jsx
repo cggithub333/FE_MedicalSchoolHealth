@@ -159,35 +159,35 @@ const ScheduleResult = ({ consentFormId, pupilData, onBack }) => {
                             Height
                         </Typography>
 
-                        <span>{fieldText.height}</span></Item>
+                        <span>{fieldText.height} cm</span></Item>
                 </Grid>
                 <Grid size={4}>
                     <Item>
                         <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#1976d2' }}>
                             Weight
                         </Typography>
-                        <span>{fieldText.weight}</span></Item>
+                        <span>{fieldText.weight} kg</span></Item>
                 </Grid>
                 <Grid size={4}>
                     <Item>
                         <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#1976d2' }}>
                             Heart rate
                         </Typography>
-                        <span>{fieldText.heartRate}</span></Item>
+                        <span>{fieldText.heartRate} bpm</span></Item>
                 </Grid>
                 <Grid size={6}>
                     <Item>
                         <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#1976d2' }}>
                             Left eye
                         </Typography>
-                        <span>{fieldText.leftEyeVision}</span></Item>
+                        <span>{fieldText.leftEyeVision} /10</span></Item>
                 </Grid>
                 <Grid size={6}>
                     <Item>
                         <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#1976d2' }}>
                             Right eye
                         </Typography>
-                        <span>{fieldText.rightEyeVision}</span></Item>
+                        <span>{fieldText.rightEyeVision} /10</span></Item>
                 </Grid>
                 <Grid size={4}>
                     <Item>

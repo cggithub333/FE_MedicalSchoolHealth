@@ -10,12 +10,12 @@ import { useSaveResultOfHealthCheckCampaign } from "../../../../../hooks/schooln
 import { useNavigate } from "react-router-dom"
 
 const HEALTH_CHECK_DISEASES = [
-    { field: "height", name: "Height", type: "number", category: "physical" },
-    { field: "weight", name: "Weight", type: "number", category: "physical" },
-    { field: "rightEyeVision", name: "Right Eye Vision", type: "string", category: "vision" },
-    { field: "leftEyeVision", name: "Left Eye Vision", type: "string", category: "vision" },
+    { field: "height", name: "Height", quantity: "cm", type: "number", category: "physical" },
+    { field: "weight", name: "Weight", quantity: "kg", type: "number", category: "physical" },
+    { field: "rightEyeVision", name: "Right Eye Vision", quantity: ".../10", type: "string", category: "vision" },
+    { field: "leftEyeVision", name: "Left Eye Vision", quantity: ".../10", type: "string", category: "vision" },
     { field: "bloodPressure", name: "Blood Pressure", type: "string", category: "cardiovascular" },
-    { field: "heartRate", name: "Heart Rate", type: "number", category: "physical" },
+    { field: "heartRate", name: "Heart Rate", quantity: "bpm", type: "number", category: "physical" },
     { field: "hearAnuscultaion", name: "Lung Auscultation", type: "string", category: "cardiovascular" },
     { field: "lungs", name: "Lungs", type: "string", category: "cardiovascular" },
     { field: "dentalCheck", name: "Dental Check", type: "string", category: "dental" },
@@ -23,10 +23,10 @@ const HEALTH_CHECK_DISEASES = [
     { field: "noseCondition", name: "Nose Condition", type: "string", category: "hearing" },
     { field: "throatCondition", name: "Throat Condition", type: "string", category: "hearing" },
     { field: "skinAndMucosa", name: "Skin and Mucosa", type: "string", category: "skin" },
-    { field: "digestiveSystem", name: "Digestive System", type: "string", category: "medical" },
-    { field: "urinarySystem", name: "Urinary System", type: "string", category: "medical" },
-    { field: "musculoskeletalSystem", name: "Musculoskeletal System", type: "string", category: "medical" },
-    { field: "neurologyAndPsychiatry", name: "Neurology and Psychiatry", type: "string", category: "medical" },
+    // { field: "digestiveSystem", name: "Digestive System", type: "string", category: "medical" },
+    // { field: "urinarySystem", name: "Urinary System", type: "string", category: "medical" },
+    // { field: "musculoskeletalSystem", name: "Musculoskeletal System", type: "string", category: "medical" },
+    // { field: "neurologyAndPsychiatry", name: "Neurology and Psychiatry", type: "string", category: "medical" },
     // Genital health check category will be rendered dynamically from pupilData.disease
 ];
 
@@ -312,9 +312,17 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
                                                                 {categoryKey === 'physical' ? (
                                                                     <TextField
                                                                         size="small"
-                                                                        label={disease.name}
+                                                                        label={disease.quantity}
                                                                         value={measurements[disease.field] || ""}
                                                                         onChange={(e) => handleMeasurementChange(disease.field, e.target.value)}
+                                                                        sx={{ minWidth: 90, maxWidth: 120, background: '#f5fafd', borderRadius: 1, boxShadow: 0, fontWeight: 500, fontSize: 13 }}
+                                                                    />
+                                                                ) : categoryKey === 'vision' ? (
+                                                                    <TextField
+                                                                        size="small"
+                                                                        label={disease.quantity}
+                                                                        value={notes[disease.field || disease.disease_id] || ""}
+                                                                        onChange={(e) => handleNoteChange(disease.field || disease.disease_id, e.target.value)}
                                                                         sx={{ minWidth: 90, maxWidth: 120, background: '#f5fafd', borderRadius: 1, boxShadow: 0, fontWeight: 500, fontSize: 13 }}
                                                                     />
                                                                 ) : (

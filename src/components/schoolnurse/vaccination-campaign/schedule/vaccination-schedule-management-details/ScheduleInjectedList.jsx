@@ -496,7 +496,7 @@ const ScheduleInjectedList = ({ shift, campaign, onBack }) => {
                                                     </Avatar>
                                                     <Box>
                                                         <Typography variant="subtitle1" fontWeight={600} className="student-name">
-                                                            {student.firstName} {student.lastName}
+                                                            {student.lastName} {student.firstName}
                                                         </Typography>
                                                         <Typography variant="body2" color="text.secondary" className="student-id">
                                                             ID: {student.pupilId}

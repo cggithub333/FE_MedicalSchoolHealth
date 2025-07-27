@@ -69,14 +69,14 @@ export default function AdminReportsDashboard() {
         setCampaigns([
             { title: "Health Check Q1", pupilCount: 120 },
             { title: "Health Check Q2", pupilCount: 140 },
-            { title: "Mid-Year Campaign", pupilCount: 100 },
-            { title: "Year End Review", pupilCount: 160 },
+            // { title: "Mid-Year Campaign", pupilCount: 100 },
+            // { title: "Year End Review", pupilCount: 160 },
         ])
         setVaccinations([
             { vaccine: "Hepatitis A", count: 60 },
             { vaccine: "Measles", count: 45 },
-            { vaccine: "Polio", count: 70 },
-            { vaccine: "COVID-19", count: 100 },
+            // { vaccine: "Polio", count: 70 },
+            // { vaccine: "COVID-19", count: 100 },
         ])
         setEvents([
             { date: "Jan", eventCount: 10 },
