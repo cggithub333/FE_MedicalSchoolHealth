@@ -353,10 +353,16 @@ const ParentNotifications = () => {
                     return null; // Skip rendering this notification
                   }
 
+                  let isApprovedOrRejectedSendMedicationNoti = false;
+                  const markedMsg = ['has been approved', 'has been rejected'];
+                  if (type === "SEND_MEDICAL" && notification.message) {
+                    isApprovedOrRejectedSendMedicationNoti = markedMsg.some(msg => notification.message.includes(msg));
+                  }
+
                   return (
                     <Link
                       key={notification.notificationId}
-                      to={getNotificationRoute(notification.typeNotification)}
+                      to={isApprovedOrRejectedSendMedicationNoti ? "/parent/prescription" : getNotificationRoute(notification.typeNotification)}
                       style={{ textDecoration: "none" }}
                     >
                       <Card
