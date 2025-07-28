@@ -35,6 +35,86 @@ import useAllNotifications from "@hooks/parent/health-check/useAllNotifications"
 
 const ITEMS_PER_PAGE = 5;
 
+
+const getNotificationIcon = (type) => {
+  switch (type) {
+    case "VACCINATION_CAMPAIGN":
+      return <Vaccines />
+    case "HEALTH_CHECK_CAMPAIGN":
+      return <LocalHospital />
+    case "SEND_MEDICAL":
+      return <SendMedicationIcon />
+    case "MED_EVENT":
+      return <MedicalEventIcon />
+    default:
+      return <Notifications />
+  }
+}
+
+const getNotificationColor = (type) => {
+  switch (type) {
+    case "VACCINATION_CAMPAIGN":
+      return "success"
+    case "HEALTH_CHECK_CAMPAIGN":
+      return "primary"
+    case "SEND_MEDICAL":
+      return "warning"
+    case "MED_EVENT":
+      return "error"
+    default:
+      return "default"
+  }
+}
+
+const getPaginationBtnColor = (type) => {
+
+  //debug log:
+  // console.log("getPaginationColor called with type:", type);
+
+  switch (type) {
+    case "VACCINATION_CAMPAIGN":
+      return "success"
+    case "HEALTH_CHECK_CAMPAIGN":
+      return "primary"
+    case "SEND_MEDICAL":
+      return "warning"
+    case "MED_EVENT":
+      return "error"
+    default:
+      return "default"
+  }
+}
+
+const getNotificationRoute = (type) => {
+  switch (type) {
+    case "VACCINATION_CAMPAIGN":
+      return "../vaccination-campaign/surveys"
+    case "HEALTH_CHECK_CAMPAIGN":
+      return "../health-check-campaign/surveys"
+    case "SEND_MEDICAL":
+      return "../prescription/prescription-logs"
+    case "MED_EVENT":
+      return "../medical-events"
+    default:
+      return "#"
+  }
+}
+
+const getNotificationTypeText = (type) => {
+  switch (type) {
+    case "VACCINATION_CAMPAIGN":
+      return "Vaccination Campaign"
+    case "HEALTH_CHECK_CAMPAIGN":
+      return "Health Check Campaign"
+    case "SEND_MEDICAL":
+      return "Medication Taking"
+    case "MED_EVENT":
+      return "Medical Event"
+    default:
+      return "Notification"
+  }
+}
+
 const ParentNotifications = () => {
 
   const { notifications, loading, error, refetch } = useAllNotifications()
@@ -105,85 +185,6 @@ const ParentNotifications = () => {
 
     // Debug log
     // console.log("Notifications:\n", JSON.stringify(notifications))
-
-    const getNotificationIcon = (type) => {
-      switch (type) {
-        case "VACCINATION_CAMPAIGN":
-          return <Vaccines />
-        case "HEALTH_CHECK_CAMPAIGN":
-          return <LocalHospital />
-        case "SEND_MEDICAL":
-          return <SendMedicationIcon/>
-        case "MED_EVENT":
-          return <MedicalEventIcon />
-        default:
-          return <Notifications />
-      }
-    }
-
-    const getNotificationColor = (type) => {
-      switch (type) {
-        case "VACCINATION_CAMPAIGN":
-          return "success"
-        case "HEALTH_CHECK_CAMPAIGN":
-          return "primary"
-        case "SEND_MEDICAL":
-          return "warning"
-        case "MED_EVENT":
-          return "error"
-        default:
-          return "default"
-      }
-    }
-
-    const getPaginationBtnColor = (type) => {
-
-      //debug log:
-      // console.log("getPaginationColor called with type:", type);
-
-      switch (type) {
-        case "VACCINATION_CAMPAIGN":
-          return "success"
-        case "HEALTH_CHECK_CAMPAIGN":
-          return "primary"
-        case "SEND_MEDICAL":
-          return "warning"
-        case "MED_EVENT":
-          return "error"
-        default:
-          return "default"
-      }
-    }
-
-    const getNotificationRoute = (type) => {
-      switch (type) {
-        case "VACCINATION_CAMPAIGN": 
-          return "../vaccination-campaign/surveys"
-        case "HEALTH_CHECK_CAMPAIGN":
-          return "../health-check-campaign/surveys"
-        case "SEND_MEDICAL":
-          return "../prescription/prescription-logs"
-        case "MED_EVENT":
-          return "../medical-events"
-        default:
-          return "#"
-      }
-    }
-
-    const getNotificationTypeText = (type) => {
-      switch (type) {
-        case "VACCINATION_CAMPAIGN":
-          return "Vaccination Campaign"
-        case "HEALTH_CHECK_CAMPAIGN":
-          return "Health Check Campaign"
-        case "SEND_MEDICAL":
-          return "Medication Taking"
-        case "MED_EVENT":
-          return "Medical Event"
-        default:
-          return "Notification"
-      }
-    }
 
     const formatDate = (dateString) => {
       if (!dateString || dateString.length < 10) return "";
@@ -378,6 +379,18 @@ const ParentNotifications = () => {
                     }
                   }
 
+                  let seriousLevel = "";
+                  if (type === "MED_EVENT") {
+                    // if the notification is a medical event, check the serious level
+                    if (notification.message.toLowerCase().includes("(high priority)")) {
+                      seriousLevel = "high";
+                    } else if (notification.message.toLowerCase().includes("(medium priority)")) {
+                      seriousLevel = "medium";
+                    } else if (notification.message.toLowerCase().includes("(low priority)")) {
+                      seriousLevel = "low";
+                    }
+                  }
+
                   return (
                     <Link
                       key={notification.notificationId}
@@ -385,20 +398,7 @@ const ParentNotifications = () => {
                       style={{ textDecoration: "none" }}
                     >
                       <Card
-                        sx={{
-                          width: "100%",
-                          mb: 1,
-                          cursor: "pointer",
-                          transition: "all 0.3s ease",
-                          "&:hover": {
-                            transform: "translateX(8px)",
-                            boxShadow: "0 4px 20px rgba(0,0,0,0.12)",
-                            bgcolor: `${getNotificationColor(notification.typeNotification)}.50`,
-                          },
-                          backgroundColor: fadeCard ? "rgba(0, 0, 0, 0.1)" : (failedCard ? "rgba(255, 0, 0, 0.1)" : "white"),
-                          opacity: fadeCard ? 0.5 : 1,
-                          border: failedCard ? "1px solid red" : "none",
-                        }}
+                        sx={styleNotificationCard(fadeCard, failedCard, seriousLevel, notification.typeNotification)}
                       >
                         <CardContent>
                           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
@@ -477,6 +477,47 @@ const hoverPaper = {
     boxShadow: 3,
     transform: "translateY(-10px)",
   },
+}
+
+const styleNotificationCard = (fadeCard, failedCard, seriousLevel, notificationType) => {
+
+  const defaultStyles = {
+    width: "100%",
+    mb: 1,
+    cursor: "pointer",
+    transition: "all 0.3s ease",
+    "&:hover": {
+      transform: "translateX(8px)",
+      boxShadow: "0 4px 20px rgba(0,0,0,0.12)",
+      bgcolor: `${getNotificationColor(notificationType)}.50`,
+    },
+  }
+
+  if (fadeCard) {
+    defaultStyles.opacity = 0.5;
+    defaultStyles.border = "1px solid rgba(0, 0, 0, 0.2)";
+  }
+
+  if (failedCard) {
+    defaultStyles.border = "1px solid orange";
+    defaultStyles.backgroundColor = "rgba(255, 165, 0, 0.1)";
+  }
+
+  switch(seriousLevel) {
+    case "high":
+      defaultStyles.border = "1px solid red";
+      defaultStyles.backgroundColor = "rgba(255, 0, 0, 0.2)";
+      break;
+    case "medium":
+      defaultStyles.border = "1px solid red";
+      defaultStyles.backgroundColor = "rgba(255, 0, 0, 0.06)";
+      break;
+    default:
+      // No specific styles for low or no serious level
+      break;
+  }
+
+  return defaultStyles;
 }
 
 export default ParentNotifications;
