@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
     Box,
     Card,
@@ -11,8 +11,8 @@ import {
     DialogContent,
     DialogActions,
     CircularProgress,
-    Alert,
     Chip,
+    Alert,
     Paper,
     Fade,
 } from "@mui/material"
@@ -21,7 +21,8 @@ import { useNewestCampaignByStatus } from "@hooks/manager/vaccination/create-new
 import { useUpdateNewCampaign } from "@hooks/manager/vaccination/create-new-campaign/useUpdateNewCampaign"
 import VaccineCampaignForm from "./vaccination-campaign-form/VaccineCampaignForm"
 import { usePublishVaccinationCampaign } from "@hooks/manager/vaccination/create-new-campaign/usePublishVaccinationCampaign"
-import { showErrorToast } from "@utils/toast-utils"
+import { useDeleteCampaignByCampaignID } from "@hooks/manager/vaccination/create-new-campaign/useDeleteCampaignByCampaignID"
+import { showErrorToast, showSuccessToast } from "@utils/toast-utils"
 const cardSx = {
     minWidth: 320,
     maxWidth: 340,
@@ -82,6 +83,9 @@ const NewVaccinationCampaign = () => {
     const [selectedCampaign, setSelectedCampaign] = useState(null)
     const [dialogOpen, setDialogOpen] = useState(false)
     const [createFormOpen, setCreateFormOpen] = useState(false)
+    const [campaignIdToDelete, setCampaignIdToDelete] = useState(null);
+
+    const { isLoading: isDeleting, error: deleteError, success: isDeleteSuccess } = useDeleteCampaignByCampaignID(campaignIdToDelete);
 
     const statusOrder = [
         "PENDING",
@@ -148,6 +152,11 @@ const NewVaccinationCampaign = () => {
         }
     };
 
+    // Function to handle delete for pending campaign
+    const handleDeletePendingCampaign = (campaignId) => {
+        setCampaignIdToDelete(campaignId);
+    };
+
     const formatDate = (dateString) => {
         // Handle different date formats from API
         if (!dateString) return "N/A"
@@ -168,6 +177,19 @@ const NewVaccinationCampaign = () => {
             day: "numeric",
         })
     }
+
+    useEffect(() => {
+        if (deleteError) {
+            showErrorToast(`Error deleting campaign: ${deleteError}`);
+        }
+        if (isDeleteSuccess) {
+            showSuccessToast("Campaign deleted successfully.");
+            refetch && refetch();
+            setCampaignIdToDelete(null);
+            setDialogOpen(false);
+            setCreateFormOpen(false);
+        }
+    }, [deleteError, isDeleteSuccess]);
 
     if (isLoading) {
         return (
@@ -195,6 +217,7 @@ const NewVaccinationCampaign = () => {
                                         <Alert severity="info" sx={{ borderRadius: 2 }}>
                                             No campaigns in this stage
                                         </Alert>
+
                                     ) : (
                                         getCampaignsByStatus(status).map((campaign) => (
                                             <Card
@@ -304,9 +327,21 @@ const NewVaccinationCampaign = () => {
                     <Button onClick={() => setDialogOpen(false)} sx={{ borderRadius: 2, textTransform: "none" }}>Cancel</Button>
                     {selectedCampaign && (
                         <>
+                            {selectedCampaign.status === "PENDING" && (
+                                <>
+                                    <Button
+                                        variant="contained"
+                                        color="error"
+                                        onClick={() => handleDeletePendingCampaign(selectedCampaign.campaignId)}
+                                        disabled={isDeleting}
+                                        sx={{ borderRadius: 2, textTransform: "none" }}
+                                    >
+                                        {isDeleting ? <CircularProgress size={20} /> : "Delete Campaign"}
+                                    </Button>
+                                </>
+                            )}
                             {selectedCampaign.status === "PENDING" && canPublish() && (
                                 <>
-
                                     <Button
                                         variant="contained"
                                         color="success"
@@ -345,6 +380,7 @@ const NewVaccinationCampaign = () => {
                                     </Button>
                                 </>
                             )}
+
                         </>
                     )}
                 </DialogActions>
