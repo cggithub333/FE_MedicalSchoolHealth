@@ -186,7 +186,9 @@ const ParentNotifications = () => {
     }
 
     const formatDate = (dateString) => {
-      return dateString
+      if (!dateString || dateString.length < 10) return "";
+      const [d, m, y] = dateString.trim().split(/\//);
+      return `${m}/${d}/${y}`; // return in format 'mm-dd-yyyy'
     }
 
     // group notifications by type (e.g., VACCINATION_CAMPAIGN group, HEALTH_CHECK_CAMPAIGN group)
@@ -368,7 +370,7 @@ const ParentNotifications = () => {
 
                   if (!fadeCard) {
                     if (type === "VACCINATION_CAMPAIGN" || type === "HEALTH_CHECK_CAMPAIGN") {
-                      const failedMsg = ["absent", "but not yet vaccinated"]
+                      const failedMsg = ["absent", "not yet", "declined by"]
                       failedCard = failedMsg.some(msg => notification.message && notification.message.toLowerCase().includes(msg));
                     }
                     if (type === "SEND_MEDICAL") {

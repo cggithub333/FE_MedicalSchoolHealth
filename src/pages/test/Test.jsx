@@ -5,7 +5,7 @@ import { Grid, Typography } from "@mui/material";
 import useMyInformation from "@hooks/common/useMyInformation";
 
 import { importExcel, excelDateToJSDate } from "@utils/excel-utils";
-import TextEditor from "@components/magic/TextEditor/TextEditor";
+import BlogEditor from "@components/magic/TextEditor/BlogsEditor";
 
 const Test = () => {
   const { personalInforState, error } = useMyInformation();
@@ -82,12 +82,9 @@ const Test = () => {
           <input onChange={handleUploadFile} type="file" accept=".xlsx" name="xlsx_file" title="Import Accounts"/>
         </span>
       </Grid>
-      <Grid container ml={"30px"} mt={"100px"}>
-        <Grid item size={{ xs: 12}}>
-          <Typography fontSize={'20px'}>Test Lexical</Typography>
-        </Grid>
+      <Grid container p={"60px 0px"} justifyContent={'center'} bgcolor={'#E6F8F9'}>
         <Grid item size={{ xs: 11 }}>
-          <TextEditor />
+          <BlogEditor />
         </Grid>
       </Grid>
     </div>
@@ -105,6 +102,5 @@ export default Test;
     last_name    varchar(50)                                         not null,
     email        varchar(255)                                        null,
     role         enum ('ADMIN', 'MANAGER', 'PARENT', 'SCHOOL_NURSE') null
-
 );
 */
