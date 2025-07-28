@@ -1,5 +1,3 @@
-import FloatingFilterBar from "@components/parent/FloatingFilterBar";
-
 import { Grid } from "@mui/material";
 import Breadcrumb from '@components/magic/Breadcrumb/CustomBreadcrumb';
 import CustomTittle from "@components/magic/CustomTittle/CustomTitle";

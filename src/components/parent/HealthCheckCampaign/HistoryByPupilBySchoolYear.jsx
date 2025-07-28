@@ -22,8 +22,12 @@ import {
   Box,
   Container,
   Paper,
+  Avatar
 } from "@mui/material"
 import { Search, Person, CalendarToday, Favorite, Visibility, LocalHospital, Warning } from "@mui/icons-material"
+
+import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
+import PlaylistAddCheckCircleIcon from '@mui/icons-material/PlaylistAddCheckCircle';
 
 const categorizeByYearByStage = (historyRecords, selectedYear, selectedStage) => {
   const categorizedByYearObj = historyRecords.reduce((acc, recordsByYear, idx) => {
@@ -179,7 +183,7 @@ const HistoryByPupilBySchoolYear = () => {
     }
 
     // debug:
-    console.log("Detailed Examination Record:", historyRecord);
+    // console.log("Detailed Examination Record:", historyRecord);
 
     // stored properties's value:
     const dentailCheck = historyRecord.dentalCheck || "No Information";
@@ -214,27 +218,36 @@ const HistoryByPupilBySchoolYear = () => {
     ]
 
     return (
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        {examinations.map((exam, index) => (
-          <Box key={index}>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5, fontWeight: 500 }}>
-              {exam.label}
-            </Typography>
-            <Paper sx={{ p: 2, bgcolor: "grey.50" }}>
-              <Typography variant="body2">{exam.value}</Typography>
-            </Paper>
-          </Box>
-        ))}
-      </Box>
+      <Grid container justifyContent={'center'} spacing={2} my={2}>
+        {examinations.map((exam, index) => {
+
+          const arrLength = examinations.length;
+          const isLastItem = index === arrLength - 1;
+          const isLengthEven = arrLength % 2 === 0;
+
+          return (
+            <Grid display={'flex'} flexDirection={'column'} gap={'10px'} size={{ xs: 12, md: ((isLastItem && !isLengthEven) ? 12 : 6) }} key={index} my={2}>
+              <Typography variant="h7" color="text.secondary" sx={{ fontWeight: 500 }}>
+                {exam.label}
+              </Typography>
+              <Paper sx={{ p: 2, bgcolor: "#fff", height: "100%", boxShadow: "0 2px 2px 2px rgba(0,0,0,0.1)" }}>
+                <Typography variant="body2">{exam.value}</Typography>
+              </Paper>
+            </Grid>
+          )
+        })}
+      </Grid>
     )
   }
 
   return (
     <Container maxWidth="lg" sx={{ py: 3}}>
       <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 3 }}>
-        <LocalHospital color="primary" />
+        <Avatar sx={{ bgcolor: "#5aacec" }}>
+          <LocalHospital color="#fff" />
+        </Avatar>
         <Typography variant="h4" fontWeight="bold">
-          Health Check History
+          Health Check Record
         </Typography>
       </Box>
 
@@ -345,7 +358,7 @@ const HistoryByPupilBySchoolYear = () => {
             </Box>
           </CardHeader>
           <CardContent>
-            <Grid container spacing={2} display={"flex"} alignItems="center" gap="40px">
+            <Grid container alignItems="center" spacing={2}>
               <Grid item size={{ xs: 12, md: 6, lg: 3}}>
                 <Typography variant="body2" color="text.secondary">
                   Pupil ID
@@ -422,9 +435,14 @@ const HistoryByPupilBySchoolYear = () => {
             <CardContent>
               {/* Health Metrics */}
               <Box sx={{ mb: 3 }}>
-                <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
-                  Basic Health Metrics
-                </Typography>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
+                  <Avatar sx={{ bgcolor: "#5aacec" }}>
+                    <MonitorHeartIcon />
+                  </Avatar>
+                  <Typography variant="h5" fontWeight="bold">
+                    Basic Health Metrics
+                  </Typography>
+                </Box>
                 {renderHealthMetrics()}
               </Box>
 
@@ -432,9 +450,14 @@ const HistoryByPupilBySchoolYear = () => {
 
               {/* Detailed Examination */}
               <Box sx={{ mb: 3 }}>
-                <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
-                  Detailed Examination
-                </Typography>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
+                  <Avatar sx={{ bgcolor: "#5aacec" }}>
+                    <PlaylistAddCheckCircleIcon />
+                  </Avatar>
+                  <Typography variant="h5" fontWeight="bold">
+                    Detailed Examination
+                  </Typography>
+                </Box>
                 {renderDetailedExamination()}
               </Box>
 
