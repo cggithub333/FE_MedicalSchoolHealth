@@ -17,6 +17,7 @@ import { useGetPupilsInformation } from "../../../../hooks/schoolnurse/new-event
 import { useGetAllMedicalEvent } from "../../../../hooks/schoolnurse/new-event/useGetAllMedicalEvent.js"
 import { useGetAllPrescription } from "../../../../hooks/schoolnurse/main-contents/useGetAllPrescription.js";
 import useAllPendingPrescriptions from "@hooks/schoolnurse/useAllPendingPrescriptions"
+import { useGetReportForCurrentYear } from "@hooks/common/useGetReportForCurrentYear.js";
 
 
 
@@ -24,22 +25,25 @@ const DashboardOverview = () => {
     const { pupilsList = [], loading, error } = useGetPupilsInformation();
     const { medicalEventList = [] } = useGetAllMedicalEvent();
     const { pendingMedicationRequests, loading: loadingPendingPrescriptions, error: errorPendingPrescriptions } = useAllPendingPrescriptions();
-    // Fix prescriptions: extract array from response if needed
+
     const { prescriptions: prescriptionsRaw = [], loading: loadingPrescriptions, error: errorPrescriptions } = useGetAllPrescription();
     const prescriptions = Array.isArray(prescriptionsRaw) ? prescriptionsRaw : (Array.isArray(prescriptionsRaw.data) ? prescriptionsRaw.data : []);
 
-    // Remove debug log or update if needed
-    // console.log("Prescriptions:", prescriptions.length);
 
-    // Mock data based on the database schema
+    const report = useGetReportForCurrentYear() || {};
+    const data = report.reportData || {};
+    const totalMedicalEvents = Array.isArray(data.events) && data.events.length > 0
+        ? data.events[0].eventCount
+        : 0;
+    const totalprescription = data.prescriptionsLastMonth?.count || 0;
+
     const dashboardStats = {
-        totalStudents: pupilsList.length,
-        totalMedication: medicalEventList.length,
-        medicalEvents: medicalEventList.length,
-        totalPrescription: prescriptions.length,
+        totalStudents: data.totalPupils,
+        totalMedication: totalMedicalEvents,
+        totalPrescription: totalprescription,
     }
 
-    // Map medicalEventList to recentMedicalEvents (show only first 4)
+
     const recentMedicalEvents = (medicalEventList || []).slice(0, 4).map((event, idx) => ({
         id: event.medicalEventId,
         pupilName: `${event.pupil.lastName} ${event.pupil.firstName}`,
@@ -100,7 +104,7 @@ const DashboardOverview = () => {
             padding: { xs: 1, sm: 3 },
             background: "linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%)",
             width: "100%",
-            minHeight: "100%",
+            minHeight: "100vh",
             height: "auto",
             boxSizing: "border-box",
         }}>
@@ -108,16 +112,12 @@ const DashboardOverview = () => {
             <Grid container spacing={3} className="stats-row" sx={{ mb: 3 }}>
                 {[{
                     label: "Total Pupils",
-                    value: dashboardStats.totalStudents.toLocaleString(),
+                    value: dashboardStats.totalStudents,
                     icon: <UsersIcon />, color: "blue"
                 }, {
                     label: "Total Medication",
                     value: dashboardStats.totalMedication,
                     icon: <PillIcon />, color: "emerald"
-                }, {
-                    label: "Medical Events",
-                    value: dashboardStats.medicalEvents,
-                    icon: <AlertTriangleIcon />, color: "amber"
                 }, {
                     label: "Total Prescription",
                     value: dashboardStats.totalPrescription,

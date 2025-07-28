@@ -17,11 +17,9 @@ import { useGetPupilsInformation } from "@hooks/schoolnurse/new-event/useGetPupi
 import { useGetAllMedicalEvent } from "../../../../hooks/schoolnurse/new-event/useGetAllMedicalEvent.js"
 import { useGetAllPrescription } from "../../../../hooks/schoolnurse/main-contents/useGetAllPrescription.js";
 import useAllPendingPrescriptions from "@hooks/schoolnurse/useAllPendingPrescriptions"
-
-
+import { useGetReportForCurrentYear } from "@hooks/common/useGetReportForCurrentYear.js";
 
 const DashboardOverview = () => {
-    const { pupilsList = [], loading, error } = useGetPupilsInformation();
     const { medicalEventList = [] } = useGetAllMedicalEvent();
     const { pendingMedicationRequests, loading: loadingPendingPrescriptions, error: errorPendingPrescriptions } = useAllPendingPrescriptions();
     // Fix prescriptions: extract array from response if needed
@@ -31,12 +29,15 @@ const DashboardOverview = () => {
     // Remove debug log or update if needed
     // console.log("Prescriptions:", prescriptions.length);
 
+    // Use report data from useGetReportForCurrentYear
+    const report = useGetReportForCurrentYear() || {};
+    const data = report.reportData || {};
     // Mock data based on the database schema
     const dashboardStats = {
-        totalStudents: pupilsList.length,
-        totalMedication: medicalEventList.length,
-        medicalEvents: medicalEventList.length,
-        totalPrescription: prescriptions.length,
+        totalStudents: data.totalPupils,
+        totalHealthChecks: data.totalHealthChecks || 0,
+        medicalEvents: data.totalMedicalEvents,
+        totalVaccinations: data.totalVaccinations || 0,
     }
 
     // Map medicalEventList to recentMedicalEvents (show only first 4)
@@ -100,28 +101,29 @@ const DashboardOverview = () => {
             padding: { xs: 1, sm: 3 },
             background: "linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%)",
             width: "100%",
-            minHeight: "100%",
             height: "auto",
+            minHeight: "100vh",
             boxSizing: "border-box",
         }}>
             {/* Top Stats Cards */}
             <Grid container spacing={3} className="stats-row" sx={{ mb: 3 }}>
                 {[{
                     label: "Total Pupils",
-                    value: dashboardStats.totalStudents.toLocaleString(),
+                    value: dashboardStats.totalStudents,
                     icon: <UsersIcon />, color: "blue"
                 }, {
-                    label: "Total Medication",
-                    value: dashboardStats.totalMedication,
+                    label: "Total Health Checks",
+                    value: dashboardStats.totalHealthChecks,
                     icon: <PillIcon />, color: "emerald"
+                }, {
+                    label: "Total Vaccinations",
+                    value: dashboardStats.totalVaccinations,
+                    icon: <VaccinesIcon />, color: "purple"
+
                 }, {
                     label: "Medical Events",
                     value: dashboardStats.medicalEvents,
                     icon: <AlertTriangleIcon />, color: "amber"
-                }, {
-                    label: "Total Prescription",
-                    value: dashboardStats.totalPrescription,
-                    icon: <FileTextIcon />, color: "purple"
                 }].map((stat, idx) => (
                     <Grid size={{ xs: 12, sm: 6, md: 3 }} key={stat.label}>
                         <Card className={`stat-card stat-card--${stat.color}`}
