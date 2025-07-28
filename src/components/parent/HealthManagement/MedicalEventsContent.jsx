@@ -169,11 +169,11 @@ const MedicalEventsContent = () => {
   const getStatusText = (status) => {
     switch (status?.toUpperCase()) {
       case "LOW":
-        return "Low Level"
+        return "All Good"
       case "MEDIUM":
-        return "Medium Level"
+        return "Noticed"
       case "HIGH":
-        return "High Level"
+        return "In Danger"
       default:
         return status
     }

@@ -1,10 +1,8 @@
-import FloatingFilterBar from "../../../components/parent/FloatingFilterBar";
-
 import { Grid } from "@mui/material";
-import Breadcrumb from '../../../components/magic/Breadcrumb/CustomBreadcrumb';
-import CustomTittle from "../../../components/magic/CustomTittle/CustomTitle";
+import Breadcrumb from '@components/magic/Breadcrumb/CustomBreadcrumb';
+import CustomTittle from "@components/magic/CustomTittle/CustomTitle";
 
-import HistoryByPupilBySchoolYear from "../../../components/parent/HealthCheckCampaign/HistoryByPupilBySchoolYear";
+import HistoryByPupilBySchoolYear from "@components/parent/HealthCheckCampaign/HistoryByPupilBySchoolYear";
 
 import { ThemeProvider, createTheme } from "@mui/material/styles"
 import CssBaseline from "@mui/material/CssBaseline"

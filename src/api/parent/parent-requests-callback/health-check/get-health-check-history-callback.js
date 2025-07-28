@@ -1,5 +1,4 @@
-
-import Request from '../../../request';
+import Request from "@api/request";
 
 export const getHealthCheckHistoryCallback = async (pupilId, schoolYear) => {
 

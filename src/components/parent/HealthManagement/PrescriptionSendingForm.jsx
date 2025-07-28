@@ -94,12 +94,6 @@ const PrescriptionSendingForm = () => {
     if (startDate && endDate) {
       const start = new Date(startDate)
       const end = new Date(endDate)
-      const today = new Date()
-      today.setHours(0, 0, 0, 0)
-
-      if (start <= today) {
-        newErrors.startDate = "Start date must be after today"
-      }
       if (start >= end) {
         newErrors.endDate = "End date must be after start date"
       }
@@ -154,6 +148,7 @@ const PrescriptionSendingForm = () => {
   // Image upload logic: Enhanced form submission with automatic image upload
   const handleSendPrescription = async () => {
     if (!validateForm()) {
+      showErrorToast("Oops! Your declaration has incorrect information. Please check and send again.");
       return
     }
 

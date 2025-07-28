@@ -22,14 +22,49 @@ import {
   Box,
   Container,
   Paper,
+  Avatar
 } from "@mui/material"
 import { Search, Person, CalendarToday, Favorite, Visibility, LocalHospital, Warning } from "@mui/icons-material"
 
+import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
+import PlaylistAddCheckCircleIcon from '@mui/icons-material/PlaylistAddCheckCircle';
+
+const categorizeByYearByStage = (historyRecords, selectedYear, selectedStage) => {
+  const categorizedByYearObj = historyRecords.reduce((acc, recordsByYear, idx) => {
+    if (!recordsByYear || !Array.isArray(recordsByYear) || recordsByYear.length <= 0) {
+      return acc; // skip;
+    }
+    const pickedADate = recordsByYear[0].createdAt;
+
+    const [y, m, d] = pickedADate.trim().split(/-/);
+
+    if (!y) return acc; // skip;
+
+    //else:
+    acc[y] = recordsByYear;
+    return acc;// next item or end;
+  }, {});
+
+  if (!categorizedByYearObj) return undefined;
+
+  const recordsByYearArr = categorizedByYearObj[`${selectedYear}`]
+
+  if (!recordsByYearArr || !Array.isArray(recordsByYearArr) || recordsByYearArr.length <= 0) return undefined;
+
+  const recordByYearByStageObj = recordsByYearArr.filter((record, idx) => {
+    return record && record.stage && record.stage == selectedStage;
+  })
+
+  if (!recordByYearByStageObj) return undefined; // no answer;
+
+  return recordByYearByStageObj[0];
+}
 
 const HistoryByPupilBySchoolYear = () => {
   const { pupils } = usePupils()
   const [selectedPupilId, setSelectedPupilId] = useState(localStorage.getItem("pupilId") || "")      // Default to empty string if no pupilId in localStorage
   const [selectedSchoolYear, setSelectedSchoolYear] = useState(new Date().getFullYear().toString()); // Default to current year
+  const [selectedStage, setSelectedStage] = useState(1); // Default to stage 1
   const [ anySelected, setAnySelected ] = useState(false);
 
   // debug:
@@ -42,8 +77,7 @@ const HistoryByPupilBySchoolYear = () => {
   )
 
   // debug:
-  // console.log("HistoryByPupilBySchoolYear :", historyRecords);
-  // console.log("HistoryByPupilBySchoolYear :", typeof historyRecords);
+  // console.log("historyRecords :", JSON.stringify(historyRecords, null, 2));
 
   // Initial fetch
   useEffect(() => {
@@ -53,7 +87,7 @@ const HistoryByPupilBySchoolYear = () => {
   }, [])
 
   const handleSearch = () => {
-    // only active when both fields are selected
+    // only active when all fields are selected
     if (selectedPupilId && selectedSchoolYear) {
       fetchHealthCheckHistory(selectedPupilId, selectedSchoolYear)
     }
@@ -66,23 +100,34 @@ const HistoryByPupilBySchoolYear = () => {
   }
 
   const renderHealthMetrics = () => {
-    if (!historyRecords || historyRecords[0] == null || historyRecords.length == 0) 
+    if (!historyRecords || historyRecords.length == 0 || historyRecords[0] == null)
       return (
         <Alert severity="info" sx={{ mt: 2 }}>
-          No health check records found for the selected pupil and school year.
+          No detailed examination records found for the selected pupil and school year.
         </Alert>
       );
 
     // debug:
-    console.log("History Records:", historyRecords);
+    // console.log("Detailed Examination Records:", historyRecords);
+
+    // take only the first record for detailed examination:
+    const historyRecord = categorizeByYearByStage(historyRecords, selectedSchoolYear, selectedStage);
+
+    if (!historyRecord) {
+      return (
+        <Alert severity="info" sx={{ mt: 2 }}>
+          No detailed examination records found for the selected pupil and school year.
+        </Alert>
+      );
+    }
 
     // const properties:
-    const height = `${historyRecords[0].height} cm` || "No Information";
-    const weight = historyRecords[0].weight ? `${historyRecords[0].weight} kg` : "No Information";
-    const rightEyeVision = historyRecords[0].rightEyeVision || "No Information";
-    const leftEyeVision = historyRecords[0].leftEyeVision || "No Information";
-    const bloodPressure = historyRecords[0].bloodPressure ? `${historyRecords[0].bloodPressure} mmHg` : "No Information";
-    const heartRate = historyRecords[0].heartRate ? `${historyRecords[0].heartRate} bpm` : "No Information";
+    const height = `${historyRecord.height} cm` || "No Information";
+    const weight = historyRecord.weight ? `${historyRecord.weight} kg` : "No Information";
+    const rightEyeVision = historyRecord.rightEyeVision || "No Information";
+    const leftEyeVision = historyRecord.leftEyeVision || "No Information";
+    const bloodPressure = historyRecord.bloodPressure ? `${historyRecord.bloodPressure} mmHg` : "No Information";
+    const heartRate = historyRecord.heartRate ? `${historyRecord.heartRate} bpm` : "No Information";
 
     const metrics = [
       { label: "Height", value: height, icon: <Person /> },
@@ -116,7 +161,7 @@ const HistoryByPupilBySchoolYear = () => {
   }
 
   const renderDetailedExamination = () => {
-    if (!historyRecords || historyRecords[0] == null || historyRecords.length == 0) 
+    if (!historyRecords || historyRecords.length == 0 || historyRecords[0] == null) 
       return (
         <Alert severity="info" sx={{ mt: 2 }}>
           No detailed examination records found for the selected pupil and school year.
@@ -124,10 +169,21 @@ const HistoryByPupilBySchoolYear = () => {
       );
 
     // debug:
-    console.log("Detailed Examination Records:", historyRecords);
+    // console.log("Detailed Examination Records:", historyRecords);
 
     // take only the first record for detailed examination:
-    const historyRecord = historyRecords[0];
+    const historyRecord = categorizeByYearByStage(historyRecords, selectedSchoolYear, selectedStage);
+
+    if (!historyRecord) {
+      return (
+        <Alert severity="info" sx={{ mt: 2 }}>
+          No detailed examination records found for the selected pupil and school year.
+        </Alert>
+      );
+    }
+
+    // debug:
+    // console.log("Detailed Examination Record:", historyRecord);
 
     // stored properties's value:
     const dentailCheck = historyRecord.dentalCheck || "No Information";
@@ -162,27 +218,36 @@ const HistoryByPupilBySchoolYear = () => {
     ]
 
     return (
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        {examinations.map((exam, index) => (
-          <Box key={index}>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5, fontWeight: 500 }}>
-              {exam.label}
-            </Typography>
-            <Paper sx={{ p: 2, bgcolor: "grey.50" }}>
-              <Typography variant="body2">{exam.value}</Typography>
-            </Paper>
-          </Box>
-        ))}
-      </Box>
+      <Grid container justifyContent={'center'} spacing={2} my={2}>
+        {examinations.map((exam, index) => {
+
+          const arrLength = examinations.length;
+          const isLastItem = index === arrLength - 1;
+          const isLengthEven = arrLength % 2 === 0;
+
+          return (
+            <Grid display={'flex'} flexDirection={'column'} gap={'10px'} size={{ xs: 12, md: ((isLastItem && !isLengthEven) ? 12 : 6) }} key={index} my={2}>
+              <Typography variant="h7" color="text.secondary" sx={{ fontWeight: 500 }}>
+                {exam.label}
+              </Typography>
+              <Paper sx={{ p: 2, bgcolor: "#fff", height: "100%", boxShadow: "0 2px 2px 2px rgba(0,0,0,0.1)" }}>
+                <Typography variant="body2">{exam.value}</Typography>
+              </Paper>
+            </Grid>
+          )
+        })}
+      </Grid>
     )
   }
 
   return (
     <Container maxWidth="lg" sx={{ py: 3}}>
       <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 3 }}>
-        <LocalHospital color="primary" />
+        <Avatar sx={{ bgcolor: "#5aacec" }}>
+          <LocalHospital color="#fff" />
+        </Avatar>
         <Typography variant="h4" fontWeight="bold">
-          Health Check History
+          Health Check Record
         </Typography>
       </Box>
 
@@ -201,7 +266,7 @@ const HistoryByPupilBySchoolYear = () => {
         </CardHeader>
         <CardContent>
           <Grid container spacing={2} alignItems="center" gap="40px">
-            <Grid item size={{ xs: 3, md: 3}}>
+            <Grid item size={{ xs: 4, md: 4}}>
               <FormControl fullWidth>
                 <InputLabel>Child</InputLabel>
                 <Select value={selectedPupilId} label="pupil" onChange={(e) => {
@@ -229,7 +294,7 @@ const HistoryByPupilBySchoolYear = () => {
               </FormControl>
             </Grid>
 
-            <Grid item size={{ xs: 3, md: 3}}>
+            <Grid item size={{ xs: 2, md: 2}}>
               <TextField
                 fullWidth
                 label="School Year"
@@ -237,13 +302,27 @@ const HistoryByPupilBySchoolYear = () => {
                 value={selectedSchoolYear}
                 onChange={(e) => {
                   setSelectedSchoolYear(Number.parseInt(e.target.value) || 2025);
-                  setAnySelected(true);
+                  setAnySelected(true); // for any change, the search button changes color
                 }}
                 inputProps={{ min: 2020, max: 2030 }}
               />
             </Grid>
 
-            <Grid item size={{ xs: 3, md: 3 }}>
+            <Grid item size={{ xs: 2, md: 2 }}>
+              <TextField
+                fullWidth
+                label="Stage"
+                type="number"
+                value={selectedStage}
+                onChange={(e) => {
+                  setSelectedStage(Number.parseInt(e.target.value) || 1);
+                  setAnySelected(true); // for any change, the search button changes color
+                }}
+                inputProps={{ min: 1, max: 5 }}
+              />
+            </Grid>
+
+            <Grid item size={{ xs: 2, md: 2 }}>
               <Button
                 fullWidth
                 variant="contained"
@@ -279,7 +358,7 @@ const HistoryByPupilBySchoolYear = () => {
             </Box>
           </CardHeader>
           <CardContent>
-            <Grid container spacing={2} display={"flex"} alignItems="center" gap="40px">
+            <Grid container alignItems="center" spacing={2}>
               <Grid item size={{ xs: 12, md: 6, lg: 3}}>
                 <Typography variant="body2" color="text.secondary">
                   Pupil ID
@@ -356,9 +435,14 @@ const HistoryByPupilBySchoolYear = () => {
             <CardContent>
               {/* Health Metrics */}
               <Box sx={{ mb: 3 }}>
-                <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
-                  Basic Health Metrics
-                </Typography>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
+                  <Avatar sx={{ bgcolor: "#5aacec" }}>
+                    <MonitorHeartIcon />
+                  </Avatar>
+                  <Typography variant="h5" fontWeight="bold">
+                    Basic Health Metrics
+                  </Typography>
+                </Box>
                 {renderHealthMetrics()}
               </Box>
 
@@ -366,9 +450,14 @@ const HistoryByPupilBySchoolYear = () => {
 
               {/* Detailed Examination */}
               <Box sx={{ mb: 3 }}>
-                <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
-                  Detailed Examination
-                </Typography>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
+                  <Avatar sx={{ bgcolor: "#5aacec" }}>
+                    <PlaylistAddCheckCircleIcon />
+                  </Avatar>
+                  <Typography variant="h5" fontWeight="bold">
+                    Detailed Examination
+                  </Typography>
+                </Box>
                 {renderDetailedExamination()}
               </Box>
 

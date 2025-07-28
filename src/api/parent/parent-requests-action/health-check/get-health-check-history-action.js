@@ -1,7 +1,7 @@
 
 import { getHealthCheckHistoryCallback} from '../../parent-requests-callback/health-check/get-health-check-history-callback';
-import { fetchResponse } from '../../../fetch-response';
 
+import { fetchResponse } from '@api/fetch-response';
 
 export const getHealthCheckHistoryByPupilIdSchoolYear = async (pupilId, schoolYear) => {
 
