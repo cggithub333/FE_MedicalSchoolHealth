@@ -124,6 +124,10 @@ const HealthCheckCampaignForm = ({ onSuccess, onCancel }) => {
             if (deadline > startDate) {
                 errors.startExaminationDate = "start date must be after or same as examination deadline";
             }
+            if ((startDate - deadline) / (24 * 60 * 60 * 1000) < 1) {
+                errors.startExaminationDate = "Start date must be within 1 days of the deadline";
+
+            }
             // NEW: Deadline must not be in the past
             const now = new Date();
             if (deadline < now) {

@@ -21,7 +21,8 @@ import { useNewestCampaign } from "../../../../hooks/manager/healthcheck/create-
 import { useUpdateCampaignStatus } from "../../../../hooks/manager/healthcheck/create-new-campaign/useUpdateStatusOfNewCampaign"
 import HealthCheckCampaignForm from "./health-check-campaign-form/HealthCheckCampaignForm"
 import "./StyleNewHealthCheckCampaign.scss" // Assuming this file contains the necessary styles
-import { showErrorToast } from "@utils/toast-utils"
+import { showErrorToast, showSuccessToast } from "@utils/toast-utils"
+
 
 const NewHealthCheckCampaign = () => {
     const { newestCampaign, isLoading, refetch } = useNewestCampaign()
@@ -74,6 +75,11 @@ const NewHealthCheckCampaign = () => {
             await updateCampaignStatus(campaign.campaignId, newStatus)
             setDialogOpen(false)
             refetch()
+            if (newStatus === "CANCELLED") {
+                showSuccessToast("Campaign deleted successfully")
+            } else {
+                showSuccessToast("Campaign status updated successfully")
+            }
         } catch (error) {
             showErrorToast("Failed to update campaign status")
         }
@@ -242,7 +248,7 @@ const NewHealthCheckCampaign = () => {
                 }}
             >
                 <DialogTitle>
-                    <Typography variant="h6" sx={{ fontWeight: 700, background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                    <Typography sx={{ fontWeight: 1000, background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
                         Health Check Campaign Details
                     </Typography>
                 </DialogTitle>
@@ -302,17 +308,29 @@ const NewHealthCheckCampaign = () => {
                                 >
                                     {isUpdating ? <CircularProgress size={20} /> : "Start Campaign"}
                                 </Button>
+
                             )}
                             {canUpdateToPending(selectedCampaign) && (
-                                <Button
-                                    variant="contained"
-                                    color="success"
-                                    onClick={() => handleStatusUpdate(selectedCampaign, "PUBLISHED")}
-                                    disabled={isUpdating}
-                                    sx={{ borderRadius: 2, textTransform: "none" }}
-                                >
-                                    {isUpdating ? <CircularProgress size={20} /> : "Publish Campaign"}
-                                </Button>
+                                <>
+                                    <Button
+                                        variant="contained"
+                                        color="error"
+                                        onClick={() => handleStatusUpdate(selectedCampaign, "CANCELLED")}
+                                        disabled={isUpdating}
+                                        sx={{ borderRadius: 2, textTransform: "none" }}
+                                    >
+                                        {isUpdating ? <CircularProgress size={20} /> : "Delete Campaign"}
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="success"
+                                        onClick={() => handleStatusUpdate(selectedCampaign, "PUBLISHED")}
+                                        disabled={isUpdating}
+                                        sx={{ borderRadius: 2, textTransform: "none" }}
+                                    >
+                                        {isUpdating ? <CircularProgress size={20} /> : "Publish Campaign"}
+                                    </Button>
+                                </>
                             )}
                             {selectedCampaign.statusHealthCampaign === "IN_PROGRESS" && (
                                 <Button
