@@ -185,7 +185,7 @@ export default function LoginModal() {
             <TextField
               label="Phone Number"
               type="tel"
-              placeholder="Enter your phone number (e.g., 0848025113)"
+              placeholder="Enter your phone number"
               value={phoneNumber}
               onChange={handlePhoneNumberChange}
               error={!!phoneError}

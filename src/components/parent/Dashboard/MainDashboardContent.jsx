@@ -467,7 +467,7 @@ const MainDashboardContent = () => {
                 </Box>
                 <Grid container spacing={2}>
                   <Grid item size={{xs: 12, sm: 6}} sx={styleQuickActionItem}>
-                    <Box component={RouterLink} to="/parent/health-check-campaign/campaigns" sx={{ textDecoration: "none" }}>
+                    <Box component={RouterLink} to="/parent/health-check-campaign/health-check-history" sx={{ textDecoration: "none" }}>
                       <Card
                         sx={{
                           textAlign: "center",
@@ -479,14 +479,14 @@ const MainDashboardContent = () => {
                       >
                         <HealthAndSafety color="info" sx={{ fontSize: 32, mb: 1 }} />
                         <Typography variant="body2" fontWeight="bold">
-                          Health Check Campaign
+                          Health Check History
                         </Typography>
                       </Card>
                     </Box>
                   </Grid>
 
                   <Grid item size={{xs: 12, sm: 6}}  sx={styleQuickActionItem}>
-                    <Box component={RouterLink} to="/parent/vaccination-campaign/campaigns" sx={{ textDecoration: "none" }}>
+                    <Box component={RouterLink} to="/parent/vaccination-campaign/vaccination-history" sx={{ textDecoration: "none" }}>
                       <Card
                         sx={{
                           textAlign: "center",
@@ -498,7 +498,7 @@ const MainDashboardContent = () => {
                       >
                         <Vaccines color="success" sx={{ fontSize: 32, mb: 1 }} />
                         <Typography variant="body2" fontWeight="bold">
-                          Vaccination Campaign
+                          Vaccination History
                         </Typography>
                       </Card>
                     </Box>
