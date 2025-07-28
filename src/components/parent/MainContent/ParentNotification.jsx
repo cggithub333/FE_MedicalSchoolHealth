@@ -85,21 +85,6 @@ const getPaginationBtnColor = (type) => {
   }
 }
 
-const getNotificationRoute = (type) => {
-  switch (type) {
-    case "VACCINATION_CAMPAIGN":
-      return "../vaccination-campaign/surveys"
-    case "HEALTH_CHECK_CAMPAIGN":
-      return "../health-check-campaign/surveys"
-    case "SEND_MEDICAL":
-      return "../prescription/prescription-logs"
-    case "MED_EVENT":
-      return "../medical-events"
-    default:
-      return "#"
-  }
-}
-
 const getNotificationTypeText = (type) => {
   switch (type) {
     case "VACCINATION_CAMPAIGN":
@@ -356,12 +341,6 @@ const ParentNotifications = () => {
                     return null; // Skip rendering this notification
                   }
 
-                  let isApprovedOrRejectedSendMedicationNoti = false;
-                  const markedMsg = ['approved', 'rejected'];
-                  if (type === "SEND_MEDICAL" && notification.message) {
-                    isApprovedOrRejectedSendMedicationNoti = markedMsg.some(msg => notification.message.includes(msg));
-                  }
-
                   let fadeCard = false, failedCard = false;
                   const currentDate = new Date();
                   const createdAtDate = new Date(notification.createdAt); // createdAt's format: 'yyyy-mm-dd'
@@ -391,10 +370,17 @@ const ParentNotifications = () => {
                     }
                   }
 
+                  
+                  let isApprovedOrRejectedSendMedicationNoti = false;
+                  const markedMsg = ['approved', 'rejected'];
+                  if (type === "SEND_MEDICAL" && notification.message) {
+                    isApprovedOrRejectedSendMedicationNoti = markedMsg.some(msg => notification.message.includes(msg));
+                  }
+
                   return (
                     <Link
                       key={notification.notificationId}
-                      to={isApprovedOrRejectedSendMedicationNoti ? "/parent/prescription" : getNotificationRoute(notification.typeNotification)}
+                      to={isApprovedOrRejectedSendMedicationNoti ? "/parent/prescription" : customLinkNavigator(notification)}
                       style={{ textDecoration: "none" }}
                     >
                       <Card
@@ -518,6 +504,74 @@ const styleNotificationCard = (fadeCard, failedCard, seriousLevel, notificationT
   }
 
   return defaultStyles;
+}
+
+const customLinkNavigator = (notification) => {
+
+  if (!notification || !notification.typeNotification) return "#";
+
+  const type = notification.typeNotification;
+
+  switch(type) {
+    case "VACCINATION_CAMPAIGN": {
+      if (!notification.message) return "/parent/vaccination-campaign/surveys"; // default route;
+
+      const newCampaignMsg = ['regarding the vaccination campaign'];
+      if (newCampaignMsg.some(msg => notification.message.includes(msg))) {
+        return "/parent/vaccination-campaign/campaigns"; // watch all vaccination campaigns
+      }
+
+      const markedMsg = ['absent', 'not yet', 'declined by'];
+      if (markedMsg.some(msg => notification.message.toLowerCase().includes(msg))) {
+        return "/contact"; // nothing to shows;
+      }
+
+      const successMsg = ['successfully vaccinated'];
+      if (successMsg.some(msg => notification.message.toLowerCase().includes(msg))) {
+        return "/parent/vaccination-campaign/vaccination-history"; // watch all vaccination history
+      }
+
+    }
+    case "HEALTH_CHECK_CAMPAIGN": {
+      if (!notification.message) return "/parent/health-check-campaign/surveys"; // default route;
+      const markedMsg = ['absent', 'not yet', 'declined by'];
+      if (markedMsg.some(msg => notification.message.includes(msg))) {
+        return "/contact"; // nothing to shows;
+      }
+      const newCampaignMsg = ['has started'];
+      if (newCampaignMsg.some(msg => notification.message.includes(msg))) {
+        return "/parent/health-check-campaign/campaigns"; // watch all health check campaigns
+      }
+      const completedMsg = ["completed"];
+      if (completedMsg.some(msg => notification.message.includes(msg))) {
+        return "/parent/health-check-campaign/health-check-history"; // watch all health check campaigns
+      }
+
+      const publishedMsg = ["has been published"];
+      if (publishedMsg.some(msg => notification.message.includes(msg))) {
+        return "/parent/health-check-campaign/surveys"; // watch all health check campaigns
+      }
+
+    }
+    case "SEND_MEDICAL": {
+      const markedMsg = ['has been rejected', 'has been approved'];
+      if (markedMsg.some(msg => notification.message.includes(msg))) {
+        return "/parent/prescription"; // watch all sent prescriptions
+      }
+      const receivedMsg = ['has received'];
+      if (receivedMsg.some(msg => notification.message.includes(msg))) {
+        return "/parent/prescription/prescription-logs"; // watch all sent prescriptions
+      }
+      //else-default route
+      return "/parent/prescription"; // default route for send medication
+    }
+    case "MED_EVENT": {
+      return "/parent/medical-events"; // default route for medical events
+    }
+    default:
+      return "#"; // Default route if type is unknown
+
+  }
 }
 
 export default ParentNotifications;
