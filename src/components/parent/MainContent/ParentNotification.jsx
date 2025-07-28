@@ -492,7 +492,7 @@ const styleNotificationCard = (fadeCard, failedCard, seriousLevel, notificationT
   switch(seriousLevel) {
     case "high":
       defaultStyles.border = "1px solid red";
-      defaultStyles.backgroundColor = "rgba(255, 0, 0, 0.2)";
+      defaultStyles.backgroundColor = "rgba(255, 0, 0, 0.12)";
       break;
     case "medium":
       defaultStyles.border = "1px solid red";

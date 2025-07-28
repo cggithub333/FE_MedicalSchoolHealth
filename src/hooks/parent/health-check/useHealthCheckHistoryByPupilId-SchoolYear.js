@@ -1,5 +1,5 @@
 
-import { getHealthCheckHistoryByPupilIdSchoolYear} from '../../../api/parent/parent-requests-action/health-check/get-health-check-history-action';
+import { getHealthCheckHistoryByPupilIdSchoolYear} from '@api/parent/parent-requests-action/health-check/get-health-check-history-action';
 
 import { useState, useEffect } from 'react';
 import { useCallback } from 'react';
