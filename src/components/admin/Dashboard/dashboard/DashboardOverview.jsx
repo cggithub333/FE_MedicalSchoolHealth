@@ -245,11 +245,12 @@ const DashboardOverview = () => {
     return (
         <Box className="dashboard-content" sx={{
             padding: { xs: 1, sm: 3 },
-            background: "linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%)",
+            background: "linear-gradient(135deg, #E6F8F9)",
             width: "100%",
             minHeight: "100%",
             height: "auto",
             boxSizing: "border-box",
+            paddingBottom: "60px"
         }}>
             {/* Top Stats Cards */}
             <Grid container spacing={3} className="stats-row" sx={{ mb: 3 }}>
