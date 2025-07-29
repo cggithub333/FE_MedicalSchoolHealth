@@ -247,7 +247,7 @@ const DashboardOverview = () => {
             padding: { xs: 1, sm: 3 },
             background: "linear-gradient(135deg, #E6F8F9)",
             width: "100%",
-            minHeight: "100%",
+            minHeight: "100vh",
             height: "auto",
             boxSizing: "border-box",
             paddingBottom: "60px"

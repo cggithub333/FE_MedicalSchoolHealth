@@ -117,19 +117,52 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
             setNotes(prev => ({ ...genitalNotes, ...prev }));
         }
     }, [pupilData]);
+    // Add error state for each field
+    const [fieldErrors, setFieldErrors] = useState({});
+
     const validateFields = () => {
+        const errors = {};
+        let valid = true;
         for (const categoryKey of Object.keys(diseaseCategories)) {
             for (const disease of diseaseCategories[categoryKey].diseases) {
-                // Only 'physical' fields use measurements, all others use notes
                 if (categoryKey === "physical") {
-                    if (measurements[disease.field] === undefined || measurements[disease.field] === "") return false;
+                    const value = measurements[disease.field];
+                    if (value === undefined || value === "") {
+                        errors[disease.field] = `${disease.name} is required.`;
+                        valid = false;
+                    } else {
+                        const num = Number(value);
+                        if (isNaN(num) || num <= 0) {
+                            errors[disease.field] = `${disease.name} must be greater than 0.`;
+                            valid = false;
+                        }
+                    }
+                } else if (categoryKey === "vision") {
+                    const value = notes[disease.field];
+                    if (value === undefined || value === "") {
+                        errors[disease.field] = `${disease.name} is required.`;
+                        valid = false;
+                    } else {
+                        const num = Number(value);
+                        if (isNaN(num) || num < 0 || num > 10) {
+                            errors[disease.field] = `${disease.name} must be a number between 0 and 10.`;
+                            valid = false;
+                        }
+                    }
                 } else {
-                    if (notes[disease.field] === undefined || notes[disease.field] === "") return false;
+                    if (notes[disease.field] === undefined || notes[disease.field] === "") {
+                        errors[disease.field] = `${disease.name} is required.`;
+                        valid = false;
+                    }
                 }
             }
         }
-        if (notes['conclusion'] === undefined || notes['conclusion'] === "") return false;
-        return true;
+        if (notes['conclusion'] === undefined || notes['conclusion'] === "") {
+            errors['conclusion'] = "Conclusion is required.";
+            valid = false;
+        }
+        setFieldErrors(errors);
+        return valid;
     };
     const handleSave = async (newStatus) => {
         if (!validateFields()) {
@@ -332,6 +365,8 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
                                                                         label={disease.quantity}
                                                                         value={measurements[disease.field] || ""}
                                                                         onChange={(e) => handleMeasurementChange(disease.field, e.target.value)}
+                                                                        error={!!fieldErrors[disease.field]}
+                                                                        helperText={fieldErrors[disease.field] || ""}
                                                                         sx={{ minWidth: 90, maxWidth: 120, background: '#f5fafd', borderRadius: 1, boxShadow: 0, fontWeight: 500, fontSize: 13 }}
                                                                     />
                                                                 ) : categoryKey === 'vision' ? (
@@ -340,6 +375,8 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
                                                                         label={disease.quantity}
                                                                         value={notes[disease.field || disease.disease_id] || ""}
                                                                         onChange={(e) => handleNoteChange(disease.field || disease.disease_id, e.target.value)}
+                                                                        error={!!fieldErrors[disease.field]}
+                                                                        helperText={fieldErrors[disease.field] || ""}
                                                                         sx={{ minWidth: 90, maxWidth: 120, background: '#f5fafd', borderRadius: 1, boxShadow: 0, fontWeight: 500, fontSize: 13 }}
                                                                     />
                                                                 ) : (
@@ -350,6 +387,8 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
                                                                         rows={1}
                                                                         value={notes[disease.field || disease.disease_id] || ""}
                                                                         onChange={(e) => handleNoteChange(disease.field || disease.disease_id, e.target.value)}
+                                                                        error={!!fieldErrors[disease.field]}
+                                                                        helperText={fieldErrors[disease.field] || ""}
                                                                         placeholder="Add notes..."
                                                                         sx={{ flex: 1, background: '#fafdff', borderRadius: 1, fontWeight: 500, fontSize: 13 }}
                                                                     />
@@ -379,6 +418,8 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
                         label="Conclusion"
                         value={notes['conclusion'] || ''}
                         onChange={e => setNotes(prev => ({ ...prev, conclusion: e.target.value }))}
+                        error={!!fieldErrors['conclusion']}
+                        helperText={fieldErrors['conclusion'] || ""}
                         placeholder="Enter overall conclusion or summary..."
                         sx={{ background: '#fafdff', borderRadius: 2 }}
                     />
