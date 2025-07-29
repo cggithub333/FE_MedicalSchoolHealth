@@ -16,13 +16,14 @@ import {
 import { AccessTime, Person, Verified } from "@mui/icons-material"
 
 import { ImNewspaper } from "react-icons/im";
-
 import { useEffect, useState } from "react";
-
 import useAllBlogs from "@hooks/common/useAllBlogs";
+
+import { useNavigate } from "react-router-dom";
 
 export default function BlogContent() {
 
+  const navigate = useNavigate();
   const { loading, error, sortedBlogsByDescId: blogPosts, refetchBlogs } = useAllBlogs();
   const [newestBlog, setNewestBlog] = useState(blogPosts ? blogPosts[0] : null);
   const sidebarPosts = blogPosts.slice(1)
@@ -36,6 +37,10 @@ export default function BlogContent() {
   useEffect(() => {
     setNewestBlog(blogPosts ? blogPosts[0] : null);
   }, [blogPosts]);
+
+  const handleNavigateDetail = (blogId) => {
+    navigate(`/blogs/view/${blogId}`);
+  }
 
   return (
     <Box sx={{ py: 4 }}>
@@ -78,8 +83,9 @@ export default function BlogContent() {
                   "&:hover": {
                     transform: "translateY(-4px)",
                     boxShadow: 4,
-                  },
+                  }
                 }}
+                onClick = {() => handleNavigateDetail(newestBlog.blogId)}
               >
                 <CardMedia
                   component="img"
@@ -150,6 +156,7 @@ export default function BlogContent() {
                       transition: "transform 0.2s",
                       "&:hover": { transform: "translateY(-2px)" },
                     }}
+                    onClick={() => handleNavigateDetail(post.blogId)}
                   >
                     <CardMedia
                       component="img"
@@ -214,6 +221,7 @@ export default function BlogContent() {
                         transition: "transform 0.2s",
                         "&:hover": { transform: "translateY(-2px)" },
                       }}
+                      onClick={() => handleNavigateDetail(post.blogId)}
                     >
                       <CardMedia
                         component="img"
