@@ -88,11 +88,16 @@ const BlogDetail = () => {
               {/* related blogs */}
               <Box>
                 <Grid container spacing={3}>
-                  {(get2RandomBlogs(getBlogsExceptCurrentBlog(sortedBlogsByDescId, paramBlogId))).map((post) => (
-                    <Grid size={{ xs: 12 }} key={post.blogId}>
-                      <BlogCard blog={post} height="200px" isInAdminPower={isInAdminPower()} isRelatedBlogs={true} handleNavigateDetail={handleNavigateDetail} />
-                    </Grid>
-                  ))}
+                  {(get2RandomBlogs(getBlogsExceptCurrentBlog(sortedBlogsByDescId, paramBlogId))).map((post) => {
+
+                    if (!post) return null; // Skip if post is undefined or null
+
+                    return (
+                      <Grid size={{ xs: 12 }} key={post.blogId}>
+                        <BlogCard blog={post} height="200px" isInAdminPower={isInAdminPower()} isRelatedBlogs={true} handleNavigateDetail={handleNavigateDetail} />
+                      </Grid>
+                    )
+                  })}
                 </Grid>
               </Box>
             </Box>
