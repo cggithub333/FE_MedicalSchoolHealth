@@ -93,7 +93,7 @@ export default function BlogContent() {
                 <CardMedia
                   component="img"
                   height="300"
-                  image={newestBlog.imageUrl}
+                  image={newestBlog.imageUrl || "/assets/images/default-blog-image.jpg"}
                   alt={newestBlog.title}
                   sx={{ objectFit: "cover" }}
                 />
@@ -164,7 +164,7 @@ export default function BlogContent() {
                     <CardMedia
                       component="img"
                       height="180"
-                      image={post.imageUrl}
+                      image={post.imageUrl || "/assets/images/default-blog-image.jpg"}
                       alt={post.title}
                       sx={{ objectFit: "cover" }}
                     />
@@ -229,7 +229,7 @@ export default function BlogContent() {
                       <CardMedia
                         component="img"
                         height="180"
-                        image={post.imageUrl}
+                        image={post.imageUrl || "/assets/images/default-blog-image.jpg"}
                         alt={post.title}
                         sx={{ objectFit: "cover" }}
                       />

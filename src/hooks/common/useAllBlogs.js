@@ -29,13 +29,13 @@ const useAllBlogs = () => {
 
   return {
     loading, error, blogs, 
-    sortedBlogsByDescId: sortDescBlogsById(blogs), refetchBlogs: fetchBlogs
+    sortedBlogsByDescId: sortDescBlogsById(blogs), 
+    refetchBlogs: fetchBlogs
   }
 
 }
 
 const sortDescBlogsById = (blogs) => {
-
   if (!blogs || !Array.isArray(blogs)) {
     return [];
   }
