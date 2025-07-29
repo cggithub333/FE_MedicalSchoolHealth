@@ -15,7 +15,7 @@ import {
   ExpandMore,
 } from "@mui/icons-material"
 import LoginModal from "./login-modal.jsx"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 const getHealthRecordsLink = (role) => {
   switch (role.toLowerCase()) {
@@ -36,6 +36,13 @@ export default function HomepageHeader({ currentUser }) {
   const [servicesAnchor, setServicesAnchor] = useState(null)
   const [blogsAnchor, setBlogsAnchor] = useState(null)
 
+  const navigate = useNavigate();
+
+  const [anchorEl, setAnchorEl] = useState(null)
+  const handleOpen = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
+
   const handleServicesClick = (event) => {
     setServicesAnchor(event.currentTarget)
   }
@@ -47,6 +54,7 @@ export default function HomepageHeader({ currentUser }) {
   const handleClose = () => {
     setServicesAnchor(null)
     setBlogsAnchor(null)
+    setAnchorEl(null)
   }
 
   return (
@@ -73,12 +81,30 @@ export default function HomepageHeader({ currentUser }) {
               <Button sx={{ mx: 1, color: "text.secondary", fontWeight: "medium" }}>Home</Button>
             </Box>
             
-            <Box component={Link} to={'/blogs'} sx={{ textDecoration: "none" }}>
-              <Button sx={{ mx: 1, color: "text.secondary", fontWeight: "medium" }}>Blogs</Button>
-            </Box>
+            {currentUser.role.toLowerCase() !== "manager" && (currentUser.role.toLowerCase() !== "admin") ? 
+              (
+                <Box component={Link} to={'/blogs'} sx={{ textDecoration: "none" }}>
+                  <Button sx={{ mx: 1, color: "text.secondary", fontWeight: "medium" }}>Blogs</Button>
+                </Box>
+              )
+              :
+              (
+                <Box>
+                  <Button sx={{ color: "text.secondary", fontWeight: "medium" }} onClick={handleOpen}>Blogs</Button>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleClose}
+                  >
+                    <MenuItem onClick={() => navigate('/blogs')}>Watch Blogs</MenuItem>
+                    <MenuItem onClick={() => navigate('/blogs/manage')}>Manage Blogs</MenuItem>
+                  </Menu>
+                </Box>
+              )
+            }
 
             {/* <Button sx={{ mx: 1, color: "text.secondary", fontWeight: "medium" }}>News & Updates</Button> */}
-            { currentUser.role !== "guest" && (
+            { currentUser.role.toLowerCase() !== "guest" && (
               <Box component={Link} to={getHealthRecordsLink(currentUser.role)} sx={{ textDecoration: "none" }}>
                 <Button sx={{ mx: 1, color: "text.secondary", fontWeight: "medium" }}>Health Records</Button>
               </Box>
