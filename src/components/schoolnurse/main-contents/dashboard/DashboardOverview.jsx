@@ -102,7 +102,7 @@ const DashboardOverview = () => {
     return (
         <Box className="dashboard-content" sx={{
             padding: { xs: 1, sm: 3 },
-            background: "linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%)",
+            background: "linear-gradient(135deg, #E6F8F9)",
             width: "100%",
             minHeight: "100vh",
             height: "auto",

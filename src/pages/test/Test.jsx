@@ -1,14 +1,17 @@
 import AccountMenu from "./account-menu/account-menu";
 import DemoVariations from "./account-menu/account-menu-variations";
 
-import { Grid, Typography } from "@mui/material";
+import { Dialog, Grid, Typography, DialogTitle, DialogActions, DialogContent } from "@mui/material";
 import useMyInformation from "@hooks/common/useMyInformation";
 
 import { importExcel, excelDateToJSDate } from "@utils/excel-utils";
 import BlogEditor from "@components/magic/TextEditor/BlogsEditor";
 
+import React, { useState } from "react";
+
 const Test = () => {
   const { personalInforState, error } = useMyInformation();
+  const [openBlogEditor, setOpenBlogEditor] = useState(false);
 
   // Enhanced debugging:
   console.log("personalInforState:", personalInforState);
@@ -83,10 +86,18 @@ const Test = () => {
         </span>
       </Grid>
       <Grid container p={"60px 0px"} justifyContent={'center'} bgcolor={'#E6F8F9'}>
-        <Grid item size={{ xs: 11 }}>
-          <BlogEditor />
-        </Grid>
+        <button onClick={() => setOpenBlogEditor(true)}>Open Blog Editor</button>
       </Grid>
+
+      <Dialog open={openBlogEditor} onClose={() => setOpenBlogEditor(false)} maxWidth={"md"} fullWidth>
+        {/* <DialogTitle>Blog Editor</DialogTitle> */}
+        <DialogContent>
+          <BlogEditor />
+        </DialogContent>
+        <DialogActions>
+          <button onClick={() => setOpenBlogEditor(false)}>Close</button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

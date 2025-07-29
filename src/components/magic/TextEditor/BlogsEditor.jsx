@@ -22,7 +22,12 @@ import {
   DialogActions,
   Alert,
   Snackbar,
+  Avatar
 } from "@mui/material"
+
+import { ImNewspaper } from "react-icons/im";
+import { PiBroomFill } from "react-icons/pi";
+
 import {
   FormatBold,
   FormatItalic,
@@ -31,6 +36,9 @@ import {
   Save as SaveIcon,
   Link as LinkIcon,
 } from "@mui/icons-material"
+import { showErrorToast } from "@utils/toast-utils";
+
+import './BlogsEditor.css' 
 
 const BlogEditor = () => {
   const [title, setTitle] = useState("")
@@ -40,7 +48,6 @@ const BlogEditor = () => {
   const [isUploading, setIsUploading] = useState(false)
   const contentRef = useRef(null)
   const [linkDialogOpen, setLinkDialogOpen] = useState(false)
-  const [linkUrl, setLinkUrl] = useState("")
   const [selectedText, setSelectedText] = useState("")
   const [showWarning, setShowWarning] = useState(false)
   const fileInputRef = useRef(null)
@@ -55,6 +62,11 @@ const BlogEditor = () => {
     document.execCommand(command, false, value)
     contentRef.current?.focus()
   }, [])
+
+  // Handle removing formatting
+  const handleRemoveFormat = () => {
+    executeCommand("removeFormat")
+  }
 
   // Handle bold formatting
   const handleBold = () => {
@@ -104,36 +116,7 @@ const BlogEditor = () => {
     contentRef.current?.focus()
   }
 
-  // Handle create link
-  const handleCreateLink = () => {
-    const selection = window.getSelection()
-    const selectedTextContent = selection.toString().trim()
-
-    if (!selectedTextContent) {
-      setShowWarning(true)
-      return
-    }
-
-    setSelectedText(selectedTextContent)
-    setLinkDialogOpen(true)
-  }
-
-  // Handle link creation confirmation
-  const handleLinkConfirm = () => {
-    if (linkUrl.trim()) {
-      executeCommand("createLink", linkUrl.trim())
-      setLinkDialogOpen(false)
-      setLinkUrl("")
-      setSelectedText("")
-    }
-  }
-
-  // Handle link dialog close
-  const handleLinkCancel = () => {
-    setLinkDialogOpen(false)
-    setLinkUrl("")
-    setSelectedText("")
-  }
+  // (Link logic removed)
 
   // Handle warning close
   const handleWarningClose = () => {
@@ -181,23 +164,48 @@ const BlogEditor = () => {
     return contentRef.current?.innerHTML || ""
   }
 
+  const isValidBlogData = () => {
+
+    // debug:
+    console.log("Validating blog data...")
+    console.log("Title:", title)
+    console.log("Content:", getContent())
+    console.log("Image URL:", imageUrl)
+
+    const blogTitle = title.trim();
+    const blogContent = getContent().trim();
+
+    const blogTitleLength = blogTitle ? blogTitle.trim().split(/\s+/).length : 0;
+    const blogContentLength = blogContent ? blogContent.trim().split(/\s+/).length : 0;
+
+    if (blogTitleLength < 3) {
+      showErrorToast("Blog title must be at least 3 words long.");
+      return false;
+    }
+
+    if (blogContentLength < 50) {
+      showErrorToast("Blog content must be at least 50 words long.");
+      return false;
+    }
+
+    return true;
+  }
+
   // Handle save/submit
   const handleSave = () => {
     const blogData = {
-      title: title,
-      content: getContent(),
-      imageUrl: imageUrl,
+      title: title.trim(),
+      content: getContent().trim(),
+      imageUrl: imageUrl.trim(),
     }
 
-    console.log("Blog data to send to server:", blogData)
+    if (!isValidBlogData()) {
+      return;
+    }
 
-    // Here you would send the data to your server
-    // Example:
-    // fetch('/api/blogs', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(blogData)
-    // });
+    // else:
+    console.log("Blog data sent:", blogData)
+
   }
 
   // Handle paste to clean up formatting if needed
@@ -209,9 +217,14 @@ const BlogEditor = () => {
 
   return (
     <Box sx={{ maxWidth: 1000, mx: "auto", p: 3 }}>
-      <Typography variant="h4" gutterBottom>
-        Create New Blog Post
-      </Typography>
+      <Box sx={{ display: "flex", alignItems: "center", mb: 3, gap: 2 }}>
+        <Avatar sx={{ bgcolor: "#5ca8ea" }}>
+          <ImNewspaper />
+        </Avatar>
+        <Typography variant="h5" sx={{ textTransform: "uppercase" }}>
+          New Blog Post
+        </Typography>
+      </Box>
 
       {/* Title Input */}
       <TextField
@@ -254,6 +267,11 @@ const BlogEditor = () => {
       <Paper elevation={1} sx={{ mb: 2 }}>
         <Toolbar sx={{ gap: 1, flexWrap: "wrap" }}>
           {/* Formatting Buttons */}
+
+          <IconButton onClick={handleRemoveFormat} color="primary" title="Remove Formatting">
+            <PiBroomFill />
+          </IconButton>
+
           <IconButton onClick={handleBold} color="primary" title="Bold">
             <FormatBold />
           </IconButton>
@@ -266,9 +284,7 @@ const BlogEditor = () => {
             <FormatUnderlined />
           </IconButton>
 
-          <IconButton onClick={handleCreateLink} color="primary" title="Create Link">
-            <LinkIcon />
-          </IconButton>
+          {/* Link icon removed */}
 
           <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
 
@@ -314,15 +330,16 @@ const BlogEditor = () => {
           ref={contentRef}
           contentEditable
           suppressContentEditableWarning={true}
+          className="editor-content"
           onPaste={handlePaste}
           style={{
             minHeight: "350px",
             outline: "none",
             fontSize: "16px",
             lineHeight: "1.6",
-            fontFamily: "Arial, sans-serif",
+            fontFamily: fontFamily, // important to match style
           }}
-          placeholder="Start writing your blog content..."
+          data-placeholder="Start writing your blog content here..."
         />
       </Paper>
 
@@ -334,7 +351,7 @@ const BlogEditor = () => {
       </Box>
 
       {/* Preview of data structure */}
-      <Box sx={{ mt: 4 }}>
+      {/* <Box sx={{ mt: 4 }}>
         <Typography variant="h6" gutterBottom>
           Preview of data to be sent:
         </Typography>
@@ -351,35 +368,8 @@ const BlogEditor = () => {
             )}
           </pre>
         </Paper>
-      </Box>
-      {/* Link Creation Dialog */}
-      <Dialog open={linkDialogOpen} onClose={handleLinkCancel} maxWidth="sm" fullWidth>
-        <DialogTitle>Create Link</DialogTitle>
-        <DialogContent>
-          <Typography variant="body2" sx={{ mb: 2, color: "text.secondary" }}>
-            Selected text: "{selectedText}"
-          </Typography>
-          <TextField
-            autoFocus
-            fullWidth
-            label="Enter URL"
-            placeholder="https://example.com"
-            value={linkUrl}
-            onChange={(e) => setLinkUrl(e.target.value)}
-            onKeyPress={(e) => {
-              if (e.key === "Enter") {
-                handleLinkConfirm()
-              }
-            }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleLinkCancel}>Cancel</Button>
-          <Button onClick={handleLinkConfirm} variant="contained" disabled={!linkUrl.trim()}>
-            Create Link
-          </Button>
-        </DialogActions>
-      </Dialog>
+      </Box> */}
+      {/* Link Creation Dialog removed */}
 
       {/* Warning Snackbar */}
       <Snackbar

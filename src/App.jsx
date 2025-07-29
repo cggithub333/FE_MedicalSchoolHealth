@@ -10,6 +10,7 @@ import SchoolNurseDashboardRoutes from "./components/schoolnurse/Dashboard/Schoo
 import ParentDashboardRoutes from "./components/parent/Dashboard/ParentDashboardRoutes";
 import Homepage from './pages/homepage/homepage.jsx';
 import Blogs from '@pages/blogs/Blogs';
+import BlogDetail from '@pages/blogs/BlogDetail';
 import Contact from '@pages/contact/Contact';
 
 
@@ -83,6 +84,7 @@ function App() {
                     <Route path="/" element={<Navigate to={"/homepage"} />} /> {/* entry point of the application */}
                     <Route path="/homepage" element={<Homepage />} />
                     <Route path="/blogs" element={<Blogs />} />
+                    <Route path="/blogs/view/:blogId" element={<BlogDetail />} />
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/test" element={<Test />} />
                     <Route path="/dashboard" element={<TargetRedirect target="dashboard" />} />
