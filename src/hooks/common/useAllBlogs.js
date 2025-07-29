@@ -28,7 +28,8 @@ const useAllBlogs = () => {
   }, [fetchBlogs]);
 
   return {
-    loading, error, blogs, sortedBlogsByDescId: sortDescBlogsById(blogs), refetchBlogs: fetchBlogs
+    loading, error, blogs, 
+    sortedBlogsByDescId: sortDescBlogsById(blogs), refetchBlogs: fetchBlogs
   }
 
 }
@@ -38,8 +39,8 @@ const sortDescBlogsById = (blogs) => {
   if (!blogs || !Array.isArray(blogs)) {
     return [];
   }
-
-  return blogs.sort((a, b) => b.blogId - a.blogId);
+  const result = blogs.sort((a, b) => b.blogId - a.blogId);
+  return result;
 }
 
 export default useAllBlogs;

@@ -39,6 +39,9 @@ export default function BlogContent() {
   }, [blogPosts]);
 
   const handleNavigateDetail = (blogId) => {
+
+    if (!blogId) return;
+
     navigate(`/blogs/view/${blogId}`);
   }
 
