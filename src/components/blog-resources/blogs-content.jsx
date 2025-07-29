@@ -27,6 +27,9 @@ export default function BlogContent() {
   const [newestBlog, setNewestBlog] = useState(blogPosts ? blogPosts[0] : null);
   const sidebarPosts = blogPosts.slice(1)
 
+  const [otherArticlesStartIdx, setOtherArticlesStartIdx] = useState(2);
+  const [otherArticlesEndIdx, setOtherArticlesEndIdx] = useState(6);
+
   // debug:
   console.log("descBlogsById", JSON.stringify(blogPosts, null, 2));
 
@@ -138,7 +141,7 @@ export default function BlogContent() {
               Other Articles
             </Typography>
             <Grid container spacing={3}>
-              {sidebarPosts.slice(2, 6).map((post) => (
+              {sidebarPosts.slice(otherArticlesStartIdx, otherArticlesEndIdx).map((post) => (
                 <Grid item size={{xs: 12, sm: 6}} key={post.blogId}>
                   <Card
                     sx={{
@@ -178,6 +181,19 @@ export default function BlogContent() {
               ))}
             </Grid>
           </Box>
+          <Grid container justifyContent={'center'} margin={'30px 20px 0px 0px'}>
+            <Box>
+              {blogPosts.length > otherArticlesEndIdx ? 
+                (<Button variant="outlined" onClick={(e) => setOtherArticlesEndIdx(prev => prev + 2)} >
+                  {(blogPosts) && <>Show more blogs</>}
+                </Button>) 
+                : 
+                (<Button variant="outlined" onClick={(e) => setOtherArticlesEndIdx(6)} > {/* reset default values */}
+                  {(blogPosts) && <>Show less</>}
+                </Button>)
+              }
+            </Box>
+          </Grid>
         </Grid>
 
         {/* Sidebar - Right Section */}
@@ -186,7 +202,7 @@ export default function BlogContent() {
             {/* Newsletter Signup */}
             <Box>
               <Typography variant="h5" component="h2" gutterBottom sx={{ color: "#56a8ed", fontWeight: "bold", mb: 3 }}>
-                Recent Articles
+                Hot Articles
               </Typography>
               <Grid container spacing={3}>
                 {sidebarPosts.slice(0, 2).map((post) => (
@@ -241,11 +257,6 @@ export default function BlogContent() {
             </Card>
           </Box>
         </Grid>
-      </Grid>
-      <Grid container justifyContent={'center'} margin={'30px 20px 0px 0px'}>
-        <Box>
-          <Button variant="outlined" >See more blogs</Button>
-        </Box>
       </Grid>
     </Box>
   )
