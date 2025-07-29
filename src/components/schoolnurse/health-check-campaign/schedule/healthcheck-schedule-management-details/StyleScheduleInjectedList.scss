@@ -328,27 +328,27 @@
 }
 
 // Custom scrollbar for table
-.students-table-container {
-  .MuiTableContainer-root {
-    &::-webkit-scrollbar {
-      height: 8px;
-    }
+// .students-table-container {
+// .MuiTableContainer-root {
+//   &::-webkit-scrollbar {
+//     height: 8px;
+//   }
 
-    &::-webkit-scrollbar-track {
-      background: rgba(0, 0, 0, 0.05);
-      border-radius: 4px;
-    }
+//   &::-webkit-scrollbar-track {
+//     background: rgba(0, 0, 0, 0.05);
+//     border-radius: 4px;
+//   }
 
-    &::-webkit-scrollbar-thumb {
-      background: rgba(25, 118, 210, 0.3);
-      border-radius: 4px;
+//   &::-webkit-scrollbar-thumb {
+//     background: rgba(25, 118, 210, 0.3);
+//     border-radius: 4px;
 
-      &:hover {
-        background: rgba(25, 118, 210, 0.5);
-      }
-    }
-  }
-}
+//     &:hover {
+//       background: rgba(25, 118, 210, 0.5);
+//     }
+//   }
+// }
+// }
 
 // Animation for progress bar
 @keyframes progressFill {

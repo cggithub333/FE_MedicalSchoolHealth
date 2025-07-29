@@ -230,7 +230,7 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
     }
     if (!sensitive_disease.length) {
         return (
-            <div className="schedule-details-root empty-container">
+            <div className=" empty-container">
                 <Warning sx={{ fontSize: 60, color: "#ff9800" }} />
                 <Typography variant="h5">No Health Check Data</Typography>
                 <Typography variant="body1" color="text.secondary">

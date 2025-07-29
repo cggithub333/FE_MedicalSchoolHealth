@@ -326,20 +326,20 @@ html {
     scroll-behavior: smooth;
 }
 
-// Custom scrollbar
-::-webkit-scrollbar {
-    width: 6px;
-}
+// // Custom scrollbar
+// ::-webkit-scrollbar {
+//     width: 6px;
+// }
 
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
+// ::-webkit-scrollbar-track {
+//     background: #f1f1f1;
+// }
 
-::-webkit-scrollbar-thumb {
-    background: linear-gradient(45deg, #2196F3, #9C27B0);
-    border-radius: 3px;
-}
+// ::-webkit-scrollbar-thumb {
+//     background: linear-gradient(45deg, #2196F3, #9C27B0);
+//     border-radius: 3px;
+// }
 
-::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(45deg, #1976D2, #7B1FA2);
-}
+// ::-webkit-scrollbar-thumb:hover {
+//     background: linear-gradient(45deg, #1976D2, #7B1FA2);
+// }

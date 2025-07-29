@@ -132,7 +132,7 @@ const ScheduleResult = ({ consentFormId, pupilData, onBack }) => {
 
     if (isLoading) {
         return (
-            <div className="schedule-details-root loading-container">
+            <div className="loading-container">
                 <LinearProgress />
                 <Typography variant="h6" sx={{ mt: 2, color: "#666" }}>
                     Loading student health check details...

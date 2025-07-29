@@ -132,7 +132,7 @@ const ScheduleResult = ({ consentFormId, pupilData, onBack }) => {
 
     if (isLoading) {
         return (
-            <div className="schedule-details-root loading-container">
+            <div className=" loading-container">
                 <LinearProgress />
                 <Typography variant="h6" sx={{ mt: 2, color: "#666" }}>
                     Loading student health check details...
@@ -323,7 +323,7 @@ const ScheduleResult = ({ consentFormId, pupilData, onBack }) => {
 
     // Empty state if no health check data
     return (
-        <div className="schedule-details-root empty-container">
+        <div className="empty-container">
             <Warning sx={{ fontSize: 60, color: "#ff9800", mb: 2 }} />
             <Typography variant="h5">No Health Check Data</Typography>
             <Typography variant="body1" color="text.secondary">

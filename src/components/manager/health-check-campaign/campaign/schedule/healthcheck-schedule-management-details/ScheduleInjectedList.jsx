@@ -251,7 +251,7 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
             </Fade>
 
             <Fade in={true} timeout={700}>
-                <Card className="students-table-container" elevation={0}>
+                <Card elevation={0}>
                     {/* Status Tabs UI */}
                     <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
                         <Tabs
@@ -411,7 +411,7 @@ const ScheduleInjectedList = ({ shift, onBack }) => {
                     {snackbar.message}
                 </Alert>
             </Snackbar>
-        </div>
+        </div >
     )
 }
 
