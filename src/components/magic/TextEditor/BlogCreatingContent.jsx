@@ -265,7 +265,7 @@ const BlogCreatingContent = ({ blog }) => {
           <ImNewspaper />
         </Avatar>
         <Typography variant="h5" sx={{ textTransform: "uppercase" }}>
-          Edit Blog Post
+          New Blog Post
         </Typography>
       </Box>
 
