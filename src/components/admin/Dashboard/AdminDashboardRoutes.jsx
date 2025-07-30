@@ -1,7 +1,7 @@
 
 import { Routes, Route, Navigate } from "react-router-dom";
 import ParentDashboardLayout from './AdminDashboardLayout';
-import AdminComponentPagePackages from '../../../pages/admin/AdminComponentPagePackages';
+import AdminComponentPagePackages from '@pages/admin/AdminComponentPagePackages';
 
 const AdminDashboardRoutes = () => {
 
