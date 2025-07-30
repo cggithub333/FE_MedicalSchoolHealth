@@ -31,6 +31,9 @@ import {
   Menu,
   ListItemIcon,
   ListItemText,
+  Dialog,
+  DialogTitle,
+  DialogActions,
 } from "@mui/material"
 import {
   Add as AddIcon,
@@ -48,13 +51,16 @@ import { downloadExcel } from "@utils/excel-utils"
 import useQueryAllUsers from "@hooks/admin/useQueryAllUsers"
 import { showErrorToast, showSuccessToast } from "@utils/toast-utils"
 
+import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import useChangeStatusUserById from "@hooks/admin/useChangeStatusUserById"
+import useChangeStaffRole from "@hooks/admin/useChangeStaffRole"
 
 const ACCOUNT_PER_PAGE = 5;
 
 const AccountManagementPageContent = () => {
 
   const { changeStatus: changeUserStatus } = useChangeStatusUserById();
+  const { changeRole: changeStaffRole } = useChangeStaffRole();
   const { error: usersError, loading: userLoading, users: userAccounts, refetchAllUsers } = useQueryAllUsers();
 
   // refetch users every time the userAccounts change:
@@ -65,7 +71,7 @@ const AccountManagementPageContent = () => {
   }, [userAccounts])
 
   // debug:
-  console.log("userAccounts:", JSON.stringify(userAccounts, null, 2));
+  // console.log("userAccounts:", JSON.stringify(userAccounts, null, 2));
 
   const [users, setUsers] = useState(userAccounts || [])
   const [searchTerm, setSearchTerm] = useState("")
@@ -74,6 +80,8 @@ const AccountManagementPageContent = () => {
   const [sortBy, setSortBy] = useState("A-Z")
   const [page, setPage] = useState(1)
   const [actionsAnchor, setActionsAnchor] = useState(null)
+
+  const [selectedUser, setSelectedUser] = useState(null)
 
   const getRoleColor = (role) => {
     const colors = {
@@ -156,6 +164,46 @@ const AccountManagementPageContent = () => {
     console.log("Downloaded data:", data);
     downloadExcel(data, "user_accounts");
     setActionsAnchor(null); // Close the menu after action
+  }
+
+  const handleEditUserClick = (user) => {
+
+    if (!user) {
+      showErrorToast("No user selected for editing");
+      return;
+    }
+
+    if (user.role === "ADMIN") {
+      showErrorToast("Cannot edit admin user's permissions");
+      return;
+    }
+
+    if (user.role === "PARENT") {
+      showErrorToast("Cannot edit parent user's permissions");
+      return;
+    }
+    // Open the dialog to edit user permissions
+    setSelectedUser(user);
+  }
+
+  const handleChangeRole = async (user) => {
+    if (!user) {
+      showErrorToast("No user selected for role change");
+      return;
+    }
+    // user is definitely not admin or parent here!
+
+    try {
+      const newRole = selectedUser.role === "SCHOOL_NURSE" ? "MANAGER" : "SCHOOL_NURSE"; // Toggle between roles
+      const result = await changeStaffRole(user.userId, newRole);
+      if (result) {
+        showSuccessToast(`User ${user.firstName} ${user.lastName}'s role has been changed to ${newRole}`);
+        refetchAllUsers(); // make the userAccounts change => trigger useEffect to update users state
+      }
+    } catch (error) {
+      showErrorToast(`Failed to change user role! Try again later.`);
+    }
+    setSelectedUser(null); // Close the dialog after action
   }
 
   const filteredUsers = (users || []).filter(filterCallback)
@@ -408,8 +456,8 @@ const AccountManagementPageContent = () => {
 
                     <TableCell align="right">
                       <Box sx={{ display: "flex", gap: 0.5, justifyContent: "flex-end" }}>
-                        <Tooltip title="Edit User">
-                          <IconButton size="small" sx={{ color: "#1976d2" }}>
+                        <Tooltip title={editUserTitleForToolTip(user)}>
+                          <IconButton color={editUserIconColor(user)} size="small" onClick={() => handleEditUserClick(user)}>
                             <EditIcon fontSize="small" />
                           </IconButton>
                         </Tooltip>
@@ -449,8 +497,101 @@ const AccountManagementPageContent = () => {
           }}
         />
       </Box>
+
+      {/* Edit User Dialog */}
+      {selectedUser && (
+        <Dialog
+          open={Boolean(selectedUser)}
+          onClose={() => setSelectedUser(null)}
+          maxWidth="md"
+          fullWidth
+        >
+          <DialogTitle>Account Details</DialogTitle>
+          <Grid container spacing={2} sx={{ padding: 3 }}>
+            {/* Fullname */}
+            <Grid item size={{xs:12}}>
+              <TextField
+                label="Full Name"
+                value={`${selectedUser.lastName} ${selectedUser.firstName}`}
+                fullWidth
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </Grid>
+            {/* Email, phone number */}
+            <Grid item size={{xs:12, md:6}}>
+              <TextField
+                label="Email"
+                value={selectedUser.email}
+                fullWidth
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </Grid>
+            <Grid item size={{xs:12, md:6}}>
+              <TextField
+                label="Phone Number"
+                value={selectedUser.phoneNumber}
+                fullWidth
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </Grid>
+            {/* Current role */}
+            <Grid size={{ xs: 12  }}>
+              <Grid container width={'100%'} spacing={2} alignItems={'center'}>
+                <Grid size={{xs: 6}}>
+                  <Box>
+                    <TextField
+                      label="Current Role"
+                      value={getRoleLabel(selectedUser.role)}
+                      fullWidth
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                    />
+                  </Box>
+                </Grid>
+                <Grid size={{xs: 4, height: '100%'}}>
+                  <Button variant="outlined" onClick={() => handleChangeRole(selectedUser)}>
+                    <ChangeCircleIcon fontSize="large"/>
+                  </Button>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
+          <DialogActions>
+            <Button onClick={() => setSelectedUser(null)} color="error" variant="contained">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
+      
+
     </Container>
   )
+}
+
+function editUserIconColor (user) {
+  if (!user || user.role === "ADMIN" || user.role === "PARENT") {
+    return "default"; // grey color for admin or undefined user
+  }
+  return "primary"; // primary color for other users
+}
+
+function editUserTitleForToolTip (user) {
+  if (!user) return "Undefined User";
+  if (user.role === "ADMIN") {
+    return "Not Allowed";
+  }
+  if (user.role === "PARENT") {
+    return "Not Allowed";
+  }
+  return "Grant Permission";
 }
 
 export default AccountManagementPageContent;
