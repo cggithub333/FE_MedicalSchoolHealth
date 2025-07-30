@@ -46,11 +46,15 @@ import React, { useEffect } from "react"
 
 import { downloadExcel } from "@utils/excel-utils"
 import useQueryAllUsers from "@hooks/admin/useQueryAllUsers"
+import { showErrorToast, showSuccessToast } from "@utils/toast-utils"
+
+import useChangeStatusUserById from "@hooks/admin/useChangeStatusUserById"
 
 const ACCOUNT_PER_PAGE = 5;
 
 const AccountManagementPageContent = () => {
 
+  const { changeStatus: changeUserStatus } = useChangeStatusUserById();
   const { error: usersError, loading: userLoading, users: userAccounts, refetchAllUsers } = useQueryAllUsers();
 
   // refetch users every time the userAccounts change:
@@ -91,8 +95,25 @@ const AccountManagementPageContent = () => {
     return labels[role] || role
   }
 
-  const handleStatusToggle = (userId) => {
-    setUsers((users || []).map((user) => (user.userId === userId ? { ...user, active: !user.active } : user)))
+  const handleStatusToggle = async (user) => {
+    
+    if (!user) return;
+    if (user.role === "ADMIN") {
+      showErrorToast("Cannot inactivate admin user");
+      return;
+    }
+
+    const userName = `${user.firstName} ${user.lastName}`.trim();
+
+    try {
+      const result = await changeUserStatus(user.userId, !user.active);
+      if (result) {
+        refetchAllUsers(); // make the userAccounts change => trigger useEffect to update users state
+        showSuccessToast(`User ${userName} has been ${user.active ? "deactivated" : "activated"} successfully`);
+      }
+    } catch (err) {
+      showErrorToast(`Failed to ${user.active ? "deactivate" : "activate"} user ${userName}`);
+    }
   }
 
   const getInitials = (firstName, lastName) => {
@@ -376,7 +397,9 @@ const AccountManagementPageContent = () => {
 
                     <TableCell>
                       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                        <Switch checked={user.active} onChange={() => handleStatusToggle(user.userId)} size="small" />
+                        <Tooltip title={user.role === "ADMIN" ? "Can not inactive admin" : (user.active ? "Inactive" : "Active")}>
+                          <Switch color={user.role === "ADMIN" ? "default" : "primary"} checked={user.active} onChange={() => handleStatusToggle(user)} size="small" />
+                        </Tooltip>
                         <Typography variant="body2" color="text.secondary">
                           {user.active ? "Active" : "Inactive"}
                         </Typography>
@@ -395,11 +418,11 @@ const AccountManagementPageContent = () => {
                             <LockIcon fontSize="small" />
                           </IconButton>
                         </Tooltip>
-                        <Tooltip title={user.role === "ADMIN" ? "Cannot delete admin" : "Delete User"}>
+                        {/* <Tooltip title={user.role === "ADMIN" ? "Cannot delete admin" : "Delete User"}>
                           <IconButton size="small" sx={{ color: user.role === "ADMIN" ? "#ddd" : "#d32f2f" }}>
                             <DeleteIcon fontSize="small" />
                           </IconButton>
-                        </Tooltip>
+                        </Tooltip> */}
                       </Box>
                     </TableCell>
                   </TableRow>
