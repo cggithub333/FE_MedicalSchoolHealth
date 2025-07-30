@@ -1,3 +1,3 @@
-import Request from "../../../request";
+import request from "@api/request";
 
-export const getPupilsByGradeAndStatus = async (campaignId) => Request.get(`consent-forms/pupils/approved-by-grade/${campaignId}`);
+export const getPupilsByGradeAndStatus = async (campaignId) => request.get(`consent-forms/pupils/approved-by-grade/${campaignId}`);

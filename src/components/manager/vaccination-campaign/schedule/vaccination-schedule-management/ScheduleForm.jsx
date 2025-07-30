@@ -27,8 +27,8 @@ import {
 } from "@mui/icons-material"
 import "./StyleScheduleForm.scss"
 import ScheduleInjectedList from "../vaccination-schedule-management-details/ScheduleInjectedList"
-import { useNewestVaccinationCampaign } from "../../../../../hooks/schoolnurse/vaccination/vaccination/useNewestCampaignByStatus"
-import { useGetAllPupilsApprovedByGrade } from "../../../../../hooks/schoolnurse/vaccination/vaccination/useGetAllPupilsByGrade"
+import { useNewestVaccinationCampaign } from "@hooks/schoolnurse/vaccination/vaccination/useNewestCampaignByStatus"
+import { useGetAllPupilsApprovedByGrade } from "@hooks/schoolnurse/vaccination/vaccination/useGetAllPupilsByGrade"
 
 const GRADES = [1, 2, 3, 4, 5]
 
