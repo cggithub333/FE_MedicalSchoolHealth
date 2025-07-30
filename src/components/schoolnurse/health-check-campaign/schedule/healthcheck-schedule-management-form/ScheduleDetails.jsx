@@ -243,7 +243,7 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
         )
     }
     return (
-        <div className="schedule-details-root enhanced-ui">
+        <div className=" enhanced-ui">
             {/* Quick Navigation Bar */}
             <Fade in={true} timeout={500}>
                 <Card className="details-header modern-card" elevation={2}>

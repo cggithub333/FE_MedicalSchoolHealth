@@ -9,17 +9,19 @@ $white: #ffffff;
 $shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 $shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 $shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 $border-radius-lg: 0.75rem; // 12px
 $border-radius-xl: 1rem; // 16px
+$border-radius-2xl: 1.5rem; // 24px
 
 .fade-in {
-    animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: fadeIn 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(24px);
+        transform: translateY(32px);
     }
 
     to {
@@ -29,75 +31,185 @@ $border-radius-xl: 1rem; // 16px
 }
 
 .card {
-    transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     &:hover {
-        box-shadow: 0 12px 32px 0 rgba(99, 102, 241, 0.12), 0 4px 12px 0 rgba(0, 0, 0, 0.08);
-        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 20px 40px 0 rgba(99, 102, 241, 0.15), 0 8px 16px 0 rgba(0, 0, 0, 0.1);
+        transform: translateY(-6px) scale(1.02);
     }
 }
 
 .dashboardContainer {
-    height: 100%;
+    min-height: 100vh;
     width: 100%;
-    background: linear-gradient(135deg, #f9fafb 0%, #e0e7ff 100%);
-    display: grid;
-    gap: 24px; // gap-6
-
+    background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 50%, #f1f5f9 100%);
+    padding: 32px;
 
     @media (min-width: 768px) {
-        gap: 32px; // md:gap-8
+        padding: 40px;
     }
 
     @media (min-width: 1024px) {
-        padding: 48px; // lg:p-12
+        padding: 56px;
     }
 }
 
 .dashboardTitle {
-    font-size: 36px; // text-4xl
-    font-weight: 800; // font-extrabold
+    font-size: 42px !important;
+    font-weight: 800 !important;
     text-align: center;
     color: $text-gray-900;
-    margin-bottom: 32px; // mb-8
-    letter-spacing: -0.025em; // tracking-tight
+    margin-bottom: 40px !important;
+    letter-spacing: -0.025em;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 
     @media (min-width: 768px) {
-        margin-bottom: 48px; // md:mb-12
+        margin-bottom: 56px !important;
+        font-size: 48px !important;
     }
 }
 
-// Removed .tabsContainer and .tabTrigger as Tabs are no longer used for layout
-
 .card {
-    box-shadow: $shadow-lg; // shadow-lg
-    border: none; // border-none
-    border-radius: $border-radius-xl; // rounded-xl
+    box-shadow: $shadow-xl;
+    border: none;
+    border-radius: $border-radius-2xl !important;
     background-color: $white;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);
 }
 
 .cardHeader {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+    border-bottom: 1px solid rgba(99, 102, 241, 0.1);
 
     .MuiCardHeader-title {
-        font-size: 24px; // text-2xl
-        font-weight: 700; // font-bold
+        font-size: 28px !important;
+        font-weight: 700 !important;
         color: $text-gray-800;
+    }
+
+    .MuiCardHeader-subheader {
+        font-size: 14px !important;
+        color: $text-gray-600;
+        margin-top: 4px !important;
     }
 }
 
 .cardContent {
-    padding: 24px; // p-6
+    padding: 0px !important;
 }
 
 .pieChartContent {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
 }
 
 .chartAxisText {
-    font-size: 14px; // text-sm
+    font-size: 14px;
     color: $text-gray-600;
 }
 
-// Removed table styles as tables are not directly used in this grid layout
+/* Enhanced MUI X Charts styling */
+.MuiChartsAxis-root {
+    .MuiChartsAxis-tickLabel {
+        font-size: 12px !important;
+        fill: $text-gray-600 !important;
+    }
+
+    .MuiChartsAxis-line {
+        stroke: rgba(99, 102, 241, 0.2) !important;
+    }
+}
+
+.MuiChartsLegend-root {
+    .MuiChartsLegend-mark {
+        border-radius: 4px !important;
+    }
+
+    .MuiChartsLegend-label {
+        font-size: 14px !important;
+        font-weight: 500 !important;
+        // color: $text-gray-700 !important;
+    }
+}
+
+.MuiChartsTooltip-root {
+    background-color: $white !important;
+    border: none !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .dashboardContainer {
+        padding: 20px;
+    }
+
+    .dashboardTitle {
+        font-size: 32px !important;
+        margin-bottom: 32px !important;
+    }
+
+    .cardContent {
+        padding: 20px !important;
+    }
+
+    .cardHeader {
+        .MuiCardHeader-title {
+            font-size: 22px !important;
+        }
+    }
+}
+
+/* Loading and error states */
+.loading-container,
+.error-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    background-color: $white;
+    border-radius: $border-radius-2xl;
+    box-shadow: $shadow-xl;
+}
+
+/* Custom animations for cards */
+.card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.card:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.card:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.card:nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+.card:nth-child(6) {
+    animation-delay: 0.6s;
+}
+
+/* Enhanced hover effects for summary cards */
+.fade-in:hover {
+    .MuiSvgIcon-root {
+        transform: scale(1.1);
+        transition: transform 0.2s ease-in-out;
+    }
+}

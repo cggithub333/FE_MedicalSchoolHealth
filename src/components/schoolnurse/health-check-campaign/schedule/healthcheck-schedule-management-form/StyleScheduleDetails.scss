@@ -434,25 +434,25 @@
 }
 
 // Custom scrollbar
-.schedule-details-root {
-    &::-webkit-scrollbar {
-        width: 8px;
-    }
+// .schedule-details-root {
+//     &::-webkit-scrollbar {
+//         width: 8px;
+//     }
 
-    &::-webkit-scrollbar-track {
-        background: rgba(0, 0, 0, 0.05);
-        border-radius: 4px;
-    }
+//     &::-webkit-scrollbar-track {
+//         background: rgba(0, 0, 0, 0.05);
+//         border-radius: 4px;
+//     }
 
-    &::-webkit-scrollbar-thumb {
-        background: rgba(25, 118, 210, 0.3);
-        border-radius: 4px;
+//     &::-webkit-scrollbar-thumb {
+//         background: rgba(25, 118, 210, 0.3);
+//         border-radius: 4px;
 
-        &:hover {
-            background: rgba(25, 118, 210, 0.5);
-        }
-    }
-}
+//         &:hover {
+//             background: rgba(25, 118, 210, 0.5);
+//         }
+//     }
+// }
 
 // Loading and empty states
 .loading-container,
