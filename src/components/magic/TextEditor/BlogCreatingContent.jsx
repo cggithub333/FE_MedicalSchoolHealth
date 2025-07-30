@@ -41,24 +41,16 @@ import { showErrorToast, showSuccessToast, showWarningToast } from "@utils/toast
 import './BlogEditingContent.css' 
 import { useNavigate } from "react-router-dom";
 import EyeIcon from '@mui/icons-material/Visibility';
-import useUpdateBlogById from "@hooks/common/useUpdateBlogById";
 
-const BlogCreatingContent = ({ blog }) => {
+import useCreateNewBlog from "@hooks/common/useCreateNewBlog";
 
+
+const BlogCreatingContent = () => {
   const navigate = useNavigate();
-
-  const [title, setTitle] = useState(blog?.title || "")
-  const [imageUrl, setImageUrl] = useState(blog?.imageUrl || "")
-  const [content, setContent] = useState(blog?.content || "")
-
-  const { updateBlog } = useUpdateBlogById();
-
-  // Update state when blog prop changes
-  useEffect(() => {
-    setTitle(blog?.title || "");
-    setImageUrl(blog?.imageUrl || "");
-    setContent(blog?.content || "");
-  }, [blog]);
+  const [title, setTitle] = useState("");
+  const [imageUrl, setImageUrl] = useState("/assets/images/default-blog-image.jpg");
+  const [content, setContent] = useState("");
+  const { createBlog } = useCreateNewBlog();
 
   const [fontSize, setFontSize] = useState("16")
   const [fontFamily, setFontFamily] = useState("Arial")
@@ -213,36 +205,26 @@ const BlogCreatingContent = ({ blog }) => {
     const blogData = {
       title: title.trim(),
       content: getContent().trim(),
-      imageUrl: imageUrl.trim(),
+      // imageUrl: imageUrl.trim(),
+      imageUrl: "/assets/images/default-blog-image.jpg",
     };
 
-    if (!isValidBlogData() || !blog) {
-      if (!blog) {
-        showErrorToast("Blog data is invalid. Please select another blog and try again!");
-        return;
-      }
+    if (!isValidBlogData()) {
       return;
     }
 
     try {
-      const res = await updateBlog(blog.blogId, blogData);
+      const res = await createBlog(blogData);
       if (res.success) {
         showSuccessToast("Blog post saved successfully!");
+        // navigate to blogs to view the new blog:
+        navigate(`/blogs`);
       }
-    }
-    catch (error) {
+    } catch (error) {
       showErrorToast("Failed to save blog post: " + error.message);
     }
   }
 
-  const handleWatchDetail = async () => {
-    await showWarningToast("Are you sure to leave this page? Please make sure you have saved your changes before leaving!");
-    if (!confirm("You still want to leave?")) {
-      return;
-    }
-    //else:
-    navigate(`/blogs/view/${blog.blogId}`);
-  }
 
   // Handle paste to clean up formatting if needed
   const handlePaste = (e) => {
@@ -251,12 +233,7 @@ const BlogCreatingContent = ({ blog }) => {
     document.execCommand("insertText", false, text)
   }
 
-  // Set initial content in the editor when content changes
-  useEffect(() => {
-    if (contentRef.current) {
-      contentRef.current.innerHTML = blog?.content || "";
-    }
-  }, [blog]);
+  // No need to set initial content from blog
 
   return (
     <Box sx={{ width: "100%", height: "100%", mx: "auto", p: 3 }}>
@@ -389,9 +366,6 @@ const BlogCreatingContent = ({ blog }) => {
 
       {/* Action Buttons */}
       <Box sx={{ mt: 3, display: "flex", gap: 2, justifyContent: "flex-end" }}>
-        <Button variant="contained" sx={{ bgcolor: "orange " }} startIcon={<EyeIcon />} onClick={handleWatchDetail}>
-          Watch blog in detail page
-        </Button>
         <Button variant="contained" startIcon={<SaveIcon />} onClick={handleSave} disabled={!title.trim()}>
           Save Blog Post
         </Button>

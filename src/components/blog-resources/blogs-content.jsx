@@ -106,8 +106,30 @@ export default function BlogContent() {
                   >
                     {newestBlog.title}
                   </Typography>
-                  <Typography variant="body1" color="text.secondary" paragraph sx={{ fontSize: "16px", lineHeight: 1.6 }}>
-                    {newestBlog.content}
+                  <Typography variant="body1" 
+                              color="text.secondary" 
+                              paragraph sx={{ 
+                                fontSize: "16px", 
+                                lineHeight: 1.6 ,
+                                "& b": {
+                                  fontWeight: "bold",
+                                },
+                                "& i": {
+                                  fontStyle: "italic",
+                                },
+                                "& p": {
+                                  margin: 0,
+                                  padding: 0,
+                                },
+                                "& u": {
+                                  textDecoration: "underline",
+                                }
+                              }}
+                              component={'div'}
+                              dangerouslySetInnerHTML={
+                                { __html: newestBlog.content  ? newestBlog.content : "No content available" }
+                              }
+                              >
                   </Typography>
 
                   <Stack direction="row" spacing={2} alignItems="center" sx={{ mt: 2 }}>
