@@ -104,9 +104,7 @@ const BlogManageBoard = () => {
           {selectedBlog ? (
             <Outlet context={{ selectedBlog }} />
           ) : (
-            <Typography variant="h5" color="text.secondary">
-              Select a blog to continue
-            </Typography>
+            <Outlet />
           )}
           <Box position={'absolute'} zIndex={99} backgroundColor={'#fff'} display={'flex'} top={10} left={10} width={'30%'}>
             {selectedBlog && (
