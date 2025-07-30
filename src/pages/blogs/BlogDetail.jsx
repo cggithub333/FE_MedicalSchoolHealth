@@ -29,7 +29,7 @@ const BlogDetail = () => {
   });
 
   // debug:
-  console.log("getBlogsExceptCurrentBlog:", JSON.stringify(getBlogsExceptCurrentBlog(sortedBlogsByDescId, paramBlogId), null, 2));
+  // console.log("getBlogsExceptCurrentBlog:", JSON.stringify(getBlogsExceptCurrentBlog(sortedBlogsByDescId, paramBlogId), null, 2));
 
   // refetch content properly the user roles if the state changes:
   useEffect(() => {

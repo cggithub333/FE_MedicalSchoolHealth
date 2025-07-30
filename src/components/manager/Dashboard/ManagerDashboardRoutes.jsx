@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import ManagerComponentPagePackages from '../../../pages/manager/ManagerComponentPagePackages';
+import ManagerComponentPagePackages from '@pages/manager/ManagerComponentPagePackages';
 import ManagerDashboardLayout from './ManagerDashboardLayout';
 
 const ManagerDashboardRoutes = () => {

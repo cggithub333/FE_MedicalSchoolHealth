@@ -12,7 +12,9 @@ import Homepage from './pages/homepage/homepage.jsx';
 import Blogs from '@pages/blogs/Blogs';
 import BlogDetail from '@pages/blogs/BlogDetail';
 import Contact from '@pages/contact/Contact';
-
+import BlogManagePage from '@pages/blogs/BlogManagePage';
+import BlogCreate from '@pages/blogs/BlogCreate';
+import BlogEdit from '@pages/blogs/BlogEdit';
 
 // toastify config:
 import { ToastContainer, Bounce } from 'react-toastify';
@@ -24,15 +26,21 @@ import { isContained } from './utils/string-utils';
 import Test from '@pages/test/Test';
 import LogoutAction from '@components/Logout';
 
-const TargetRedirect = ({ target }) => {
+export const BlogRouteProtecter = ({ children }) => {
+    const { role } = getPayloadResources() || {}
+    if (!children) return <Navigate to={"/homepage"} replace />
+    if (role !== "ADMIN" && role !== "MANAGER") {
+        return <Navigate to={"/blogs"} replace />
+    }
+    return children
+} 
 
+const TargetRedirect = ({ target }) => {
     if (target === "logout") {
         // if the target is logout, we will call the LogoutAction component
         return <LogoutAction />;
     }
-
     const { role } = getPayloadResources() || {};
-
     switch (role) {
         case "ADMIN":
             return <Navigate to={`/admin/${target}`} replace />;
@@ -46,6 +54,7 @@ const TargetRedirect = ({ target }) => {
             return <Navigate to={"/homepage"} replace />;
     }
 }
+
 
 function App() {
 
@@ -83,14 +92,36 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Navigate to={"/homepage"} />} /> {/* entry point of the application */}
                     <Route path="/homepage" element={<Homepage />} />
+                    
+                    {/* Blogs management  - for admin, manager*/}
                     <Route path="/blogs" element={<Blogs />} />
                     <Route path="/blogs/view/:blogId" element={<BlogDetail />} />
+
+                    <Route path="/blogs/manage" element={
+                        <BlogRouteProtecter>
+                            <BlogManagePage />
+                        </BlogRouteProtecter>} 
+                    >
+                        <Route path="create" element={
+                            <BlogRouteProtecter>
+                                <BlogCreate />
+                            </BlogRouteProtecter>}
+                        />
+                        <Route path="edit/:blogId" element={
+                            <BlogRouteProtecter>
+                                <BlogEdit />
+                            </BlogRouteProtecter>}
+                        />
+                    </Route>
+
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/test" element={<Test />} />
                     <Route path="/dashboard" element={<TargetRedirect target="dashboard" />} />
                     <Route path="/profile" element={<TargetRedirect target="profile"/>} />
                     <Route path="/settings" element={<TargetRedirect target="settings" />} />
                     <Route path="/logout" element={<TargetRedirect target="logout" />} />
+
+                    {/* Protected routes */}
                     <Route element={<RouteProtecter.forAll />}>
 
                         <Route path="/admin/*" element={<RouteProtecter.forAdmin>

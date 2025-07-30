@@ -39,7 +39,7 @@ export default function HomepageBanner({ currentUser }) {
             Comprehensive healthcare services, health education, and wellness resources for students, parents, and
             staff.
           </Typography>
-          <Box component={Link} to={currentUser.role === "guest" ? "/news" : "/dashboard"}>
+          <Box component={Link} to={currentUser.role === "guest" ? "/blogs" : "/dashboard"}>
             <Button
               variant="contained"
               size="large"

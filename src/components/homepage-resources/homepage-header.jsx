@@ -109,9 +109,11 @@ export default function HomepageHeader({ currentUser }) {
                 <Button sx={{ mx: 1, color: "text.secondary", fontWeight: "medium" }}>Health Records</Button>
               </Box>
             )}
-            <Box component={Link} to={'/contact'} sx={{ textDecoration: "none" }}>
-              <Button sx={{ mx: 1, color: "text.secondary", fontWeight: "medium" }}>Contact</Button>
-            </Box>
+            { (currentUser.role.toLowerCase() === "guest" ||  currentUser.role.toLowerCase() === "parent") && (
+              <Box component={Link} to={'/contact'} sx={{ textDecoration: "none" }}>
+                <Button sx={{ mx: 1, color: "text.secondary", fontWeight: "medium" }}>Contact</Button>
+              </Box>
+            )}
             {/* <Button sx={{ mx: 1, color: "text.secondary", fontWeight: "medium" }}>About Us</Button> */}
           </Box>
         </Container>
