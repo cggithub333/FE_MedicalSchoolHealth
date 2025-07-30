@@ -120,7 +120,7 @@ function App() {
                     <Route path="/profile" element={<TargetRedirect target="profile"/>} />
                     <Route path="/settings" element={<TargetRedirect target="settings" />} />
                     <Route path="/logout" element={<TargetRedirect target="logout" />} />
-
+                            
                     {/* Protected routes */}
                     <Route element={<RouteProtecter.forAll />}>
 
