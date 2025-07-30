@@ -38,7 +38,10 @@ const BlogCard = ({ blog, height = "500px", isInAdminPower = false, isRelatedBlo
         </Typography>
         <Typography
           variant="body2"
-          sx={{ color: 'text.secondary' }}
+          sx={{ color: 'text.secondary', 
+                "& b": { fontWeight: "bold" }, 
+                "& i": { fontStyle: "italic" },
+                "& u": { textDecoration: "underline" } }}
           component="div"
           dangerouslySetInnerHTML={{
             __html: isRelatedBlogs

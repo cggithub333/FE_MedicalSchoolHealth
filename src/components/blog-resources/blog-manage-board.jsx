@@ -212,9 +212,9 @@ const BlogManageBoard = () => {
               },
             }}
           >
-            {filteredBlogs.length > 0 ? (
+            {(filteredBlogs || []).length > 0 ? (
               <List sx={{ p: 0 }}>
-                {filteredBlogs.map((blog) => (
+                {(filteredBlogs || []).map((blog) => (
                   <ListItem key={blog.blogId} sx={{ p: 0 }}>
                     <Card
                       sx={{
@@ -297,7 +297,7 @@ const BlogManageBoard = () => {
             }}
           >
             <Typography variant="caption" color="text.secondary" sx={{ textAlign: "center", display: "block" }}>
-              {filteredBlogs.length} blog{filteredBlogs.length !== 1 ? "s" : ""} found
+              {(filteredBlogs || []).length} blog{(filteredBlogs || []).length !== 1 ? "s" : ""} found
             </Typography>
           </Box>
         </Paper>
