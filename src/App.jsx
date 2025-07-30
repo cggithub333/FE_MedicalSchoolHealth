@@ -115,7 +115,7 @@ function App() {
                     </Route>
 
                     <Route path="/contact" element={<Contact />} />
-                    <Route path="/test" element={<Test />} />
+                    {/* <Route path="/test" element={<Test />} /> */}
                     <Route path="/dashboard" element={<TargetRedirect target="dashboard" />} />
                     <Route path="/profile" element={<TargetRedirect target="profile"/>} />
                     <Route path="/settings" element={<TargetRedirect target="settings" />} />
