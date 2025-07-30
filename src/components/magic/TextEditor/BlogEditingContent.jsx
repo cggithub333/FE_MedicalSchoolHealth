@@ -36,14 +36,22 @@ import {
   Save as SaveIcon,
   Link as LinkIcon,
 } from "@mui/icons-material"
-import { showErrorToast, showSuccessToast } from "@utils/toast-utils";
+import { showErrorToast, showSuccessToast, showWarningToast } from "@utils/toast-utils";
 
 import './BlogEditingContent.css' 
+import { useNavigate } from "react-router-dom";
+import EyeIcon from '@mui/icons-material/Visibility';
+import useUpdateBlogById from "@hooks/common/useUpdateBlogById";
 
 const BlogEditingContent = ({ blog }) => {
+
+  const navigate = useNavigate();
+
   const [title, setTitle] = useState(blog?.title || "")
   const [imageUrl, setImageUrl] = useState(blog?.imageUrl || "")
   const [content, setContent] = useState(blog?.content || "")
+
+  const { updateBlog } = useUpdateBlogById();
 
   // Update state when blog prop changes
   useEffect(() => {
@@ -201,19 +209,39 @@ const BlogEditingContent = ({ blog }) => {
   }
 
   // Handle save/submit
-  const handleSave = () => {
+  const handleSave = async () => {
     const blogData = {
       title: title.trim(),
       content: getContent().trim(),
       imageUrl: imageUrl.trim(),
-    }
+    };
 
-    if (!isValidBlogData()) {
+    if (!isValidBlogData() || !blog) {
+      if (!blog) {
+        showErrorToast("Blog data is invalid. Please select another blog and try again!");
+        return;
+      }
       return;
     }
 
-    // else:
-    showSuccessToast("Blog post saved successfully!");
+    try {
+      const res = await updateBlog(blog.blogId, blogData);
+      if (res.success) {
+        showSuccessToast("Blog post saved successfully!");
+      }
+    }
+    catch (error) {
+      showErrorToast("Failed to save blog post: " + error.message);
+    }
+  }
+
+  const handleWatchDetail = async () => {
+    await showWarningToast("Are you sure to leave this page? Please make sure you have saved your changes before leaving!");
+    if (!confirm("You still want to leave?")) {
+      return;
+    }
+    //else:
+    navigate(`/blogs/view/${blog.blogId}`);
   }
 
   // Handle paste to clean up formatting if needed
@@ -225,10 +253,10 @@ const BlogEditingContent = ({ blog }) => {
 
   // Set initial content in the editor when content changes
   useEffect(() => {
-    if (contentRef.current && content) {
-      contentRef.current.innerHTML = content;
+    if (contentRef.current) {
+      contentRef.current.innerHTML = blog?.content || "";
     }
-  }, [content]);
+  }, [blog]);
 
   return (
     <Box sx={{ width: "100%", height: "100%", mx: "auto", p: 3 }}>
@@ -361,6 +389,9 @@ const BlogEditingContent = ({ blog }) => {
 
       {/* Action Buttons */}
       <Box sx={{ mt: 3, display: "flex", gap: 2, justifyContent: "flex-end" }}>
+        <Button variant="contained" sx={{ bgcolor: "orange " }} startIcon={<EyeIcon />} onClick={handleWatchDetail}>
+          Watch blog in detail page
+        </Button>
         <Button variant="contained" startIcon={<SaveIcon />} onClick={handleSave} disabled={!title.trim()}>
           Save Blog Post
         </Button>
