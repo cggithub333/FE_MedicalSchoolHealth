@@ -188,7 +188,7 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
     }
     if (!sensitive_disease.length) {
         return (
-            <div className="schedule-details-root empty-container">
+            <div className=" empty-container">
                 <Warning sx={{ fontSize: 60, color: "#ff9800", mb: 2 }} />
                 <Typography variant="h5">No Health Check Data</Typography>
                 <Typography variant="body1" color="text.secondary">
@@ -201,7 +201,7 @@ const ScheduleDetails = ({ pupilId, pupilData, onBack, onResultSaved, consentFor
         )
     }
     return (
-        <div className="schedule-details-root enhanced-ui">
+        <div className="enhanced-ui">
             {/* Quick Navigation Bar */}
             <Fade in={true} timeout={500}>
                 <Card className="details-header modern-card" elevation={2}>

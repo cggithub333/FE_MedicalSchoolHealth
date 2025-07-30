@@ -124,7 +124,7 @@ const ScheduleDetails = ({ consentFormId, pupilData, onBack }) => {
     // Show loading spinner if fetching
     if (isLoading) {
         return (
-            <div className="schedule-details-root loading-container">
+            <div className=" loading-container">
                 <LinearProgress />
                 <Typography variant="h6" sx={{ mt: 2, color: "#666" }}>
                     Loading student health check details...
@@ -142,7 +142,7 @@ const ScheduleDetails = ({ consentFormId, pupilData, onBack }) => {
             return acc;
         }, {});
         return (
-            <div className="schedule-details-root enhanced-ui" style={{
+            <div className=" enhanced-ui" style={{
                 background: 'linear-gradient(135deg, #fafdff 0%, #e3f0ff 100%)',
                 minHeight: '100vh',
                 padding: '24px 0',
@@ -317,7 +317,7 @@ const ScheduleDetails = ({ consentFormId, pupilData, onBack }) => {
 
     // Empty state if no health check data
     return (
-        <div className="schedule-details-root empty-container">
+        <div className=" empty-container">
             <Warning sx={{ fontSize: 60, color: "#ff9800", mb: 2 }} />
             <Typography variant="h5">No Health Check Data</Typography>
             <Typography variant="body1" color="text.secondary">

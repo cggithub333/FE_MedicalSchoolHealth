@@ -51,7 +51,7 @@ const ScheduleDetails = ({ consentFormId, pupilData, pupilId, onBack }) => {
     // Show loading spinner if fetching
     if (vaccinationLoading) {
         return (
-            <div className="schedule-details-root loading-container">
+            <div className=" loading-container">
                 <LinearProgress />
                 <Typography variant="h6" sx={{ mt: 2, color: "#666" }}>
                     Loading student vaccination details...
