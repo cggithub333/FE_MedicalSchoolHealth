@@ -124,6 +124,9 @@ export default function AdminReportsDashboard() {
     }], [diseaseBarData])
     const barChartMargin = useMemo(() => ({ left: 60, right: 20, top: 40, bottom: 80 }), [])
 
+    // Memoized medical event data for chart
+    const medicalEvents = useMemo(() => (reportData?.events || []), [reportData])
+
     if (isLoading) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
@@ -202,7 +205,7 @@ export default function AdminReportsDashboard() {
                 <Grid size={{ xs: 12 }}>
                     <Card className="card fade-in">
                         <CardHeader
-                            title="Health Check Campaigns (3 Newest)"
+                            title="Health Check Campaigns"
                             className="cardHeader"
                             subheader="Agreed vs Examined counts for recent campaigns"
                         />
@@ -226,30 +229,26 @@ export default function AdminReportsDashboard() {
                     </Card>
                 </Grid>
 
-                {/* Prescriptions Card */}
-                {/* <Grid size={{ xs: 12, lg: 4 }}>
-                    <Item className="fade-in" sx={{ height: "100%", minHeight: 300 }}>
-                        <Medication sx={{ fontSize: 64, color: COLORS[4], mb: 3 }} />
-                        <Typography variant="h5" sx={{ color: "#4b5563", mb: 2, fontWeight: 600 }}>
-                            Prescriptions (Last Month)
-                        </Typography>
-                        <Typography variant="h2" sx={{ fontWeight: "bold", color: COLORS[4], mb: 3 }}>
-                            {prescriptionsLastMonth.count}
-                        </Typography>
-                        {prescriptionsLastMonth.commonTypes.length > 0 && (
-                            <Box>
-                                <Typography variant="body1" sx={{ color: "#6b7280", mb: 1, fontWeight: 500 }}>
-                                    Common Types:
-                                </Typography>
-                                {prescriptionsLastMonth.commonTypes.map((type, index) => (
-                                    <Typography key={index} variant="body1" sx={{ color: COLORS[4], fontWeight: 600 }}>
-                                        {type}
-                                    </Typography>
-                                ))}
-                            </Box>
-                        )}
-                    </Item>
-                </Grid> */}
+                {/* Medical Event Trends Chart */}
+                <Grid size={{ xs: 12 }}>
+                    <Card className="card fade-in">
+                        <CardHeader title="Medical Event Trends" className="cardHeader" />
+                        <CardContent className="cardContent">
+                            <LineChart
+                                height={300}
+                                series={[{
+                                    data: medicalEvents.map(e => e.eventCount),
+                                    label: "Events",
+                                    color: COLORS[1],
+                                }]}
+                                xAxis={[{ scaleType: "point", data: medicalEvents.map(e => e.date) }]}
+                                yAxis={[{ id: "leftAxisId", width: 50 }]}
+                                margin={{ left: 40, right: 40, top: 20, bottom: 40 }}
+                            />
+                        </CardContent>
+                    </Card>
+                </Grid>
+
 
                 {/* Vaccination Status Pie Chart */}
                 <Grid size={{ xs: 12, md: 6 }}>
@@ -311,6 +310,8 @@ export default function AdminReportsDashboard() {
                         </CardContent>
                     </Card>
                 </Grid>
+
+
 
                 {/* Additional Metrics Row */}
                 <Grid size={{ xs: 12, sm: 6, md: 4 }}>
