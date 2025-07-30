@@ -10,7 +10,6 @@ export const useGetVaccineByDisease = () => {
             setIsLoading(true)
             try {
                 const response = await fetchAllVaccinationDiseases()
-                console.log("✅ API raw response:", response)
                 // Extract the GetVaccineByDisease array from the response
                 const diseases = response?.GetVaccineByDisease || response || []
                 setVaccinesByDisease(diseases)

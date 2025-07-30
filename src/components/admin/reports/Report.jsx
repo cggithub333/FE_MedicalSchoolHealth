@@ -259,9 +259,9 @@ export default function AdminReportsDashboard() {
                             subheader="Distribution of vaccination responses"
                         />
                         <CardContent className="cardContent pieChartContent">
-                            <PieChart
-                                series={[
-                                    {
+                            {(reportData?.vaccinations?.length > 0) ? (
+                                <PieChart
+                                    series={[{
                                         data: vaccinationPieData,
                                         highlightScope: { faded: "global", highlighted: "item" },
                                         faded: { innerRadius: 30, additionalRadius: -30, color: "gray" },
@@ -269,17 +269,21 @@ export default function AdminReportsDashboard() {
                                         outerRadius: 120,
                                         paddingAngle: 2,
                                         cornerRadius: 5,
-                                    },
-                                ]}
-                                height={300}
-                                slotProps={{
-                                    legend: {
-                                        direction: "row",
-                                        position: { vertical: "bottom", horizontal: "middle" },
-                                        padding: 0,
-                                    },
-                                }}
-                            />
+                                    }]}
+                                    height={300}
+                                    slotProps={{
+                                        legend: {
+                                            direction: "row",
+                                            position: { vertical: "bottom", horizontal: "middle" },
+                                            padding: 0,
+                                        },
+                                    }}
+                                />
+                            ) : (
+                                <Box sx={{ height: 300, display: "flex", alignItems: "center", justifyContent: "center", color: '#888' }}>
+                                    <Typography variant="h6">There has been no vaccination campaign this year.</Typography>
+                                </Box>
+                            )}
                         </CardContent>
                     </Card>
                 </Grid>
@@ -317,7 +321,7 @@ export default function AdminReportsDashboard() {
                 <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                     <Item className="fade-in">
                         <Typography variant="h6" sx={{ color: "#4b5563", mb: 2, fontWeight: 600 }}>
-                            Campaign Participation Rate
+                            Health Check Rate
                         </Typography>
                         <Typography variant="h3" sx={{ fontWeight: "bold", color: COLORS[5] }}>
                             {totalPupils > 0 ? Math.round((totalHealthChecks / totalPupils) * 100) : 0}%

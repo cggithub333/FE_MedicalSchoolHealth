@@ -23,7 +23,7 @@ function formatDate(dateStr) {
 const VaccineCampaignForm = ({ onSuccess, onCancel }) => {
     const { vaccines: diseases, isLoading: isVaccineLoading } = useGetVaccineByDisease()
     const { createNewCampaign, isLoading: isCreating, error } = useCreateNewCampaign()
-
+    console.log("VaccineCampaignForm - diseases:", diseases)
     const [form, setForm] = useState({
         titleCampaign: "",
         diseaseId: "",
