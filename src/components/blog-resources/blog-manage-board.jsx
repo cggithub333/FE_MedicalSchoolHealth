@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import {
   Box,
   Card,
@@ -20,100 +20,26 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import { Link, Outlet } from "react-router-dom";
 
-const fetchedBlogs = [
-  {
-    blogId: 6,
-    title: "Happy Classrooms: Nurturing Dreams from an Early Age",
-    content:
-      "A friendly and creative classroom space encourages children to enjoy learning. Teachers should foster a pressure-free environment that supports interaction, curiosity, and self-expression among primary school students.",
-    imageUrl: "https://i.ytimg.com/vi/cPfX_nYTvGs/maxresdefault.jpg",
-    author: {
-      name: "Hà Minh",
-      email: "minh.ha@example.com",
-    },
-  },
-  {
-    blogId: 7,
-    title: "Healthy Playtime: A Key Factor in Child Development",
-    content:
-      "Outdoor play like sports and traditional games not only boosts physical health but fosters emotional well-being and social growth in children.",
-    imageUrl: "https://i.ytimg.com/vi/cPfX_nYTvGs/maxresdefault.jpg",
-    author: {
-      name: "Hà Minh",
-      email: "minh.ha@example.com",
-    },
-  },
-  {
-    blogId: 8,
-    title: "School Health During the COVID-19 Pandemic",
-    content:
-      "Routine health checks like temperature screening and symptom tracking played a vital role in keeping schools safe during COVID-19.",
-    imageUrl: "https://i.ytimg.com/vi/cPfX_nYTvGs/maxresdefault.jpg",
-    author: {
-      name: "Hà Minh",
-      email: "minh.ha@example.com",
-    },
-  },
-  {
-    blogId: 9,
-    title: "Creative Corners: Spark Curiosity in Kids",
-    content:
-      "Designing classroom corners for reading, arts, and science lets students explore their interests freely and develop passions early on.",
-    imageUrl: "https://i.ytimg.com/vi/cPfX_nYTvGs/maxresdefault.jpg",
-    author: {
-      name: "Hà Minh",
-      email: "minh.ha@example.com",
-    },
-  },
-  {
-    blogId: 10,
-    title: "Digital Literacy for Young Minds",
-    content:
-      "Teaching basic computer and internet skills empowers children to safely navigate the digital world from a young age.",
-    imageUrl: "https://i.ytimg.com/vi/cPfX_nYTvGs/maxresdefault.jpg",
-    author: {
-      name: "Hà Minh",
-      email: "minh.ha@example.com",
-    },
-  },
-  {
-    blogId: 11,
-    title: "Managing School Vaccination Campaigns",
-    content:
-      "Vaccination drives in schools ensure children stay protected from preventable diseases while promoting public health awareness.",
-    imageUrl: "https://i.ytimg.com/vi/cPfX_nYTvGs/maxresdefault.jpg",
-    author: {
-      name: "Hà Minh",
-      email: "minh.ha@example.com",
-    },
-  },
-  {
-    blogId: 12,
-    title: "Mental Wellness: Supporting Every Child",
-    content:
-      "Integrating mental health support in schools creates a nurturing environment that prioritizes the emotional growth of every student.",
-    imageUrl: "https://i.ytimg.com/vi/cPfX_nYTvGs/maxresdefault.jpg",
-    author: {
-      name: "Hà Minh",
-      email: "minh.ha@example.com",
-    },
-  },
-  {
-    blogId: 13,
-    title: "Inclusive Education: Building Respect from the Start",
-    content:
-      "Inclusive classrooms teach children the values of empathy, respect, and collaboration from their earliest learning experiences.",
-    imageUrl: "https://i.ytimg.com/vi/cPfX_nYTvGs/maxresdefault.jpg",
-    author: {
-      name: "Hà Minh",
-      email: "minh.ha@example.com",
-    },
-  },
-]
+import useAllBlogs from "@hooks/common/useAllBlogs";
+import { useNavigate } from "react-router-dom";
 
 const BlogManageBoard = () => {
+
+  const navigate = useNavigate();
+  const { sortedBlogsByDescId: originBlogs, refetchBlogs } = useAllBlogs();
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedBlog, setSelectedBlog] = useState(null)
+  const [fetchedBlogs, setFetchedBlogs] = useState(originBlogs || []);
+
+  useEffect(() => {
+    if (originBlogs) {
+      // Update fetchedBlogs with the latest originBlogs
+      setFetchedBlogs(originBlogs);
+    }
+  }, [originBlogs]);
+
+  // debug:
+  console.log("Fetched Blogs:", fetchedBlogs);
 
   // Filter blogs based on search term
   const filteredBlogs = useMemo(() => {
@@ -124,7 +50,7 @@ const BlogManageBoard = () => {
         blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         blog.author.name.toLowerCase().includes(searchTerm.toLowerCase()),
     )
-  }, [searchTerm])
+  }, [searchTerm, fetchedBlogs])
 
   // Handle search change
   const handleSearchChange = (event) => {
@@ -134,6 +60,7 @@ const BlogManageBoard = () => {
   // Handle blog card click
   const handleBlogClick = (blog) => {
     setSelectedBlog(blog)
+    navigate(`/blogs/manage/edit/${blog.blogId}`);
   }
 
   // Truncate title for display
@@ -181,7 +108,7 @@ const BlogManageBoard = () => {
               Select a blog to continue
             </Typography>
           )}
-          <Box position={'absolute'} display={'flex'} top={10} left={10} width={'30%'}>
+          <Box position={'absolute'} zIndex={99} backgroundColor={'#fff'} display={'flex'} top={10} left={10} width={'30%'}>
             {selectedBlog && (
               <Box width={'10%'} component={Link} to={`/blogs/manage/edit/${selectedBlog?.blogId}`} sx={{ textDecoration: 'none', flexGrow: 1 }}>
                 <Button>

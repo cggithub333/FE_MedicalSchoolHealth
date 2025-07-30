@@ -5,7 +5,7 @@ import { Dialog, Grid, Typography, DialogTitle, DialogActions, DialogContent } f
 import useMyInformation from "@hooks/common/useMyInformation";
 
 import { importExcel, excelDateToJSDate } from "@utils/excel-utils";
-import BlogEditor from "@components/magic/TextEditor/BlogsEditor";
+import BlogEditorForTest from "@components/magic/TextEditor/BlogEditorForTest";
 
 import React, { useState } from "react";
 
@@ -92,7 +92,7 @@ const Test = () => {
       <Dialog open={openBlogEditor} onClose={() => setOpenBlogEditor(false)} maxWidth={"md"} fullWidth>
         {/* <DialogTitle>Blog Editor</DialogTitle> */}
         <DialogContent>
-          <BlogEditor />
+          <BlogEditorForTest />
         </DialogContent>
         <DialogActions>
           <button onClick={() => setOpenBlogEditor(false)}>Close</button>

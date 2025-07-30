@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useCallback } from "react"
+import { useState, useRef, useCallback, useEffect } from "react"
 import {
   Box,
   Paper,
@@ -36,13 +36,22 @@ import {
   Save as SaveIcon,
   Link as LinkIcon,
 } from "@mui/icons-material"
-import { showErrorToast } from "@utils/toast-utils";
+import { showErrorToast, showSuccessToast } from "@utils/toast-utils";
 
-import './BlogsEditor.css' 
+import './BlogEditingContent.css' 
 
-const BlogEditor = () => {
-  const [title, setTitle] = useState("")
-  const [imageUrl, setImageUrl] = useState("")
+const BlogEditingContent = ({ blog }) => {
+  const [title, setTitle] = useState(blog?.title || "")
+  const [imageUrl, setImageUrl] = useState(blog?.imageUrl || "")
+  const [content, setContent] = useState(blog?.content || "")
+
+  // Update state when blog prop changes
+  useEffect(() => {
+    setTitle(blog?.title || "");
+    setImageUrl(blog?.imageUrl || "");
+    setContent(blog?.content || "");
+  }, [blog]);
+
   const [fontSize, setFontSize] = useState("16")
   const [fontFamily, setFontFamily] = useState("Arial")
   const [isUploading, setIsUploading] = useState(false)
@@ -183,8 +192,8 @@ const BlogEditor = () => {
       return false;
     }
 
-    if (blogContentLength < 50) {
-      showErrorToast("Blog content must be at least 50 words long.");
+    if (blogContentLength < 20) {
+      showErrorToast("Blog content must be at least 20 words long.");
       return false;
     }
 
@@ -204,8 +213,7 @@ const BlogEditor = () => {
     }
 
     // else:
-    console.log("Blog data sent:", blogData)
-
+    showSuccessToast("Blog post saved successfully!");
   }
 
   // Handle paste to clean up formatting if needed
@@ -215,14 +223,21 @@ const BlogEditor = () => {
     document.execCommand("insertText", false, text)
   }
 
+  // Set initial content in the editor when content changes
+  useEffect(() => {
+    if (contentRef.current && content) {
+      contentRef.current.innerHTML = content;
+    }
+  }, [content]);
+
   return (
-    <Box sx={{ maxWidth: 1000, mx: "auto", p: 3 }}>
+    <Box sx={{ width: "100%", height: "100%", mx: "auto", p: 3 }}>
       <Box sx={{ display: "flex", alignItems: "center", mb: 3, gap: 2 }}>
         <Avatar sx={{ bgcolor: "#5ca8ea" }}>
           <ImNewspaper />
         </Avatar>
         <Typography variant="h5" sx={{ textTransform: "uppercase" }}>
-          New Blog Post
+          Edit Blog Post
         </Typography>
       </Box>
 
@@ -246,7 +261,7 @@ const BlogEditor = () => {
           accept="image/*"
           style={{ display: "none" }}
         />
-        <Button
+        {/* <Button
           variant="outlined"
           startIcon={<ImageIcon />}
           onClick={handleImageUpload}
@@ -254,7 +269,7 @@ const BlogEditor = () => {
           sx={{ mb: 2 }}
         >
           {isUploading ? "Uploading..." : "Upload Featured Image"}
-        </Button>
+        </Button> */}
 
         {imageUrl && (
           <Card sx={{ maxWidth: 500, mb: 2 }}>
@@ -332,12 +347,13 @@ const BlogEditor = () => {
           suppressContentEditableWarning={true}
           className="editor-content"
           onPaste={handlePaste}
+          onInput={() => setContent(contentRef.current.innerHTML)}
           style={{
             minHeight: "350px",
             outline: "none",
             fontSize: "16px",
             lineHeight: "1.6",
-            fontFamily: fontFamily, // important to match style
+            fontFamily: fontFamily,
           }}
           data-placeholder="Start writing your blog content here..."
         />
@@ -386,4 +402,4 @@ const BlogEditor = () => {
   )
 }
 
-export default BlogEditor
+export default BlogEditingContent;
