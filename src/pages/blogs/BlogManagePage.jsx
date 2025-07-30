@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { Grid, Box } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
+import BlogManageBoard from "@components/blog-resources/blog-manage-board";
 
 
 const BlogManagePage = () => {
@@ -31,8 +32,8 @@ const BlogManagePage = () => {
     <div>
       <HomepageHeader currentUser={currentUser} />
       <Grid container justifyContent={'center'} backgroundColor={"#f4f4f4"}>
-        <Grid size={{ xs: 10}}>
-          Manage page content goes here!
+        <Grid size={{ xs: 11}} paddingBottom={'80px'}>
+          <BlogManageBoard />
         </Grid>
       </Grid>
       <Box position={'fixed'} bottom={0} left={0} width={'100%'}>

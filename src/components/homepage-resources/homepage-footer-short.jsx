@@ -19,11 +19,11 @@ import SchoolHealthIcon from '@mui/icons-material/School'
 
 export default function BasicHomepageFooter() {
   return (
-    <Box sx={{ bgcolor: "grey.900", color: "white", py: 3 }}>
+    <Box sx={{ bgcolor: "grey.900", color: "white", pb: 2 }}>
       <Container maxWidth="lg">
-        <Grid container spacing={3}>
+        {/* <Grid container spacing={3}> */}
           {/* Logo + Desc + Social */}
-          <Grid size={{ xs: 12, md: 6 }}>
+          {/* <Grid size={{ xs: 12, md: 6 }}>
             <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
               <SchoolHealthIcon sx={{ color: "#fff", mr: 1, fontSize: 22 }} />
               <Typography variant="h6" sx={{ fontWeight: "bold" }}>
@@ -40,9 +40,9 @@ export default function BasicHomepageFooter() {
                 </IconButton>
               ))}
             </Box>
-          </Grid>
+          </Grid> */}
           {/* Contact */}
-          <Grid size={{ xs: 12, md: 6 }}>
+          {/* <Grid size={{ xs: 12, md: 6 }}>
             <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
               Contact
             </Typography>
@@ -59,17 +59,25 @@ export default function BasicHomepageFooter() {
               ))}
             </Grid>
           </Grid>
-        </Grid>
+        </Grid> */}
 
         {/* Bottom */}
         <Divider sx={{ my: 2, borderColor: "grey.700" }} />
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap" }}>
           <Typography variant="body2" sx={{ color: "grey.400" }}>
-            © {new Date().getFullYear()} Medical Health
+            <span>© {new Date().getFullYear()} Medical Health</span>
+            {" - "}
+            <span>Blogs' copyright belongs to ABC School</span>
           </Typography>
-          <Box sx={{ display: "flex", gap: 2, mt: { xs: 1, md: 0 } }}>
+          {/* <Box sx={{ display: "flex", gap: 2, mt: { xs: 1, md: 0 } }}>
             <Button sx={{ color: "grey.400", p: 0, minWidth: "auto", fontSize: "0.75rem" }}>Privacy</Button>
             <Button sx={{ color: "grey.400", p: 0, minWidth: "auto", fontSize: "0.75rem" }}>Terms</Button>
+          </Box> */}
+          <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+            <SchoolHealthIcon sx={{ color: "#fff", mr: 1, fontSize: 22 }} />
+            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+              Medical Health
+            </Typography>
           </Box>
         </Box>
       </Container>

@@ -101,19 +101,18 @@ function App() {
                         <BlogRouteProtecter>
                             <BlogManagePage />
                         </BlogRouteProtecter>} 
-                    />
-
-                    <Route path="/blogs/manage/create" element={
-                        <BlogRouteProtecter>
-                            <BlogCreate />
-                        </BlogRouteProtecter>}
-                    />
-
-                    <Route path="/blogs/manage/edit/:blogId" element={
-                        <BlogRouteProtecter>
-                            <BlogEdit />
-                        </BlogRouteProtecter>}
-                    />
+                    >
+                        <Route path="create" element={
+                            <BlogRouteProtecter>
+                                <BlogCreate />
+                            </BlogRouteProtecter>}
+                        />
+                        <Route path="edit/:blogId" element={
+                            <BlogRouteProtecter>
+                                <BlogEdit />
+                            </BlogRouteProtecter>}
+                        />
+                    </Route>
 
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/test" element={<Test />} />
