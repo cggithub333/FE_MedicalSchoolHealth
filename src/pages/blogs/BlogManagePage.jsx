@@ -4,7 +4,7 @@ import BasicHomepageFooter from "@components/homepage-resources/homepage-footer-
 import useMyInformation from "@hooks/common/useMyInformation";
 
 import { useEffect, useState } from "react";
-import { Grid } from "@mui/material";
+import { Grid, Box } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
 
@@ -35,7 +35,9 @@ const BlogManagePage = () => {
           Manage page content goes here!
         </Grid>
       </Grid>
-      <BasicHomepageFooter />
+      <Box position={'fixed'} bottom={0} left={0} width={'100%'}>
+        <BasicHomepageFooter />
+      </Box>
     </div>
   )
 }
