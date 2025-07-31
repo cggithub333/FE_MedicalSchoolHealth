@@ -360,11 +360,11 @@ const AccountManagementPageContent = () => {
             <TableHead>
               <TableRow sx={{ backgroundColor: "#f8fafc" }}>
                 <TableCell sx={{ fontWeight: 600, color: "#374151", textAlign: 'center' }}>Avatar</TableCell>
-                <TableCell sx={{ fontWeight: 600, color: "#374151", textAlign: 'center' }}>Full Name</TableCell>
-                <TableCell sx={{ fontWeight: 600, color: "#374151", textAlign: 'center' }}>Email</TableCell>
-                <TableCell sx={{ fontWeight: 600, color: "#374151", textAlign: 'center' }}>Phone</TableCell>
-                <TableCell sx={{ fontWeight: 600, color: "#374151", textAlign: 'center' }}>Role</TableCell>
-                <TableCell sx={{ fontWeight: 600, color: "#374151", textAlign: 'center' }}>Status</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: "#374151", textAlign: 'left' }}>Full Name</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: "#374151", textAlign: 'left' }}>Email</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: "#374151", textAlign: 'left' }}>Phone</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: "#374151", textAlign: 'left', pl: "50px"}}>Role</TableCell>
+                {/* <TableCell sx={{ fontWeight: 600, color: "#374151", textAlign: 'center' }}>Status</TableCell> */}
                 <TableCell sx={{ fontWeight: 600, color: "#374151", textAlign: 'center' }} align="right">
                   Actions
                 </TableCell>
@@ -443,7 +443,7 @@ const AccountManagementPageContent = () => {
                       />
                     </TableCell>
 
-                    <TableCell>
+                    {/* <TableCell>
                       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                         <Tooltip title={user.role === "ADMIN" ? "Can not inactive admin" : (user.active ? "Inactive" : "Active")}>
                           <Switch color={user.role === "ADMIN" ? "default" : "primary"} checked={user.active} onChange={() => handleStatusToggle(user)} size="small" />
@@ -452,20 +452,22 @@ const AccountManagementPageContent = () => {
                           {user.active ? "Active" : "Inactive"}
                         </Typography>
                       </Box>
-                    </TableCell>
+                    </TableCell> */}
 
                     <TableCell align="right">
-                      <Box sx={{ display: "flex", gap: 0.5, justifyContent: "flex-end" }}>
+                      <Box sx={{ display: "flex", gap: 0.5, justifyContent: "center" }}>
                         <Tooltip title={editUserTitleForToolTip(user)}>
                           <IconButton color={editUserIconColor(user)} size="small" onClick={() => handleEditUserClick(user)}>
                             <EditIcon fontSize="small" />
                           </IconButton>
                         </Tooltip>
-                        <Tooltip title="Reset Password">
+                        {/* <Tooltip title="Reset Password">
                           <IconButton size="small" sx={{ color: "#ed6c02" }}>
                             <LockIcon fontSize="small" />
                           </IconButton>
-                        </Tooltip>
+                        </Tooltip> */}
+
+
                         {/* <Tooltip title={user.role === "ADMIN" ? "Cannot delete admin" : "Delete User"}>
                           <IconButton size="small" sx={{ color: user.role === "ADMIN" ? "#ddd" : "#d32f2f" }}>
                             <DeleteIcon fontSize="small" />
