@@ -221,7 +221,7 @@ const AccountManagementPageContent = () => {
               Manage all system users including parents, nurses, and staff.
             </Typography>
           </Box>
-          <Button
+          {/* <Button
             variant="contained"
             startIcon={<AddIcon />}
             size="large"
@@ -236,7 +236,7 @@ const AccountManagementPageContent = () => {
             }}
           >
             Add New User
-          </Button>
+          </Button> */}
         </Box>
       </Box>
 
