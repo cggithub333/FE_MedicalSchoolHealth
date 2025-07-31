@@ -31,7 +31,7 @@ const Accounts = () => {
 const breadcrumbPairs = [
   {
     title: 'Dashboard',
-    link: '/parent/dashboard'
+    link: '/dashboard'
   },
   {
     title: 'Account Management',

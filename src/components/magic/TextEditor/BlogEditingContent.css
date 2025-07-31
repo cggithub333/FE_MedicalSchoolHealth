@@ -1,0 +1,15 @@
+/* Placeholder handling */
+.editor-content:empty:before {
+  content: attr(data-placeholder);
+  color: #aaa;
+  pointer-events: none;
+  display: block;
+}
+
+.editor-content b {
+  font-weight: bold;
+}
+
+.editor-content i {
+  font-style: italic;
+}

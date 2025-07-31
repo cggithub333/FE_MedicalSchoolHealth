@@ -518,7 +518,7 @@ const customLinkNavigator = (notification) => {
 
       const newCampaignMsg = ['regarding the vaccination campaign'];
       if (newCampaignMsg.some(msg => notification.message.includes(msg))) {
-        return "/parent/vaccination-campaign/campaigns"; // watch all vaccination campaigns
+        return "/parent/vaccination-campaign/surveys"; // watch all vaccination campaigns
       }
 
       const markedMsg = ['absent', 'not yet', 'declined by'];
@@ -540,7 +540,7 @@ const customLinkNavigator = (notification) => {
       }
       const newCampaignMsg = ['has started'];
       if (newCampaignMsg.some(msg => notification.message.includes(msg))) {
-        return "/parent/health-check-campaign/campaigns"; // watch all health check campaigns
+        return "/parent/health-check-campaign/surveys"; // watch all health check campaigns
       }
       const completedMsg = ["completed"];
       if (completedMsg.some(msg => notification.message.includes(msg))) {

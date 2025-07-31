@@ -94,8 +94,12 @@ const PrescriptionSendingForm = () => {
     if (startDate && endDate) {
       const start = new Date(startDate)
       const end = new Date(endDate)
+      const current = new Date();
       if (start >= end) {
         newErrors.endDate = "End date must be after start date"
+      }
+      if (start < current) {
+        newErrors.startDate = "Start date must be from current date onwards"
       }
     }
 

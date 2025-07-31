@@ -1,0 +1,427 @@
+[33m0e7a9bc[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mDev-continue-jsonserver-backupp[m[33m, [m[1;31morigin/Dev-continue-jsonserver-backupp[m[33m)[m 208. Make blog content show the right <div>, <b>, <i>, <u>,..
+[33mc8110fe[m 107. Edit useEffect in BlogEditingContent.jsx => Allow appending. + Save successfully real api for blog
+[33m64640db[m Merge branch 'Dev-continue-jsonserver-backupp' of https://github.com/cggithub333/FE_MedicalSchoolHealth into Dev-continue-jsonserver-backupp
+[33m89ff977[m 206. Edit Blog - without api integrated
+[33m855ceff[m Merge branch 'Dev-continue-jsonserver-backupp' of https://github.com/cggithub333/FE_MedicalSchoolHealth into Dev-continue-jsonserver-backupp
+[33mc66fcac[m 153. Adjsut change the description when dont have data in report
+[33mfe02a07[m 206. edit/create page
+[33md274218[m 205. Only guest/parent sees 'Contact' page.
+[33m4fe88f6[m t:Merge branch 'Dev-continue-jsonserver-backupp' of https://github.com/cggithub333/FE_MedicalSchoolHealth into Dev-continue-jsonserver-backupp
+[33ma5a95a4[m 204. Add route for blogs, blogs manage, blogs create, blogs edit
+[33mae648f9[m 153. Finish report
+[33mb69c3a5[m 152. Adding API for the report
+[33m0658dc0[m Merge branch 'Dev-continue-jsonserver-backupp' of https://github.com/cggithub333/FE_MedicalSchoolHealth into Dev-continue-jsonserver-backupp
+[33m46dd2d4[m 151. Adjust the colout of the scrollbar to default
+[33mb3665bb[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m ..
+[33mf846b5d[m 203. In case 'get2RandomBlogs' return null posts - BlogDetail.jsx
+[33m4b4fde3[m 202. Add detail page
+[33m392f88d[m 201. Show blog by Id at detail page
+[33m91f036c[m 200. Adjust navigate detail blog page
+[33me40d44c[m 199. Adjust show more/less articles
+[33m335f348[m 198. Blogs with real API + Test Blog Editor success
+[33m92f3acc[m Merge branch 'Dev-continue-jsonserver-backupp' of https://github.com/cggithub333/FE_MedicalSchoolHealth into Dev-continue-jsonserver-backupp
+[33mf4fe1cd[m 197. Adjust Admin, Manager, School Nurse's dashboard => full bgcolors, adding padding bottom
+[33md73d6ad[m Merge branch 'Dev-continue-jsonserver-backupp' of https://github.com/cggithub333/FE_MedicalSchoolHealth into Dev-continue-jsonserver-backupp
+[33md0f5b55[m 150. change the api for showing data in the dashboard
+[33m037b1ac[m 149. Check Valid form for record health check
+[33m10b8439[m 196. Adjust UI for HealthCheckHistory - parent
+[33m410667b[m 195. Health Check History -> show by stage
+[33mae7fa97[m 194. Adjust linkNavigator for notifications
+[33m8358a1e[m 193. Adjust show level label properly
+[33m41a980d[m Merge branch 'Dev-continue-jsonserver-backupp' of https://github.com/cggithub333/FE_MedicalSchoolHealth into Dev-continue-jsonserver-backupp
+[33mbb8aef2[m 192. Adjust notification colors for parent's notification
+[33mf648ec2[m 191. Adjust parent's notification + Add blogs Editors in Test mode
+[33m06a9f4d[m 190. Adjust invalid form notification + allow send medication request from today
+[33m929b3dd[m Merge branch 'Dev-continue-jsonserver-backupp' of https://github.com/cggithub333/FE_MedicalSchoolHealth into Dev-continue-jsonserver-backupp
+[33mf77c762[m 149. Adding the function delete for new vaccination campaign
+[33m83aba89[m 148. Adding the function delete on newhealthcheckcampaign
+[33m4bcedd6[m 189. Remove '12 PM' at vaccination history card
+[33m06acbbe[m 188. Adjust import link using shortcut
+[33mbd51b57[m 187. Adjust pagination
+[33m0cad775[m 186. Make css for failedCard/fadeCard
+[33mdeda0fb[m 146. Resolve in Schedule details result of Health Check Campagin
+[33md4383fb[m 185. Given the right details note to taking medication logs
+[33ma399105[m 184. Adjust send medication notification more to prescription page if that's rejected/approved prescription request
+[33m6b0b8ff[m 183. Temporarily eliminate setting for language.
+[33m1ab9be0[m 145. change the check valid when create new form campaign in manager
+[33m956905a[m 144. Change the layout of health check campaign form in manager
+[33m635fc97[m 143. Change the background colour layout of dashboard in manager, admin and school nurse
+[33m35cfd28[m 182. Manage taking medication by school nurse
+[33md49501a[m 181. Remove fix medication taking
+[33mac559ad[m 180. Sort notification -> show newesst notification first (by highest id)
+[33m101b799[m 179. Add jest library
+[33med87c10[m 178. Adjust show parent/pupil properly first time access the dashboard
+[33mfe57037[m 177. Adjust show pupil information, parent information
+[33m61dea0d[m 142. change the background colour of campaign in manager
+[33m4807495[m Merge branch 'Dev-continue-jsonserver-backupp' of https://github.com/cggithub333/FE_MedicalSchoolHealth into Dev-continue-jsonserver-backupp
+[33m14195fe[m 141. change the backgroundcolour of new campaign in manager
+[33m1a1c023[m Merge branch 'Dev-continue-jsonserver-backupp' of https://github.com/cggithub333/FE_MedicalSchoolHealth into Dev-continue-jsonserver-backupp
+[33mc7ce016[m 177. Rejectered Homepage
+[33me5a3210[m 140. Delete Darken in StyleContact.scss (old version)
+[33mb33159a[m 139. Change the layout of DashBoard Overview
+[33ma862d95[m Merge branch 'Dev-continue-jsonserver-backupp' of https://github.com/cggithub333/FE_MedicalSchoolHealth into Dev-continue-jsonserver-backupp
+[33m0baa2b5[m 138, Finish the contact in homepage
+[33m8a2688b[m 176. Adjust homepage content suit the system
+[33m49f2bd9[m 176. Add blogs content - fake data
+[33m37e6f87[m Merge branch 'Dev-continue-jsonserver-backupp' of https://github.com/cggithub333/FE_MedicalSchoolHealth into Dev-continue-jsonserver-backupp
+[33m9e9e45e[m 176. Init Contact page
+[33m155b06c[m 175. Blogs page - init
+[33me127443[m Merge branch 'Dev-continue-jsonserver-backupp' of https://github.com/cggithub333/FE_MedicalSchoolHealth into Dev-continue-jsonserver-backupp
+[33m2c9ff49[m 174. Adjust Navbar + Add blogs page
+[33md6969c7[m 173. Refactor all homepage code
+[33m29d1c0a[m 172. Extract footer homepage
+[33md4b07a6[m 171. Adjust logout (remove redux info)
+[33m6f6c1fe[m 170. Text editor
+[33mbf91b5b[m 137. Adjust change the content of title in Reports
+[33m806ab82[m 136. Finish report for Manager
+[33m0cf1946[m 135. Finish report for Admin
+[33m1f7d5cf[m 134. resolve conflict merge
+[33m189de44[m 133. finish dashboard in admin
+[33me7eaf41[m 170. Parent Dashboard - All with real API, dit not fix Medical Events not shown
+[33m6725775[m 169. Parent Dashboard - Adjust 'Quick Actions'
+[33m904284c[m 168. Parent Dashboard - Add real data of Latest campaigns + Embed router Link
+[33maf48e58[m 167. Parent Dashboard - adjust link to notification boxes
+[33m61872de[m 166. Import successfully excel file. Test at /test path
+[33mc691350[m 165. Download as Accounts as Xlsx file
+[33m4a81d98[m 164. Adjust search proper by name, email, phone, or id
+[33m5cdbfce[m Merge branch 'main' into Dev-continue-jsonserver-backupp
+[33m0e0178e[m 163. Adjust by schema + disable delete admin
+[33m16d8445[m 132. finish dashboard in manager
+[33ma4e8c48[m 162. Account Management Page for admin
+[33m70f261d[m 131. finish dashboard in school nurse
+[33m90fb90e[m 130. get medical event and prescription for dashboard
+[33md06e998[m 129. Adjust the API for dashboar
+[33m2a0f4ea[m 128. Adjust the profile
+[33me62afee[m 161. Parent Dashboard - fake api
+[33m1da7baa[m 160. Adjust comment - 'No prescription image available' if no image was uploaded
+[33mfa966a5[m 159. Adjust all alert to toastify applying
+[33me189c9e[m 158. Vaccination Survey - Parent - adjust with toastify
+[33mdb6b604[m 158. Adjust IconButton's color, add library hot-toast
+[33md869290[m 157. Adjust toastify warning down from 2s to 1.2s
+[33m494eb6d[m 127. Adjust the warning in the survey health check
+[33m8d27202[m 126. Fix bug in the check of check campaign
+[33mdf6c4e9[m merged code
+[33medc1768[m 125. Fix bug in the function get genital health check of check campaign
+[33mf1ebe24[m Merge branch 'Dev-continue-jsonserver-backupp' of https://github.com/cggithub333/FE_MedicalSchoolHealth into Dev-continue-jsonserver-backupp
+[33m1493f6d[m 124. Fix bug in the show genital health check of check campaign
+[33ma72d821[m 156. Adjust version 2
+[33mdb204e7[m Merge branch 'Dev-continue-jsonserver-backupp' of https://github.com/cggithub333/FE_MedicalSchoolHealth into Dev-continue-jsonserver-backupp
+[33m7522039[m 155. Adjust message 'No Health Check Surveys'
+[33m8def691[m 123. Fix bug in the show details of check campaign
+[33m3fda3f1[m 122. Fix bug in the create new health check campaign
+[33mcf0a679[m Merge branch 'Dev-continue-jsonserver-backupp' of https://github.com/cggithub333/FE_MedicalSchoolHealth into Dev-continue-jsonserver-backupp
+[33m739949f[m 121. Adjust the nav for dashboard in schoolnurse
+[33m5583c68[m 155. Health Check Survey - show all pupils surveys
+[33m552c967[m 153. Adjust Vietnamese show inside Vaccination Survey, Vaccination Campaign
+[33m7d63193[m 152. Adjust height equality between boxes inside the Vaccination History Searching page for parent
+[33m0d6e9c3[m 151. Adjust Vaccination Survey to be fit in the frame
+[33maeb9aa0[m 150.Adjust vaccination survey. 'injected' -> display by approved/rejected
+[33m77a3c04[m 149. Display the notification page by descending order of created_at date
+[33m95c4732[m 148. Adjust path with shortcut
+[33m6fd0d4b[m 147. Remove recovery password from setttings
+[33m523267a[m 120. Adjust the layout of dashboard in schoolnurse
+[33m45e5e1e[m 119. Adjust the layout of vaccination campaign in school nurse
+[33mecbc744[m 118. Delete the Notification in school nurse, admin, manager
+[33m0ed6063[m 117. Adjust the dashboard layout
+[33m4e2a7a9[m 117. Fix bug
+[33m6724d85[m 147. Adjust new campaign button
+[33m25a44df[m 147. Parent - Health Check Campaign - show for non-available
+[33mebd818a[m 147. Parent - Show No Health Check Surveys - if having no on-going health check campaign
+[33m44df65b[m 146. Adjust show pupil/All Children
+[33mf58d319[m 145. Parent - HealthDeclaration
+[33mbe38c46[m 144. School Nurse - Add 'New Requests' button
+[33mf1c0b52[m 143. Remove debug message inside ManageDashboardLayout
+[33m5bf00f1[m 143. Adjust Prescription Management for manager
+[33m8e36e7a[m 142. Split Medication Preparations - to other page
+[33m585d992[m 141. Medication Preparation for school nurse - fill with real data
+[33ma9be8b5[m Merge branch 'Dev-continue-jsonserver-backupp' of https://github.com/cggithub333/FE_MedicalSchoolHealth into Dev-continue-jsonserver-backupp
+[33mfb69e12[m 140. Medication Preparation for school nurse
+[33m889508a[m resolve conflict pull code
+[33m837857f[m pull new code
+[33mcd9e41b[m 116. Show the newest details of each pupils in the profile
+[33medd97fb[m 115. Show the details of the new Health Declaration for parents
+[33me2b05c7[m 114. Show the Profile and the new Health Declaration for parents
+[33m7016275[m 139. Integrated with real api
+[33mcaf4907[m 138. Manager - Prescriptions Management - Add pagination 6 items/page
+[33mc56e4d0[m 139. Manager - Prescriptions Management - Track all prescriptions by status
+[33ma4ab891[m 138. Add MedicationPreparation box
+[33m6ae941e[m 137. Adjust - add parent note - change pupil information
+[33m2d9dce9[m Merge branch 'Dev-continue-jsonserver-backupp' of https://github.com/cggithub333/FE_MedicalSchoolHealth into Dev-continue-jsonserver-backupp
+[33m03c8b94[m 135. Parent - PrescriptionLogs - Link Notification to PrescriptionLogs
+[33m8e443b7[m Merge branch 'Dev-continue-jsonserver-backupp' of https://github.com/cggithub333/FE_MedicalSchoolHealth into Dev-continue-jsonserver-backupp
+[33m1de84cd[m 136. Update real admin information - admin dashboard layout
+[33mcff94a7[m 135. Update real manager information - manager dashboard layout
+[33md876ee2[m 134. Update real school nurse information - school nurse dashboard layout
+[33m2853baa[m 133. Update real parent information - parent dashboard layout
+[33m860aa1e[m Merge branch 'Dev-continue-jsonserver-backupp' of https://github.com/cggithub333/FE_MedicalSchoolHealth into Dev-continue-jsonserver-backupp
+[33m51a400b[m 112. Show the Profile of pupils in the Parents profile
+[33md92b9cb[m 112. Show the Profile of Admin, Manager, Parents
+[33m308dbaa[m 111. Show th Profile of School nurse
+[33md2918d8[m Merge branch 'Dev-continue-jsonserver-backupp' of https://github.com/cggithub333/FE_MedicalSchoolHealth into Dev-continue-jsonserver-backupp
+[33m57e14de[m 132. Finish change password
+[33m4a19a47[m clear
+[33m664f846[m 131. Validate update password features
+[33me3f38b4[m 130. Adjust frame for Settings of 4 users
+[33m68a1c66[m 129. Adjust warning when click on Account Menu Item
+[33m34bc0f8[m 129. Config Settings routes for all users
+[33m5c0ac37[m 128. Add Settings page for every user account
+[33mbcdb701[m 127. Adjust parent notification - bell, link to notification page
+[33mbe85f86[m Merge branch 'Dev-continue-jsonserver-backupp' of https://github.com/cggithub333/FE_MedicalSchoolHealth into Dev-continue-jsonserver-backupp
+[33m34a0dbb[m 110. Fix bug of the PrescriptionRequestPage
+[33mef6cbd0[m 126. Adjust Breadcrumb, Tittle for all parent's page
+[33m1c2b55e[m 125. Completed replace login button if login successfully
+[33m45677a7[m 124. Go to Dashboard, Profile, Logout successfully
+[33m4623e17[m 123. Adjust Homepage before add AccountMenu
+[33mab9826e[m 122. Adjust message if no logs found
+[33m0a9137a[m 121. for Manager: prescription logs - add pupil infor + date
+[33m2809b79[m 120. Manager - Prescription Logs - done
+[33m657c832[m 119. Fixed disable details - if already given prescription
+[33mb9c63b5[m 116. SChool nurse - only show prescriptions with currentDate > startDate and < endDate
+[33mf8e9b44[m 113. Filter prescriptions by date, status != pending, medicationItems exists
+[33m453c511[m 113. remove debug message
+[33mfbee30f[m 112. fetch prescriptions (all, in-progress, completed) by real data
+[33m6e10ea9[m 109. Fix bug of the vaccination campaign schedule
+[33mf952fdd[m 111. Adjust date picker
+[33m6e35153[m 110. get successfully datepicker change with redux
+[33m11c8fc8[m 108. Fix the pagination of the pupils management
+[33m9a13eae[m 107. Adjust the check box for comfirmed the data
+[33m4979f9e[m 106. Change the APi of get all health check campaign by pupilsID in puils managements
+[33m76f49c5[m 109. Add a DatePicker
+[33m689c384[m 108. Manager - basic Prescription Logs + pagination
+[33m23ed26b[m 107. Manager - Prescription Tracking
+[33me5930db[m 107. Adjust default to /homepage at first access
+[33m75376cf[m 106. Add redux config, default page for app at first time access
+[33meb24dfb[m 105. Show medical events with real api from db
+[33mfe3f13c[m 104. Adjust ParentNotification.jsx better ui
+[33m4b18af7[m clear
+[33meb56171[m Resolve the dependences after merge
+[33m5ba6f7a[m Resolve conflict merge
+[33mc963e24[m[33m ([m[1;31morigin/Prescriptions-Backup-Backup[m[33m, [m[1;32mPrescriptions-Backup-Backup[m[33m)[m 105. add .env file
+[33m267d461[m[33m ([m[1;32mDev-continue-jsonserver[m[33m)[m 103. Adjust change the Health check campaign
+[33m6442f1c[m 103. Adjust if event null
+[33md3f2517[m 102. Notification for Medical Events
+[33mbe0a3fb[m 102. Adjust layout of the pupils management manager  and admin
+[33mb0d8b0a[m 101. Adjust layout of the pupils management school nurse
+[33mcb3e00a[m 102. adjust route link HealthCheckCampaign -> Campaign Schedule
+[33ma2e2ceb[m 101. Health check consent form done. wait for resolve 500 status at server
+[33mf94eb8f[m 100. Healthcheck survey for parent
+[33mead6a4e[m 100. Adjust layout of the result health check campaign in manager
+[33m7855dc9[m 99. Adjust layout of the result health check campaign in school nurse
+[33mf0813cc[m 98. Adjust the custom hooks for pupils management in school nurse
+[33m6e88ef2[m 97. Adjust layout of pupils management for school nurse
+[33ma109ffa[m 96. Adjust the count of pupils and patient in Medical Event and pupils management for all
+[33m2c24548[m 95. Finish the details of each patients in Medical Event for manager and admin
+[33m600a842[m 94. Finish the details of each patients in Medical Event of school nurse
+[33m3dbcf1b[m 93. Show the details of each patients in Medical Event of school nurse
+[33m72679ff[m 92. Show the list Medical Event of school nurse
+[33m6f99507[m 91. Create new Medical Event of school nurse
+[33md384111[m 90. Set up Pupils Management for SN, AD, MN
+[33mc622af2[m 99. Vaccination Declaration - complete navigate path
+[33mf482400[m 98. Vaccination History declaration by parent
+[33m5d00dd5[m 97. Vaccination form - correctly work
+[33m9caec09[m 96. Vaccination Declaration (Parent) - real api of pupils and vaccines by diseases
+[33ma48e6a2[m 95. Vaccination Declaration Form - with fake data
+[33m67bf1c2[m 94. Medication logs prevent by window time (sesion1, 2, 3)
+[33m4bab94a[m 93. Given Medication or Prevent Given if already given the medication for a specific disease.
+[33m34a12e9[m 89. Demo page for pupils management
+[33mdb853c1[m 92. Given taking medication by disease - good
+[33mc3372ca[m 88. Add routes for pupils management in school nurse
+[33mda29caf[m 91. Handle given for each disease. Not all disease at 1 time
+[33m9bd52b1[m 87. Finish demo UI of new event for manager and admin
+[33meddf22d[m 90. Adjust to only show the medicationsDetails which has medicationItems
+[33m2154c79[m 89. Take medications for each pupils - update with real fetched api's data, prepare for adjust submit the form
+[33md3b54d5[m 86. Adjust demo UI of new event for manager and admin
+[33mfcef015[m 88. Take medication details for each pupil - fake api
+[33m3940146[m 85. Finish demo UI of new event for school nurse
+[33mbd6a48c[m 84. Adjust form result for medical event
+[33m83254f2[m 87. Adjust remove notes when school nurse cancel details
+[33m8b80571[m 83. Adjust form for medical event
+[33m726ad26[m 88. Adjust toastify notification
+[33m1418e7b[m 87. School nurse - Medication Sessions
+[33m2eb1976[m 86. Show prescription by sessions
+[33mcb7aac2[m 86. Adjust show prescriptin card's dates
+[33m3fbfc69[m 85. Add page pagination for prescription requests list at School Nurse page
+[33m5cc0a53[m 85. Approve/Reject prescription requests - school nurse base on real data
+[33m6cec6ad[m 82. Adjust changing the delete of vaccination campaign
+[33m99776fe[m 81. Adjust function delete campaign for vaccination
+[33mf2e4bcf[m 84. Adjust search with real api
+[33mf6d57d1[m 84. Search pupil by Id - school nurse
+[33m2aa7e67[m 83. School nurse - Prescription Request List
+[33mf040d86[m 82. Parent delete prescription
+[33mfc6ea9f[m 81. Fixed send image
+[33m8636361[m 81. Update upload prescription_image
+[33mee998a6[m 80. Adjust function delete campaign for health check
+[33m335ba66[m 79. Adjust the menu list of vaccination and health check campaign for delete
+[33m73ed42b[m 78. resolve conflict merge code
+[33md7fbb2b[m 78. update create new health check campaign
+[33m5453d40[m 77. change the name of button card in schedule of vaccination
+[33mfb3862d[m 76. fix the schedule in manager
+[33mbbaf70c[m 75. Fix the schedule
+[33me740a1a[m 74. fix the save result of health check campaign
+[33m8e64229[m 73. Fix the error in save details of health check campaign
+[33m394b32f[m 72. fix the schedule list of vaccination campaign
+[33m4bafd19[m 71. saved for check
+[33m35f7cb2[m 80. Prescription Requests - full page
+[33m960a7cd[m 70. finish the flow vaccination and half of health check campaign
+[33m30e39d4[m 79. Shortcur Prescription Requests - for school nurse
+[33m786d7aa[m 78. Adjust login toast
+[33m16db7f0[m 78. Adjust login toast
+[33m0330d49[m 69. Done flow for vaccination campaign for manager an school nurse
+[33me0f4314[m 68. Adjust view detail for vaccination campaign
+[33md375d16[m 77. Finish basic setup of  SendPrescription from Parent
+[33m7f6300a[m 76. Submit Prescription successfullt - thank goddddddddddddddddddddd
+[33m1f467e9[m 75. Adjust exit form button
+[33m51ef6f1[m 74. Upload image to firebase successfully
+[33m3fb139a[m 73. New update for image upload with firebase
+[33m8de32b4[m 72. adjust .env
+[33m24c3ca6[m 71. Complete New Prescription's Form Frame
+[33m74538c5[m 70. Parent - add new button for New Prescription
+[33m6d62a23[m 69. Parent - Prescription Searching - integrated real data from db
+[33m7c5a132[m 68. Adjust real pupil information
+[33m357f2d1[m 67. Parent - Prescription Searching
+[33m65a7b71[m 67. Adjust the schedule of school nurse
+[33m0e84d40[m 66. changing the details of the vaccination campaign
+[33m100a88d[m 66. showing the details of each campaign for manager
+[33m60e83bf[m 67. Schedule for each child
+[33mc78324f[m 66. Finish campaign schedule with real data fetch from api
+[33m186dad4[m 65. Campaign Schedule with fake data
+[33mc187d84[m 65. Adjust VaccinationHistoryDisplayer.jsx
+[33m95aa9d3[m 64. Add documents for Campaign Schedule
+[33m45dd77a[m 63. Combine VaccinationSchedule+HealthCheckSchedule => CampaignSchedule only
+[33m5a5c418[m 62. Vaccination Schedule Modal Box
+[33m0774b59[m 61. Apply full calendar - for  VaccinationSchedule
+[33m53b3174[m 60. Vaccination HIstory by pupil Id
+[33m3606b7b[m 58. Adjust LatestVaccinationCampaign.jsx of Parent user -> remove vietnamese language
+[33maee029a[m 57. Add pagination notifications
+[33m122ebea[m 56. Parent's notification - 90% width
+[33mda22491[m ..
+[33m5a9845b[m 55. 28/06/2025 - merge code
+[33m3f462e7[m 54. Adjust before merging
+[33ma4ddd68[m 65. change the API for update status pending to publish in the vaccination
+[33m04fd051[m ..adjust/handle login
+[33m58b96ec[m 64. set up navigate for child components
+[33m3c0d4f7[m 63. finish the save data for pupils of 2 flow vaccination and health check campaign in school nurse and manager
+[33m436d4f6[m 53. Vaccination Survey - parent - update status
+[33m3177409[m 62. Finish all CRUD of 2 flow vaccination and health check campaign in school nurse and manager
+[33ma524eb0[m 52. Adjust UI
+[33mf0db8cd[m 51. Vaccination Survey for parent
+[33mfa1ce89[m 50. fetched Newest Vaccination Campaign
+[33mad72929[m 61. CRUD for vaccination campaign
+[33mc28274e[m 61. CRUD for health check campaign and vaccination campaign
+[33mbcfee9a[m 49. Adjust Health-Check-History
+[33m42949c7[m 48. show health-check-history by pupil id and school year
+[33mc59116d[m 60. change style os schedule vaccination
+[33m9d446f2[m 59. ALl show details of 2 flow vaccination and health check campaing is good
+[33mdff9c09[m 58. Finish demo 2 flow health check and vaccine in manager and schoolnurse
+[33m482a6e3[m 57. Changing the style of campaign in the vaccination and health check campaign after applied API for it
+[33m3bd045d[m 56. Changing the style of create new campaign and campaign in the vaccination campaign after applied API for it
+[33m5be3cf3[m 55. Changing the style of create new campaign in the health check campaign after applied API for it
+[33md9a1210[m 54. Changing the style of the health check campaign after applied API for it
+[33m27e03c3[m 53. set up API for vaccination campaign of school nurse and manager
+[33mb879f77[m 51. Resolve conflict merge
+[33md81657b[m 49. Resolve Merge conflict
+[33m715258b[m 52. save file CRUD for manager in vaccination campaign
+[33m8a6bb96[m 51. setup CRUD for manager in vaccination campaign
+[33mc7f7138[m 47. Handle Cors blocked
+[33mcc6733f[m 50. Apply API for FE dev and setup CRUD for manager in health check campaign
+[33mbfc114e[m 46. Sign in , sign out
+[33mab8f540[m 49. Resolve merge conflict
+[33m99a040b[m 48. Resolve merge conflict
+[33mc348d40[m 47. Apply BE for school nurse health check campaign
+[33m95b872a[m 45. Handle login routes
+[33mfcb41b7[m 46. resolve the conflict integrrate BE API
+[33m52d8926[m 45. change the data of vaccination
+[33m9934718[m 44. Integrate API backend - logic successfully
+[33m4800046[m 44. Resolve merged conflict. flow1, 2
+[33m9f08642[m[33m ([m[1;32mCuongDevelop-New-Flow1-HealthCheckCampaign-backup[m[33m)[m 43. ADjust VaccinationCampaign
+[33m1e55fe9[m 40. Adjust change the flow vaccination
+[33m3fc8f35[m 42. View Health Check History by pupil by year
+[33m2bd07b1[m 42. Adjust history vaccination.json
+[33me75fdaf[m 39. finished demo for 2 flow vaccination and health check campaign
+[33mebcb639[m 41. Parent Vaccination History
+[33m26040a4[m 41. Adjust /surveys api to /health-check-consent-form
+[33m5e0caf0[m 40. parent/vaccination-campaign/surveys - solve Confirm/Reject
+[33mb5ca3ec[m 39. Adjust Vaccination Campaign infor
+[33m56e5ef3[m 39. Adjust Vaccination Survey form
+[33mc46a6d6[m 38. Merge flow1,2 parent, school nurse, manager
+[33mf81605b[m[33m ([m[1;32mTinhdevelop-New-FLow1-HealthCheckCampaigns-v1[m[33m)[m 20. Init the API for vacccination
+[33m2ad8611[m 37. Survey vaccination form
+[33m3f8d753[m 36. Parent - VaccinationCampaign/Campaigns
+[33m56b6974[m 20. Init base data for vaccination campaing
+[33macbfb8f[m 19. Adjust the Health Check Campaing Schedule and display list pupils of manager
+[33ma560f68[m 18. Fix the Health Check Campaing Schedule and display list pupils of manager
+[33m8e41484[m 17. Finish the Health Check Campaing Schedule and display list pupils of manager
+[33m4c97511[m 16. Form New campaign health check in manager is finished demo
+[33m2f0f0d7[m 36. Configure TypeScript in
+[33ma20444d[m 35. install '@syncfusion/ej2-react-schedule'
+[33m4732996[m 34. Show HealthCheck's Survey full UI
+[33m011fedd[m 15. Display the health check campaign of manager in the status pending for new campaign
+[33m8b662d9[m 33. Apply reload page button
+[33m6e9e9f6[m 32. Adjust HealthCheckCampaign/CampaignsCard
+[33m1817728[m 31. Ajust .gitignore, db folder
+[33m2e8ffc0[m 14. Adjust content for health check campaign of manager
+[33m98d8710[m 13. init base data campaign for manager
+[33m48e9c21[m 12. Init folder and file design content for health check schedule
+[33m8a9c29d[m 11. Design the content for health check campaign
+[33m2b0183e[m 30. Fetch survey's data from '/surveys' by pupilId
+[33mc48fbc6[m 29. Adjust DateFormatter
+[33ma1209fc[m 10. Get ALL Health Check Disease of Pupils successfully
+[33m7c8508d[m 28. Setup Surveys Page for parent
+[33m9fd3565[m 27. UI for health-check-campaign/Campaigns
+[33m115e452[m 9. Get newest campaign successfully
+[33mf101251[m 8. Get all pupils by grade successfully
+[33m2e15571[m 26. Setup pages/parent/Campaigns.jsx
+[33m2ae2c96[m 7. Adjust the callback and action in the api for school nurse
+[33m1659ff8[m 6. Delete status of each row in disease data
+[33m678082d[m 5. update db for health check campaign
+[33m7ea1401[m 25. Define API for making UI
+[33m058ac7e[m 4. Update data for flow health check in school nurse
+[33mb200b37[m 24. Adjust - Parent choose child
+[33m22bdb3b[m 3. Merge db of campaign and pupils in folder db
+[33m531e557[m 2. Init database for health check campaigns and init the content for health check campaign
+[33mf8c3b75[m[33m ([m[1;32mCuong-Dashboard-Development[m[33m)[m 24. Adjust api/* folder
+[33m19c2bf1[m 23. Adjust User Dashboard's resources into dashboard/ folder
+[33m79af381[m 22. CustomHooks: hooks/parent/usePupils
+[33mac45ce0[m init database health check campaign and schedule for school nurse
+[33m24a50a3[m 21. Adjust ParentDashboardRoutes, SchoolNurseDashboardRoutes
+[33md4b04d3[m 22. Admin dashboard - config routes
+[33m645f8e8[m 21. Solve the Routes of School Nurse
+[33med5fc93[m 20. Solve conflict user dashboard routes
+[33m5534621[m 19. Finish Routes for school nurse and manager
+[33m1dee6c9[m 19. Adjust Parent Route-link
+[33m56ed29d[m 18. Add empty pages for Manager, Adjust routes for App.jsx
+[33ma0f07a9[m 17. Solve conflict
+[33m7726058[m 16. Adjust AdminDashboard - Avatar Image
+[33m200aa07[m 16. Adjust colour theme of side bar
+[33m70532ae[m 16. Solve conflit when pull code down
+[33m076b68b[m 15. change the colour sidebar of manager in light mode
+[33m4926dc4[m 15. Add noti for schoolNurse and parent Dashboard
+[33m3eed349[m 14. Add noti for admin and manager Dashboard
+[33mdeb8519[m 13. Add search bar - (parent, schoolnurse) dashboard
+[33mdac43ce[m 12. Add search bar for Admin and manager dashboard
+[33md8a46d2[m 12. Add avatar account for all user
+[33m36c2879[m 11. Solve conflicts
+[33mef13ae3[m 10. Add account
+[33mfefee58[m 10. Remote DemoWindow from Dashboard components
+[33m2c75302[m 10. Testing adding logo authentication in AdminDashboard.jsx
+[33m68efc9b[m 9. Adjust AdminDashboard - try add avatar
+[33mb085148[m 9 sovle conflict in AdminDashboard.jsx
+[33mb32abcb[m 8. adding logo authentication in navbar
+[33m6c4e98e[m 8. Adjust logo: white -> blue color
+[33m562e088[m 7. Solve conflict - at: AdminDashboard.jsx, App.jsx
+[33m0b125b8[m 6. Adjust logo image dashboard
+[33mb31a76e[m 6. Adjust navbar and add jsx
+[33ma8b260e[m 5. demo style dashboard
+[33mc01aba4[m 5. Adjust Admin Dashbaord icon
+[33m1dc189d[m 4. Config NavbarData (Manager, SchoolNurse)
+[33m88807e9[m 3. Config NavbarData (Admin, Parent)
+[33md14cdbd[m 2. Changing componnent in manager and school nurse dashboard
+[33ma0fee81[m 1. Adjust design manager and school nurse dashboard
+[33m169722e[m 4. Adjust App.jsx
+[33mecf2caf[m .
+[33mc99325b[m 2. Add fake-database.json
+[33ma045873[m 1. Dashboard for Parent, Admin, Manager, SchoolNurse
+[33m443a57d[m adjust .gitignore
+[33m078f2b4[m[33m ([m[1;31morigin/master[m[33m, [m[1;32mmaster[m[33m)[m adjust .gitignore
+[33m2827d1a[m Initial project
+[33mfb96bb6[m Initial commit

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchPupilsByGradeAndStatus } from "../../../../api/schoolnurse/schoolnurse-requests-action/vaccination/get-all-pupils-approved-by-grade-request-action";
+import { fetchPupilsByGradeAndStatus } from "@api/schoolnurse/schoolnurse-requests-action/vaccination/get-all-pupils-approved-by-grade-request-action";
 
 // This hook fetches all pupils approved by their grade and status.
 export const useGetAllPupilsApprovedByGrade = (campaignId) => {

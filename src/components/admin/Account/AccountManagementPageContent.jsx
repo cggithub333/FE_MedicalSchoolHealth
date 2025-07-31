@@ -31,6 +31,9 @@ import {
   Menu,
   ListItemIcon,
   ListItemText,
+  Dialog,
+  DialogTitle,
+  DialogActions,
 } from "@mui/material"
 import {
   Add as AddIcon,
@@ -42,167 +45,33 @@ import {
   DeleteSweep as DeleteSweepIcon,
 } from "@mui/icons-material"
 
+import React, { useEffect } from "react"
 
 import { downloadExcel } from "@utils/excel-utils"
+import useQueryAllUsers from "@hooks/admin/useQueryAllUsers"
+import { showErrorToast, showSuccessToast } from "@utils/toast-utils"
 
-// Mock data
-const userAccounts = [
-  {
-    user_id: "PR0001",
-    first_name: "Hùng",
-    last_name: "Nguyễn",
-    email: "hung.nguyen@truonghoc.edu.vn",
-    phone_number: "0281234678",
-    role: "PARENT",
-    is_active: true,
-    avatar: null,
-  },
-  {
-    user_id: "SN0001",
-    first_name: "Lan",
-    last_name: "Trần",
-    email: "lan.tran@truonghoc.edu.vn",
-    phone_number: "0282345789",
-    role: "SCHOOL_NURSE",
-    is_active: true,
-    avatar: null,
-  },
-  {
-    user_id: "AD0001",
-    first_name: "Minh",
-    last_name: "Phạm",
-    email: "minh.pham@truonghoc.edu.vn",
-    phone_number: "0284567890",
-    role: "ADMIN",
-    is_active: false,
-    avatar: null,
-  },
-  {
-    user_id: "MN0001",
-    first_name: "Thảo",
-    last_name: "Lê",
-    email: "thao.le@truonghoc.edu.vn",
-    phone_number: "0284562890",
-    role: "MANAGER",
-    is_active: true,
-    avatar: null,
-  },
-  {
-    user_id: "PR0002",
-    first_name: "Tuấn",
-    last_name: "Hoàng",
-    email: "tuan.hoang@truonghoc.edu.vn",
-    phone_number: "0284567811",
-    role: "PARENT",
-    is_active: true,
-    avatar: null,
-  },
-  {
-    user_id: "PR0003",
-    first_name: "Quỳnh",
-    last_name: "Đỗ",
-    email: "quynh.do@truonghoc.edu.vn",
-    phone_number: "0286789012",
-    role: "PARENT",
-    is_active: true,
-    avatar: null,
-  },
-  {
-    user_id: "SN0002",
-    first_name: "Tuệ",
-    last_name: "Vũ",
-    email: "an.vu@truonghoc.edu.vn",
-    phone_number: "0287890123",
-    role: "SCHOOL_NURSE",
-    is_active: true,
-    avatar: null,
-  },
-  {
-    user_id: "AD0002",
-    first_name: "Tuệ",
-    last_name: "Ngô",
-    email: "tue.ngo@truonghoc.edu.vn",
-    phone_number: "0288901234",
-    role: "ADMIN",
-    is_active: false,
-    avatar: null,
-  },
-  {
-    user_id: "PR0004",
-    first_name: "Việt",
-    last_name: "Lâm",
-    email: "viet.lam@truonghoc.edu.vn",
-    phone_number: "0289012345",
-    role: "PARENT",
-    is_active: true,
-    avatar: null,
-  },
-  {
-    user_id: "MN0002",
-    first_name: "Như",
-    last_name: "Đinh",
-    email: "nhu.dinh@truonghoc.edu.vn",
-    phone_number: "0280123456",
-    role: "MANAGER",
-    is_active: true,
-    avatar: null,
-  },
-  {
-    user_id: "PR0005",
-    first_name: "Long",
-    last_name: "Trịnh",
-    email: "long.trinh@truonghoc.edu.vn",
-    phone_number: "0282345678",
-    role: "PARENT",
-    is_active: true,
-    avatar: null,
-  },
-  {
-    user_id: "SN0003",
-    first_name: "Hà",
-    last_name: "Bùi",
-    email: "ha.bui@truonghoc.edu.vn",
-    phone_number: "0283456789",
-    role: "SCHOOL_NURSE",
-    is_active: false,
-    avatar: null,
-  },
-  {
-    user_id: "AD0003",
-    first_name: "Sơn",
-    last_name: "Mai",
-    email: "son.mai@truonghoc.edu.vn",
-    phone_number: "0284567890",
-    role: "ADMIN",
-    is_active: true,
-    avatar: null,
-  },
-  {
-    user_id: "PR0006",
-    first_name: "Thư",
-    last_name: "Phan",
-    email: "thu.phan@truonghoc.edu.vn",
-    phone_number: "0285678901",
-    role: "PARENT",
-    is_active: true,
-    avatar: null,
-  },
-  {
-    user_id: "MN0003",
-    first_name: "Dũng",
-    last_name: "Hoàng",
-    email: "dung.hoang@truonghoc.edu.vn",
-    phone_number: "0286789012",
-    role: "MANAGER",
-    is_active: false,
-    avatar: null,
-  },
-]
-
+import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
+import useChangeStatusUserById from "@hooks/admin/useChangeStatusUserById"
+import useChangeStaffRole from "@hooks/admin/useChangeStaffRole"
 
 const ACCOUNT_PER_PAGE = 5;
 
 const AccountManagementPageContent = () => {
+
+  const { changeStatus: changeUserStatus } = useChangeStatusUserById();
+  const { changeRole: changeStaffRole } = useChangeStaffRole();
+  const { error: usersError, loading: userLoading, users: userAccounts, refetchAllUsers } = useQueryAllUsers();
+
+  // refetch users every time the userAccounts change:
+  useEffect(() => {
+    if (userAccounts) {
+      setUsers(userAccounts);
+    }
+  }, [userAccounts])
+
+  // debug:
+  // console.log("userAccounts:", JSON.stringify(userAccounts, null, 2));
 
   const [users, setUsers] = useState(userAccounts || [])
   const [searchTerm, setSearchTerm] = useState("")
@@ -211,6 +80,8 @@ const AccountManagementPageContent = () => {
   const [sortBy, setSortBy] = useState("A-Z")
   const [page, setPage] = useState(1)
   const [actionsAnchor, setActionsAnchor] = useState(null)
+
+  const [selectedUser, setSelectedUser] = useState(null)
 
   const getRoleColor = (role) => {
     const colors = {
@@ -232,11 +103,31 @@ const AccountManagementPageContent = () => {
     return labels[role] || role
   }
 
-  const handleStatusToggle = (userId) => {
-    setUsers((users || []).map((user) => (user.user_id === userId ? { ...user, is_active: !user.is_active } : user)))
+  const handleStatusToggle = async (user) => {
+    
+    if (!user) return;
+    if (user.role === "ADMIN") {
+      showErrorToast("Cannot inactivate admin user");
+      return;
+    }
+
+    const userName = `${user.firstName} ${user.lastName}`.trim();
+
+    try {
+      const result = await changeUserStatus(user.userId, !user.active);
+      if (result) {
+        refetchAllUsers(); // make the userAccounts change => trigger useEffect to update users state
+        showSuccessToast(`User ${userName} has been ${user.active ? "deactivated" : "activated"} successfully`);
+      }
+    } catch (err) {
+      showErrorToast(`Failed to ${user.active ? "deactivate" : "activate"} user ${userName}`);
+    }
   }
 
   const getInitials = (firstName, lastName) => {
+
+    if (!firstName || !lastName) return ""
+
     return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase()
   }
 
@@ -250,19 +141,19 @@ const AccountManagementPageContent = () => {
 
   const filterCallback = (user) => {
 
-    const userName = `${user.last_name} ${user.first_name}`.toLowerCase()
+    const userName = `${user.lastName} ${user.firstName}`.toLowerCase()
 
     const matchesSearch =
       userName.includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.user_id.toString().includes(searchTerm) ||
-      user.phone_number.includes(searchTerm)
+      user.userId.toString().includes(searchTerm) ||
+      user.phoneNumber.includes(searchTerm)
 
     const matchesRole = roleFilter === "All" || user.role === roleFilter
     const matchesStatus =
       statusFilter === "All" ||
-      (statusFilter === "Active" && user.is_active) ||
-      (statusFilter === "Inactive" && !user.is_active)
+      (statusFilter === "Active" && user.active) ||
+      (statusFilter === "Inactive" && !user.active)
 
     return matchesSearch && matchesRole && matchesStatus
   }
@@ -273,6 +164,46 @@ const AccountManagementPageContent = () => {
     console.log("Downloaded data:", data);
     downloadExcel(data, "user_accounts");
     setActionsAnchor(null); // Close the menu after action
+  }
+
+  const handleEditUserClick = (user) => {
+
+    if (!user) {
+      showErrorToast("No user selected for editing");
+      return;
+    }
+
+    if (user.role === "ADMIN") {
+      showErrorToast("Cannot edit admin user's permissions");
+      return;
+    }
+
+    if (user.role === "PARENT") {
+      showErrorToast("Cannot edit parent user's permissions");
+      return;
+    }
+    // Open the dialog to edit user permissions
+    setSelectedUser(user);
+  }
+
+  const handleChangeRole = async (user) => {
+    if (!user) {
+      showErrorToast("No user selected for role change");
+      return;
+    }
+    // user is definitely not admin or parent here!
+
+    try {
+      const newRole = selectedUser.role === "SCHOOL_NURSE" ? "MANAGER" : "SCHOOL_NURSE"; // Toggle between roles
+      const result = await changeStaffRole(user.userId, newRole);
+      if (result) {
+        showSuccessToast(`User ${user.firstName} ${user.lastName}'s role has been changed to ${newRole}`);
+        refetchAllUsers(); // make the userAccounts change => trigger useEffect to update users state
+      }
+    } catch (error) {
+      showErrorToast(`Failed to change user role! Try again later.`);
+    }
+    setSelectedUser(null); // Close the dialog after action
   }
 
   const filteredUsers = (users || []).filter(filterCallback)
@@ -440,7 +371,7 @@ const AccountManagementPageContent = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredUsers.map((user, index) => {
+              {(filteredUsers || []).map((user, index) => {
 
                 if (!user) return null; // skip if user is null or undefined
 
@@ -451,7 +382,7 @@ const AccountManagementPageContent = () => {
 
                 return (
                   <TableRow
-                    key={user.user_id}
+                    key={user.userId}
                     sx={{
                       backgroundColor: index % 2 === 0 ? "#ffffff" : "#f9fafb",
                       "&:hover": {
@@ -471,10 +402,10 @@ const AccountManagementPageContent = () => {
                             fontWeight: 600,
                           }}
                         >
-                          {getInitials(user.first_name, user.last_name)}
+                          {getInitials(user.firstName, user.lastName)}
                         </Avatar>
                         <Typography variant="caption" color="text.secondary">
-                          {user.first_name}
+                          {user.firstName}
                         </Typography>
                       </Box>
                     </TableCell>
@@ -482,10 +413,10 @@ const AccountManagementPageContent = () => {
                     <TableCell>
                       <Box>
                         <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: 1.2 }}>
-                          {user.last_name}
+                          {user.lastName}
                         </Typography>
                         <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.2 }}>
-                          {user.first_name}
+                          {user.firstName}
                         </Typography>
                       </Box>
                     </TableCell>
@@ -495,7 +426,7 @@ const AccountManagementPageContent = () => {
                     </TableCell>
 
                     <TableCell>
-                      <Typography variant="body2">{user.phone_number}</Typography>
+                      <Typography variant="body2">{user.phoneNumber}</Typography>
                     </TableCell>
 
                     <TableCell>
@@ -514,17 +445,19 @@ const AccountManagementPageContent = () => {
 
                     <TableCell>
                       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                        <Switch checked={user.is_active} onChange={() => handleStatusToggle(user.user_id)} size="small" />
+                        <Tooltip title={user.role === "ADMIN" ? "Can not inactive admin" : (user.active ? "Inactive" : "Active")}>
+                          <Switch color={user.role === "ADMIN" ? "default" : "primary"} checked={user.active} onChange={() => handleStatusToggle(user)} size="small" />
+                        </Tooltip>
                         <Typography variant="body2" color="text.secondary">
-                          {user.is_active ? "Active" : "Inactive"}
+                          {user.active ? "Active" : "Inactive"}
                         </Typography>
                       </Box>
                     </TableCell>
 
                     <TableCell align="right">
                       <Box sx={{ display: "flex", gap: 0.5, justifyContent: "flex-end" }}>
-                        <Tooltip title="Edit User">
-                          <IconButton size="small" sx={{ color: "#1976d2" }}>
+                        <Tooltip title={editUserTitleForToolTip(user)}>
+                          <IconButton color={editUserIconColor(user)} size="small" onClick={() => handleEditUserClick(user)}>
                             <EditIcon fontSize="small" />
                           </IconButton>
                         </Tooltip>
@@ -533,11 +466,11 @@ const AccountManagementPageContent = () => {
                             <LockIcon fontSize="small" />
                           </IconButton>
                         </Tooltip>
-                        <Tooltip title={user.role === "ADMIN" ? "Cannot delete admin" : "Delete User"}>
+                        {/* <Tooltip title={user.role === "ADMIN" ? "Cannot delete admin" : "Delete User"}>
                           <IconButton size="small" sx={{ color: user.role === "ADMIN" ? "#ddd" : "#d32f2f" }}>
                             <DeleteIcon fontSize="small" />
                           </IconButton>
-                        </Tooltip>
+                        </Tooltip> */}
                       </Box>
                     </TableCell>
                   </TableRow>
@@ -564,8 +497,101 @@ const AccountManagementPageContent = () => {
           }}
         />
       </Box>
+
+      {/* Edit User Dialog */}
+      {selectedUser && (
+        <Dialog
+          open={Boolean(selectedUser)}
+          onClose={() => setSelectedUser(null)}
+          maxWidth="md"
+          fullWidth
+        >
+          <DialogTitle>Account Details</DialogTitle>
+          <Grid container spacing={2} sx={{ padding: 3 }}>
+            {/* Fullname */}
+            <Grid item size={{xs:12}}>
+              <TextField
+                label="Full Name"
+                value={`${selectedUser.lastName} ${selectedUser.firstName}`}
+                fullWidth
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </Grid>
+            {/* Email, phone number */}
+            <Grid item size={{xs:12, md:6}}>
+              <TextField
+                label="Email"
+                value={selectedUser.email}
+                fullWidth
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </Grid>
+            <Grid item size={{xs:12, md:6}}>
+              <TextField
+                label="Phone Number"
+                value={selectedUser.phoneNumber}
+                fullWidth
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </Grid>
+            {/* Current role */}
+            <Grid size={{ xs: 12  }}>
+              <Grid container width={'100%'} spacing={2} alignItems={'center'}>
+                <Grid size={{xs: 6}}>
+                  <Box>
+                    <TextField
+                      label="Current Role"
+                      value={getRoleLabel(selectedUser.role)}
+                      fullWidth
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                    />
+                  </Box>
+                </Grid>
+                <Grid size={{xs: 4, height: '100%'}}>
+                  <Button variant="outlined" onClick={() => handleChangeRole(selectedUser)}>
+                    <ChangeCircleIcon fontSize="large"/>
+                  </Button>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
+          <DialogActions>
+            <Button onClick={() => setSelectedUser(null)} color="error" variant="contained">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
+      
+
     </Container>
   )
+}
+
+function editUserIconColor (user) {
+  if (!user || user.role === "ADMIN" || user.role === "PARENT") {
+    return "default"; // grey color for admin or undefined user
+  }
+  return "primary"; // primary color for other users
+}
+
+function editUserTitleForToolTip (user) {
+  if (!user) return "Undefined User";
+  if (user.role === "ADMIN") {
+    return "Not Allowed";
+  }
+  if (user.role === "PARENT") {
+    return "Not Allowed";
+  }
+  return "Grant Permission";
 }
 
 export default AccountManagementPageContent;
