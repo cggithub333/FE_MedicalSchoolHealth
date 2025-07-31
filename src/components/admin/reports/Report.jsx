@@ -318,7 +318,7 @@ export default function AdminReportsDashboard() {
 
 
                 {/* Additional Metrics Row */}
-                <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                {/* <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                     <Item className="fade-in">
                         <Typography variant="h6" sx={{ color: "#4b5563", mb: 2, fontWeight: 600 }}>
                             Health Check Rate
@@ -338,7 +338,7 @@ export default function AdminReportsDashboard() {
                             {totalPupils > 0 ? Math.round((totalVaccinations / totalPupils) * 100) : 0}%
                         </Typography>
                     </Item>
-                </Grid>
+                </Grid> */}
 
                 <Grid size={{ xs: 12, sm: 12, md: 4 }}>
                     <Item className="fade-in">
