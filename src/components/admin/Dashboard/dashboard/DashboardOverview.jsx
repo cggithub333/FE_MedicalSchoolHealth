@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, Typography, Button, Avatar, Chip, Box, Grid } from "@mui/material"
 import {
     People as UsersIcon,
@@ -13,167 +14,12 @@ import "./DashboardOverview.scss"
 import VaccinesIcon from '@mui/icons-material/Vaccines';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import { Link } from "react-router-dom"
-import { useGetPupilsInformation } from "../../../../hooks/schoolnurse/new-event/useGetPupilsInformation.js";
-import { useGetAllMedicalEvent } from "../../../../hooks/schoolnurse/new-event/useGetAllMedicalEvent.js"
-import { useGetAllPrescription } from "../../../../hooks/schoolnurse/main-contents/useGetAllPrescription.js";
+import { useGetPupilsInformation } from "@hooks/schoolnurse/new-event/useGetPupilsInformation.js";
+import { useGetAllMedicalEvent } from "@hooks/schoolnurse/new-event/useGetAllMedicalEvent.js"
+import { useGetAllPrescription } from "@hooks/schoolnurse/main-contents/useGetAllPrescription.js";
 import useAllPendingPrescriptions from "@hooks/schoolnurse/useAllPendingPrescriptions"
 import { rgba } from "framer-motion";
-
-
-// Mock data
-const userAccounts = [
-    {
-        user_id: "PR0001",
-        first_name: "Hùng",
-        last_name: "Nguyễn",
-        email: "hung.nguyen@truonghoc.edu.vn",
-        phone_number: "0281234678",
-        role: "PARENT",
-        is_active: true,
-        avatar: null,
-    },
-    {
-        user_id: "SN0001",
-        first_name: "Lan",
-        last_name: "Trần",
-        email: "lan.tran@truonghoc.edu.vn",
-        phone_number: "0282345789",
-        role: "SCHOOL_NURSE",
-        is_active: true,
-        avatar: null,
-    },
-    {
-        user_id: "AD0001",
-        first_name: "Minh",
-        last_name: "Phạm",
-        email: "minh.pham@truonghoc.edu.vn",
-        phone_number: "0284567890",
-        role: "ADMIN",
-        is_active: false,
-        avatar: null,
-    },
-    {
-        user_id: "MN0001",
-        first_name: "Thảo",
-        last_name: "Lê",
-        email: "thao.le@truonghoc.edu.vn",
-        phone_number: "0284562890",
-        role: "MANAGER",
-        is_active: true,
-        avatar: null,
-    },
-    {
-        user_id: "PR0002",
-        first_name: "Tuấn",
-        last_name: "Hoàng",
-        email: "tuan.hoang@truonghoc.edu.vn",
-        phone_number: "0284567811",
-        role: "PARENT",
-        is_active: true,
-        avatar: null,
-    },
-    {
-        user_id: "PR0003",
-        first_name: "Quỳnh",
-        last_name: "Đỗ",
-        email: "quynh.do@truonghoc.edu.vn",
-        phone_number: "0286789012",
-        role: "PARENT",
-        is_active: true,
-        avatar: null,
-    },
-    {
-        user_id: "SN0002",
-        first_name: "An",
-        last_name: "Vũ",
-        email: "an.vu@truonghoc.edu.vn",
-        phone_number: "0287890123",
-        role: "SCHOOL_NURSE",
-        is_active: true,
-        avatar: null,
-    },
-    {
-        user_id: "AD0002",
-        first_name: "Tuệ",
-        last_name: "Ngô",
-        email: "tue.ngo@truonghoc.edu.vn",
-        phone_number: "0288901234",
-        role: "ADMIN",
-        is_active: false,
-        avatar: null,
-    },
-    {
-        user_id: "PR0004",
-        first_name: "Việt",
-        last_name: "Lâm",
-        email: "viet.lam@truonghoc.edu.vn",
-        phone_number: "0289012345",
-        role: "PARENT",
-        is_active: true,
-        avatar: null,
-    },
-    {
-        user_id: "MN0002",
-        first_name: "Như",
-        last_name: "Đinh",
-        email: "nhu.dinh@truonghoc.edu.vn",
-        phone_number: "0280123456",
-        role: "MANAGER",
-        is_active: true,
-        avatar: null,
-    },
-    {
-        user_id: "PR0005",
-        first_name: "Long",
-        last_name: "Trịnh",
-        email: "long.trinh@truonghoc.edu.vn",
-        phone_number: "0282345678",
-        role: "PARENT",
-        is_active: true,
-        avatar: null,
-    },
-    {
-        user_id: "SN0003",
-        first_name: "Hà",
-        last_name: "Bùi",
-        email: "ha.bui@truonghoc.edu.vn",
-        phone_number: "0283456789",
-        role: "SCHOOL_NURSE",
-        is_active: false,
-        avatar: null,
-    },
-    {
-        user_id: "AD0003",
-        first_name: "Sơn",
-        last_name: "Mai",
-        email: "son.mai@truonghoc.edu.vn",
-        phone_number: "0284567890",
-        role: "ADMIN",
-        is_active: true,
-        avatar: null,
-    },
-    {
-        user_id: "PR0006",
-        first_name: "Thư",
-        last_name: "Phan",
-        email: "thu.phan@truonghoc.edu.vn",
-        phone_number: "0285678901",
-        role: "PARENT",
-        is_active: true,
-        avatar: null,
-    },
-    {
-        user_id: "MN0003",
-        first_name: "Dũng",
-        last_name: "Hoàng",
-        email: "dung.hoang@truonghoc.edu.vn",
-        phone_number: "0286789012",
-        role: "MANAGER",
-        is_active: false,
-        avatar: null,
-    },
-]
-
+import useQueryAllUsers from "@hooks/admin/useQueryAllUsers.js";
 
 const DashboardOverview = () => {
     const { pupilsList = [], loading, error } = useGetPupilsInformation();
@@ -183,7 +29,22 @@ const DashboardOverview = () => {
     const { prescriptions: prescriptionsRaw = [], loading: loadingPrescriptions, error: errorPrescriptions } = useGetAllPrescription();
     const prescriptions = Array.isArray(prescriptionsRaw) ? prescriptionsRaw : (Array.isArray(prescriptionsRaw.data) ? prescriptionsRaw.data : []);
 
-    const activeAccounts = userAccounts.filter(account => account.is_active);
+    // Replace mock userAccounts with live data from useQueryAllUsers
+    const { users, isLoading: loadingUsers, error: errorUsers } = useQueryAllUsers();
+    const [userAccounts, setUserAccounts] = useState(users || []);
+
+    // debug:
+    // console.log("User Accounts Data:", JSON.stringify(userAccounts, null, 2));
+
+    // refetch userAccounts when data changes
+    useEffect(() => {
+        if (users) {
+            setUserAccounts(users);
+        }
+    }, [users])
+
+    // console.log("User Accounts:", userAccounts);
+    const activeAccounts = userAccounts.filter(account => account.active);
     const dashboardStats = {
         totalStudents: pupilsList.length,
         medicalEvents: medicalEventList.length,
@@ -203,13 +64,14 @@ const DashboardOverview = () => {
         color: ["emerald", "amber", "rose", "blue"][idx % 4], // cycle colors for demo
     }));
 
+    // Map userAccounts to account (show only first 4)
     const account = (userAccounts || []).slice(0, 4).map((account, idx) => ({
-        id: account.user_id,
-        name: `${account.first_name} ${account.last_name}`,
+        id: account.userId,
+        name: `${account.firstName} ${account.lastName}`,
         email: account.email,
-        phone: account.phone_number,
+        phone: account.phoneNumber,
         role: account.role,
-        avatar: account.avatar || `${account.first_name.charAt(0)}${account.last_name.charAt(0)}`.toUpperCase(),
+        avatar: `${account.firstName.charAt(0)}${account.lastName.charAt(0)}`.toUpperCase(),
         color: ["blue", "purple", "teal", "emerald"][idx % 4], // cycle colors for demo
     }));
 
