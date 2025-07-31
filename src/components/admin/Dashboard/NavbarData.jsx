@@ -90,11 +90,11 @@ const NavbarData = [
     //   },
     // ],
   },
-  {
-    segment: 'admin/integration',
-    title: 'Integration',
-    icon: <LayersIcon />,
-  },
+  // {
+  //   segment: 'admin/integration',
+  //   title: 'Integration',
+  //   icon: <LayersIcon />,
+  // },
   {
     kind: "divider",
   },

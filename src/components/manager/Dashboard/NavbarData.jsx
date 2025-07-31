@@ -139,11 +139,11 @@ const NavbarData = [
         // ],
     },
 
-    {
-        segment: "manager/integration",
-        title: "Integrations",
-        icon: <LayersIcon />,
-    },
+    // {
+    //     segment: "manager/integration",
+    //     title: "Integrations",
+    //     icon: <LayersIcon />,
+    // },
     {
         kind: "divider",
     },
